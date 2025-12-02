@@ -14,7 +14,7 @@
  * Plugin Name:       SkyDonate
  * Plugin URI:        https://skywebdesign.co.uk/
  * Description:       A secure, user-friendly donation system built to simplify and manage charitable contributions. Designed for speed, clarity, and full transparency.
- * Version:           1.2.0
+ * Version:           1.0.65
  * Author:            Sky Web Design
  * Author URI:        https://skywebdesign.co.uk/
  * License:           GPL-2.0+
@@ -47,7 +47,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || ( is_multisite() && in_array( 'woocommerce/woocommerce.php', array_flip( get_site_option( 'active_sitewide_plugins' ) ) ) ) ) {
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || ( is_multisite() && array_key_exists( 'woocommerce/woocommerce.php', (array) get_site_option( 'active_sitewide_plugins', array() ) ) ) ) {
 
 /**
  * Currently plugin version.

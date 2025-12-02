@@ -87,9 +87,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
          * Render donation card content
          */
         protected function layout_one($id,$atts) {
-            $btn_label = false;
             $today     = date('Y-m-d');
-            $tomorrow  = date('Y-m-d', strtotime('+1 day'));
             $one_year_later = date('Y-m-d', strtotime('+1 year'));
             $heart_switcher = get_option('donation_monthly_heart_icon');
             $start_date = get_post_meta($id, '_start_date', true);
@@ -116,6 +114,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
+            $custom_options     = is_array($custom_options) ? $custom_options : array();
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
             $box_arrow_hide     = get_post_meta($id, '_box_arrow_hide', true);
@@ -157,16 +156,12 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 }
                 echo '<div class="donation-box-title">' . esc_html($box_title) . $arrow_icon . '</div>';
             }
-            
+
 
             // ----- Donation Amounts -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
-                    $btn_label = true;
-                }else{
-                    $btn_label = false;
-                }
+                $btn_label = ($layout == 'list-layout');
                 $meta_key = "show_{$key}";
                 if (!in_array($meta_key, $button_visibility, true)) continue;
 
@@ -213,15 +208,15 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             echo '</div>';
 
             // ----- Date Pickers for Daily -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group">';
-                echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
+                echo '<div class="date-title">' . esc_html__('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';
                 if ($enable_start_date == 1) {
-                    echo '<div class="donation-date-field"><label>' . esc_html__('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="'.$today.'" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="' . esc_attr($today) . '" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 if($enable_end_date == 1){
-                    echo '<div class="donation-date-field"><label>' . __('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="'.$one_year_later.'" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="' . esc_attr($one_year_later) . '" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 echo '</div></div>';
             }
@@ -230,20 +225,18 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             $this->name_on_plaque($id);
 
             echo '</div>'; // .donation-amount-groups
-            
+
 
             Skyweb_Donation_Functions::skydonate_submit_button($atts);
 
             echo '</form>';
         }
-        
+
         /**
          * Render donation card content
          */
         protected function layout_two($id, $atts) {
-            $btn_label = false;
             $today     = date('Y-m-d');
-            $tomorrow  = date('Y-m-d', strtotime('+1 day'));
             $one_year_later = date('Y-m-d', strtotime('+1 year'));
             $heart_switcher = get_option('donation_monthly_heart_icon');
             $start_date = get_post_meta($id, '_start_date', true);
@@ -270,6 +263,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
+            $custom_options     = is_array($custom_options) ? $custom_options : array();
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
             $box_arrow_hide     = get_post_meta($id, '_box_arrow_hide', true);
@@ -316,11 +310,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             // ----- Donation Amounts -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
-                    $btn_label = true;
-                }else{
-                    $btn_label = false;
-                }
+                $btn_label = ($layout == 'list-layout');
                 $meta_key = "show_{$key}";
                 if (!in_array($meta_key, $button_visibility, true)) continue;
 
@@ -366,15 +356,15 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             echo '</div>';
 
             // ----- Date Pickers for Daily -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group">';
-                echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
+                echo '<div class="date-title">' . esc_html__('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';
                 if ($enable_start_date == 1) {
-                    echo '<div class="donation-date-field"><label>' . esc_html__('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="'.$today.'" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="' . esc_attr($today) . '" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 if($enable_end_date == 1){
-                    echo '<div class="donation-date-field"><label>' . __('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="'.$one_year_later.'" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="' . esc_attr($one_year_later) . '" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 echo '</div></div>';
             }
@@ -391,9 +381,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
 
         protected function layout_three($id, $atts) {
-            $btn_label = false;
             $today     = date('Y-m-d');
-            $tomorrow  = date('Y-m-d', strtotime('+1 day'));
             $one_year_later = date('Y-m-d', strtotime('+1 year'));
             $heart_switcher = get_option('donation_monthly_heart_icon');
             $start_date = get_post_meta($id, '_start_date', true);
@@ -419,7 +407,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
             $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
-            $custom_options     = get_post_meta($id, '_custom_options', true) ?: [];
+            $custom_options     = get_post_meta($id, '_custom_options', true);
+            $custom_options     = is_array($custom_options) ? $custom_options : array();
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
             $box_arrow_hide     = get_post_meta($id, '_box_arrow_hide', true);
@@ -439,8 +428,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             // ----- Donation Type Toggle -----
             if (count($button_visibility) >= 2) {
                 echo '<div class="donation-type-switch">';
-                echo '<button type="button" class="one-off ' . ($donation_frequency === 'once' ? ' active' : '') . '">' . __('One-off', 'skydonate') . '</button>';
-                echo '<button type="button" class="recurring ' . ($donation_frequency !== 'once' ? ' active' : '') . '">' . __('Recurring', 'skydonate') . '</button>';
+                echo '<button type="button" class="one-off ' . ($donation_frequency === 'once' ? ' active' : '') . '">' . esc_html__('One-off', 'skydonate') . '</button>';
+                echo '<button type="button" class="recurring ' . ($donation_frequency !== 'once' ? ' active' : '') . '">' . esc_html__('Recurring', 'skydonate') . '</button>';
                 echo '</div>';
             } else {
                 echo '<input type="hidden" class="donation-type-btn active" data-type="' . esc_attr($donation_frequency) . '"/>';
@@ -448,7 +437,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             // ----- Recurring Frequency Selector -----
             echo '<div class="period-select-options" style="' . ($donation_frequency === 'once' ? 'display:none;' : 'display:block;') . '">';
-            echo '<label>' . __('Select recurring frequency', 'skydonate') . ' *</label>';
+            echo '<label>' . esc_html__('Select recurring frequency', 'skydonate') . ' *</label>';
             echo '<select class="select-option" name="recurring_frequency">';
             foreach ($frequencies as $key => $label) {
                 if ($key === 'once') continue; // skip One-off in dropdown
@@ -470,11 +459,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             // ----- Donation Amount Buttons -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
-                    $btn_label = true;
-                }else{
-                    $btn_label = false;
-                }
+                $btn_label = ($layout == 'list-layout');
                 $meta_key = "show_{$key}";
                 if (!in_array($meta_key, $button_visibility, true)) continue;
 
@@ -521,15 +506,15 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             echo '</div>';
 
             // ----- Daily Date Picker -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group" style="' . ($donation_frequency === 'daily' ? 'display:block;' : 'display:none;') . '">';
-                echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
+                echo '<div class="date-title">' . esc_html__('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';
                 if ($enable_start_date == 1) {
-                    echo '<div class="donation-date-field"><label>' . __('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="'.$today.'" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('Start Date', 'skydonate') . '</label><input type="text" name="start_date" placeholder="' . esc_attr($today) . '" class="donation-start-date" value="' . esc_attr($start_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 if($enable_end_date == 1){
-                    echo '<div class="donation-date-field"><label>' . __('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="'.$one_year_later.'" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
+                    echo '<div class="donation-date-field"><label>' . esc_html__('End Date', 'skydonate') . '</label><input type="text" name="end_date" placeholder="' . esc_attr($one_year_later) . '" class="donation-end-date" value="' . esc_attr($end_date) . '" min="' . esc_attr($today) . '"></div>';
                 }
                 echo '</div></div>';
             }

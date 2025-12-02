@@ -92,7 +92,7 @@ function skyweb_donation_find_key_recursive( array $array, string $key_to_find )
         if ( is_array( $value ) ) {
             $found = skyweb_donation_find_key_recursive( $value, $key_to_find );
             if ( null !== $found ) {
-                return true;
+                return $found;
             }
         }
     }

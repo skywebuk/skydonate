@@ -296,7 +296,7 @@ class Skyweb_Donation_System {
 				$tmr_classes .= 'notice-error is-dismissible';
 		}
 
-		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . 'errorr">';
+		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . '">';
 		$tmr_notice .= '<p>' . esc_html( $tmr_message ) . '</p>';
 		$tmr_notice .= '</div>';
 

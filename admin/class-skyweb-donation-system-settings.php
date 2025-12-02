@@ -32,12 +32,17 @@ class SkyDonation_Functions {
 
 
         add_action( 'wp_ajax_skydonation_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
-        add_action( 'wp_ajax_nopriv_skydonation_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
 
     }
     public function save_extra_donation_settings() {
         // Verify nonce for security
         check_ajax_referer('skydonation_settings_nonce', 'nonce');
+
+        // Verify user has permission
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            return;
+        }
 
         // Donation items (array of id + amount + title)
         $donation_items = isset($_POST['donation_items']) ? (array) $_POST['donation_items'] : [];
@@ -72,10 +77,11 @@ class SkyDonation_Functions {
 
 
     public function skydonation_login_settings() {
-	
+
         // Verify nonce for security
-       if (isset($_POST['save_sky_donation_settings']) && wp_verify_nonce($_POST['save_sky_donation_settings'], 'sky_donation_nonce')) {
+       if (!isset($_POST['save_sky_donation_settings']) || !wp_verify_nonce($_POST['save_sky_donation_settings'], 'sky_donation_nonce')) {
 			wp_send_json_error(__('Nonce verification failed.', 'skydonation'));
+			return;
 		}
     
         // Parse form data sent via AJAX
