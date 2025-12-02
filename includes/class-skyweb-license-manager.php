@@ -226,7 +226,33 @@ class Skyweb_License_Manager {
             );
         }
 
+        // Check HTTP status code
+        $status_code = wp_remote_retrieve_response_code($response);
+        if ($status_code !== 200) {
+            return array(
+                'success' => false,
+                'status' => 'error',
+                'message' => sprintf(__('License server returned error (HTTP %d). Please try again later.', 'skydonate'), $status_code),
+            );
+        }
+
         $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        // Check if JSON decode failed
+        if ($body === null) {
+            return array(
+                'success' => false,
+                'status' => 'error',
+                'message' => __('Invalid response from license server. Please try again later.', 'skydonate'),
+            );
+        }
+
+        // Ensure message field exists for error responses
+        if (!isset($body['success']) || $body['success'] !== true) {
+            if (!isset($body['message'])) {
+                $body['message'] = __('License validation failed. Please check your license key.', 'skydonate');
+            }
+        }
 
         if ($update_cache && isset($body['success']) && $body['success'] === true) {
             $body['cache_time'] = time();
