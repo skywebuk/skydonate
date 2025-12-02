@@ -1,0 +1,439 @@
+/* Hide inactive donation amount groups */
+.donation-form .donation-amount-group:not(.active) {
+    display: none;
+}
+
+/* Donation type buttons */
+.donation-form .donation-type-btn {
+    border-radius: 8px;
+    background-color: #fff;
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid #c7cdd6;
+    width: 100%;
+    position: relative;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    z-index: 1;
+}
+
+.donation-form .donation-type-btn .heart-icon {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+}
+
+.donation-form .donation-type-btn .heart-icon .move-heart {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+/* Heart icon container */
+.donation-form .donation-type-btn .fa-heart {
+    position: relative;
+    transform: translate(0, 0) scale(0.8);
+    display: inline-block;
+    color: #ff447c;
+}
+
+/* Animation */
+.donation-form .donation-type-btn .move-heart {
+    animation: flying-heart-move 2.5s forwards linear;
+    opacity: 1;
+}
+
+@keyframes flying-heart-move {
+    0% {
+        translate: 0 0 0;
+        rotate: 0deg;
+        opacity: 1;
+    }
+
+    5% {
+        translate: 0 0 0;
+        scale: 1.7;
+        rotate: 0deg;
+    }
+
+    60% {
+        translate: 0 -65px 0;
+        scale: 1.7;
+        rotate: 25deg;
+    }
+
+    80% {
+        translate: 0 -80px 0;
+        scale: 1.7;
+        rotate: 0deg;
+        opacity: 1;
+    }
+
+    100% {
+        translate: 0 -95px 0;
+        scale: 2;
+        rotate: 0deg;
+        opacity: 0;
+    }
+}
+
+.donation-form .donation-type-btn:hover,
+.donation-form .donation-type-btn.active {
+    color: var(--accent-color);
+}
+
+.donation-form.grid-layout .donation-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.donation-form.grid-layout .donation-buttons.buttons-1 .donation-btn {
+    flex: 1 1 100%;
+}
+
+.donation-form.grid-layout .donation-buttons.buttons-2 .donation-btn {
+    flex: 1 1 calc(50% - 5px);
+}
+
+.donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
+    flex: 1 1 calc(33.3333% - 6.666px);
+}
+
+.donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+    flex: 1 1 calc(25% - 7.5px);
+}
+
+.donation-form .donation-type-switch {
+    --switch-gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--switch-gap);
+    margin-bottom: 16px;
+}
+
+.donation-form .donation-type-switch.buttons-3 button {
+    flex: 1 1 calc((100% - (2 * var(--switch-gap))) / 3);
+    max-width: calc((100% - (2 * var(--switch-gap))) / 3);
+}
+
+.donation-form .donation-type-switch.buttons-2 button {
+    flex: 1 1 calc(50% - (var(--switch-gap) / 2));
+    max-width: calc(50% - (var(--switch-gap) / 2));
+}
+
+.donation-form .donation-type-switch.buttons-1 button {
+    flex: 1 1 100%;
+    width: 100%;
+}
+
+.donation-form.list-layout .donation-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.donation-form .donation-box-title {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #020202, var(--accent-color), #020202);
+    background-size: 200% auto;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textGradientFlow 3s linear infinite;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.donation-form-wrapper button.form-submit-button {
+    margin-top: 5px;
+}
+
+
+
+/* Gradient animation */
+@keyframes textGradientFlow {
+    0% {
+        background-position: 150% center;
+    }
+
+    100% {
+        background-position: 0% center;
+    }
+}
+
+
+/* Optional: keep arrow aligned */
+.donation-form .donation-box-title .arrow-up {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 2px;
+    left: 4px;
+    color: var(--accent-color);
+    display: inline-block;
+    animation: arrowTilt 3s linear infinite;
+    transform-origin: center center;
+}
+
+
+@keyframes arrowTilt {
+    0% {
+        transform: rotate(0deg) scale(0.8) translate(-6px, -6px);
+    }
+
+    15% {
+        transform: rotate(-20deg) scale(1) translate(6px, -9px);
+    }
+
+    50% {
+        transform: rotate(0deg) scale(0.8) translate(-6px, -6px);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(0.8) translate(-6px, -6px);
+    }
+}
+
+
+.donation-form .donation-buttons .donation-btn {
+    background-color: white;
+    padding: 0px;
+    min-height: 44px;
+    gap: 2px;
+}
+
+.donation-form .donation-buttons .donation-btn .daily-label {
+    font-size: 0px;
+    opacity: 0;
+    transition: 0.3s;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.donation-form .donation-buttons .donation-btn:hover > .daily-label {
+    opacity: 1;
+    font-size: 12px;
+}
+
+.donation-form.list-layout .donation-buttons .donation-btn:before {
+    content: "\f00c";
+    font-family: "Font Awesome 7 Pro";
+    font-size: 12px;
+    color: var(--accent-color);
+    font-weight: 600;
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    z-index: 1;
+    opacity: 0;
+}
+
+.donation-form.list-layout .donation-buttons .donation-btn.active:before {
+    opacity: 1;
+}
+
+.donation-form.grid-layout .donation-buttons .donation-btn {
+    border-radius: 8px;
+    border: 1px solid #c7cdd6;
+    flex-direction: column;
+}
+
+.donation-form.list-layout .donation-buttons .donation-btn {
+    border-top: 2px solid #c7cdd6;
+    border-left: 2px solid #c7cdd6;
+    border-right: 2px solid #c7cdd6;
+    border-bottom: 2px solid #c7cdd6;
+    margin-bottom: -2px;
+    position: relative;
+    gap: 2px;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 1;
+}
+
+.donation-form .donation-buttons .donation-btn .btn-label {
+    text-align: left;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.donation-form.list-layout .donation-buttons .donation-btn:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.donation-form .donation-type-btn:before,
+.donation-form .donation-buttons .donation-btn:after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transition: 0.3s;
+    border-radius: 8px;
+    background-color: var(--accent-light-color);
+    border: 2px solid var(--accent-color);
+    z-index: -1;
+    opacity: 0;
+}
+.donation-form .donation-type-btn.active:before,
+.donation-form .donation-type-btn:hover:before,
+.donation-form .donation-buttons .donation-btn.active:after,
+.donation-form .donation-buttons .donation-btn:hover:after {
+    opacity: 1;
+}
+
+.donation-form .donation-buttons .donation-btn:hover {
+    color: var(--accent-color);
+    z-index: 2;
+}
+
+.donation-form .donation-buttons .donation-btn.active {
+    color: var(--accent-color);
+    z-index: 3;
+}
+
+.donation-form .single_add_to_cart_button {
+    width: 100%;
+}
+
+.donation-amount-groups .donation-custom {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #c7cdd6;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    overflow: hidden;
+}
+
+.donation-amount-groups .donation-custom .custom-placeholder {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 4;
+}
+
+.donation-amount-groups .donation-custom .skyweb-currency-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 50px;
+    z-index: 2;
+}
+
+.donation-amount-groups .donation-custom .skyweb-currency-wrapper .currency-symbol {
+    font-size: 24px;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 0px;
+    min-width: 50px;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: 6px 0 0 6px;
+    line-height: 1em;
+    background: white var(--sky-select-arrow) no-repeat scroll right -2px center / 20px 20px;
+}
+
+.donation-amount-groups .donation-custom .skyweb-currency-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    border: none;
+    background: none;
+    font-size: 16px;
+    padding: 0px;
+    z-index: -1;
+    color: var(--accent-color);
+}
+
+.donation-amount-groups .donation-custom .custom-amount-input {
+    border: none;
+    text-align: left;
+    height: 56px;
+    line-height: 0em;
+    padding: 0 8px 0 8px;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--accent-color);
+    width: calc(100% - 50px);
+    position: relative;
+    z-index: 2;
+}
+
+.donation-form.list-layout .donation-amount-groups .donation-custom {
+    border-radius: 0 0 6px 6px;
+    border-width: 2px;
+}
+
+
+.donation-amount-groups .donation-custom .custom-amount-input::placeholder {
+    color: #ededed;
+}
+
+
+.donation-daily-dates-group .donation-dates {
+    display: flex;
+    gap: 16px;
+}
+
+.donation-daily-dates-group .donation-dates .donation-date-field {
+    width: 100%;
+    position: relative;
+}
+
+.donation-daily-dates-group .donation-dates .donation-date-field input {
+    width: 100%;
+    border-radius: 8px;
+    padding: 20px 10px 8px 10px;
+    min-height: 50px;
+    background: no-repeat url("../../img/calend-d.svg") right 15px top 50% / auto 14px;
+}
+
+.donation-daily-dates-group .donation-dates .donation-date-field input::placeholder {
+    color: #d1d1d1;
+}
+
+.donation-daily-dates-group .donation-dates .donation-date-field label {
+    margin: 0px;
+    position: absolute;
+    left: 10px;
+    top: 3px;
+    z-index: 2;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.donation-daily-dates-group .date-title {
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.donation-daily-dates-group {
+    margin-top: 16px;
+    display: none;
+}

@@ -1,0 +1,111 @@
+.zakat_preview {
+    background-color: #d8eff5;
+    width: 100%;
+}
+
+.zakat_preview .preview_header .header_left {
+    width: 50%;
+    padding: 30px;
+    border-right: 1px solid #b6cfd6;
+}
+
+.zakat_preview .preview_header {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.zakat_preview .preview_header .header_image {
+    width: 100%;
+}
+
+.zakat_preview .preview_header .header_right {
+    width: 50%;
+    padding: 30px;
+}
+
+.zakat_preview .preview_header .header_info {
+    width: 100%;
+    text-align: center;
+    padding: 16px;
+    border-top: 1px solid #b6cfd6;
+    border-bottom: 1px solid #b6cfd6;
+}
+
+.zakat_preview .preview_body {
+    padding: 30px;
+}
+
+.zakat_preview .preview_body .summary_title {
+    text-align: center;
+    margin-top: -6px;
+}
+
+.zakat_preview .preview_body .calc_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: #0b3741;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.zakat_preview .preview_body .calc_list .name {
+    width: 50%;
+    display: inline-block;
+}
+
+.zakat_preview .preview_body .calc_list .num {
+    float: right;
+    color: #2793ad;
+    max-width: 50%;
+}
+
+.zakat_preview .preview_footer {
+    border-top: 1px solid #b6cfd6;
+    padding: 30px;
+    text-align: center;
+    display: none;
+}
+
+.zakat_preview .primary-button {
+    background: linear-gradient(to bottom, #fcda91 0, #fdbb2b 50%);
+}
+
+.zakat_preview .preview_header .header_title {
+    font-size: 20px;
+    margin: -6px 0 0 0;
+}
+
+.zakat_preview .preview_header .header_weight,
+.zakat_preview .preview_header .header_amount {
+    color: #2793ad;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .zakat_preview {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .zakat_preview>div {
+        order: 2;
+    }
+
+    .zakat_preview .preview_footer {
+        order: 1;
+        border-top: none;
+    }
+
+    .zakat_preview .preview_header .header_left {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #b6cfd6;
+    }
+
+    .zakat_preview .preview_header .header_right {
+        width: 100%;
+    }
+}

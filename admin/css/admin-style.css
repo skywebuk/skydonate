@@ -1,0 +1,979 @@
+img {
+    max-width: 100%;
+}
+
+p {
+    margin: 0 0 15px 0;
+}
+
+p:last-child {
+    margin: 0px;
+}
+
+
+.skydonation-page-wrapper {
+    margin-right: 16px;
+    margin-top: 16px;
+}
+
+.skydonation-page-wrapper .form-table th {
+    width: 220px;
+}
+
+.skydonation-page-wrapper .notice {
+    display: none;
+}
+
+.skydonation-page-wrapper p,
+.skydonation-page-wrapper {
+    font-size: 16px;
+}
+
+.skydonation-navigation-wrapper {
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu {
+    padding: 0px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 20px 24px;
+    color: #333;
+    text-align: center;
+    text-decoration: none;
+    position: relative;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link:focus {
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link:after {
+    width: 100%;
+    height: 4px;
+    content: "";
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background-color: #3442ad;
+    opacity: 0;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li {
+    margin: 0;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link.active {
+    color: #3442ad;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link:after,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link.active:after {
+    opacity: 1;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link:not(.active):after {
+    opacity: .3;
+}
+
+#adminmenu .toplevel_page_skydonation .wp-menu-image img {
+    padding-top: 8px;
+}
+
+.skydonation-page-wrapper img {
+    max-width: 100%;
+}
+
+.skydonation-page-wrapper a,
+.skydonation-page-wrapper button {
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skyweb-settings-panel .skydonation-header-actions {
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    display: flex;
+    align-items: center;
+}
+
+.skyweb-settings-panel .skydonation-header {
+    padding-right: 340px;
+    position: relative;
+}
+
+.skydonation-footer .skydonation-switcher {
+    float: right;
+}
+
+.skyweb-settings-panel .skydonation-checkboxs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.skydonation-switcher {
+    background-color: white;
+    padding: 12px 12px 12px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.skydonation-switcher .switch-label {
+    font-weight: 600;
+    margin-right: 16px;
+    font-size: 14px;
+}
+
+.skydonation-switcher input {
+    display: none;
+}
+
+.skydonation-switcher .switch-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50px;
+    height: 22px;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+    border-radius: 99px;
+    padding: 0px;
+    text-transform: uppercase;
+    background-color: #e8e8e8;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1em;
+    z-index: 1;
+}
+
+.skydonation-switcher input:checked~.switch-toggle {
+    background-color: #fcd1e6;
+    color: #e42281;
+}
+
+.skydonation-switcher .switch-toggle::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 99px;
+    background-color: #929292;
+    z-index: 2;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skydonation-switcher input:checked~.switch-toggle::before {
+    left: 30px;
+    background-color: #e42281;
+}
+
+.skydonation-switcher input:disabled~.switch-toggle {
+    opacity: 0.5;
+    /* Makes the toggle appear less prominent */
+    pointer-events: none;
+    /* Disables interaction with the toggle */
+    cursor: not-allowed;
+    /* Changes the cursor to indicate it's disabled */
+}
+
+.skydonation-switcher .switch-toggle .switch-text {
+    position: absolute;
+    right: 7px;
+    top: 6px;
+    line-height: 1em;
+    z-index: -1;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skydonation-switcher .switch-toggle .switch-text.on {
+    opacity: 0;
+    right: auto;
+    left: 9px;
+}
+
+.skydonation-switcher input:checked~.switch-toggle .switch-text.on {
+    opacity: 1;
+}
+
+.skydonation-switcher input:checked~.switch-toggle .switch-text.off {
+    opacity: 0;
+}
+
+.skyweb-settings-panel .skydonation-header .header-title {
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+.form-table td p,
+.skydonation-page-wrapper p {
+    margin: 0 0 15px 0;
+}
+
+.skydonation-switcher .switch-label.disable {
+    position: absolute;
+    opacity: 0;
+    margin-right: 10px;
+}
+
+.skydonation-switcher input:checked~.switch-label.disable {
+    opacity: 1;
+}
+
+.skydonation-switcher input:checked~.switch-label.enable {
+    opacity: 0;
+}
+
+.skydonation-button {
+    border: none;
+    background-color: #3442ad;
+    padding: 14px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-transform: capitalize;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.skydonation-button:not(:disabled):hover {
+    background-color: #202e86;
+    color: white;
+}
+
+.skydonation-button:disabled {
+    opacity: 0.5;
+    /* Makes the toggle appear less prominent */
+    pointer-events: none;
+    /* Disables interaction with the toggle */
+    cursor: not-allowed;
+    /* Changes the cursor to indicate it's disabled */
+}
+
+
+.dashicons-skydonation:before {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    content: "";
+
+    background: url("https://ghh.org.uk/wp-content/uploads/2024/09/logo-02.svg") no-repeat center center;
+    background-size: contain;
+    height: 20px;
+    width: 15px;
+    background-position: center left;
+
+    display: inline-block;
+    font-family: 'skydonation' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.general-links {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+}
+
+.general-links li {
+    margin-right: 16px;
+    display: flex;
+}
+
+.general-links li:not(:last-child):after {
+    content: "|";
+    color: #acacac;
+}
+
+.general-links li a {
+    display: block;
+    text-decoration: none;
+    margin-right: 12px;
+    font-weight: 500;
+}
+
+.general-links li a.active {
+    color: black;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button {
+    margin-left: auto;
+    padding: 9px 10px 0 0;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    width: 150px;
+    background-color: white;
+    border: 1px solid #3442ad;
+    color: #3442ad;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a svg {
+    width: 15px;
+    line-height: 0em;
+    margin-left: 8px;
+}
+
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a.active,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a:hover {
+    background-color: #3442ad;
+    color: white;
+}
+
+.skyweb-settings-panel {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #e1e1e1;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+
+.skyweb-settings-panel .form-table tr:first-child>* {
+    padding-top: 0px;
+}
+
+.skyweb-settings-panel .form-table tr:last-child>* {
+    padding-bottom: 0px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .skydonation-page-wrapper.general-template .card {
+        width: calc(50% - 30px);
+        padding: 24px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .skydonation-page-wrapper.general-template .card {
+        width: calc(100% - 30px);
+    }
+}
+
+.button.loading,
+.skydonation-button.loading {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.button.loading:after,
+.skydonation-button.loading:after {
+    content: "";
+    z-index: 2;
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid currentColor;
+    /* Light background color */
+    border-top: 2px solid transparent;
+    /* Spinner color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.donation-accordion {
+    background-color: white;
+    border: 1px solid #ededed;
+    margin-bottom: 15px;
+}
+
+
+.donation-accordion select,
+.donation-accordion input[type="text"],
+.donation-accordion input[type="number"] {
+    width: 100%;
+    padding: 5px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+.donation-accordion .donation-header {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.donation-accordion .donation-header button.toggle-fields {
+    margin-left: auto;
+    border: none;
+    background: none;
+    color: #000000;
+}
+
+.donation-accordion .donation-fields {
+    padding: 15px 12px;
+    border-top: 1px solid #ededed;
+}
+
+.donation-accordion .donation-fields button.remove-option {
+    float: right;
+    border: none;
+    background: none;
+    color: red;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.donation-accordion .donation-fields p {
+    margin: 0px 0px 12px 0px;
+}
+
+.donation-accordion .donation-fields p:last-child {
+    margin: 0px;
+}
+
+.checkbox-switch {
+    position: relative;
+    padding-left: 50px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Switch background */
+.checkbox-switch .switch {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 22px;
+    background-color: #e8e8e8;
+    border-radius: 99px;
+    transition: background-color 0.3s;
+}
+
+/* Circle inside switch */
+.checkbox-switch .switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background-color: #929292;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+/* Checked state */
+.checkbox-switch input:checked+.switch {
+    background-color: #fcd1e6;
+}
+
+.checkbox-switch input:checked+.switch::after {
+    left: 21px;
+    background-color: #e42281;
+}
+
+/* Hide default checkbox */
+.checkbox-switch input[type="checkbox"] {
+    display: none;
+}
+
+/* Loading state */
+.checkbox-switch.loading .switch::after {
+    animation: zoom 0.8s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Zoom / pulse animation */
+@keyframes zoom {
+
+    0%,
+    100% {
+        transform: scale(0.1);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+}
+
+.skyweb-settings-panel textarea,
+.skyweb-settings-panel select,
+.skyweb-settings-panel input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="file"]):not([type="color"]) {
+    width: 404px;
+    max-width: 100%;
+}
+
+.skydonation-color-field {
+    width: 100px !important;
+}
+
+.select2-results__option {
+    margin: 0px;
+}
+
+.select2-results__options {
+    border: 1px solid #ededed;
+    background-color: white;
+    border-radius: 4px;
+}
+
+#skyweb-donation-fields-container {
+    margin-bottom: 16px;
+}
+
+.skyweb-donation-fields {
+    position: relative;
+    min-width: 255px;
+    border: 1px solid #ededed;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.skyweb-donation-fields .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ededed;
+    padding: 6px 5px 6px 12px;
+    cursor: pointer;
+}
+
+.skyweb-donation-fields .header .title {
+    margin: 0px;
+}
+
+.skyweb-donation-fields .header .action {
+    width: 1.62rem;
+    height: 1.62rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.skyweb-donation-fields .header .action .toggle-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(180deg);
+    transition: 0.3s;
+}
+
+.skyweb-donation-fields .header.active .action .toggle-indicator {
+    transform: rotate(0deg);
+}
+
+.skyweb-donation-fields .fields {
+    border-top: 1px solid #ededed;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skyweb-donation-fields .form-field input[type="radio"] {
+    width: 10px;
+    margin-left: 10px;
+    transform: scale(1.2);
+}
+
+.woocommerce_options_panel .options_group:not(:last-child) {
+    margin-bottom: 16px;
+}
+
+.radio_buttons_group {
+    margin-bottom: 24px;
+}
+
+.radio_buttons_group label {
+    float: none;
+    width: auto;
+    margin: 0;
+}
+
+.radio_buttons_group h3 {
+    margin: 0 0 6px 0;
+}
+
+.radio_buttons_group .radio_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -10px;
+}
+
+.radio_buttons_group .radio_buttons label {
+    margin: 10px;
+}
+
+.radio_buttons_group input {
+    float: none !important;
+}
+
+/* Single Donation Options */
+
+#field_visibility_options,
+#skyweb_donation_options_data {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.skyweb-option-card label {
+    float: none;
+    margin: 0;
+    display: block;
+}
+
+.skyweb-option-card.donation-currency-option .skyweb-checkbox {
+    width: auto;
+}
+
+.skyweb-option-card.donation-currency-option select.short-controll {
+    max-width: 300px;
+}
+
+.skyweb-option-card {
+    border: 1px solid #ededed;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.skyweb-option-card .skyweb-option-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    line-height: 1.2em;
+    margin-bottom: 8px;
+}
+
+.skyweb-block-options,
+.skyweb-inline-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skyweb-block-options:not(:last-child) {
+    margin-bottom: 12px;
+}
+
+.skyweb-block-options {
+    flex-direction: column;
+}
+
+.skyweb-option-card .skyweb-image-checkbox {
+    border: 1px solid #ededed;
+    padding: 10px !important;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 150px;
+    min-height: 132px;
+}
+
+.skyweb-option-card .skyweb-image-checkbox:has(input[type="radio"]:checked) {
+    border-color: #3442ad;
+}
+
+.skyweb-option-card .skyweb-image-checkbox img {
+    margin-bottom: 10px;
+}
+
+.skyweb-option-card .skyweb-image-checkbox input[type="radio"] {
+    order: 1;
+    margin-right: 6px;
+    display: none;
+}
+
+.skyweb-option-card .skyweb-image-checkbox .checkbox-label {
+    order: 2;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+input[type=radio],
+input[type=checkbox] {
+    overflow: hidden;
+    position: relative;
+    margin-top: -3px;
+}
+
+input[type=checkbox]:focus {
+    box-shadow: none;
+}
+
+input[type=checkbox]:checked {
+    border-color: #e42281;
+    background-color: #e42281;
+    box-shadow: none;
+}
+
+input[type=checkbox]:checked::before {
+    content: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E);
+    margin: -2px 0 0 -2.4px;
+    height: 18px;
+    width: 18px;
+}
+
+input[type=radio]:checked {
+    border-color: #e42281;
+    box-shadow: 0 0 0 1px #e42281 inset;
+}
+
+input[type=radio]:checked::before {
+    background-color: #e42281;
+}
+
+.skyweb-option-card .skyweb-option-description {
+    margin: -6px 0px 8px 0px;
+    padding: 0px;
+}
+
+
+.skyweb-option-card input.short,
+.skyweb-option-card input.short-controll {
+    max-width: 250px;
+}
+
+.skyweb-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.skyweb-input-group .woocommerce-help-tip {
+    order: 1;
+}
+
+.skyweb-input-group small {
+    margin-left: 8px;
+    margin-bottom: 2px;
+}
+
+.skyweb-option-card .button {
+    background-color: #3442ad;
+    color: white;
+    border: 1px solid #202e86;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.skyweb-option-card .button:focus,
+.skyweb-option-card .button:hover {
+    background-color: #202e86;
+    color: white;
+    box-shadow: none;
+}
+
+.skyweb-option-card .remove_custom_option {
+    background: #d63343;
+    border-color: #d63343;
+}
+
+.skyweb-option-card .remove_custom_option:focus,
+.skyweb-option-card .remove_custom_option:hover {
+    background: #a32430;
+    border-color: #a32430;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+    margin: 0px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    padding: 5px !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin: 0px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px !important;
+    position: relative;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered span.select2-selection__clear {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    line-height: 1em;
+    margin: 0px !important;
+    padding: 0px;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    padding-left: 6px !important;
+}
+
+/* Add Heart Icon to Donation Options tab */
+#woocommerce-product-data ul.wc-tabs li.skyweb_donation_fields_tab a::before {
+    content: "\f487";
+    /* Dashicons heart */
+}
+
+/* Add an icon to the Field Visibility tab */
+#woocommerce-product-data ul.wc-tabs li.field_visibility_tab a::before {
+    content: "\f177";
+    /* dashicons-visibility */
+}
+
+.nav-tab-wrapper {
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.nav-tab-wrapper .nav-tab {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.wc-orders-list-table .column-gift_aid {
+    text-align: center !important;
+}
+
+
+/* Gift Aid - Minimal */
+
+.gift-aid-date-group {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.gift-aid-date-group .gift-aid-date-field {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gift-aid-date-group .gift-aid-date-field label {
+    font-weight: 600;
+}
+
+.gift-aid-date-field input[type="date"] {
+    height: 40px;
+}
+
+#order_data .order_data_column .edit_address {
+    overflow: hidden;
+    margin-bottom: 15px;
+} 
+
+@media screen and (max-width: 782px) {
+
+    .gift-aid-date-group {
+        flex-direction: column;
+    }
+
+    input[type=checkbox]:checked::before {
+        width: 26px;
+        height: 26px;
+    }
+
+    .skyweb-settings-panel table.form-table,
+    .skyweb-settings-panel table.form-table tbody,
+    .skyweb-settings-panel table.form-table thead,
+    .skyweb-settings-panel table.form-table tr,
+    .skyweb-settings-panel table.form-table th {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .skyweb-settings-panel .form-table td>label:first-child {
+        margin-top: 0px;
+    }
+
+    .skyweb-settings-panel table.form-table tr {
+        gap: 5px
+    }
+
+    .donation-accordion .donation-fields button.remove-option {
+        margin-top: -10px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .skyweb-input-group {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .skyweb-input-group>label {
+        width: 100%;
+    }
+
+    .skyweb-option-card input.short,
+    .skyweb-option-card input.short-controll {
+        max-width: 100%;
+        width: calc(100% - 35px);
+    }
+
+    .skyweb-inline-options .layout-option {
+        width: calc(50% - 5px);
+    }
+}

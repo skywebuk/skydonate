@@ -1,0 +1,24 @@
+
+
+@media only screen and (min-width: 1080px) {
+    .login-and-magic-link {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        z-index: 1;
+        position: relative;
+    }
+    
+    
+    .login-and-magic-link .woocommerce-form-login {
+        margin: 0;
+    }
+    .login-and-magic-link .magic-login-woo-or-separator {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        z-index: -1;
+    }
+}

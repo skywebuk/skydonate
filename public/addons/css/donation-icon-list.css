@@ -1,0 +1,79 @@
+.skyweb-donation-icon-list {
+    text-align: center;
+    overflow: hidden;
+}
+
+.skyweb-donation-icon-list .icon-action {
+    cursor: pointer;
+}
+
+.skyweb-donation-icon-list .donation-icon {
+    width: 90px;
+    height: 90px;
+    background-color: #f2f2f2;
+    display: inline-flex;
+    border-radius: 999px;
+    overflow: hidden;
+    line-height: 0em;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    margin-bottom: 12px;
+    transition: .3s;
+}
+
+.skyweb-donation-icon-list .skyweb-donation-icon-item:hover .donation-icon {
+    background-color: #e2e2e2;
+}
+
+.skyweb-donation-icon-list .donation-icon svg {
+    width: 50px;
+    height: 50px;
+}
+
+.skyweb-donation-icon-list .donation-title {
+    font-family: "IBM Plex Sans", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #242424;
+}
+
+.swiper-navigation .swiper-arrow {
+    position: absolute;
+    left: 0;
+    top: calc(50% - 45px);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 99px;
+    font-size: 22px;
+    background: white;
+    border: 1px solid #ededed;
+    color: rgb(150, 150, 150);
+    z-index: 9;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.swiper-navigation .swiper-arrow:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.swiper-navigation .swiper-arrow svg {
+    width: 25%;
+    fill: currentColor;
+}
+
+.swiper-navigation .swiper-arrow.swiper-next {
+    left: auto;
+    right: 0;
+    padding-left: 1px;
+}
+
+.swiper-navigation .swiper-arrow.swiper-prev {
+    padding-right: 1px;
+}

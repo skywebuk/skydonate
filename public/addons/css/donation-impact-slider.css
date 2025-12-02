@@ -1,0 +1,204 @@
+.donation-impact-slider {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.donation-impact-slider input[type="radio"] {
+    display: none;
+}
+
+.donation-impact-slider:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: calc(50% - 3px);
+    width: 100%;
+    height: 2px;
+    background-color: #ededed;
+    z-index: -1;
+}
+
+.donation-impact-slider .slider-item {
+    position: relative;
+    padding: 60px 10px 36px 10px;
+}
+
+.donation-impact-slider .slider-item label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.donation-impact-slider .slider-item .dot {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-color: #3271e6;
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px white;
+    transform: scale(.2);
+    margin-bottom: 5px;
+}
+
+.donation-impact-slider .slider-item input:checked~label .dot {
+    transform: scale(1);
+}
+
+.donation-impact-slider .slider-item .dot:after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 4px);
+    top: calc(50% - 4px);
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 100%;
+    opacity: 0;
+}
+
+.donation-impact-slider .slider-item input:checked~label .dot:after {
+    opacity: 1;
+}
+
+.donation-impact-slider .slider-item .toptip {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    border: 1px solid #3271e6;
+    background-color: white;
+    padding: 12px 16px;
+    color: #303030;
+    border-radius: 4px;
+    text-transform: capitalize;
+    line-height: 1.2em;
+    font-size: 16px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.donation-impact-slider .slider-item .toptip .icon {
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.donation-impact-slider .slider-item .toptip .icon .e-font-icon-svg {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.donation-impact-slider .slider-item input:checked~label .toptip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.donation-impact-slider .slider-item .toptip:after {
+    content: "";
+    position: absolute;
+    left: calc(50% - 5px);
+    bottom: -6px;
+    width: 10px;
+    height: 10px;
+    border-left: 1px solid #3271e6;
+    border-bottom: 1px solid #3271e6;
+    transform: rotate(-45deg);
+    background-color: white;
+}
+
+.donation-impact-slider .slider-item .price {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    color: black;
+    font-size: 16px;
+}
+
+.donation-impact-slider.list {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.donation-impact-slider.list:after {
+    width: 2px;
+    height: 100%;
+    top: 0;
+    left: calc(50% - 61px);
+}
+
+.donation-impact-slider.list .slider-item {
+    padding: 10px 20px;
+    margin-right: 120px;
+}
+
+.donation-impact-slider.list .slider-item .price {
+    width: auto;
+    left: auto;
+    right: 100%;
+    bottom: 50%;
+    transform: translateY(50%);
+}
+
+.donation-impact-slider.list .slider-item .toptip {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.donation-impact-slider.list .slider-item .toptip:after {
+    left: -5px;
+    bottom: calc(50% - 5px);
+    transform: rotate(45deg);
+}
+
+
+@media only screen and (max-width: 768px) {
+    .donation-impact-slider {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .donation-impact-slider:after {
+        width: 2px;
+        height: 100%;
+        top: 0;
+        left: calc(50% - 61px);
+    }
+
+    .donation-impact-slider .slider-item {
+        padding: 10px 20px;
+        margin-right: 120px;
+    }
+
+    .donation-impact-slider .slider-item .price {
+        width: auto;
+        left: auto;
+        right: 100%;
+        bottom: 50%;
+        transform: translateY(50%);
+    }
+
+    .donation-impact-slider .slider-item .toptip {
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .donation-impact-slider .slider-item .toptip:after {
+        left: -5px;
+        bottom: calc(50% - 5px);
+        transform: rotate(45deg);
+    }
+
+    .donation-impact-slider .slider-item .toptip {
+        padding: 6px 8px;
+    }
+}

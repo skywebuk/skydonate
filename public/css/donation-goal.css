@@ -1,0 +1,43 @@
+.progress-container {
+   height: 30px;
+    border: 2px solid transparent;
+    position: relative;
+    border-radius: 3px;
+    overflow: hidden;
+	background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    border: 2px solid var(--accent-color);
+}
+
+.progress-container .indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    color: #000;
+	  background-color: var(--accent-color);
+}
+
+.progress-container .percentage {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    line-height: 20px;
+    padding: 0 5px;
+    white-space: nowrap;
+	  left: 100%;
+    color: rgb(0, 0, 0);
+}
+
+.progress-container span.goal_left {
+    font-size: 30px;
+    color: black;
+    font-weight: 600;
+}
+
+.progress-container span.goal_right {
+    font-size: 20px;
+    color: gray;
+    font-weight: 400;
+}

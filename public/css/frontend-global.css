@@ -1,0 +1,533 @@
+:root {
+    --sky-select-arrow: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==");
+    --sky-check: url('data:image/svg+xml,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" data-testid="check-icon" aria-hidden="true" class="amount-hint-check-icon"><path d="M13.9259 3.92578L5.77778 12.0739L2.07407 8.37023" stroke="%233442AD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>');
+    --btn-transform: capitalize;
+}
+
+.swiper-wrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
+.skyweb-donate-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 13px;
+    border-radius: 8px;
+    max-width: calc(100% - 40px);
+    width: 360px;
+    z-index: 9999;
+    background: #ffffff;
+    color: #212830;
+    border: 0px solid #ffffff;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px;
+}
+
+.skyweb-donate-notification .name {
+    font-weight: 700;
+    color: #2797ff;
+    font-size: 16px;
+}
+
+.skyweb-donate-notification .time,
+.skyweb-donate-notification .location {
+    font-size: 13px;
+    line-height: 1.3em;
+}
+
+.skyweb-donate-notification .donate-button {
+    float: right;
+    border: 1px solid rgb(39, 151, 255);
+    color: rgb(39, 151, 255);
+    padding: 4px 16px;
+    border-radius: 99px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.skyweb-donate-notification .donate-button:hover {
+    background-color: #2797ff;
+    color: white;
+}
+
+.skyweb-donate-notification p {
+    margin: 0;
+}
+
+.button.primary-button {
+    border-radius: var(--btn-accented-brd-radius);
+    color: var(--btn-accented-color);
+    box-shadow: var(--btn-accented-box-shadow);
+    background-color: var(--accent-color);
+    text-transform: var(--btn-accented-transform, var(--btn-transform, uppercase));
+    font-weight: var(--btn-accented-font-weight, var(--btn-font-weight, 600));
+    font-family: var(--btn-accented-font-family, var(--btn-font-family, inherit));
+    font-style: var(--btn-accented-font-style, var(--btn-font-style, unset));
+}
+
+.button.primary-button:hover {
+    color: var(--btn-accented-color-hover);
+    box-shadow: var(--btn-accented-box-shadow-hover);
+    background-color: var(--accent-dark-color);
+}
+
+.skyweb-donate-notification strong {
+    color: #242424;
+}
+
+.skyweb-donate-notification .close {
+    background-color: #3c444e;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    border-radius: 99px;
+    border: none;
+    padding: 0;
+    line-height: 16px;
+    min-height: inherit;
+    text-align: center;
+    transition: .3s;
+}
+
+.skyweb-donate-notification .close:hover {
+    background-color: black;
+    color: white;
+}
+
+@media screen and (min-width: 768px) {
+    .skyweb-donate-notification .close {
+        position: absolute;
+        right: -18px;
+        top: 0;
+        opacity: 0;
+    }
+
+    .skyweb-donate-notification .close::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        display: block;
+    }
+
+    .skyweb-donate-notification:hover .close {
+        right: -25px;
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .skyweb-donate-notification {
+        bottom: 80px;
+        width: calc(100% - 40px) !important;
+    }
+
+    .skyweb-donate-notification .close {
+        float: right;
+        margin-left: 5px;
+        margin-top: 9px;
+    }
+
+    .skyweb-donate-notification .donate-button {
+        padding: 3px 12px;
+        font-size: 14px;
+    }
+
+    .skyweb-donate-notification .name {
+        font-size: 14px;
+    }
+
+}
+
+.product_list_widget>li .wd-entities-title {
+    margin-bottom: 3px !important;
+}
+
+/* Base style */
+input[type="number"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    /* Chrome, Safari, Edge */
+    -moz-appearance: textfield !important;
+    /* Firefox */
+}
+
+/* Chrome, Safari, Edge: hide spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+/* Firefox: hide spinners */
+input[type="number"]::-moz-number-spin-box,
+input[type="number"]::-moz-number-spin-up,
+input[type="number"]::-moz-number-spin-down {
+    display: none !important;
+}
+
+.woocommerce-product-gallery .wd-gallery-thumb img {
+    max-width: 260px !important;
+}
+
+.name-on-plaque input[name="cart_custom_text"] {
+    border-radius: 6px;
+    color: var(--accent-color);
+    height: 54px;
+    padding: 8px 20px;
+    font-size: 16px;
+}
+
+.name-on-plaque input[name="cart_custom_text"]::placeholder {
+    color: var(--accent-color);
+}
+
+.price {
+    color: currentColor !important;
+}
+
+#billing_address_search-description {
+    display: inline-block !important;
+    color: green;
+    line-height: 1em;
+    transform: translateY(5px);
+}
+
+@keyframes flying-heart-move {
+    0% {
+        translate: 0 0 0;
+        rotate: 0deg;
+        opacity: 1;
+    }
+
+    5% {
+        translate: 0 0 0;
+        scale: 1.7;
+        rotate: 0deg;
+    }
+
+    60% {
+        translate: 0 -65px 0;
+        scale: 1.7;
+        rotate: 25deg;
+    }
+
+    80% {
+        translate: 0 -80px 0;
+        scale: 1.7;
+        rotate: 0deg;
+        opacity: 1;
+    }
+
+    100% {
+        translate: 0 -95px 0;
+        scale: 2;
+        rotate: 0deg;
+        opacity: 0;
+    }
+}
+
+table td {
+    border-bottom: 0px solid var(--brdcolor-gray-300) !important;
+}
+
+.plaque-name-field {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.plaque-name-field input {
+    width: 100% !important;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 52px;
+    font-size: 15px !important;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    color: var(--accent-color);
+    border: 2px solid rgb(210, 212, 213) !important;
+    border-radius: 6px;
+}
+
+/* Donation Button Popup CSS */
+.wd-popup-slide-from-left.mfp-ready .wd-popup {
+    border-radius: 10px;
+}
+
+button.mfp-close {
+    width: 50px !important;
+    height: 36px !important;
+    font-weight: 900 !important;
+    color: white !important;
+    background-color: red !important;
+    border-radius: 100px !important;
+    margin-right: 10px !important;
+}
+
+/* Cart/Mini CSS */
+.woocommerce-mini-cart__buttons .btn-cart:hover {
+    color: #fff;
+    box-shadow: var(--btn-default-box-shadow-hover);
+    background-color: var(--accent-color);
+}
+
+.btn-cart {
+    color: var(--accent-color) !important;
+    border: 1px solid var(--accent-color) !important;
+    background: white !important;
+}
+
+.loading {
+    position: relative;
+}
+
+.loading:after {
+    content: "";
+    display: block;
+    width: 14px;
+    min-width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    /* Light background color */
+    border-top: 2px solid transparent;
+    /* Spinner color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 5px;
+    position: absolute;
+    right: 15px;
+    top: calc(50% - 8px);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.wd-side-hidden {
+    height: 100%;
+}
+
+.cart-widget-side .widget_shopping_cart_content {
+    height: calc(100% - 32px) !important;
+}
+
+.quick-modal-content .donation-form-wrapper {
+    padding: 0px 16px;
+}
+
+.cart-info .fa-circle-info {
+    font-size: 14px;
+    margin-left: 3px;
+}
+
+.tiptip {
+    position: relative;
+    z-index: 3;
+    margin-left: 3px;
+}
+
+.tiptip .tip-text {
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    font-size: 12px;
+    text-align: center;
+    background-color: var(--accent-light-color);
+    color: var(--accent-color);
+    padding: 8px;
+    border-radius: 8px;
+    display: block;
+}
+
+.tiptip .tip-text * {
+    color: currentColor;
+    font-weight: inherit;
+}
+
+.tiptip .tip-text:before {
+    content: "";
+    position: absolute;
+    left: calc(50% - 5px);
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--accent-light-color);
+    border-radius: 3px;
+    transform: rotate(45deg);
+}
+
+.tiptip:hover .tip-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+.product-subtotal .tiptip {
+    display: none;
+}
+
+button.form-submit-button {
+    background-color: var(--accent-color);
+    color: white;
+    width: 100%;
+    border-radius: 8px;
+    padding: 12px 16px 12px 16px;
+    font-size: 14px;
+    height: 58px;
+    justify-content: flex-start;
+    position: relative;
+}
+
+button.form-submit-button:hover {
+    background-color: var(--accent-dark-color);
+    color: white;
+}
+
+button.form-submit-button .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.form-submit-button .icon svg,
+button.form-submit-button .icon img {
+    width: 24px;
+    height: 24px;
+}
+
+button.form-submit-button .icon svg path {
+    fill: currentColor !important;
+}
+
+button.form-submit-button .icon.left {
+    justify-content: flex-start;
+    font-size: 24px;
+}
+
+button.form-submit-button .icon.right {
+    width: 24px;
+    height: 24px;
+    margin-left: auto;
+    font-size: 16px;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+
+button.form-submit-button .icon.right .loader-icon {
+    position: absolute;
+    left: 0%;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    transform: translateX(0%);
+    transform-origin: left center;
+}
+
+button.form-submit-button.loading-running .icon.right .loader-icon {
+    transform: translateX(100%);
+}
+
+.loader-svg .loader-circle {
+    stroke-dasharray: 230;
+    stroke-dashoffset: -230;
+    opacity: 0;
+}
+
+.loading-running .loader-svg .loader-circle {
+    opacity: 1;
+    animation: rotateCircle 2.5s 0s linear infinite;
+}
+
+
+@keyframes rotateCircle {
+    0% {   stroke-dashoffset: -230; }
+    50% {  stroke-dashoffset: -460; }
+    100% { stroke-dashoffset: -690; }
+}
+
+.donation-form-wrapper .donation-closed {
+    text-align: center;
+    background-color: #f2f9ff;
+    padding: 32px;
+    border-radius: 12px;
+}
+
+.donation-form-wrapper .donation-closed .clossing-img {
+    width: 120px;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.donation-form-wrapper .donation-closed h4 {
+    margin: 0 0 12px 0;
+}
+
+.donation-form .name-on-plaque {
+    margin-top: 12px;
+}
+
+.donation-form .name-on-plaque input[name="cart_custom_text"] {
+    border: 1px solid #c7cdd6;
+    border-radius: 8px;
+}
+
+.donation-form-wrapper .zakat-applicable {
+    text-align: center;
+    padding: 8px;
+    background-color: var(--accent-light-color);
+    color: var(--accent-color);
+    border-radius: 99px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.donation-form-wrapper .zakat-applicable i {
+    font-size: 20px;
+}
+
+/* Sky PDF */
+.sky-invoice-metabox {	
+	padding: 20px;
+  border: 2px solid #bbcfed;
+  border-radius: 10px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.sky-invoice-admin-download {
+	padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 2px solid #3442ad;
+	background: white;
+  width: 100%;
+}
+
+/* Sky PDF */

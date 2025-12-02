@@ -1,0 +1,250 @@
+.button-full .primary-button {
+    width: 100%;
+}
+
+.primary-button {
+    box-shadow: none;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+    text-transform: capitalize;
+    text-shadow: none;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 1.4;
+    cursor: pointer;
+    font-size: 13px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    border-radius: 0;
+    transition: 0.1s linear;
+}
+
+.button-small .primary-button {
+    padding: 12px 16px;
+    font-size: 14px;
+    min-height: inherit;
+}
+
+.primary-button > * {
+    margin-left: 5px;
+}
+
+.button-medium .primary-button {
+    padding: 12px 20px;
+    min-height: inherit;
+}
+
+.button-large .primary-button {
+    padding: 16px 24px;
+    font-size: 14px;
+}
+
+.button-extra_large .primary-button {
+    padding: 18px 32px;
+    font-size: 16px;
+}
+
+.button-rounded .primary-button {
+    border-radius: 5px;
+}
+
+.button-round .primary-button {
+    border-radius: 99px;
+}
+
+.button-flat .primary-button {
+    border: 0px solid transparent;
+}
+
+.button-flat.button-gray .primary-button {
+    color: #3E3E3E;
+    background: #F3F3F3;
+}
+
+.button-flat.button-gray .primary-button:hover,
+.button-flat.button-gray .primary-button.active {
+    color: #3E3E3E;
+    background: #e0e0e0;
+}
+
+.button-flat.button-primary .primary-button {
+    color: #ffffff;
+    background: var(--accent-color);
+    box-shadow: inset 0 0 0 rgba(0,0,0,0.1);
+}
+
+.button-flat.button-primary .primary-button:hover,
+.button-flat.button-primary .primary-button.active {
+    color: #ffffff;
+    background: var(--accent-color);
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.1);
+}
+
+
+.button-flat.button-alternative .primary-button {
+    color: #ffffff;
+    background: var(--accent-color);
+    box-shadow: inset 0 0 0 rgba(0,0,0,0.1);
+}
+
+.button-flat.button-alternative .primary-button:hover,
+.button-flat.button-alternative .primary-button.active {
+    color: #ffffff;
+    background: var(--accent-color);
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.1);
+}
+
+
+.button-flat.button-black .primary-button {
+    color: #ffffff;
+    background: #212121;
+    box-shadow: inset 0 0 0 rgba(0,0,0,0.1);
+}
+
+.button-flat.button-black .primary-button:hover,
+.button-flat.button-black .primary-button.active {
+    color: #ffffff;
+    background: #212121;
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.1);
+}
+
+
+.button-flat.button-white .primary-button {
+    color: #333333;
+    background: white;
+    box-shadow: inset 0 0 0 rgba(0,0,0,0.1);
+}
+
+.button-flat.button-white .primary-button:hover,
+.button-flat.button-white .primary-button.active {
+    color: #333333;
+    background: white;
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.1);
+}
+
+.button-border .primary-button {
+    color: #333333;
+    background: transparent;
+    border: 1px solid #F3F3F3;
+}
+
+.button-border .primary-button:hover,
+.button-border .primary-button.active {
+    color: #333333;
+    border-color: #F3F3F3;
+    background: #F3F3F3;
+}
+
+.button-border.button-primary .primary-button {
+    color: var(--accent-color);
+    background: transparent;
+    border: 1px solid var(--accent-light-color);
+}
+
+.button-border.button-primary .primary-button:hover,
+.button-border.button-primary .primary-button.active {
+    color: #ffffff;
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+}
+
+.button-border.button-alternative .primary-button {
+    color: var(--accent-color);
+    background: transparent;
+    border: 1px solid var(--accent-color);
+}
+
+.button-border.button-alternative .primary-button:hover,
+.button-border.button-alternative .primary-button.active {
+    color: #ffffff;
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+}
+
+.button-border.button-black .primary-button {
+    color: #212121;
+    background: transparent;
+    border: 1px solid #212121;
+}
+
+.button-border.button-black .primary-button:hover,
+.button-border.button-black .primary-button.active {
+    color: #ffffff;
+    border-color: #212121;
+    background: #212121;
+}
+
+
+.button-border.button-white .primary-button {
+    color: #ffffff;
+    background: transparent;
+    border: 1px solid #ffffff;
+}
+
+.button-border.button-white .primary-button:hover,
+.button-border.button-white .primary-button.active {
+    color: #212121;
+    border-color: #ffffff;
+    background: #ffffff;
+}
+
+.button-link .primary-button {
+    background: none;
+    padding: 0;
+    color: #212121;
+    border-bottom: 1px solid #F3F3F3;
+}
+
+.button-link .primary-button:hover,
+.button-link .primary-button.active {
+    color: #333333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.button-link.button-primary .primary-button {
+    color: #333333;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.button-link.button-primary .primary-button:hover,
+.button-link.button-primary .primary-button.active {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.button-link.button-alternative .primary-button {
+    color: #333333;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.button-link.button-alternative .primary-button:hover,
+.button-link.button-alternative .primary-button.active {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.button-link.button-black .primary-button {
+    color: #333333;
+    border-bottom: 1px solid #333333;
+}
+
+.button-link.button-black .primary-button:hover,
+.button-link.button-black .primary-button.active {
+    color: #000000;
+    border-bottom: 1px solid #000000;
+}
+
+.button-link.button-white .primary-button {
+    color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.button-link.button-white .primary-button:hover,
+.button-link.button-white .primary-button.active {
+    color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+}

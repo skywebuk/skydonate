@@ -1,0 +1,215 @@
+.classic-zakat-calculator {
+    background-color: white;
+    border: 1px solid #ededed;
+
+
+    --classic-color: #2cb7d8;
+}
+
+.classic-zakat-calculator .zakat-form-group {
+    display: flex;
+    width: 100%;
+}
+
+.classic-zakat-calculator .zakat-form-group:not(:last-child) {
+    margin-bottom: 16px;
+}
+
+.classic-zakat-calculator .zakat-calculator-assets,
+.classic-zakat-calculator .zakat-calculator-liabilities,
+.classic-zakat-calculator .zakat-calculator-header {
+    border-bottom: 1px solid #ededed;
+    padding: 40px;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-toggle {
+    margin-left: auto;
+    width: 50px;
+    text-align: right;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-label {
+    width: 250px;
+    font-weight: 700;
+    font-size: 18px;
+    padding-right: 24px;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-content {
+    width: calc(100% - 300px);
+}
+
+.zakat-radio-group {
+    position: relative;
+}
+
+.zakat-radio-group .zakat-radio {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 24px;
+    font-size: 18px;
+}
+
+.zakat-radio-group input[type="radio"] {
+    display: none;
+}
+
+.zakat-radio-group .circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 99px;
+    display: inline-block;
+    border: 1px solid currentColor;
+    margin-right: 12px;
+    color: var(--classic-color);
+    border: 2px solid currentColor;
+    box-shadow: 0 0 0 5px white inset;
+    background-color: white;
+    cursor: pointer;
+}
+
+.zakat-radio-group input[type="radio"]:checked+.circle {
+    background-color: var(--classic-color);
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-toggle-button {
+    padding: 0px;
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    border-radius: 99px;
+    background-color: white;
+    box-shadow: 0 0 0 2px white;
+    border: 4px double currentColor;
+    color: var(--classic-color);
+    font-size: 16px;
+    margin-top: -2px;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-toggle-button svg {
+    width: 50%;
+    fill: currentColor;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-toggle-button.active,
+.classic-zakat-calculator .zakat-form-group .zakat-toggle-button:hover {
+    background-color: var(--classic-color);
+    box-shadow: 0 0 0 2px white;
+    color: #ffffff;
+}
+
+.classic-zakat-calculator .zakat-form-group .zakat-info {
+    padding: 24px;
+    color: var(--classic-color);
+    display: none;
+    border: 1px solid rgb(192, 217, 223);
+    border-top: none;
+    background-color: rgb(250, 254, 255);
+}
+
+.classic-zakat-calculator .zakat-form-group .input-group {
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+}
+
+.classic-zakat-calculator .zakat-form-group .input-group .currency-symbol {
+    width: 60px;
+    min-width: 60px;
+    height: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: rgb(0, 61, 75);
+    font-weight: 900;
+    border: 1px solid rgb(192, 217, 223);
+    background-color: rgb(223, 239, 243);
+}
+
+.classic-zakat-calculator .zakat-form-group .input-group input[type="number"] {
+    border: 1px solid rgb(192, 217, 223);
+    height: 60px;
+    text-align: left;
+    padding-left: 24px;
+    padding-right: 24px;
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    max-width: calc(100% - 59px);
+}
+
+.classic-zakat-calculator .zakat-calculator-footer {
+    padding: 40px;
+    text-align: center;
+}
+
+.classic-zakat-calculator .zakat-calculator-footer .zakat-total {
+    background-color: #ebf9fc;
+    padding: 15px 20px 20px 20px;
+    font-size: 32px;
+}
+
+.classic-zakat-calculator .zakat-calculator-footer .zakat-total .total-amount {
+    color: var(--classic-color);
+}
+
+@media only screen and (max-width: 1200px) {
+    .classic-zakat-calculator .zakat-form-group {
+        flex-wrap: wrap;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .zakat-label {
+        width: 100%;
+        margin-bottom: 12px;
+        margin-top: 0px;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .zakat-content {
+        width: calc(100% - 50px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    .classic-zakat-calculator .zakat-calculator-footer,
+    .classic-zakat-calculator .zakat-calculator-assets,
+    .classic-zakat-calculator .zakat-calculator-liabilities,
+    .classic-zakat-calculator .zakat-calculator-header {
+        padding: 24px;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .input-group .currency-symbol {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .input-group input[type="number"] {
+        height: 50px !important;
+        max-width: calc(100% - 49px);
+    }
+
+    .classic-zakat-calculator .zakat-calculator-footer .zakat-total {
+        font-size: 18px;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .zakat-toggle-button {
+        width: 28px;
+        height: 28px;
+        min-height: 28px;
+    }
+
+    .classic-zakat-calculator .zakat-form-group .zakat-toggle-button {
+        width: 28px;
+        height: 28px;
+        min-height: 28px;
+        font-size: 11px;
+    }
+    .classic-zakat-calculator .zakat-form-group .zakat-toggle {
+        width: 30px;
+    }
+    .classic-zakat-calculator .zakat-form-group .zakat-content {
+        width: calc(100% - 35px);
+    }
+}

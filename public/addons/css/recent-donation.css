@@ -1,0 +1,257 @@
+.sky-donations-orders {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sky-donations-orders p {
+    margin: 0px;
+}
+
+.sky-donations-orders .sky-order {
+    border-bottom: 1px solid #ededed;
+    color: black;
+    margin: 0px;
+    text-align: center;
+    overflow: hidden;
+    transition: 0.6s;
+}
+
+.sky-donations-orders .sky-order .item-wrap {
+    padding: 10px 0;
+}
+
+.sky-slide-donations .sky-donations-orders .sky-order.hidden-order {
+    opacity: 0;
+    height: 0px;
+    transform: translateY(-20px);
+}
+
+.sky-modal-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.sky-modal-actions .button {
+    width: 100%;
+}
+
+.sky-modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.sky-modal .sky-modal_overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.sky-modal .sky-modal_body {
+    width: 615px;
+    max-width: 100%;
+    max-height: 85vh;
+    background-color: white;
+    border-radius: 16px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sky-modal .sky-modal_header {
+    padding: 15px 20px 15px 20px;
+    border-bottom: 1px solid #ededed;
+    background-color: white;
+}
+
+.sky-modal .sky-modal_header-top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_title {
+    margin: 0px;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_close {
+    margin-left: auto;
+    border: none;
+    background-color: transparent;
+    width: 32px;
+    height: 32px;
+    min-height: inherit;
+    border-radius: 99px;
+    color: black;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_close:hover {
+    background-color: #f7f7f7;
+}
+.sky-modal .sky-modal_header {
+    padding: 20px 20px 15px 20px;
+    border-bottom: 1px solid #ededed;
+}
+
+.sky-modal .sky-modal_header-top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_title {
+    margin: 0px;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_close {
+    margin-left: auto;
+    border: none;
+    background-color: var(--accent-color);
+    width: 32px;
+    height: 32px;
+    min-height: inherit;
+    border-radius: 99px;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.sky-modal .sky-modal_header-top .sky-modal_close:hover {
+    background-color: var(--accent-dark-color);
+    color: white;
+}
+
+.sky-modal .sky-modal_tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.sky-modal .sky-modal_content .sky-modal_tab .sky-recent-donations-list {
+    height: calc(85vh - 215px);
+    overflow: auto;
+}
+
+.sky-modal .sky-modal_footer {
+    padding: 20px;
+    margin-top: auto;
+    background-color: var(--accent-color);
+}
+
+.sky-modal .sky-donations-orders {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+}
+
+.sky-modal .sky-donations-orders .sky-order {
+    padding: 10px 20px;
+    width: 100%;
+}
+
+.sky-modal .sky-modal_tab {
+    display: none;
+}
+
+.sky-modal_tabs .button {
+    border-radius: 99px;
+    background-color: white;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    transition: .3s;
+}
+
+.sky-modal_tabs .button.active,
+.sky-modal_tabs .button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.sky-modal_footer .button {
+    width: 100%;
+    background-color: white;
+    color: var(--accent-color);
+    border-color: white;
+    min-height: 48px;
+    font-size: 16px;
+    border-radius: 99px;
+}
+
+.sky-modal_footer .button:hover {
+    background-color: #e6e6e6;
+    border-color: white;
+    color: var(--accent-color);
+}
+
+.items-loader {
+    text-align: center;
+    color: black;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.sky-modal .sky-modal_header .count-badge {
+    background-color: #e9e9e9;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: black;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+@media only screen and (min-width: 576px) {
+    .sky-modal .sky-donations-orders .sky-order {
+        width: 50%;
+    }
+
+    .sky-modal .sky-donations-orders .sky-order:nth-child(odd) {
+        border-right: 1px solid #ededed;
+        border-left: 1px solid #ededed;
+    }
+    .sky-modal .sky-donations-orders .sky-order:nth-child(even) {
+        border-right: 1px solid #ededed;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .sky-modal .sky-modal_body {
+        max-height: 100vh;
+        height: 100%;
+        border-radius: 0px;
+    }
+    
+    .sky-modal .sky-modal_content .sky-modal_tab .sky-recent-donations-list,
+    .sky-modal .sky-modal_content {
+        max-height: calc(100vh - 205px);
+    }
+
+}
