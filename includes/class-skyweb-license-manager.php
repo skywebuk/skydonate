@@ -236,14 +236,17 @@ class Skyweb_License_Manager {
             );
         }
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $response_body = wp_remote_retrieve_body($response);
+        $body = json_decode($response_body, true);
 
         // Check if JSON decode failed
         if ($body === null) {
+            // Include snippet of response for debugging
+            $snippet = substr(strip_tags($response_body), 0, 100);
             return array(
                 'success' => false,
                 'status' => 'error',
-                'message' => __('Invalid response from license server. Please try again later.', 'skydonate'),
+                'message' => sprintf(__('Invalid response from license server: %s', 'skydonate'), $snippet ?: __('Empty response', 'skydonate')),
             );
         }
 
