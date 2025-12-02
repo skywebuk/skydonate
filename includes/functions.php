@@ -175,21 +175,15 @@ function skyweb_donation_downloadFile($url, $path) {
 }
 
 /**
- * Get the license manager instance
- *
- * @return Skyweb_License_Manager
- */
-function skydonate_license() {
-    return Skyweb_License_Manager::get_instance();
-}
-
-/**
  * Check if license is authenticated (compatible with old system)
  *
  * @return bool
  */
 function license_authenticate() {
-    return skydonate_license()->is_license_valid();
+    if (function_exists('skydonate_license')) {
+        return skydonate_license()->is_license_valid();
+    }
+    return false;
 }
 
 /**
