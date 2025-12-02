@@ -1580,8 +1580,10 @@ input[type=radio]:checked::before {
     font-size: 16px;
     margin: 0;
     max-width: 500px;
-    margin-left: auto;
     margin-right: auto;
+    margin-bottom: 0px;
+    margin-left: auto;
+    display: inline-block;
 }
 
 .license-hero.licensed .hero-subtitle {
@@ -1647,14 +1649,15 @@ input[type=radio]:checked::before {
 
 .license-form .form-group {
     margin-bottom: 24px;
+    flex-direction: column;
 }
 
 .license-form label {
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
     color: #334155;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .input-group {
@@ -1669,6 +1672,10 @@ input[type=radio]:checked::before {
     transform: translateY(-50%);
     color: #94a3b8;
     z-index: 1;
+}
+
+.input-prefix + input#license_key_input {
+    padding-left: 40px;
 }
 
 .license-input {
