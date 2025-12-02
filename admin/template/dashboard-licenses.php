@@ -312,12 +312,12 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showMessage('success', response.data.message || '<?php esc_html_e('License activated successfully!', 'skydonate'); ?>');
+                    showMessage('success', (response.data && response.data.message) || '<?php esc_html_e('License activated successfully!', 'skydonate'); ?>');
                     setTimeout(function() {
                         window.location.reload();
                     }, 1500);
                 } else {
-                    showMessage('error', response.data.message || '<?php esc_html_e('Failed to activate license.', 'skydonate'); ?>');
+                    showMessage('error', (response.data && response.data.message) || '<?php esc_html_e('Failed to activate license.', 'skydonate'); ?>');
                 }
             },
             error: function() {
@@ -347,12 +347,12 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showMessage('success', response.data.message || '<?php esc_html_e('License deactivated.', 'skydonate'); ?>');
+                    showMessage('success', (response.data && response.data.message) || '<?php esc_html_e('License deactivated.', 'skydonate'); ?>');
                     setTimeout(function() {
                         window.location.reload();
                     }, 1500);
                 } else {
-                    showMessage('error', response.data.message || '<?php esc_html_e('Failed to deactivate license.', 'skydonate'); ?>');
+                    showMessage('error', (response.data && response.data.message) || '<?php esc_html_e('Failed to deactivate license.', 'skydonate'); ?>');
                 }
             },
             error: function() {
@@ -380,7 +380,7 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     showMessage('success', '<?php esc_html_e('License is valid and active.', 'skydonate'); ?>');
                 } else {
-                    showMessage('warning', response.data.message || '<?php esc_html_e('License validation issue.', 'skydonate'); ?>');
+                    showMessage('warning', (response.data && response.data.message) || '<?php esc_html_e('License validation issue.', 'skydonate'); ?>');
                 }
             },
             error: function() {
