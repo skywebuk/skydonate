@@ -1663,6 +1663,7 @@ input[type=radio]:checked::before {
 .input-group {
     display: flex;
     position: relative;
+    width: 100%;
 }
 
 .input-prefix {
@@ -1678,8 +1679,9 @@ input[type=radio]:checked::before {
     padding-left: 40px;
 }
 
-.license-input {
+input.license-input {
     width: 100%;
+    max-width: 430px;
     padding: 14px 14px 14px 44px;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
@@ -1687,15 +1689,16 @@ input[type=radio]:checked::before {
     font-family: 'Monaco', 'Consolas', monospace;
     letter-spacing: 0.5px;
     transition: all 0.2s ease;
+    height: inherit;
 }
 
-.license-input:focus {
+input.license-input:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.license-input:read-only {
+input.license-input:read-only {
     background: #f8fafc;
     cursor: default;
 }
