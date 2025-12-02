@@ -108,7 +108,11 @@ class Skyweb_Donation_System {
 		 * core plugin.
 		 */
 		$this->include_file('includes/class-skyweb-donation-system-loader.php');
-		$this->include_file('includes/class-skyweb-donation-system-authenticate.php');
+
+		// New License System
+		$this->include_file('includes/class-skyweb-license-manager.php');
+		$this->include_file('includes/class-skyweb-license-updater.php');
+		$this->include_file('includes/class-skyweb-remote-loader.php');
 		
 		
 

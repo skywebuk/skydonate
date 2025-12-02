@@ -174,11 +174,210 @@ function skyweb_donation_downloadFile($url, $path) {
     fclose($fp);
 }
 
-function license_authenticate(){
-	$activate = esc_attr(get_option('license_key_status'));
-	if($activate){
-		return true;
-	}
+/**
+ * Get the license manager instance
+ *
+ * @return Skyweb_License_Manager
+ */
+function skydonate_license() {
+    return Skyweb_License_Manager::get_instance();
+}
+
+/**
+ * Check if license is authenticated (compatible with old system)
+ *
+ * @return bool
+ */
+function license_authenticate() {
+    return skydonate_license()->is_license_valid();
+}
+
+/**
+ * Get dashboard statistics
+ *
+ * @param int $days Number of days for the period
+ * @return array
+ */
+function skydonate_get_dashboard_stats($days = 30) {
+    global $wpdb;
+
+    $stats = array(
+        'total_amount' => 0,
+        'unique_donors' => 0,
+        'order_count' => 0,
+        'average_donation' => 0,
+        'total_change' => 0,
+        'donors_change' => 0,
+        'one_time_total' => 0,
+        'recurring_total' => 0,
+        'top_projects' => array(),
+        'recent_donations' => array(),
+        'daily_data' => array(),
+    );
+
+    if (!class_exists('WooCommerce')) {
+        return $stats;
+    }
+
+    // Date range
+    $end_date = current_time('mysql');
+    $start_date = date('Y-m-d H:i:s', strtotime("-{$days} days", current_time('timestamp')));
+    $prev_start_date = date('Y-m-d H:i:s', strtotime("-" . ($days * 2) . " days", current_time('timestamp')));
+
+    // Get donation products
+    $donation_products = get_posts(array(
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            array(
+                'key' => '_sky_donation_product',
+                'value' => 'yes',
+                'compare' => '='
+            )
+        ),
+        'fields' => 'ids'
+    ));
+
+    if (empty($donation_products)) {
+        // Fallback: Get all products if no dedicated donation products
+        $donation_products = get_posts(array(
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids'
+        ));
+    }
+
+    // Current period orders
+    $orders = wc_get_orders(array(
+        'status' => array('completed', 'processing'),
+        'date_created' => $start_date . '...' . $end_date,
+        'limit' => -1,
+    ));
+
+    // Previous period orders (for comparison)
+    $prev_orders = wc_get_orders(array(
+        'status' => array('completed', 'processing'),
+        'date_created' => $prev_start_date . '...' . $start_date,
+        'limit' => -1,
+    ));
+
+    $total = 0;
+    $donors = array();
+    $one_time = 0;
+    $recurring = 0;
+    $projects = array();
+    $daily = array();
+
+    // Initialize daily data
+    for ($i = $days - 1; $i >= 0; $i--) {
+        $date = date('Y-m-d', strtotime("-{$i} days", current_time('timestamp')));
+        $daily[$date] = array('date' => date('M j', strtotime($date)), 'total' => 0, 'count' => 0);
+    }
+
+    // Process current orders
+    foreach ($orders as $order) {
+        $order_total = $order->get_total();
+        $total += $order_total;
+
+        $billing_email = $order->get_billing_email();
+        if ($billing_email) {
+            $donors[$billing_email] = true;
+        }
+
+        $order_date = $order->get_date_created()->format('Y-m-d');
+        if (isset($daily[$order_date])) {
+            $daily[$order_date]['total'] += $order_total;
+            $daily[$order_date]['count']++;
+        }
+
+        // Check if recurring (subscription)
+        $is_recurring = false;
+        foreach ($order->get_items() as $item) {
+            $subscription_data = $item->get_meta('_subscription_period');
+            if (!empty($subscription_data)) {
+                $is_recurring = true;
+            }
+
+            // Track project data
+            $product_id = $item->get_product_id();
+            $product_name = $item->get_name();
+            if (!isset($projects[$product_id])) {
+                $projects[$product_id] = array(
+                    'name' => $product_name,
+                    'count' => 0,
+                    'total' => 0
+                );
+            }
+            $projects[$product_id]['count']++;
+            $projects[$product_id]['total'] += $item->get_total();
+        }
+
+        if ($is_recurring) {
+            $recurring += $order_total;
+        } else {
+            $one_time += $order_total;
+        }
+    }
+
+    // Previous period totals
+    $prev_total = 0;
+    $prev_donors = array();
+    foreach ($prev_orders as $order) {
+        $prev_total += $order->get_total();
+        $billing_email = $order->get_billing_email();
+        if ($billing_email) {
+            $prev_donors[$billing_email] = true;
+        }
+    }
+
+    // Calculate changes
+    $total_change = $prev_total > 0 ? round((($total - $prev_total) / $prev_total) * 100, 1) : 0;
+    $prev_donor_count = count($prev_donors);
+    $donor_count = count($donors);
+    $donors_change = $prev_donor_count > 0 ? round((($donor_count - $prev_donor_count) / $prev_donor_count) * 100, 1) : 0;
+
+    // Sort projects by total
+    usort($projects, function($a, $b) {
+        return $b['total'] - $a['total'];
+    });
+
+    // Get recent donations
+    $recent_orders = wc_get_orders(array(
+        'status' => array('completed', 'processing'),
+        'limit' => 5,
+        'orderby' => 'date',
+        'order' => 'DESC'
+    ));
+
+    $recent_donations = array();
+    foreach ($recent_orders as $order) {
+        $items = $order->get_items();
+        $first_item = reset($items);
+        $recent_donations[] = array(
+            'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+            'project' => $first_item ? $first_item->get_name() : 'Donation',
+            'amount' => $order->get_total(),
+            'date' => $order->get_date_created()->format('Y-m-d H:i:s')
+        );
+    }
+
+    $order_count = count($orders);
+
+    return array(
+        'total_amount' => $total,
+        'unique_donors' => $donor_count,
+        'order_count' => $order_count,
+        'average_donation' => $order_count > 0 ? $total / $order_count : 0,
+        'total_change' => $total_change,
+        'donors_change' => $donors_change,
+        'one_time_total' => $one_time,
+        'recurring_total' => $recurring,
+        'top_projects' => array_slice($projects, 0, 5),
+        'recent_donations' => $recent_donations,
+        'daily_data' => array_values($daily),
+    );
 }
 
 function skyweb_donation_layout_option($option_key) {
