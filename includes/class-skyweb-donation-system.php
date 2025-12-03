@@ -127,7 +127,6 @@ class Skyweb_Donation_System {
 		 */
 		$this->include_file( 'admin/class-skyweb-donation-system-admin.php');
 		$this->include_file('admin/class-skyweb-donation-system-settings.php');
-		$this->include_file('admin/class-skyweb-donation-system-update.php');
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
