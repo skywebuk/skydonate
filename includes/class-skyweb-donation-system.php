@@ -108,11 +108,7 @@ class Skyweb_Donation_System {
 		 * core plugin.
 		 */
 		$this->include_file('includes/class-skyweb-donation-system-loader.php');
-
-		// New License System
-		$this->include_file('includes/class-skyweb-license-manager.php');
-		$this->include_file('includes/class-skyweb-license-updater.php');
-		$this->include_file('includes/class-skyweb-remote-loader.php');
+		$this->include_file('includes/class-skyweb-donation-system-authenticate.php');
 		
 		
 
@@ -127,6 +123,7 @@ class Skyweb_Donation_System {
 		 */
 		$this->include_file( 'admin/class-skyweb-donation-system-admin.php');
 		$this->include_file('admin/class-skyweb-donation-system-settings.php');
+		$this->include_file('admin/class-skyweb-donation-system-update.php');
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -299,7 +296,7 @@ class Skyweb_Donation_System {
 				$tmr_classes .= 'notice-error is-dismissible';
 		}
 
-		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . '">';
+		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . 'errorr">';
 		$tmr_notice .= '<p>' . esc_html( $tmr_message ) . '</p>';
 		$tmr_notice .= '</div>';
 

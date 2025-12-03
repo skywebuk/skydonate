@@ -110,7 +110,6 @@ class Skyweb_Extra_Donation_Settings {
         $title      = sanitize_text_field($_POST['title'] ?? '');
         $frequency  = sanitize_text_field($_POST['donation_frequency'] ?? '');
         $name_on_plaque = sanitize_text_field($_POST['name_on_plaque'] ?? '');
-        $start_date = sanitize_text_field($_POST['start_date'] ?? '');
         $end_date   = sanitize_text_field($_POST['end_date'] ?? '');
 
         if (!$product_id || !$amount) {

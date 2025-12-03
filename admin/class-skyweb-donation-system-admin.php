@@ -100,7 +100,7 @@ class Skyweb_Donation_System_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
+		
 		// Replace 'toplevel_page_skydonation' with your actual admin menu slug if different
 		if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonation' ) {
 			// Enqueue WP color picker CSS and JS
@@ -113,19 +113,7 @@ class Skyweb_Donation_System_Admin {
 				true
 			);
 		}
-
-		// Enqueue Chart.js for dashboard
-		$current_page = isset($_GET['page']) ? sanitize_key($_GET['page']) : '';
-		if ($current_page === 'skydonation-dashboard' || $current_page === 'skydonation') {
-			wp_enqueue_script(
-				'chartjs',
-				'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-				[],
-				'4.4.0',
-				true
-			);
-		}
-
+		
 		wp_enqueue_style('select2');
 		wp_enqueue_script('select2');
 		wp_enqueue_script( 'skydonation-admin-script', plugin_dir_url( __FILE__ ) . 'js/admin-script.js', [ 'jquery' ], $this->version, true );
@@ -133,7 +121,7 @@ class Skyweb_Donation_System_Admin {
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'skydonation_settings_nonce' ),
 		]);
-
+	
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/skyweb-donation-system-admin.js', array( 'jquery' ), $this->version, true );
 
 	}
@@ -169,15 +157,15 @@ class Skyweb_Donation_System_Admin {
 			<?php
 			foreach ($sub_menus as $sub_menu) {
 				$page_slug 	= (isset($sub_menu['page_slug']) && !empty($sub_menu['page_slug']))?$sub_menu['page_slug']:'skydonation';
-				$class_attr = isset($sub_menu['class']) ? ' class="' . esc_attr($sub_menu['class']) . '"' : '';
+				$class 		= isset($sub_menu['class'])?'class="'.$sub_menu['class'].'"':'';
 				// Skip if 'valid' is set and the option is not enabled
 				if (isset($sub_menu['valid']) && skyweb_donation_setting_up($sub_menu['valid']) != 1) {
 					continue;
 				}
 			?>
-			<li<?php echo $class_attr; ?>>
-				<a href="<?php echo esc_url(admin_url('admin.php?page='.$page_slug)); ?>"  class="nav-link <?php echo ($current_page == $page_slug ? 'active' : ''); ?>">
-					<?php echo esc_html($sub_menu['page_title']); ?>
+			<li <?php echo $class;?>>
+				<a href="<?php echo admin_url('admin.php?page='.$page_slug); ?>"  class="nav-link <?php echo ($current_page == $page_slug ? 'active' : ''); ?>">
+					<?php echo $sub_menu['page_title']; ?>
 					<?php if($page_slug == 'skydonation-setup'): ?>
 					<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewBox="0 0 401.998 401.998" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><path d="M357.45 190.721c-5.331-5.33-11.8-7.993-19.417-7.993h-9.131v-54.821c0-35.022-12.559-65.093-37.685-90.218C266.093 12.563 236.025 0 200.998 0c-35.026 0-65.1 12.563-90.222 37.688-25.126 25.126-37.685 55.196-37.685 90.219v54.821h-9.135c-7.611 0-14.084 2.663-19.414 7.993-5.33 5.326-7.994 11.799-7.994 19.417V374.59c0 7.611 2.665 14.086 7.994 19.417 5.33 5.325 11.803 7.991 19.414 7.991H338.04c7.617 0 14.085-2.663 19.417-7.991 5.325-5.331 7.994-11.806 7.994-19.417V210.135c.004-7.612-2.669-14.084-8.001-19.414zm-83.363-7.993H127.909v-54.821c0-20.175 7.139-37.402 21.414-51.675 14.277-14.275 31.501-21.411 51.678-21.411 20.179 0 37.399 7.135 51.677 21.411 14.271 14.272 21.409 31.5 21.409 51.675v54.821z" fill="currentColor" opacity="1" data-original="currentColor"></path></g></svg>
 					<?php endif;?>
@@ -192,17 +180,10 @@ class Skyweb_Donation_System_Admin {
 	public function skyweb_donation_system_menu_array($menus){
 		$sub_menus = array(
 			array(
-				'page_title' => esc_html__('Dashboard', 'skydonation'),
-				'menu_title' => esc_html__('Dashboard', 'skydonation'),
-				'capability' => 'manage_options',
-				'page_slug'  => '',
-				'callback'   => 'dashboard_page_content',
-			),
-			array(
 				'page_title' => esc_html__('General', 'skydonation'),
 				'menu_title' => esc_html__('General', 'skydonation'),
 				'capability' => 'manage_options',
-				'page_slug'  => 'skydonation-general',
+				'page_slug'  => '',
 				'callback'   => 'general_page_content',
 			),
 			array(
@@ -302,10 +283,6 @@ class Skyweb_Donation_System_Admin {
 	
     public function general_page_content() {
 		include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/partials/general-settings.php';
-    }
-
-    public function dashboard_page_content() {
-        $this->display_page_content('main');
     }
 	public function skyweb_general_settings_tabs(){
 		$tabs = [
@@ -420,156 +397,18 @@ class Skyweb_Donation_System_Admin {
 
     private function display_page_content( $template ) {
         echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
+            echo '<div class="skydonation-navigation-wrapper">';
+                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/dashboard-tabs.php';
+            echo '</div>';
             echo '<div class="skydonation-content-wrapper">';
                 include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/dashboard-{$template}.php";
             echo '</div>';
         echo '</div>';
     }
 	public function validation_check(){
-		// Use new license manager
-		return skydonate_license()->is_license_valid();
+		 if (Skyweb_Donation_System_Authenticate::setup_update_status(get_option('license_key'))) {
+			 return true;
+		 }
 	}
 
-}
-
-/**
- * License AJAX Handlers
- */
-add_action('wp_ajax_skydonate_activate_license', 'skydonate_ajax_activate_license');
-function skydonate_ajax_activate_license() {
-    if (!check_ajax_referer('skydonate_license_nonce', 'nonce', false)) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'skydonate')));
-    }
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'skydonate')));
-    }
-
-    $license_key = sanitize_text_field($_POST['license_key'] ?? '');
-
-    if (empty($license_key)) {
-        wp_send_json_error(array('message' => __('Please enter a valid license key.', 'skydonate')));
-    }
-
-    $result = skydonate_license()->activate_license($license_key);
-
-    if ($result['success']) {
-        wp_send_json_success(array('message' => $result['message']));
-    } else {
-        wp_send_json_error(array('message' => $result['message']));
-    }
-}
-
-add_action('wp_ajax_skydonate_deactivate_license', 'skydonate_ajax_deactivate_license');
-function skydonate_ajax_deactivate_license() {
-    if (!check_ajax_referer('skydonate_license_nonce', 'nonce', false)) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'skydonate')));
-    }
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'skydonate')));
-    }
-
-    $result = skydonate_license()->deactivate_license();
-
-    if ($result['success']) {
-        wp_send_json_success(array('message' => $result['message']));
-    } else {
-        wp_send_json_error(array('message' => $result['message']));
-    }
-}
-
-add_action('wp_ajax_skydonate_check_license', 'skydonate_ajax_check_license');
-function skydonate_ajax_check_license() {
-    if (!check_ajax_referer('skydonate_license_nonce', 'nonce', false)) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'skydonate')));
-    }
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'skydonate')));
-    }
-
-    // Force revalidation
-    skydonate_license()->clear_cache();
-    $is_valid = skydonate_license()->validate_license();
-
-    if ($is_valid) {
-        wp_send_json_success(array('message' => __('License is valid and active.', 'skydonate')));
-    } else {
-        wp_send_json_error(array('message' => __('License validation failed.', 'skydonate')));
-    }
-}
-
-add_action('wp_ajax_skydonate_get_dashboard_stats', 'skydonate_ajax_get_dashboard_stats');
-function skydonate_ajax_get_dashboard_stats() {
-    if (!check_ajax_referer('skydonate_dashboard_nonce', 'nonce', false)) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'skydonate')));
-    }
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'skydonate')));
-    }
-
-    $period = intval($_POST['period'] ?? 30);
-    $stats = skydonate_get_dashboard_stats($period);
-
-    wp_send_json_success($stats);
-}
-
-add_action('wp_ajax_skydonate_export_donations', 'skydonate_ajax_export_donations');
-function skydonate_ajax_export_donations() {
-    if (!check_ajax_referer('skydonate_analytics_nonce', 'nonce', false)) {
-        wp_send_json_error(array('message' => __('Security check failed.', 'skydonate')));
-    }
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'skydonate')));
-    }
-
-    // Check if pro feature is available
-    if (!skydonate_license()->has_feature('pro_widgets')) {
-        wp_send_json_error(array('message' => __('This feature requires a Pro license.', 'skydonate')));
-    }
-
-    $period = intval($_POST['period'] ?? 30);
-    $format = sanitize_text_field($_POST['format'] ?? 'csv');
-
-    $end_date = current_time('mysql');
-    $start_date = date('Y-m-d H:i:s', strtotime("-{$period} days", current_time('timestamp')));
-
-    $orders = wc_get_orders(array(
-        'status' => array('completed', 'processing'),
-        'date_created' => $start_date . '...' . $end_date,
-        'limit' => -1,
-    ));
-
-    $csv_lines = array();
-    $csv_lines[] = 'Order ID,Date,Donor Name,Email,Project,Amount,Type';
-
-    foreach ($orders as $order) {
-        $items = $order->get_items();
-        foreach ($items as $item) {
-            $subscription_data = $item->get_meta('_subscription_period');
-            $type = !empty($subscription_data) ? 'Recurring' : 'One-time';
-
-            $csv_lines[] = sprintf(
-                '"%s","%s","%s","%s","%s","%s","%s"',
-                $order->get_id(),
-                $order->get_date_created()->format('Y-m-d H:i:s'),
-                $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                $order->get_billing_email(),
-                $item->get_name(),
-                $order->get_total(),
-                $type
-            );
-        }
-    }
-
-    $content = implode("\n", $csv_lines);
-    $filename = 'skydonate-donations-' . date('Y-m-d') . '.csv';
-
-    wp_send_json_success(array(
-        'content' => $content,
-        'filename' => $filename
-    ));
 }
