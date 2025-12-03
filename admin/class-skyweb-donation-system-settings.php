@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 define('MLOG', get_option('master_logedin') === 'active' );
-define('LTUS', get_option('license_key_status') === 'active' );
+define('LTUS', get_option('skydonate_license_status') === 'valid' );
 define('LDIS', LTUS ? '' : 'disabled' );
 
 class SkyDonation_Functions {
