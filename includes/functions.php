@@ -187,6 +187,32 @@ function license_authenticate() {
 }
 
 /**
+ * Get total Gift Aid collected
+ *
+ * @return float
+ */
+function skydonate_get_gift_aid_total() {
+    if (!class_exists('WooCommerce')) {
+        return 0;
+    }
+
+    $orders = wc_get_orders(array(
+        'status' => array('completed', 'processing'),
+        'limit' => -1,
+        'meta_key' => '_gift_aid_enabled',
+        'meta_value' => 'yes',
+    ));
+
+    $total = 0;
+    foreach ($orders as $order) {
+        $total += $order->get_total();
+    }
+
+    // Gift Aid is 25% of the donation amount
+    return $total * 0.25;
+}
+
+/**
  * Get dashboard statistics
  *
  * @param int $days Number of days for the period
