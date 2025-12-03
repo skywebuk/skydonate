@@ -226,6 +226,8 @@ class Skyweb_License_Manager {
             );
         }
 
+        error_log(print_r($response, true));
+
         // Check HTTP status code
         $status_code = wp_remote_retrieve_response_code($response);
         if ($status_code !== 200) {
