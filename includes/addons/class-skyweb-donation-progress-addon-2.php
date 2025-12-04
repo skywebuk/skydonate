@@ -682,7 +682,7 @@ class SkyWeb_Donation_Progress_Addon_2 extends \Elementor\Widget_Base {
                         echo '<circle class="circle" cx="60" cy="60" r="50" style="stroke-dashoffset: 314px;"></circle>';
                         echo '</svg>';
                         // Display 0% initially
-                        echo '<span class="percent">0</span>';
+                        echo '<span class="percent">0%</span>';
                     echo '</div>';
                 echo '</div>'; // row
             echo '</div>';

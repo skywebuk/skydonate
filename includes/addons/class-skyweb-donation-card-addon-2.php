@@ -497,10 +497,10 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         $this->add_control(
             'enable_quick_button',
             [
-                'label' => __('Enable Quick Button', 'skydonate'),
+                'label' => __('Quick Button', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SWITCHER,
-                'label_on' => __('Enable', 'skydonate'),
-                'label_off' => __('Disable', 'skydonate'),
+                'label_on' => __('Show', 'skydonate'),
+                'label_off' => __('Hide', 'skydonate'),
                 'return_value' => 'yes',
                 'default' => 'yes',
             ]
@@ -592,15 +592,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         $this->end_controls_section();
         
         $this->Donation_Form_Button_Control();
-        //
-        // STYLE SECTIONS:
-        //
-        // Donation Card Style, Icon Style, Progress Bar Style, Title Style,
-        // Short Description Style, More Button Style, Quick Button Style
-        //
-        // All these style sections are exactly as you provided,
-        // unchanged. They begin here:
-        //
+
         $this->start_controls_section("donation_card_style_section", [
             "label" => __("Donation Card Style", "skydonate"),
             "tab" => \Elementor\Controls_Manager::TAB_STYLE,
@@ -1574,8 +1566,10 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         $this->end_controls_tabs(); // End Learn More Style Tabs
         $this->end_controls_section(); // End Learn More Style Section
 
+
+        // Quick Button style
         $this->start_controls_section(
-            'quick_button_section',
+            'quick_button_style_section',
             [
                 'label' => __( 'Quick Button', 'skydonate' ),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
@@ -1588,7 +1582,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         $this->start_controls_tabs('quick_button_style_tabs');
         
         // Normal Style Tab
-        $this->start_controls_tab('quick_button_normal_tab', [
+        $this->start_controls_tab('quick_button_normal', [
             'label' => __( 'Normal', 'skydonate' ),
         ]);
         
@@ -1596,7 +1590,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             [
                 'name' => 'quick_button_typography',
-                'selector' => '{{WRAPPER}} .quick-button',
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button',
             ]
         );
         
@@ -1606,19 +1600,17 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button' => 'color: {{VALUE}};',
                 ],
             ]
         );
         
-        $this->add_control(
-            'quick_button_background_color',
+        $this->add_group_control(
+            \Elementor\Group_Control_Background::get_type(),
             [
-                'label' => __( 'Background Color', 'skydonate' ),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .quick-button' => 'background-color: {{VALUE}};',
-                ],
+                'name' => 'quick_button_background',
+                'types' => [ 'classic', 'gradient' ],
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button',
             ]
         );
         
@@ -1626,7 +1618,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'quick_button_border',
-                'selector' => '{{WRAPPER}} .quick-button',
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button',
             ]
         );
         
@@ -1637,7 +1629,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1646,7 +1638,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
                 'name' => 'quick_button_box_shadow',
-                'selector' => '{{WRAPPER}} .quick-button',
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button',
             ]
         );
         
@@ -1657,9 +1649,8 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
-                'separator' => 'before',
             ]
         );
         
@@ -1670,9 +1661,8 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
-                'separator' => 'before',
             ]
         );
 
@@ -1685,6 +1675,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
 			]
 		);
 
+        
         $this->add_control(
             'quick_button_icon_color',
             [
@@ -1707,7 +1698,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             ]
         );
 
-        $this->add_control("quick_button_icon_size", [
+        $this->add_control("quick_donate_icon_size", [
             "label" => __("Size", "skydonate"),
             "type" => \Elementor\Controls_Manager::SLIDER,
             "range" => ["px" => ["max" => 50, "step" => 1]],
@@ -1716,7 +1707,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                     "font-size: {{SIZE}}px",
             ],
         ]);
-        $this->add_control("quick_button_icon_width", [
+        $this->add_control("quick_donate_icon_width", [
             "label" => __("Width", "skydonate"),
             "type" => \Elementor\Controls_Manager::SLIDER,
             "range" => ["px" => ["max" => 50, "step" => 1]],
@@ -1725,7 +1716,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                     "width: {{SIZE}}px",
             ],
         ]);
-        $this->add_control("quick_button_icon_height", [
+        $this->add_control("quick_donate_icon_height", [
             "label" => __("Height", "skydonate"),
             "type" => \Elementor\Controls_Manager::SLIDER,
             "range" => ["px" => ["max" => 50, "step" => 1]],
@@ -1738,7 +1729,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         $this->end_controls_tab(); // End Normal Style Tab
         
         // Hover Style Tab
-        $this->start_controls_tab('quick_button_hover_tab', [
+        $this->start_controls_tab('quick_button_hover', [
             'label' => __( 'Hover', 'skydonate' ),
         ]);
         
@@ -1748,19 +1739,17 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button:hover' => 'color: {{VALUE}};',
                 ],
             ]
         );
         
-        $this->add_control(
-            'quick_button_hover_background_color',
+        $this->add_group_control(
+            \Elementor\Group_Control_Background::get_type(),
             [
-                'label' => __( 'Background Color', 'skydonate' ),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .quick-button:hover' => 'background-color: {{VALUE}};',
-                ],
+                'name' => 'quick_button_hover_background',
+                'types' => [ 'classic', 'gradient' ],
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button:hover',
             ]
         );
         
@@ -1768,7 +1757,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'quick_button_hover_border',
-                'selector' => '{{WRAPPER}} .quick-button:hover',
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button:hover',
             ]
         );
         
@@ -1779,7 +1768,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button:hover' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button:hover' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1788,35 +1777,32 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
                 'name' => 'quick_button_hover_box_shadow',
-                'selector' => '{{WRAPPER}} .quick-button:hover',
+                'selector' => '{{WRAPPER}} .donation-card .donation-content .quick-button:hover',
             ]
         );
         
         $this->add_control(
-            'quick_button_hover_icon_color',
+            'quick_button_hover_transition',
             [
-                'label' => __( 'Icon Color', 'skydonate' ),
-                'type' => \Elementor\Controls_Manager::COLOR,
+                'label' => __( 'Transition Duration', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'max' => 3,
+                        'step' => 0.1,
+                    ],
+                ],
                 'selectors' => [
-                    '{{WRAPPER}} .quick-button:hover .icon' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .donation-card .donation-content .quick-button' => 'transition-duration: {{SIZE}}s',
                 ],
             ]
         );
         
-        $this->add_control(
-            'quick_button_hover_background_icon_color',
-            [
-                'label' => __( 'Icon Background Color', 'skydonate' ),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .quick-button:hover .icon' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
         $this->end_controls_tab(); // End Hover Style Tab
         
         $this->end_controls_tabs(); // End Quick Button Style Tabs
-        $this->end_controls_section(); // End Quick Button Section
+        $this->end_controls_section(); // End Quick Button Style Section
+
     }
     
     protected function render() {
