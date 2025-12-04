@@ -56,7 +56,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
  */
 
 function define_skyweb_donation_system() {
-		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_VERSION', '1.0.65' );
+		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_VERSION', '1.2.0' );
 		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_FILE', __FILE__ );
 		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_BASE', plugin_basename( SKYWEB_DONATION_SYSTEM_FILE));
 		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_DIR_PATH', plugin_dir_path( SKYWEB_DONATION_SYSTEM_FILE) );
@@ -109,7 +109,7 @@ function run_skyweb_donation_system() {
     function skyweb_donation_system_plugin_required_notice(){
         global $current_screen;
         if($current_screen->parent_base == 'plugins'){
-                echo '<div class="error"><p>Sky Web Donation System '.__(' requires WooCommerce to be activated in order to work. Please install and activate <a href="'.admin_url('plugin-install.php?tab=search&type=term&s=WooCommerce').'" target="_blank">WooCommerce</a> first.', 'skyweb-donation-system').'</p></div>';
+                echo '<div class="error"><p>' . esc_html__('SkyDonate requires WooCommerce to be activated in order to work. Please install and activate WooCommerce first.', 'skydonate') . ' <a href="' . esc_url(admin_url('plugin-install.php?tab=search&type=term&s=WooCommerce')) . '" target="_blank">' . esc_html__('Install WooCommerce', 'skydonate') . '</a></p></div>';
         }
     }
     $plugin = plugin_basename(__FILE__);

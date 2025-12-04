@@ -338,8 +338,9 @@ class Skyweb_Donation_System_Admin {
                                 $posted_value = map_deep($_POST[$field_name], 'sanitize_text_field');
                                 update_option($field_name, $posted_value);
                             } else {
-                                if($field['type'] =='wysiwyg'){
-									$posted_value = wp_unslash($_POST[$field_name]);
+                                if($field['type'] == 'wysiwyg'){
+									// Sanitize WYSIWYG content with wp_kses_post to allow safe HTML
+									$posted_value = wp_kses_post(wp_unslash($_POST[$field_name]));
 									update_option($field_name, $posted_value);
 								}else{
 									$posted_value = sanitize_text_field(wp_unslash($_POST[$field_name]));

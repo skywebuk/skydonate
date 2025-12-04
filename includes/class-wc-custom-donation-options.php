@@ -323,39 +323,6 @@ class WC_Custom_Donation_Options {
 
 
     public function skyweb_display_cart_item_custom_data($item_data, $cart_item) {
-        if (false && !empty($cart_item['donation_option']) && $cart_item['donation_option'] === 'Daily') {
-            $start_date = new DateTime($cart_item['start_date']);
-            $end_date = new DateTime($cart_item['end_date']);
-            
-            // Calculate days INCLUDING both start and end date
-            $interval = $start_date->diff($end_date);
-            $days = $interval->days; // Add 1 to include both start and end day
-            
-            // Get the daily price
-            $daily_price = $cart_item['daily_price'] ?? $cart_item['custom_option_price'] ?? 0;
-            $total_price = $daily_price * $days;
-            
-            $item_data[] = [
-                'name'  => __('Daily Donation', 'skydonate'),
-                'value' => sprintf(
-                    '%s × %d days = %s',
-                    wc_price($daily_price),
-                    $days,
-                    wc_price($total_price)
-                )
-            ];
-            
-            $item_data[] = [
-                'name'  => __('Duration', 'skydonate'),
-                'value' => sprintf(
-                    '%s to %s (%d days)',
-                    $start_date->format('M j, Y'),
-                    $end_date->format('M j, Y'),
-                    $days
-                )
-            ];
-        }
-        
         // Display other fields
         if (!empty($cart_item['donation_type'])) {
             $item_data[] = [

@@ -160,23 +160,25 @@ class Skyweb_Donation_Functions {
     
 
     public function load_more_donations() {
+        // Verify nonce for security
+        check_ajax_referer('skyweb_donation_nonce', 'nonce');
+
         $product_ids = isset($_POST['product_ids']) ? json_decode(stripslashes($_POST['product_ids']), true) : [];
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $tab_order_ids = self::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $offset, '');
-        $name_display_option = isset($_POST['namestate']) ? $_POST['namestate'] : 'first_last_initial' ;
-    
-        // Check if 'icon' exists in the POST data and is an array.
+        $name_display_option = isset($_POST['namestate']) ? sanitize_text_field($_POST['namestate']) : 'first_last_initial';
+
+        // Check if 'icon' exists in the POST data and is an array - sanitize icon data
+        $icon_data = [];
         if (isset($_POST['icon']) && is_array($_POST['icon'])) {
-            $icon_data = $_POST['icon']; // Use the array directly.
-        } else {
-            $icon_data = []; // Default to an empty array if 'icon' is not set or invalid.
+            $icon_data = array_map('sanitize_text_field', $_POST['icon']);
         }
     
         ob_start();
         ?>
-        <?php foreach ($tab_order_ids as $order_id): 
+        <?php foreach ($tab_order_ids as $order_id):
             $order = wc_get_order($order_id);
-            $is_anonymous = get_post_meta($order_id, '_anonymous_donation', true);
+            $is_anonymous = $order->get_meta('_anonymous_donation', true);
 
             if ($is_anonymous === '1') {
                 $customer_name = esc_html__('Anonymous', 'skydonate');
@@ -240,7 +242,7 @@ class Skyweb_Donation_Functions {
             'html'  => $html,
             'count' => count($tab_order_ids)
         ]);
-        wp_die();
+        // wp_send_json_success already calls wp_die(), no need to call it again
     }
     
 
@@ -564,6 +566,7 @@ class Skyweb_Donation_Functions {
     }
     
     public static function Get_Taxonomies( $sky_texonomy = 'category' ){
+        $options = array(); // Initialize variable
         $terms = get_terms( array(
             'taxonomy' => $sky_texonomy,
             'hide_empty' => true,
@@ -572,8 +575,8 @@ class Skyweb_Donation_Functions {
             foreach ( $terms as $term ) {
                 $options[ $term->slug ] = $term->name;
             }
-            return $options;
         }
+        return $options; // Always return array
     }
 
     public static function Get_Title( $sky_type = 'post', $return_type = 'ids', $additional_option = [] ) {
@@ -786,6 +789,8 @@ class Skyweb_Donation_Functions {
     }
 
     public function skyweb_load_more_donations() {
+        // Verify nonce for security
+        check_ajax_referer('skyweb_donation_nonce', 'nonce');
 
         // Sanitize inputs
         $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
@@ -838,10 +843,11 @@ class Skyweb_Donation_Functions {
         ob_start();
 
         if (in_array('layout2', $layout)) {
+            $list_icon = isset($_POST['list_icon']) ? wp_kses_post(stripslashes($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
             Skyweb_Donation_Functions::render_recent_donations_item_layout_two(
                 $paged_order_ids,
                 $product_ids,
-                stripslashes($_POST['list_icon'])
+                $list_icon
             );
         } else {
             Skyweb_Donation_Functions::render_recent_donations_item_layout_one(
@@ -883,7 +889,7 @@ class Skyweb_Donation_Functions {
             }
 
             $donation_amount = esc_html(number_format($donation_amount, 0));
-            $is_anonymous = get_post_meta($order_id, '_anonymous_donation', true);
+            $is_anonymous = $order->get_meta('_anonymous_donation', true);
 
             $customer_name = ($is_anonymous === '1')
                 ? esc_html__('Anonymous', 'skydonate')
@@ -936,7 +942,7 @@ class Skyweb_Donation_Functions {
             }
             $donation_amount = esc_html(number_format($donation_amount, 0));
             $currency_symbol = esc_html(get_woocommerce_currency_symbol($order->get_currency()));
-            $is_anonymous = get_post_meta($order_id, '_anonymous_donation', true);
+            $is_anonymous = $order->get_meta('_anonymous_donation', true);
             $customer_name = ($is_anonymous === '1')
                 ? esc_html__('Anonymous', 'skydonate')
                 : esc_html(
