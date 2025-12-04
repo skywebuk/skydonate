@@ -36,6 +36,17 @@ class Skyweb_Donation_System_Admin {
             );
         }
 
+        // Chart.js for Analytics Dashboard
+        if ( isset($_GET['page']) && $_GET['page'] === 'skydonation-analytics' ) {
+            wp_enqueue_script(
+                'chartjs',
+                'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+                [],
+                '4.4.1',
+                true
+            );
+        }
+
         wp_enqueue_style( 'select2' );
         wp_enqueue_script( 'select2' );
 
@@ -112,6 +123,13 @@ class Skyweb_Donation_System_Admin {
     public function skyweb_donation_system_menu_array( $menus ) {
 
         return [
+            [
+                'page_title' => esc_html__( 'Analytics', 'skydonation' ),
+                'menu_title' => esc_html__( 'Analytics', 'skydonation' ),
+                'capability' => 'manage_options',
+                'page_slug'  => 'skydonation-analytics',
+                'callback'   => 'analytics_page_content',
+            ],
             [
                 'page_title' => esc_html__( 'General', 'skydonation' ),
                 'menu_title' => esc_html__( 'General', 'skydonation' ),
@@ -222,6 +240,7 @@ class Skyweb_Donation_System_Admin {
     /**
      * Page templates loader
      */
+    public function analytics_page_content() { $this->display_page_content('analytics'); }
     public function api_page_content() { $this->display_page_content('api'); }
     public function general_page_content() { $this->display_page_content('general'); }
     public function donation_fees_page_content() { $this->display_page_content('donation-fees'); }

@@ -30,6 +30,7 @@ class Skyweb_Donation_System {
 
 		$this->include_file('admin/class-skyweb-donation-system-admin.php');
 		$this->include_file('admin/class-skyweb-donation-system-settings.php');
+		$this->include_file('admin/class-skyweb-donation-dashboard.php');
 
 		$this->include_file('public/class-skyweb-donation-system-public.php');
 

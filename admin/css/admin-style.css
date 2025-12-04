@@ -1465,3 +1465,490 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         padding: var(--sky-space-4) !important;
     }
 }
+
+/* ============================================
+   Analytics Dashboard Styles
+   ============================================ */
+.sky-dashboard-wrap {
+    max-width: 1600px;
+}
+
+/* Dashboard Header */
+.sky-dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sky-space-4);
+    margin-bottom: var(--sky-space-6);
+}
+
+.sky-dashboard-title h1 {
+    font-size: var(--sky-font-size-2xl);
+    font-weight: 700;
+    color: var(--sky-gray-900);
+    margin: 0 0 var(--sky-space-1) 0;
+}
+
+.sky-dashboard-title p {
+    font-size: var(--sky-font-size-sm);
+    color: var(--sky-gray-500);
+    margin: 0;
+}
+
+.sky-dashboard-actions {
+    display: flex;
+    gap: var(--sky-space-3);
+}
+
+.sky-select {
+    padding: var(--sky-space-2) var(--sky-space-4);
+    padding-right: 2.5rem;
+    font-size: var(--sky-font-size-sm);
+    font-weight: 500;
+    color: var(--sky-gray-700);
+    background-color: white;
+    border: 1px solid var(--sky-gray-300);
+    border-radius: var(--sky-radius-lg);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    transition: var(--sky-transition-fast);
+}
+
+.sky-select:focus {
+    outline: none;
+    border-color: var(--sky-primary);
+    box-shadow: 0 0 0 3px var(--sky-primary-light);
+}
+
+/* Stats Grid */
+.sky-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sky-space-4);
+    margin-bottom: var(--sky-space-6);
+}
+
+.sky-stat-card {
+    background: white;
+    border: 1px solid var(--sky-gray-200);
+    border-radius: var(--sky-radius-xl);
+    padding: var(--sky-space-5);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sky-space-4);
+    transition: var(--sky-transition);
+}
+
+.sky-stat-card:hover {
+    box-shadow: var(--sky-shadow-md);
+    border-color: var(--sky-gray-300);
+}
+
+.sky-stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--sky-radius-lg);
+    flex-shrink: 0;
+}
+
+.sky-stat-icon.total {
+    background-color: var(--sky-primary-light);
+    color: var(--sky-primary);
+}
+
+.sky-stat-icon.count {
+    background-color: var(--sky-accent-light);
+    color: var(--sky-accent);
+}
+
+.sky-stat-icon.donors {
+    background-color: var(--sky-success-light);
+    color: var(--sky-success);
+}
+
+.sky-stat-icon.average {
+    background-color: var(--sky-warning-light);
+    color: var(--sky-warning);
+}
+
+.sky-stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sky-space-1);
+}
+
+.sky-stat-label {
+    font-size: var(--sky-font-size-xs);
+    font-weight: 500;
+    color: var(--sky-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sky-stat-value {
+    font-size: var(--sky-font-size-2xl);
+    font-weight: 700;
+    color: var(--sky-gray-900);
+    line-height: 1.2;
+}
+
+.sky-stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sky-space-1);
+    font-size: var(--sky-font-size-xs);
+    font-weight: 600;
+}
+
+.sky-stat-change.positive {
+    color: var(--sky-success);
+}
+
+.sky-stat-change.negative {
+    color: var(--sky-error);
+}
+
+.sky-stat-sub {
+    font-size: var(--sky-font-size-xs);
+    color: var(--sky-gray-400);
+}
+
+/* Charts Row */
+.sky-charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--sky-space-4);
+    margin-bottom: var(--sky-space-4);
+}
+
+.sky-charts-row:nth-child(even) {
+    grid-template-columns: 1fr 1fr;
+}
+
+.sky-chart-card {
+    background: white;
+    border: 1px solid var(--sky-gray-200);
+    border-radius: var(--sky-radius-xl);
+    overflow: hidden;
+}
+
+.sky-chart-card.sky-chart-large {
+    grid-column: span 1;
+}
+
+.sky-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sky-space-5);
+    border-bottom: 1px solid var(--sky-gray-100);
+}
+
+.sky-chart-header h3 {
+    font-size: var(--sky-font-size-base);
+    font-weight: 600;
+    color: var(--sky-gray-800);
+    margin: 0;
+}
+
+.sky-chart-legend {
+    display: flex;
+    gap: var(--sky-space-4);
+}
+
+.sky-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sky-space-2);
+    font-size: var(--sky-font-size-xs);
+    color: var(--sky-gray-500);
+}
+
+.sky-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--sky-radius-full);
+}
+
+.sky-legend-item.amount .sky-legend-dot {
+    background-color: var(--sky-primary);
+}
+
+.sky-legend-item.count .sky-legend-dot {
+    background-color: var(--sky-accent);
+}
+
+.sky-chart-body {
+    padding: var(--sky-space-5);
+    height: 300px;
+    position: relative;
+}
+
+/* Tables Row */
+.sky-tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sky-space-4);
+    margin-bottom: var(--sky-space-4);
+}
+
+.sky-table-card,
+.sky-full-table-card {
+    background: white;
+    border: 1px solid var(--sky-gray-200);
+    border-radius: var(--sky-radius-xl);
+    overflow: hidden;
+}
+
+.sky-full-table-card {
+    grid-column: span 2;
+}
+
+.sky-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sky-space-5);
+    border-bottom: 1px solid var(--sky-gray-100);
+}
+
+.sky-table-header h3 {
+    font-size: var(--sky-font-size-base);
+    font-weight: 600;
+    color: var(--sky-gray-800);
+    margin: 0;
+}
+
+.sky-view-all {
+    font-size: var(--sky-font-size-sm);
+    font-weight: 500;
+    color: var(--sky-primary);
+    text-decoration: none;
+    transition: var(--sky-transition-fast);
+}
+
+.sky-view-all:hover {
+    color: var(--sky-primary-hover);
+    text-decoration: underline;
+}
+
+.sky-table-body {
+    padding: 0;
+}
+
+.sky-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sky-data-table thead th {
+    font-size: var(--sky-font-size-xs);
+    font-weight: 600;
+    color: var(--sky-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--sky-space-3) var(--sky-space-5);
+    text-align: left;
+    background-color: var(--sky-gray-50);
+    border-bottom: 1px solid var(--sky-gray-200);
+}
+
+.sky-data-table tbody td {
+    padding: var(--sky-space-4) var(--sky-space-5);
+    font-size: var(--sky-font-size-sm);
+    color: var(--sky-gray-700);
+    border-bottom: 1px solid var(--sky-gray-100);
+    vertical-align: middle;
+}
+
+.sky-data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sky-data-table tbody tr:hover {
+    background-color: var(--sky-gray-50);
+}
+
+.sky-donor-info {
+    display: flex;
+    align-items: center;
+    gap: var(--sky-space-3);
+}
+
+.sky-donor-avatar {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--sky-primary-light) 0%, var(--sky-accent-light) 100%);
+    color: var(--sky-primary);
+    font-weight: 600;
+    font-size: var(--sky-font-size-sm);
+    border-radius: var(--sky-radius-full);
+    flex-shrink: 0;
+}
+
+.sky-donor-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sky-donor-name {
+    font-weight: 500;
+    color: var(--sky-gray-800);
+}
+
+.sky-donor-email {
+    font-size: var(--sky-font-size-xs);
+    color: var(--sky-gray-500);
+}
+
+.sky-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 var(--sky-space-2);
+    background-color: var(--sky-gray-100);
+    color: var(--sky-gray-600);
+    font-size: var(--sky-font-size-xs);
+    font-weight: 600;
+    border-radius: var(--sky-radius-full);
+}
+
+.sky-time-ago {
+    font-size: var(--sky-font-size-xs);
+    color: var(--sky-gray-500);
+}
+
+.sky-empty-state {
+    text-align: center;
+    color: var(--sky-gray-400);
+    padding: var(--sky-space-8) !important;
+}
+
+/* Campaign Table */
+.sky-campaign-table thead th:last-child {
+    width: 200px;
+}
+
+.sky-campaign-link {
+    font-weight: 500;
+    color: var(--sky-gray-800);
+}
+
+.sky-campaign-link:hover {
+    color: var(--sky-primary);
+}
+
+.sky-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--sky-gray-200);
+    border-radius: var(--sky-radius-full);
+    overflow: hidden;
+}
+
+.sky-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky-primary) 0%, var(--sky-accent) 100%);
+    border-radius: var(--sky-radius-full);
+    transition: width 0.5s ease-out;
+}
+
+/* Dashboard Responsive */
+@media screen and (max-width: 1200px) {
+    .sky-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sky-charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sky-charts-row:nth-child(even) {
+        grid-template-columns: 1fr;
+    }
+
+    .sky-chart-card.sky-chart-large {
+        grid-column: span 1;
+    }
+
+    .sky-tables-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sky-full-table-card {
+        grid-column: span 1;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .sky-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sky-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sky-stat-card {
+        padding: var(--sky-space-4);
+    }
+
+    .sky-stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sky-stat-value {
+        font-size: var(--sky-font-size-xl);
+    }
+
+    .sky-chart-body {
+        height: 250px;
+    }
+
+    .sky-data-table thead th,
+    .sky-data-table tbody td {
+        padding: var(--sky-space-3);
+    }
+
+    .sky-donor-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--sky-space-2);
+    }
+
+    .sky-campaign-table thead th:last-child {
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .sky-dashboard-title h1 {
+        font-size: var(--sky-font-size-xl);
+    }
+
+    .sky-chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--sky-space-2);
+    }
+
+    .sky-data-table {
+        font-size: var(--sky-font-size-xs);
+    }
+}
