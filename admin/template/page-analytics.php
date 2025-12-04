@@ -14,7 +14,7 @@ $countries = Skyweb_Donation_Dashboard::get_donations_by_country( 8 );
 $distribution = Skyweb_Donation_Dashboard::get_donation_distribution();
 $top_donors = Skyweb_Donation_Dashboard::get_top_donors( 5 );
 $recent_donations = Skyweb_Donation_Dashboard::get_recent_donations( 5 );
-$currency_symbol = get_woocommerce_currency_symbol();
+$currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( get_option('woocommerce_currency') ) );
 
 // Prepare chart data
 $monthly_labels = wp_json_encode( array_column( $monthly_data, 'label' ) );
