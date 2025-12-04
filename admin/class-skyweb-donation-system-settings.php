@@ -9,26 +9,19 @@ class SkyDonation_Functions {
     
     public function __construct() {
        if(LTUS){
-           // add_action( 'wp_ajax_skydonation_setup_general_settings', [ $this, 'skydonation_setup_general_settings' ] );
             add_action( 'wp_ajax_skydonation_general_settings', [ $this, 'skydonation_general_settings' ] );
             add_action( 'wp_ajax_skydonation_currency_changer_settings', [ $this, 'skydonation_currency_changer_settings' ] );
             add_action( 'wp_ajax_skydonation_advanced_settings', [ $this, 'skydonation_advanced_settings' ] );
-            add_action( 'wp_ajax_skydonation_setup_options_settings', [ $this, 'skydonation_setup_options_settings' ] );
             add_action( 'wp_ajax_skydonation_widget_save_setting', [ $this, 'skydonation_widget_save_setting' ] );
-            add_action( 'wp_ajax_skydonation_widget_setup_setting', [ $this, 'skydonation_widget_setup_setting' ] );
             add_action( 'wp_ajax_skydonation_fees_settings', [ $this, 'skydonation_fees_settings' ] );
             add_action( 'wp_ajax_save_skyweb_gift_aid_settings', [ $this, 'save_skyweb_gift_aid_settings' ] );
             add_action( 'wp_ajax_save_address_autoload_settings', [ $this, 'save_address_autoload_settings' ] );
             add_action( 'wp_ajax_save_skydonation_color_settings', [ $this, 'save_skydonation_color_settings' ] );
             add_action( 'wp_ajax_skydonation_api_settings', [ $this, 'skydonation_api_settings' ] );
-            add_action( 'wp_ajax_skydonation_setup_fees_settings', [ $this, 'skydonation_setup_fees_settings' ] );
-            add_action( 'wp_ajax_skydonation_setup_notification_settings', [ $this, 'skydonation_setup_notification_settings' ] );
             add_action( 'wp_ajax_skydonation_notification_settings', [ $this, 'save_notification_settings' ] );
-            add_action( 'wp_ajax_skydonation_login_settings', [ $this, 'skydonation_login_settings' ] );
 	   }
-        add_action( 'wp_ajax_skydonation_license_settings', [ $this, 'save_license_settings' ] );
+       
         add_action('wp_logout', [$this, 'skydonation_update_master_logged_out']);
-        add_action('admin_init', [$this, 'check_and_update_master_status']);
 
 
         add_action( 'wp_ajax_skydonation_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
@@ -65,111 +58,6 @@ class SkyDonation_Functions {
     }
 
     
-
-    public function check_and_update_master_status() {
-        if (!isset($_GET['page']) || $_GET['page'] !== 'skydonation-setup') {
-            update_option('master_logedin', 'inactive');
-        }
-    }
-
-    public function skydonation_update_master_logged_out() {
-        update_option('master_logedin', 'inactive');
-    }
-
-
-    public function skydonation_login_settings() {
-
-        // Verify nonce for security
-       if (!isset($_POST['save_sky_donation_settings']) || !wp_verify_nonce($_POST['save_sky_donation_settings'], 'sky_donation_nonce')) {
-			wp_send_json_error(__('Nonce verification failed.', 'skydonation'));
-			return;
-		}
-    
-        // Parse form data sent via AJAX
-        $formData = $_POST['formData'] ?? array();
-    
-        // Initialize a mapping for received values
-        $data = array_column($formData, 'value', 'name');
-    
-        // Sanitize input data
-        $username = isset($data['username']) ? wp_kses_post($data['username']) : '';
-        $password = isset($data['password']) ? wp_kses_post($data['password']) : '';
-    
-        // Check for missing username or password
-        if ( empty($username) ) {
-            wp_send_json_error(__('Empty Username.', 'skydonation'));
-        } elseif ( empty($password) ) {
-            wp_send_json_error(__('Empty Password.', 'skydonation'));
-        }
-    
-        // Authenticate user
-        $isAuthenticated = Skyweb_Donation_System_Authenticate::authenticateUser($username, $password);
-    
-        if ($isAuthenticated) {
-            // Check if user is logged in and has the required permissions
-            if ( is_user_logged_in() ) {
-                if ( current_user_can('administrator')) {
-                    update_option('master_logedin', 'active');
-                    
-                    // Instead of wp_redirect(), return the URL in the response
-                    wp_send_json_success(array(
-                        'message' => __('Successfully logged in!', 'skydonation'),
-                        'redirect_url' => admin_url('admin.php?page=skydonation-setup')
-                    ));
-                } else {
-                    wp_send_json_error(__('You are not an administrator.', 'skydonation'));
-                }
-            } else {
-                update_option('master_logedin', 'inactive');
-            }
-        } else {
-            wp_send_json_error(__('You are not authorized.', 'skydonation'));
-        }
-    }
-    
-    
-    
-   
-
-   
-
-    public function skydonation_setup_general_settings() {
-        // Verify nonce for security
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Parse form data sent via AJAX
-        $formData = $_POST['formData'] ?? array();
-    
-        // Specify the allowed keys that you want to save
-        $allowed_keys = array(
-            'setup_enable_sky_donations_module',
-            'setup_enable_custom_login_form',
-            'setup_checkout_custom_field_style',
-            'setup_recent_donation_list_with_country',
-            'setup_auto_complete_processing',
-            'setup_enable_donation_goal',
-            'setup_enable_title_prefix'
-        );
-    
-        // Initialize a mapping for received values
-        $received_data = array_column($formData, 'value', 'name');
-    
-        // Iterate over allowed keys to update options
-        foreach ($allowed_keys as $key) {
-            $value = isset($received_data[$key]) ? wp_kses_post($received_data[$key]) : null;
-            update_option($key, $value);
-        }
-    
-        // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
-    }
-
     public function skydonation_advanced_settings() {
         // Initialize the array for title prefixes
         $select_title_prefix = array();
@@ -345,119 +233,6 @@ class SkyDonation_Functions {
         wp_send_json_success(__('Currency settings saved successfully.', 'skydonation'));
     }
 
-
-
-    public function skydonation_setup_options_settings() {
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Initialize $formData with posted data or empty array if not set
-        $formData = $_POST['formData'] ?? array();
-    
-        // Initialize an array to hold all values
-        $settings_data = array();
-
-    
-        // Iterate over form data
-        foreach ($formData as $item) {
-            if (isset($item['name'], $item['value'])) {
-                $value = $item['value'];
-                if (!empty($value)) {
-                    // Save each item as an array value using its name as the key
-                    $settings_data[$item['name']][] = $value;
-                }
-            }
-        }
-        
-        // Allowed keys for specific settings
-        $allowed_keys = array(
-            'select_card_layouts',
-            'addons_card_layout',
-            'addons_donation_form_layout',
-            'recent_donation_layout',
-            'progress_bar_layout'
-        );
-    
-        // Update options for each allowed key
-        foreach ($allowed_keys as $key) {
-            if (isset($settings_data[$key])) {
-                update_option($key, $settings_data[$key]);
-            }
-        }
-    
-        // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
-    }
-    
-    
-
-    public function skydonation_setup_notification_settings() {
-        // Verify nonce for security
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Parse form data sent via AJAX
-        $formData = $_POST['formData'] ?? array();
-    
-        // Specify the allowed keys that you want to save
-        $allowed_keys = array(
-            'setup_enable_notification',
-        );
-    
-        // Initialize a mapping for received values
-        $received_data = array_column($formData, 'value', 'name');
-    
-        // Iterate over allowed keys to update options
-        foreach ($allowed_keys as $key) {
-            $value = isset($received_data[$key]) ? wp_kses_post($received_data[$key]) : null;
-            update_option($key, $value);
-        }
-    
-        // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
-    }
-
-    public function skydonation_setup_fees_settings() {
-        // Verify nonce for security
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Parse form data sent via AJAX
-        $formData = $_POST['formData'] ?? array();
-    
-        // Specify the allowed keys that you want to save
-        $allowed_keys = array(
-            'setup_enable_donation_fees',
-        );
-    
-        // Initialize a mapping for received values
-        $received_data = array_column($formData, 'value', 'name');
-    
-        // Iterate over allowed keys to update options
-        foreach ($allowed_keys as $key) {
-            $value = isset($received_data[$key]) ? wp_kses_post($received_data[$key]) : null;
-            update_option($key, $value);
-        }
-    
-        // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
-    }
-    
     public function skydonation_fees_settings() {
         // Verify nonce for security
         check_ajax_referer('skydonation_settings_nonce', 'nonce');
@@ -713,73 +488,6 @@ class SkyDonation_Functions {
         }
         exit;
     }
-    public function skydonation_widget_setup_setting() {
-        // Check the AJAX nonce for security
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Get and sanitize the posted data
-        $widgets = isset($_POST['setup_widgets']) ? $_POST['setup_widgets'] : [];
-        if (!empty($widgets) && is_array($widgets)) {
-            // Sanitize each element
-            $sanitized_widgets = array_map('wp_kses_post', $widgets);
-            // Update the option with sanitized data
-            update_option('skydonation_widgets_setup', $sanitized_widgets);
-            wp_send_json_success(__('Settings saved successfully!', 'skydonation'));
-        } else {
-            wp_send_json_error(__('Nothing to save.', 'skydonation'));
-        }
-        exit;
-    }
-
-    public function save_license_settings() {
-        check_ajax_referer('skydonation_settings_nonce', 'nonce');
-
-        // Check user capability
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
-            return;
-        }
-
-        // Parse form data sent via AJAX
-        $formData = isset($_POST['formdata']) ? $_POST['formdata'] : array();
-    
-        // Transform formData from serialized to associative array
-        $form_data_assoc = [];
-        foreach ($formData as $item) {
-            if (isset($item['name']) && isset($item['value'])) {
-                $form_data_assoc[$item['name']] = $item['value'];
-            }
-        }
-
-        $license_key = isset($form_data_assoc['license_key']) ? wp_kses_post($form_data_assoc['license_key']) : '';
-        $status = isset($form_data_assoc['status']) ? wp_kses_post($form_data_assoc['status']) : '';
-    
-        // Handle license activation or deactivation based on 'status'
-        if ($status === 'active' && !empty($license_key)) {
-            if (Skyweb_Donation_System_Authenticate::setup_update_status($license_key)) {
-				update_option('license_key_status', 'active');
-				update_option('license_key', $license_key);
-                wp_send_json_success(__('License activated successfully.', 'skydonation'));
-            } else {
-                wp_send_json_error(__('Invalid license key.', 'skydonation'));
-            }
-        } elseif ($status === 'deactive') {
-            delete_option('license_key_status');
-            delete_option('license_key');
-    
-            wp_send_json_success(__('License deactivated successfully.', 'skydonation'));
-        } else {
-            // If no valid data is provided, return an error response
-            wp_send_json_error(__('Nothing to save. Please check your input.', 'skydonation'));
-        }
-    }
-
 }
 
 new SkyDonation_Functions();

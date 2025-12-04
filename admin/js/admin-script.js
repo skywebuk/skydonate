@@ -158,91 +158,6 @@
             tokenSeparators: [',', ' ']
         });
 
-        $('.skydonation-licenses-form').on('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Serialize form data into an array of objects
-            var formdata = $(this).serializeArray();
-        
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_license_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formdata: formdata // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-        
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-        
-                    // After success, reload this page
-                    if (response.success) {
-                        location.reload(); // Reloads the current document
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-
-
-        $('.skydonation-general-form-setup').on('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Serialize form data into an array of objects
-            var formData = $(this).serializeArray();
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_setup_general_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formData: formData // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-
-
         $('.skydonation-general-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             // Serialize form data into an array of objects
@@ -356,90 +271,6 @@
             });
         });
 
-
-        $('.skydonation-setup-options-form').on('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Serialize form data into an array of objects
-            var formData = $(this).serializeArray();
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_setup_options_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formData: formData // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-
-
-        $('.skydonation-donation-fees-form-setup').on('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Serialize form data into an array of objects
-            var formData = $(this).serializeArray();
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_setup_fees_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formData: formData // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-
-                    // After success, reload this page
-                    if (response.success) {
-                        location.reload(); // Reloads the current document
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-
-
         
         $('.skydonation-donation-fees-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
@@ -479,8 +310,6 @@
             });
         });
 
-
-        
         $('.skyweb-address-autoload-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
@@ -518,8 +347,6 @@
                 }
             });
         });
-
-
 
         $('.skydonation-colors-form').on('submit', function(e) {
             e.preventDefault();
@@ -590,9 +417,6 @@
             });
         });
 
-
-
-
         $('.skydonation-api-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
@@ -631,57 +455,6 @@
             });
         });
 
-        
-        $('#setup-login-form').on('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-        
-            // Disable the submit button and add loading class
-            var submitButton = $(this).find('button[type="submit"]'); // Adjust selector as needed
-            submitButton.prop('disabled', true).addClass('loading'); // Disable button and add loading class
-            
-            // Serialize form data into an array of objects
-            var formData = $(this).serializeArray();
-        
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_login_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formData: formData // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data.message || response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-        
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-        
-                    // If there's a redirect URL in the response, redirect the user
-                    if (response.success && response.data.redirect_url) {
-                        window.location.href = response.data.redirect_url; // Perform the redirection
-                    }
-        
-                    // Re-enable the submit button and remove loading class
-                    submitButton.prop('disabled', false).removeClass('loading');
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-        
-                    // Re-enable the submit button and remove loading class in case of error
-                    submitButton.prop('disabled', false).removeClass('loading');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-        
         $('.skydonation-extra-donation-form').on('submit', function (e) {
             e.preventDefault();
 
@@ -745,9 +518,6 @@
             });
         });
 
-
-
-
         $('.skydonation-notification-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
@@ -786,88 +556,6 @@
                 }
             });
         });
-
-        $('.skydonation-notification-form-setup').on('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Serialize form data into an array of objects
-            var formData = $(this).serializeArray();
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-            // AJAX request to handle form submission
-            $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
-                method: 'POST', // Use POST method
-                data: {
-                    action: 'skydonation_setup_notification_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
-                    formData: formData // Form data
-                },
-                success: function (response) {
-                    // Check the response and display a message
-                    let messageText = response.success 
-                        ? response.data
-                        : `Error: ${response.data}`;
-                    let messageColor = response.success ? 'green' : 'red';
-
-                    // Call the display message function
-                    displayTemporaryMessage(messageText, messageColor);
-                    // After success, reload this page
-                    if (response.success) {
-                        location.reload(); // Reloads the current document
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Display AJAX error message
-                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-
-        
-        $('.skydonation-setup-widget-form').on('submit', function(e) {
-            e.preventDefault();
-
-            let setup_widgets = {};
-            // Collect widgets from checkboxes
-            $('.skydonation-widgets input[type="checkbox"]').each(function() {
-                setup_widgets[$(this).attr('id')] = $(this).is(':checked') ? 'on' : 'off';
-            });
-
-
-            // Add loading state
-            var $btn = $('.skydonation-button');
-            $btn.addClass('loading').prop('disabled', true);
-
-
-            // AJAX request to save widgets
-            $.ajax({
-                url: skydonation_setting.ajax_url,
-                method: 'POST',
-                data: {
-                    action: 'skydonation_widget_setup_setting',
-                    nonce: skydonation_setting.nonce,
-                    setup_widgets: setup_widgets,
-                },
-                success: function(response) {
-                    let messageText = response.success ? response.data : 'Error: ' + response.data;
-                    let messageColor = response.success ? 'green' : 'red';
-                    displayTemporaryMessage(messageText, messageColor);
-                },
-                error: function(xhr, status, error) {
-                    displayTemporaryMessage('AJAX Error: ' + error, 'red');
-                },
-                complete: function () {
-                    $btn.removeClass('loading').prop('disabled', false);
-                }
-            });
-        });
-        
         
         $('.skydonation-widget-form').on('submit', function(e) {
             e.preventDefault();
