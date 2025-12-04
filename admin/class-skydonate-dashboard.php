@@ -223,7 +223,7 @@ class Skyweb_Donation_Dashboard {
         global $wpdb;
 
         $currency_code = get_option('woocommerce_currency');
-        $currency = get_woocommerce_currency_symbol($currency_code);
+        $currency = html_entity_decode( get_woocommerce_currency_symbol( $currency_code ) );
 
         $ranges = [
             [ 'min' => 0, 'max' => 10, 'label' => $currency . '0-10' ],
