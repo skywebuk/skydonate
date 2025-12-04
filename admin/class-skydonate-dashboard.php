@@ -222,14 +222,16 @@ class Skyweb_Donation_Dashboard {
     public static function get_donation_distribution() {
         global $wpdb;
 
+        $currency = get_woocommerce_currency_symbol();
+
         $ranges = [
-            [ 'min' => 0, 'max' => 10, 'label' => '£0-10' ],
-            [ 'min' => 10, 'max' => 25, 'label' => '£10-25' ],
-            [ 'min' => 25, 'max' => 50, 'label' => '£25-50' ],
-            [ 'min' => 50, 'max' => 100, 'label' => '£50-100' ],
-            [ 'min' => 100, 'max' => 250, 'label' => '£100-250' ],
-            [ 'min' => 250, 'max' => 500, 'label' => '£250-500' ],
-            [ 'min' => 500, 'max' => 999999, 'label' => '£500+' ],
+            [ 'min' => 0, 'max' => 10, 'label' => $currency . '0-10' ],
+            [ 'min' => 10, 'max' => 25, 'label' => $currency . '10-25' ],
+            [ 'min' => 25, 'max' => 50, 'label' => $currency . '25-50' ],
+            [ 'min' => 50, 'max' => 100, 'label' => $currency . '50-100' ],
+            [ 'min' => 100, 'max' => 250, 'label' => $currency . '100-250' ],
+            [ 'min' => 250, 'max' => 500, 'label' => $currency . '250-500' ],
+            [ 'min' => 500, 'max' => 999999, 'label' => $currency . '500+' ],
         ];
 
         $data = [];
