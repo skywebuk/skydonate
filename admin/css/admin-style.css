@@ -545,7 +545,7 @@ input[type="radio"]:checked::before {
     align-items: center;
     justify-content: center;
     gap: var(--sky-space-2);
-    padding: var(--sky-space-3) var(--sky-space-6);
+    padding: var(--sky-space-4) var(--sky-space-6);
     font-size: var(--sky-font-size-sm);
     font-weight: 600;
     font-family: var(--sky-font-family);
@@ -650,7 +650,8 @@ input[type="radio"]:checked::before {
     flex-wrap: wrap;
     padding: 0;
     margin: 0 0 var(--sky-space-8) 0;
-    border: none;
+    padding-bottom: var(--sky-space-3);
+    border-bottom: 1px solid var(--sky-gray-200);
     gap: var(--sky-space-3);
 }
 

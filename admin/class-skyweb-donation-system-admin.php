@@ -78,6 +78,7 @@ class Skyweb_Donation_System_Admin {
         );
 
         do_action( 'skyweb_donation_system_menus', $parent_slug );
+
     }
 
     /**
@@ -237,10 +238,10 @@ class Skyweb_Donation_System_Admin {
             echo '<div class="skydonation-navigation-wrapper">';
                 include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/dashboard-tabs.php';
             echo '</div>';
-
             echo '<div class="skydonation-content-wrapper">';
                 include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/dashboard-{$template}.php";
             echo '</div>';
         echo '</div>';
+        
     }
 }

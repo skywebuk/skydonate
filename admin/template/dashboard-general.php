@@ -47,17 +47,19 @@ $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 		do_action( 'skyweb_donation_settings_form_before' );
 
 		$templates = [
-			'general'        => '/template/general/dashboard-general.php',
-			'extra-donation' => '/template/general/dashboard-extra-donation.php',
-			'advanced'       => '/template/general/dashboard-advanced.php',
-			'currency'       => '/template/general/dashboard-currency.php',
-			'colors'         => '/template/general/dashboard-colors.php',
+			'general'        => '/template/general/general.php',
+			'extra-donation' => '/template/general/extra-donation.php',
+			'advanced'       => '/template/general/advanced.php',
+			'currency'       => '/template/general/currency.php',
+			'colors'         => '/template/general/colors.php',
 		];
 
 		if ( isset( $templates[ $active_tab ] ) ) {
 			$SKDS->load_plugin_template(
 				SKYWEB_DONATION_SYSTEM_ADMIN_PATH . $templates[ $active_tab ]
 			);
+		}else{
+			$SKDS->load_plugin_template( SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/general/settings.php' );
 		}
 
 		do_action( 'skyweb_donation_settings_form_after' );
