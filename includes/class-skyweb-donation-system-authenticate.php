@@ -95,9 +95,9 @@ class Skyweb_Donation_System_Authenticate extends Skyweb_Authenticator_Base {
         );
 
         if ($response) {
-            if ((isset($response[0]['status']) && isset($response[0]['status']) ==1) && isset($response[0]['update_status'])) {
-				$update_status	= isset($response[0]['update_status'])?$response[0]['update_status']:'';
-				$status			= isset($response[0]['status'])?$response[0]['status']:'';
+            if (isset($response[0]['status']) && $response[0]['status'] == 1 && isset($response[0]['update_status'])) {
+				$update_status	= isset($response[0]['update_status']) ? $response[0]['update_status'] : '';
+				$status			= isset($response[0]['status']) ? $response[0]['status'] : '';
 				if($status){
 					
 					if($update_status){
