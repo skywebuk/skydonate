@@ -69,27 +69,11 @@ function define_skyweb_donation_system() {
 		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_ASSETS', SKYWEB_DONATION_SYSTEM_URL.'public' );
 		define_skyweb_donation_system_constants( 'SKYWEB_DONATION_SYSTEM_OPTION_URL', admin_url('admin-post.php'));
 }
+
 function define_skyweb_donation_system_constants( $key, $value ) {
 		if ( ! defined( $key ) ) {
 			define( $key, $value );
 		}
-}
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-skyweb-donation-system-activator.php
- */
-function activate_skyweb_donation_system() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-skyweb-donation-system-activator.php';
-	Skyweb_Donation_System_Activator::activate();
-}
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-skyweb-donation-system-deactivator.php
- */
-function deactivate_skyweb_donation_system() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-skyweb-donation-system-deactivator.php';
-	Skyweb_Donation_System_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_skyweb_donation_system' );
