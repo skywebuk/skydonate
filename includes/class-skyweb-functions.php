@@ -94,13 +94,21 @@ class Skyweb_Donation_Functions {
         foreach ( $fields as $key => $field ) {
             if ( $key === 'first_name' ) {
                 $order_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
-                $value    = $order_id ? get_post_meta( $order_id, '_billing_name_title', true ) : '';
+                $value    = '';
+
+                // Use HPOS-compatible method to get order meta
+                if ( $order_id ) {
+                    $order = wc_get_order( $order_id );
+                    if ( $order ) {
+                        $value = $order->get_meta( '_billing_name_title', true );
+                    }
+                }
 
                 $new_fields['name_title'] = [
                     'label' => __( 'Name Title', 'skydonate' ),
                     'show'  => false,
                     'type'  => 'text',
-                    'value' => $value ? $value : __( 'Mr.', 'skydonate' ), // 👈 default value
+                    'value' => $value ? $value : __( 'Mr.', 'skydonate' ),
                 ];
             }
             $new_fields[ $key ] = $field;
@@ -109,14 +117,14 @@ class Skyweb_Donation_Functions {
         return $new_fields;
     }
 
-    // Save field value
+    // Save field value (HPOS-compatible)
     public function save_custom_field( $order_id, $post ) {
         if ( isset( $_POST['billing_name_title'] ) ) {
-            update_post_meta(
-                $order_id,
-                'billing_name_title',
-                sanitize_text_field( $_POST['billing_name_title'] )
-            );
+            $order = wc_get_order( $order_id );
+            if ( $order ) {
+                $order->update_meta_data( '_billing_name_title', sanitize_text_field( $_POST['billing_name_title'] ) );
+                $order->save();
+            }
         }
     }
 
@@ -247,45 +255,45 @@ class Skyweb_Donation_Functions {
     
 
     public static function get_all_countries_from_orders() {
-        // Retrieve completed orders
+        // Retrieve completed orders with a reasonable limit
         $completed_orders = wc_get_orders(array(
             'status' => 'completed',
-            'limit' => -1 // Retrieve all completed orders
+            'limit' => 1000 // Limit to prevent performance issues
         ));
-    
+
         $countries = array();
-    
+
         // Add an option for "All" at the beginning
         $countries['all'] = 'All';
-    
-        // Loop through each order to get the billing country code
+
+        // Loop through each order to get the billing country code (HPOS-compatible)
         foreach ($completed_orders as $order) {
-            $country_code = strtoupper(get_post_meta($order->get_id(), '_billing_country', true));
-    
+            $country_code = strtoupper( $order->get_billing_country() );
+
             // Check if country code is valid, then map it to the country name
             if (!empty($country_code) && isset(WC()->countries->countries[$country_code])) {
                 $country_name = WC()->countries->countries[$country_code];
                 $country_slug = strtolower($country_code); // Set slug as lowercase country code
-    
+
                 // Add country name with slug key if it's not already present
                 if (!isset($countries[$country_slug])) {
                     $countries[$country_slug] = $country_name;
                 }
             }
         }
-    
+
         return $countries; // Return unique country names with slugs as keys
     }
     
     // Shortcode to display only the product add-to-cart form
     public function custom_product_add_to_cart_shortcode( $atts ) {
         global $post, $product;
-    
+
         // Check if WooCommerce is active
         if ( ! class_exists( 'WooCommerce' ) ) {
-            return 'WooCommerce is not installed or active.';
+            return esc_html__( 'WooCommerce is not installed or active.', 'skydonate' );
         }
-    
+
         // Parse shortcode attributes
         $atts = shortcode_atts(
             array(
@@ -294,23 +302,24 @@ class Skyweb_Donation_Functions {
             $atts,
             'product_add_to_cart'
         );
-    
+
         // If the ID is passed, get the product by ID
         if ( $atts['id'] ) {
-            $post = get_post( $atts['id'] );
-            $product = wc_get_product( get_the_ID() );
+            $product_id = absint( $atts['id'] );
+            $post = get_post( $product_id );
+            $product = wc_get_product( $product_id );
         }
-    
+
         // Ensure that it's a valid product
         if ( $product && $product->is_purchasable() ) {
             ob_start();
-            
+
             // Display the add-to-cart form
             woocommerce_template_single_add_to_cart();
-            
+
             return ob_get_clean();
         } else {
-            return 'This product is not available for purchase.';
+            return esc_html__( 'This product is not available for purchase.', 'skydonate' );
         }
     }
 

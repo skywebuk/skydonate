@@ -93,9 +93,9 @@ class Skyweb_Donation_System_Admin {
 
                 <?php foreach ( $sub_menus as $sub_menu ) :
                     $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonation';
-                    $class     = isset( $sub_menu['class'] ) ? 'class="' . $sub_menu['class'] . '"' : '';
+                    $class     = isset( $sub_menu['class'] ) ? esc_attr( $sub_menu['class'] ) : '';
                 ?>
-                    <li <?php echo $class; ?>>
+                    <li <?php echo $class ? 'class="' . $class . '"' : ''; ?>>
                         <a href="<?php echo admin_url( 'admin.php?page=' . $page_slug ); ?>"
                            class="nav-link <?php echo ( $current_page == $page_slug ) ? 'active' : ''; ?>">
                             <?php echo esc_html( $sub_menu['page_title'] ); ?>
@@ -154,13 +154,6 @@ class Skyweb_Donation_System_Admin {
                 'capability' => 'manage_options',
                 'page_slug'  => 'skydonation-notification',
                 'callback'   => 'notification_page_content',
-            ],
-            [
-                'page_title' => esc_html__( 'Licenses', 'skydonation' ),
-                'menu_title' => esc_html__( 'Licenses', 'skydonation' ),
-                'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-licenses',
-                'callback'   => 'licenses_page_content',
             ],
             [
                 'page_title' => esc_html__( 'API', 'skydonation' ),
@@ -237,7 +230,6 @@ class Skyweb_Donation_System_Admin {
     public function widgets_page_content() { $this->display_page_content('widgets'); }
     public function address_autoload_page_content() { $this->display_page_content('address-autoload'); }
     public function notification_page_content() { $this->display_page_content('notification'); }
-    public function licenses_page_content() { $this->display_page_content('licenses'); }
 
     /**
      * Universal Template Loader

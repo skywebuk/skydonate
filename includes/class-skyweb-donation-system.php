@@ -10,7 +10,7 @@ class Skyweb_Donation_System {
 		if ( defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ) {
 			$this->version = SKYWEB_DONATION_SYSTEM_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '1.2.0';
 		}
 		$this->plugin_name = 'skyweb-donation-system';
 
@@ -30,7 +30,6 @@ class Skyweb_Donation_System {
 
 		$this->include_file('admin/class-skyweb-donation-system-admin.php');
 		$this->include_file('admin/class-skyweb-donation-system-settings.php');
-		$this->include_file('admin/class-skyweb-donation-system-update.php');
 
 		$this->include_file('public/class-skyweb-donation-system-public.php');
 
@@ -47,7 +46,7 @@ class Skyweb_Donation_System {
 			new Skyweb_Currency_Changer();
 		}
 
-		if ( get_option('setup_enable_notification') === '1' && !empty(get_option('wc_notification_item_select', [])) ) {
+		if ( get_option('setup_enable_notification') === '1' && !empty(get_option('notification_select_donations', [])) ) {
 			$this->include_file('includes/class-skyweb-notification.php');
 		}
 

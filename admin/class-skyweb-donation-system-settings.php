@@ -15,8 +15,6 @@ class SkyDonation_Functions {
         add_action( 'wp_ajax_save_skydonation_color_settings', [ $this, 'save_skydonation_color_settings' ] );
         add_action( 'wp_ajax_skydonation_api_settings', [ $this, 'skydonation_api_settings' ] );
         add_action( 'wp_ajax_skydonation_notification_settings', [ $this, 'save_notification_settings' ] );
-        add_action('wp_logout', [$this, 'skydonation_update_master_logged_out']);
-
 
         add_action( 'wp_ajax_skydonation_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
         // Removed nopriv action - settings should only be modified by authenticated admin users
