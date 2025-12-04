@@ -21,7 +21,7 @@
             <tr>
                 <th scope="row"><label for="notification_select_donations">Select Donations</label></th>
                 <td>
-                    <select <?php echo esc_attr(LDIS); ?> name="notification_select_donations" class="select_type_items" id="notification_select_donations" multiple="multiple" style="width: 100%; height: 150px;">
+                    <select name="notification_select_donations" class="select_type_items" id="notification_select_donations" multiple="multiple" style="width: 100%; height: 150px;">
                         <?php
                             foreach ($products as $id => $name) {
                                 $selected = in_array($id, $selected_ids) ? 'selected' : '';
@@ -35,7 +35,7 @@
             <tr>
                 <th scope="row"><label for="supporter_name_display_style">Supporter's Name</label></th>
                 <td>
-                    <select name="supporter_name_display_style" id="supporter_name_display_style" <?php echo esc_attr(LDIS); ?>>
+                    <select name="supporter_name_display_style" id="supporter_name_display_style">
                         <option value="full_name" <?php selected(get_option('supporter_name_display_style'), 'full_name'); ?>>Full Name</option>
                         <option value="first_last_initial" <?php selected(get_option('supporter_name_display_style'), 'first_last_initial'); ?>>First Name, Last Initial</option>
                         <option value="first_name" <?php selected(get_option('supporter_name_display_style'), 'first_name'); ?>>First Name</option>
@@ -54,8 +54,7 @@
                                 name="enable_emoji_notifications" 
                                 id="enable_emoji_notifications" 
                                 value="1" 
-                                <?php checked(get_option('enable_emoji_notifications'), 1); ?> 
-                                <?php echo esc_attr(LDIS); ?>
+                                <?php checked(get_option('enable_emoji_notifications'), 1); ?>
                             >
                             <span class="switch"></span>
                             <small>Check this box to add fun, random emojis to your notification messages. Uncheck it to disable emojis.</small>
@@ -73,7 +72,7 @@
                                 id="enable_location_visibility" 
                                 value="1" 
                                 <?php checked(get_option('enable_location_visibility'), 1); ?> 
-                                <?php echo esc_attr(LDIS); ?>
+                            
                             >
                             <span class="switch"></span>
                             <small>Check this box to show the location in notification messages. Uncheck to hide the location.</small>
@@ -91,7 +90,7 @@
                                 id="enable_title_visibility" 
                                 value="1" 
                                 <?php checked(get_option('enable_title_visibility'), 1); ?> 
-                                <?php echo esc_attr(LDIS); ?>
+                            
                             >
                             <span class="switch"></span>
                             <small>Check this box to show the title in notification messages. Uncheck to hide the title.</small>
@@ -109,7 +108,7 @@
                                 id="enable_timestamp_display" 
                                 value="1" 
                                 <?php checked(get_option('enable_timestamp_display'), 1); ?> 
-                                <?php echo esc_attr(LDIS); ?>
+                            
                             >
                             <span class="switch"></span>
                             <small>Check this box to show time as "1 minute ago" or "3 hours ago" in notification messages. Uncheck to hide.</small>
@@ -120,14 +119,14 @@
             <tr>
                 <th scope="row"><label for="notification_limit">Limit</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="number" name="notification_limit" id="notification_limit" value="<?php echo esc_attr(get_option('notification_limit', 5)); ?>" min="0">
+                    <input type="number" name="notification_limit" id="notification_limit" value="<?php echo esc_attr(get_option('notification_limit', 5)); ?>" min="0">
                     <p><small>Enter the maximum number of notifications that can be shown at once. Set to 0 for no limit.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="start_date_range">Start Date</label></th>
                 <td>
-                    <select <?php echo esc_attr(LDIS); ?> name="start_date_range" id="start_date_range">
+                    <select name="start_date_range" id="start_date_range">
                         <option value="3" <?php selected(get_option('start_date_range'), '3'); ?>>Last 3 Days</option>
                         <option value="7" <?php selected(get_option('start_date_range'), '7'); ?>>Last 7 Days</option>
                         <option value="14" <?php selected(get_option('start_date_range'), '14'); ?>>Last 2 Weeks</option>
@@ -139,28 +138,28 @@
             <tr>
                 <th scope="row"><label for="notifi_start_time">Start Time (in seconds)</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="number" name="notifi_start_time" id="notifi_start_time" value="<?php echo esc_attr(get_option('notifi_start_time', 10000)); ?>" min="0">
+                    <input type="number" name="notifi_start_time" id="notifi_start_time" value="<?php echo esc_attr(get_option('notifi_start_time', 10000)); ?>" min="0">
                     <p><small>Enter the start time for notifications in seconds. Default is 10000 seconds.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="notifi_visible_time">Visible Time (in seconds)</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="number" name="notifi_visible_time" id="notifi_visible_time" value="<?php echo esc_attr(get_option('notifi_visible_time', 10000)); ?>" min="0">
+                    <input type="number" name="notifi_visible_time" id="notifi_visible_time" value="<?php echo esc_attr(get_option('notifi_visible_time', 10000)); ?>" min="0">
                     <p><small>Enter the duration for which the notification will be visible in seconds. Default is 10000 seconds.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="notifi_gap_time">Gap Time (in seconds)</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="number" name="notifi_gap_time" id="notifi_gap_time" value="<?php echo esc_attr(get_option('notifi_gap_time', 15000)); ?>" min="0">
+                    <input type="number" name="notifi_gap_time" id="notifi_gap_time" value="<?php echo esc_attr(get_option('notifi_gap_time', 15000)); ?>" min="0">
                     <p><small>Enter the gap time between notifications in seconds. Default is 15000 seconds.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="show_element_urls">Only show element at these URLs</label></th>
                 <td>
-                    <textarea <?php echo esc_attr(LDIS); ?> name="show_element_urls" id="show_element_urls" rows="4" cols="50" 
+                    <textarea name="show_element_urls" id="show_element_urls" rows="4" cols="50" 
                         placeholder="https://example.com/
 https://example.com/*
 https://example.com/about/*"
@@ -171,7 +170,7 @@ https://example.com/about/*"
             <tr>
                 <th scope="row"><label for="hide_element_urls">Never show element at these URLs</label></th>
                 <td>
-                    <textarea <?php echo esc_attr(LDIS); ?> name="hide_element_urls" id="hide_element_urls" rows="4" cols="50" 
+                    <textarea name="hide_element_urls" id="hide_element_urls" rows="4" cols="50" 
                         placeholder="https://example.com/
 https://example.com/*
 https://example.com/about/*" ><?php echo esc_textarea(get_option('hide_element_urls')); ?></textarea>
@@ -181,7 +180,7 @@ https://example.com/about/*" ><?php echo esc_textarea(get_option('hide_element_u
         </table>
         <br>
         <p class="submit">
-            <button type="submit" class="skydonation-button" <?php echo esc_attr(LDIS); ?>><?php _e( 'Save Settings', 'skydonation' ); ?></button>
+            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonation' ); ?></button>
         </p>
     </form>
 </div>

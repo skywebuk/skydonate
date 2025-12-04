@@ -20,7 +20,7 @@
                             id="enable_donation_fees" 
                             value="1" 
                             <?php checked( get_option('enable_donation_fees'), 1 ); ?> 
-                            <?php echo esc_attr(LDIS); ?>
+                        
                         >
                         <span class="switch"></span>
                         <small>Enable or disable the Donations fees. Check this box to activate the fees.</small>
@@ -30,35 +30,35 @@
             <tr>
                 <th scope="row"><label for="donation_fee_percentage">Donation Fee Percentage</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="number" name="donation_fee_percentage" id="donation_fee_percentage" value="<?php echo esc_attr(get_option('donation_fee_percentage', '')); ?>" min="0" step="0.01">
+                    <input type="number" name="donation_fee_percentage" id="donation_fee_percentage" value="<?php echo esc_attr(get_option('donation_fee_percentage', '')); ?>" min="0" step="0.01">
                     <p><small>Enter the percentage fee to apply to donations (e.g., 5 for 5%).</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="additional_text">Additional Text</label></th>
                 <td>
-                    <textarea <?php echo esc_attr(LDIS); ?> name="additional_text" id="additional_text" rows="4" cols="50"><?php echo esc_textarea(get_option('additional_text', '')); ?></textarea>
+                    <textarea name="additional_text" id="additional_text" rows="4" cols="50"><?php echo esc_textarea(get_option('additional_text', '')); ?></textarea>
                     <p><small>Add any additional text or description here.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="checkbox_label">Checkbox Label</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="text" name="checkbox_label" id="checkbox_label" value="<?php echo esc_attr(get_option('checkbox_label', '')); ?>">
+                    <input type="text" name="checkbox_label" id="checkbox_label" value="<?php echo esc_attr(get_option('checkbox_label', '')); ?>">
                     <p><small>Set the label text for the donation fee checkbox.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="fees_tooltip_text">Tooltip Text</label></th>
                 <td>
-                    <textarea <?php echo esc_attr(LDIS); ?> name="fees_tooltip_text" id="fees_tooltip_text" rows="4" cols="50"><?php echo esc_textarea(get_option('fees_tooltip_text', '')); ?></textarea>
+                    <textarea name="fees_tooltip_text" id="fees_tooltip_text" rows="4" cols="50"><?php echo esc_textarea(get_option('fees_tooltip_text', '')); ?></textarea>
                     <p><small>Add any Tooltip Text here.</small></p>
                 </td>
             </tr>
             <tr>
                 <th scope="row"><label for="fees_checkbox_default_status">Fees Checkbox Default Status</label></th>
                 <td>
-                    <input <?php echo esc_attr(LDIS); ?> type="checkbox" name="fees_checkbox_default_status" id="fees_checkbox_default_status" value="1" <?php checked(get_option('fees_checkbox_default_status'), 1); ?>>
+                    <input type="checkbox" name="fees_checkbox_default_status" id="fees_checkbox_default_status" value="1" <?php checked(get_option('fees_checkbox_default_status'), 1); ?>>
                     <small>Check this box to make the "Enable Donation Fees" checkbox checked by default.</small>
                 </td>
             </tr>
@@ -66,7 +66,7 @@
         <br>
         <br>
         <p>
-            <button type="submit" class="skydonation-button" <?php echo esc_attr(LDIS); ?>><?php _e( 'Save Settings', 'skydonation' ); ?></button>
+            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonation' ); ?></button>
         </p>
     </form>
 </div>

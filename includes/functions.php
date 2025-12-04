@@ -2,12 +2,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-if(!function_exists('skyweb_donation_fields_html')){
-	function skyweb_donation_fields_html($components = array(),$post_id=""){
-		include SKYWEB_DONATION_SYSTEM_ADMIN_PATH.'/partials/html-fields.php';
-	}
-}
-
 
 add_action( 'woocommerce_checkout_update_user_meta', function( $customer_id, $posted ) {
     if ( isset( $_POST['billing_name_title'] ) ) {
@@ -45,9 +39,6 @@ function sky_setup_check($option) {
 	return skyweb_donation_setting_up($option) == 1;
 }
 function sky_widget_status_check($option) {
-	// if(skyweb_donation_setting_up($option) == 1){
-	// }
-   
 	$default_widgets = [
 		'zakat_calculator' => 'yes',
 		'zakat_calculator_classic' => 'yes',

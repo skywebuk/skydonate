@@ -1,26 +1,20 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define('MLOG', get_option('master_logedin') === 'active' );
-define('LTUS', get_option('license_key_status') === 'active' );
-define('LDIS', LTUS ? '' : 'disabled' );
-
 class SkyDonation_Functions {
     
     public function __construct() {
-       if(LTUS){
-            add_action( 'wp_ajax_skydonation_general_settings', [ $this, 'skydonation_general_settings' ] );
-            add_action( 'wp_ajax_skydonation_currency_changer_settings', [ $this, 'skydonation_currency_changer_settings' ] );
-            add_action( 'wp_ajax_skydonation_advanced_settings', [ $this, 'skydonation_advanced_settings' ] );
-            add_action( 'wp_ajax_skydonation_widget_save_setting', [ $this, 'skydonation_widget_save_setting' ] );
-            add_action( 'wp_ajax_skydonation_fees_settings', [ $this, 'skydonation_fees_settings' ] );
-            add_action( 'wp_ajax_save_skyweb_gift_aid_settings', [ $this, 'save_skyweb_gift_aid_settings' ] );
-            add_action( 'wp_ajax_save_address_autoload_settings', [ $this, 'save_address_autoload_settings' ] );
-            add_action( 'wp_ajax_save_skydonation_color_settings', [ $this, 'save_skydonation_color_settings' ] );
-            add_action( 'wp_ajax_skydonation_api_settings', [ $this, 'skydonation_api_settings' ] );
-            add_action( 'wp_ajax_skydonation_notification_settings', [ $this, 'save_notification_settings' ] );
-	   }
-       
+        
+        add_action( 'wp_ajax_skydonation_general_settings', [ $this, 'skydonation_general_settings' ] );
+        add_action( 'wp_ajax_skydonation_currency_changer_settings', [ $this, 'skydonation_currency_changer_settings' ] );
+        add_action( 'wp_ajax_skydonation_advanced_settings', [ $this, 'skydonation_advanced_settings' ] );
+        add_action( 'wp_ajax_skydonation_widget_save_setting', [ $this, 'skydonation_widget_save_setting' ] );
+        add_action( 'wp_ajax_skydonation_fees_settings', [ $this, 'skydonation_fees_settings' ] );
+        add_action( 'wp_ajax_save_skyweb_gift_aid_settings', [ $this, 'save_skyweb_gift_aid_settings' ] );
+        add_action( 'wp_ajax_save_address_autoload_settings', [ $this, 'save_address_autoload_settings' ] );
+        add_action( 'wp_ajax_save_skydonation_color_settings', [ $this, 'save_skydonation_color_settings' ] );
+        add_action( 'wp_ajax_skydonation_api_settings', [ $this, 'skydonation_api_settings' ] );
+        add_action( 'wp_ajax_skydonation_notification_settings', [ $this, 'save_notification_settings' ] );
         add_action('wp_logout', [$this, 'skydonation_update_master_logged_out']);
 
 
