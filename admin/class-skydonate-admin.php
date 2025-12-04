@@ -51,21 +51,21 @@ class Skyweb_Donation_System_Admin {
         wp_enqueue_script( 'select2' );
 
         wp_enqueue_script(
-            'skydonation-admin-script',
-            plugin_dir_url( __FILE__ ) . 'js/admin-script.js',
+            'skydonate-settings',
+            plugin_dir_url( __FILE__ ) . 'js/skydonate-settings.js',
             [ 'jquery' ],
             $this->version,
             true
         );
 
-        wp_localize_script( 'skydonation-admin-script', 'skydonation_setting', [
+        wp_localize_script( 'skydonate-settings', 'skydonation_setting', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'skydonation_settings_nonce' ),
         ]);
 
         wp_enqueue_script(
-            $this->plugin_name,
-            plugin_dir_url( __FILE__ ) . 'js/skyweb-donation-system-admin.js',
+            'skydonate-admin',
+            plugin_dir_url( __FILE__ ) . 'js/skydonate-admin.js',
             [ 'jquery' ],
             $this->version,
             true
@@ -255,12 +255,12 @@ class Skyweb_Donation_System_Admin {
     private function display_page_content( $template ) {
         echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
             echo '<div class="skydonation-navigation-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/dashboard-tabs.php';
+                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
             echo '</div>';
             echo '<div class="skydonation-content-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/dashboard-{$template}.php";
+                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
         echo '</div>';
-        
+
     }
 }

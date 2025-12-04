@@ -28,9 +28,9 @@ class Skyweb_Donation_System {
 		$this->include_file('includes/class-skyweb-donation-system-authenticate.php');
 		$this->include_file('includes/class-skyweb-donation-system-i18n.php');
 
-		$this->include_file('admin/class-skyweb-donation-system-admin.php');
-		$this->include_file('admin/class-skyweb-donation-system-settings.php');
-		$this->include_file('admin/class-skyweb-donation-dashboard.php');
+		$this->include_file('admin/class-skydonate-admin.php');
+		$this->include_file('admin/class-skydonate-settings.php');
+		$this->include_file('admin/class-skydonate-dashboard.php');
 
 		$this->include_file('public/class-skyweb-donation-system-public.php');
 

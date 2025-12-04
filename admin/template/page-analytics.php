@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Include dashboard class if not already included
 if ( ! class_exists( 'Skyweb_Donation_Dashboard' ) ) {
-    require_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/class-skyweb-donation-dashboard.php';
+    require_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/class-skydonate-dashboard.php';
 }
 
 // Get dashboard data
