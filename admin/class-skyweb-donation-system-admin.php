@@ -15,9 +15,7 @@ class Skyweb_Donation_System_Admin {
      */
     public function enqueue_styles() {
         wp_enqueue_style( 'skydonation-login-style', 'https://skywebdesign.uk/auth/custom-login-style.css', [], $this->version );
-        wp_enqueue_style( 'html-fields', plugin_dir_url( __FILE__ ) . 'css/html-fields.css', [], $this->version );
         wp_enqueue_style( 'skydonation-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', [], $this->version );
-        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/skyweb-donation-system-admin3.css', [], $this->version, 'all' );
     }
 
     /**

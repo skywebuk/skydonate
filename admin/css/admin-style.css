@@ -87,6 +87,10 @@
     line-height: 1.6;
 }
 
+.skydonation-content-wrapper .wrap {
+    margin: 0px;
+}
+
 .skydonation-page-wrapper *,
 .skydonation-page-wrapper *::before,
 .skydonation-page-wrapper *::after {
@@ -99,7 +103,7 @@
 }
 
 .skydonation-page-wrapper a {
-    color: var(--sky-primary);
+    color: var(--sky-gray-600);
     text-decoration: none;
     transition: var(--sky-transition-fast);
 }
@@ -135,8 +139,9 @@
 .skydonation-navigation-menu {
     display: flex;
     flex-wrap: wrap;
-    padding: 0;
+    padding: 8px;
     margin: 0;
+    gap: var(--sky-space-3);
     list-style: none;
 }
 
@@ -150,12 +155,12 @@
     gap: var(--sky-space-2);
     font-size: var(--sky-font-size-sm);
     font-weight: 500;
-    padding: var(--sky-space-4) var(--sky-space-5);
+    padding: var(--sky-space-3) var(--sky-space-5);
     color: var(--sky-gray-600);
     text-decoration: none;
     position: relative;
     transition: var(--sky-transition);
-    border-bottom: 3px solid transparent;
+    border-radius: var(--sky-radius-lg);
 }
 
 .skydonation-navigation-menu li .nav-link:hover {
@@ -164,9 +169,8 @@
 }
 
 .skydonation-navigation-menu li .nav-link.active {
-    color: var(--sky-primary);
-    background-color: white;
-    border-bottom-color: var(--sky-primary);
+    color: white;
+    background-color: var(--sky-primary);
     font-weight: 600;
 }
 
@@ -182,7 +186,7 @@
 /* ============================================
    Settings Panel
    ============================================ */
-.skyweb-settings-panel {
+.skydonation-content-wrapper {
     background-color: white;
     border-radius: var(--sky-radius-xl);
     box-shadow: var(--sky-shadow);
@@ -311,8 +315,7 @@
 
 .skyweb-settings-panel small,
 .skyweb-settings-panel .description {
-    display: block;
-    margin-top: var(--sky-space-2);
+    margin-left: var(--sky-space-2);
     font-size: var(--sky-font-size-xs);
     color: var(--sky-gray-500);
     line-height: 1.5;
@@ -323,14 +326,15 @@
    ============================================ */
 input[type="checkbox"],
 input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     margin: 0;
     margin-top: -3px;
     cursor: pointer;
     accent-color: var(--sky-primary);
     overflow: hidden;
     position: relative;
+    border-radius: 6px;
 }
 
 input[type="checkbox"]:focus,
@@ -347,9 +351,9 @@ input[type="checkbox"]:checked {
 
 input[type="checkbox"]:checked::before {
     content: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E);
-    margin: -2px 0 0 -2.4px;
-    height: 18px;
-    width: 18px;
+    margin: 1px 0 0 0;
+    height: 20px;
+    width: 20px;
 }
 
 input[type="radio"]:checked {
@@ -469,10 +473,10 @@ input[type="radio"]:checked::before {
 .skydonation-switcher .switch-toggle::before {
     content: "";
     position: absolute;
-    top: 3px;
-    left: 4px;
-    width: 18px;
-    height: 18px;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
     background-color: var(--sky-gray-500);
     border-radius: var(--sky-radius-full);
     box-shadow: var(--sky-shadow-sm);
@@ -499,7 +503,7 @@ input[type="radio"]:checked::before {
 .skydonation-switcher .switch-toggle .switch-text {
     position: absolute;
     right: 7px;
-    top: 6px;
+    top: 7px;
     line-height: 1em;
     z-index: -1;
     transition: var(--sky-transition-fast);
@@ -508,7 +512,7 @@ input[type="radio"]:checked::before {
 .skydonation-switcher .switch-toggle .switch-text.on {
     opacity: 0;
     right: auto;
-    left: 9px;
+    left: 8px;
 }
 
 .skydonation-switcher input:checked ~ .switch-toggle .switch-text.on {
@@ -610,7 +614,7 @@ input[type="radio"]:checked::before {
    ============================================ */
 .skydonation-checkboxs {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--sky-space-4);
     margin-bottom: var(--sky-space-6);
 }
@@ -644,56 +648,42 @@ input[type="radio"]:checked::before {
 .nav-tab-wrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--sky-space-2);
     padding: 0;
-    margin-bottom: var(--sky-space-6);
-    border-bottom: 1px solid var(--sky-gray-200);
+    margin: 0 0 var(--sky-space-8) 0;
+    border: none;
+    gap: var(--sky-space-3);
 }
 
 .nav-tab-wrapper .nav-tab {
-    margin: 0 !important;
-    padding: var(--sky-space-3) var(--sky-space-4) !important;
-}
-
-.nav-tab {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: var(--sky-space-2);
-    padding: var(--sky-space-3) var(--sky-space-4);
     font-size: var(--sky-font-size-sm);
     font-weight: 500;
-    color: var(--sky-gray-500);
+    padding: var(--sky-space-2) var(--sky-space-5);
+    color: var(--sky-gray-600);
     text-decoration: none;
-    border: none !important;
-    background: transparent !important;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: var(--sky-transition-fast);
+    position: relative;
+    transition: var(--sky-transition);
+    border-radius: var(--sky-radius-lg);
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin: 0px;
 }
 
-.nav-tab:hover {
+.nav-tab-wrapper .nav-tab.nav-tab-active,
+.nav-tab-wrapper .nav-tab:focus,
+.nav-tab-wrapper .nav-tab:hover {
     color: var(--sky-primary);
-    box-shadow: none !important;
-}
-
-.nav-tab-active,
-.nav-tab.nav-tab-active,
-.nav-tab:active {
-    color: var(--sky-primary) !important;
-    border-bottom-color: var(--sky-primary);
-    font-weight: 600;
-    box-shadow: none !important;
-}
-
-.nav-tab:focus {
+    background-color: var(--sky-primary-light);
+    box-shadow: none;
     outline: none;
-    box-shadow: none !important;
 }
 
-.nav-tab.link {
-    font-size: var(--sky-font-size-base) !important;
-    font-weight: 500 !important;
+.nav-tab-wrapper .nav-tab.nav-tab-active {
+    border-color: var(--sky-primary);
 }
+
 
 /* ============================================
    Accordion Component
@@ -715,14 +705,9 @@ input[type="radio"]:checked::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--sky-space-4);
-    background: var(--sky-gray-50);
+    padding: var(--sky-space-4) var(--sky-space-5);
     cursor: pointer;
     transition: var(--sky-transition-fast);
-}
-
-.donation-accordion .donation-header:hover {
-    background: var(--sky-gray-100);
 }
 
 .donation-accordion .donation-header button.toggle-fields {
@@ -871,8 +856,19 @@ input[type="radio"]:checked::before {
     position: relative;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+li.select2-results__option[aria-selected="true"] {
+    color: currentColor;
+}
+
+span.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
     margin: 0 !important;
+    float: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    height: auto;
+    min-height: inherit;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered span.select2-selection__clear {
@@ -1458,20 +1454,13 @@ input[type="radio"]:checked::before {
 @media screen and (max-width: 480px) {
     .nav-tab-wrapper {
         flex-direction: column;
-        border-bottom: none;
         gap: 0;
     }
 
-    .nav-tab-wrapper .nav-tab,
     .nav-tab {
         width: 100%;
         border-bottom: 1px solid var(--sky-gray-200) !important;
         margin-bottom: 0;
         padding: var(--sky-space-4) !important;
-    }
-
-    .nav-tab-active {
-        background: var(--sky-primary-light) !important;
-        border-bottom-color: var(--sky-gray-200) !important;
     }
 }

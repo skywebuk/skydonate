@@ -9,22 +9,17 @@ $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
 $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 ?>
 
-<div class="skydonation-page-wrapper template">
-	<div class="skydonation-navigation-wrapper">
-		<?php include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/dashboard-tabs.php'; ?>
-	</div>
-</div>
-
-<header>
-	<?php
+<?php
 	if ( $SKDS_notice ) {
+        echo '<header>';
 		$SKDS->plugin_admin_notice(
 			esc_html__( 'Settings has been updated!', 'skyweb-invoice' ),
 			'success'
 		);
+        echo '</header>';
+        $SKDS_notice = false;
 	}
-	?>
-</header>
+?>
 
 <div class="wrap">
 
