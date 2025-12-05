@@ -145,18 +145,20 @@
 
             processBatch();
         });
-        // Handle form submission
-        $('.select_items').select2({
-            placeholder: "Select an option",
-            allowClear: true,
-        });
+        // Initialize Select2 if available
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('.select_items').select2({
+                placeholder: "Select an option",
+                allowClear: true,
+            });
 
-        $('.select_type_items').select2({
-            placeholder: "Select an option", 
-            allowClear: true,
-            tags: true,
-            tokenSeparators: [',', ' ']
-        });
+            $('.select_type_items').select2({
+                placeholder: "Select an option",
+                allowClear: true,
+                tags: true,
+                tokenSeparators: [',', ' ']
+            });
+        }
 
         $('.skydonation-general-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
