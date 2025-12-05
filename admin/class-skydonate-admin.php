@@ -24,7 +24,7 @@ class Skyweb_Donation_System_Admin {
     public function enqueue_scripts() {
 
         // Color Picker (only on specific tab)
-        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonation' ) {
+        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonation-general' ) {
             wp_enqueue_style( 'wp-color-picker' );
 
             wp_enqueue_script(
@@ -36,8 +36,8 @@ class Skyweb_Donation_System_Admin {
             );
         }
 
-        // Chart.js for Analytics Dashboard
-        if ( isset($_GET['page']) && $_GET['page'] === 'skydonation-analytics' ) {
+        // Chart.js for Analytics Dashboard (main page)
+        if ( isset($_GET['page']) && $_GET['page'] === 'skydonation' ) {
             wp_enqueue_script(
                 'chartjs',
                 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
@@ -83,7 +83,7 @@ class Skyweb_Donation_System_Admin {
             esc_html__( 'SkyDonate', 'skydonation' ),
             'manage_options',
             'skydonation',
-            [ $this, 'general_page_content' ],
+            [ $this, 'analytics_page_content' ],
             'dashicons-skydonation',
             20
         );
@@ -127,14 +127,14 @@ class Skyweb_Donation_System_Admin {
                 'page_title' => esc_html__( 'Analytics', 'skydonation' ),
                 'menu_title' => esc_html__( 'Analytics', 'skydonation' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-analytics',
+                'page_slug'  => '',
                 'callback'   => 'analytics_page_content',
             ],
             [
                 'page_title' => esc_html__( 'General', 'skydonation' ),
                 'menu_title' => esc_html__( 'General', 'skydonation' ),
                 'capability' => 'manage_options',
-                'page_slug'  => '',
+                'page_slug'  => 'skydonation-general',
                 'callback'   => 'general_page_content',
             ],
             [
