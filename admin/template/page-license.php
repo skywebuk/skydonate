@@ -3,302 +3,365 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$license_info = SkyDonate_License_Admin::get_license_info();
-$has_license  = $license_info['has_license'];
-$status       = $license_info['status'];
-$data         = $license_info['data'];
-$masked_key   = $license_info['masked_key'];
-
-$is_valid     = ( $status === 'valid' );
-$features     = $data['features'] ?? array();
-$widgets      = $data['widgets'] ?? array();
-$layouts      = $data['layouts'] ?? array();
-$capabilities = $data['capabilities'] ?? array();
-$expires      = $data['expires'] ?? '';
-
-// Handle URL messages
-$message_type = isset( $_GET['skydonate_message'] ) ? sanitize_text_field( $_GET['skydonate_message'] ) : '';
-$message_status = isset( $_GET['skydonate_status'] ) ? sanitize_text_field( $_GET['skydonate_status'] ) : '';
+$info = SkyDonate_License_Admin::get_info();
+$is_valid = $info['is_valid'];
+$nonce = wp_create_nonce( 'skydonate_license_nonce' );
 ?>
 
-<div class="skydonate-license-page <?php echo ! $is_valid ? 'license-page--inactive' : ''; ?>">
+<div class="skydonate-license-page <?php echo ! $is_valid ? 'license-inactive' : ''; ?>">
 
-    <?php if ( $message_type ) : ?>
-        <?php
-        $notice_class = 'notice-info';
-        $notice_message = '';
-
-        switch ( $message_type ) {
-            case 'activated':
-                $notice_class = 'notice-success';
-                $notice_message = __( 'License activated successfully!', 'skydonate' );
-                break;
-            case 'deactivated':
-                $notice_class = 'notice-info';
-                $notice_message = __( 'License deactivated.', 'skydonate' );
-                break;
-            case 'refreshed':
-                $notice_class = 'notice-success';
-                $notice_message = __( 'License data refreshed.', 'skydonate' );
-                break;
-            case 'error':
-                $notice_class = 'notice-error';
-                $notice_message = urldecode( $message_status );
-                break;
-        }
-
-        if ( $notice_message ) :
-        ?>
-            <div class="notice <?php echo esc_attr( $notice_class ); ?> is-dismissible" style="margin: 15px 0;">
-                <p><?php echo esc_html( $notice_message ); ?></p>
-            </div>
-        <?php endif; ?>
-    <?php endif; ?>
+    <!-- Toaster Container -->
+    <div id="skydonate-toaster"></div>
 
     <?php if ( ! $is_valid ) : ?>
-        <!-- Inactive License - Centered Activation Form -->
-        <div class="license-activation-center">
+        <!-- Activation Form -->
+        <div class="license-activation-wrapper">
             <div class="license-activation-card">
-                <div class="license-activation-card__logo">
+                <div class="license-card-icon">
                     <span class="dashicons dashicons-shield"></span>
                 </div>
-                <h1 class="license-activation-card__title">Activate SkyDonate</h1>
-                <p class="license-activation-card__subtitle">Enter your license key to unlock all premium features</p>
 
-                <form method="post" action="" class="license-activation-form" id="skydonate-license-form">
-                    <?php wp_nonce_field( 'skydonate_license_action', 'skydonate_license_nonce' ); ?>
+                <h1>Activate SkyDonate</h1>
+                <p class="license-subtitle">Enter your license key to unlock all features</p>
 
-                    <div class="license-activation-form__field">
+                <form id="skydonate-activate-form" class="license-form">
+                    <div class="license-input-group">
                         <input
                             type="text"
-                            name="skydonate_license_key"
-                            id="skydonate_license_key"
-                            class="license-activation-form__input"
+                            name="license_key"
+                            id="license_key"
                             placeholder="SKY-XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-                            value="<?php echo $has_license ? esc_attr( $license_info['key'] ) : ''; ?>"
+                            value="<?php echo esc_attr( $info['key'] ); ?>"
                             autocomplete="off"
+                            required
                         />
                     </div>
 
-                    <button type="submit" name="skydonate_license_action" value="activate" class="license-activation-form__button">
-                        <span class="dashicons dashicons-yes"></span> Activate License
+                    <button type="submit" class="license-btn license-btn-primary" id="activate-btn">
+                        <span class="dashicons dashicons-yes"></span>
+                        <span class="btn-text">Activate License</span>
+                        <span class="btn-loading" style="display:none;">Activating...</span>
                     </button>
 
-                    <?php if ( $has_license && $status !== 'valid' ) : ?>
-                        <p class="license-activation-form__error">
+                    <?php if ( $info['key'] && ! $is_valid && $info['message'] ) : ?>
+                        <p class="license-error-msg">
                             <span class="dashicons dashicons-warning"></span>
-                            <?php
-                            if ( $status === 'expired' ) {
-                                echo 'Your license has expired. Please renew to continue.';
-                            } elseif ( $status === 'invalid' ) {
-                                echo 'Invalid license key. Please check and try again.';
-                            } else {
-                                echo 'License validation failed. Please try again.';
-                            }
-                            ?>
+                            <?php echo esc_html( $info['message'] ); ?>
                         </p>
                     <?php endif; ?>
                 </form>
 
-                <div class="license-activation-card__footer">
+                <div class="license-card-footer">
                     <a href="https://skydonate.com" target="_blank">Get a license</a>
-                    <span class="separator">|</span>
+                    <span>|</span>
                     <a href="https://skydonate.com/support" target="_blank">Need help?</a>
                 </div>
             </div>
         </div>
 
     <?php else : ?>
-        <!-- Active License - Full Dashboard -->
+        <!-- License Dashboard -->
+        <div class="license-dashboard">
 
-        <!-- Header -->
-        <div class="license-header">
-            <div class="license-header__content">
-                <h1 class="license-header__title">License Management</h1>
-                <p class="license-header__subtitle">Manage your SkyDonate license and view enabled features</p>
-            </div>
-            <div class="license-header__logo">
-                <span class="dashicons dashicons-shield"></span>
-            </div>
-        </div>
-
-        <!-- Status Card -->
-        <div class="license-status-card status--valid">
-            <div class="license-status-card__icon">
-                <span class="dashicons dashicons-yes-alt"></span>
-            </div>
-            <div class="license-status-card__content">
-                <div class="license-status-card__status">
-                    <?php echo SkyDonate_License_Admin::get_status_badge( $status ); ?>
+            <!-- Header -->
+            <div class="license-header">
+                <div>
+                    <h1>License Management</h1>
+                    <p>Manage your SkyDonate license and view enabled features</p>
                 </div>
-                <h2 class="license-status-card__title">Your license is active</h2>
-                <?php if ( $masked_key ) : ?>
-                    <p class="license-status-card__key">
-                        <span class="key-label">License Key:</span>
-                        <code><?php echo esc_html( $masked_key ); ?></code>
-                    </p>
-                <?php endif; ?>
-                <?php if ( $expires ) : ?>
-                    <p class="license-status-card__expires">
-                        <span class="dashicons dashicons-calendar-alt"></span>
-                        Expires: <?php echo esc_html( date( 'F j, Y', strtotime( $expires ) ) ); ?>
-                    </p>
-                <?php endif; ?>
+                <span class="dashicons dashicons-shield license-header-icon"></span>
             </div>
-            <div class="license-status-card__actions">
-                <button type="button" class="button button-secondary" id="skydonate-refresh-license">
-                    <span class="dashicons dashicons-update"></span> Refresh
-                </button>
-                <form method="post" action="" style="display: inline;">
-                    <?php wp_nonce_field( 'skydonate_license_action', 'skydonate_license_nonce' ); ?>
-                    <button type="submit" name="skydonate_license_action" value="deactivate" class="button button-secondary button-deactivate">
+
+            <!-- Status Card -->
+            <div class="license-status-card">
+                <div class="license-status-icon">
+                    <span class="dashicons dashicons-yes-alt"></span>
+                </div>
+                <div class="license-status-content">
+                    <?php echo SkyDonate_License_Admin::get_badge( $info['status'] ); ?>
+                    <h2>Your license is active</h2>
+                    <?php if ( $info['masked_key'] ) : ?>
+                        <p class="license-key-display">
+                            <strong>Key:</strong> <code><?php echo esc_html( $info['masked_key'] ); ?></code>
+                        </p>
+                    <?php endif; ?>
+                    <?php if ( $info['expires'] ) : ?>
+                        <p class="license-expires">
+                            <span class="dashicons dashicons-calendar-alt"></span>
+                            Expires: <?php echo esc_html( date( 'F j, Y', strtotime( $info['expires'] ) ) ); ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+                <div class="license-status-actions">
+                    <button type="button" class="button" id="refresh-btn">
+                        <span class="dashicons dashicons-update"></span> Refresh
+                    </button>
+                    <button type="button" class="button" id="deactivate-btn">
                         <span class="dashicons dashicons-no"></span> Deactivate
                     </button>
-                </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Features Section -->
-        <?php if ( ! empty( $features ) ) : ?>
-        <div class="license-section">
-            <div class="license-section__header">
-                <h3 class="license-section__title">
-                    <span class="dashicons dashicons-admin-plugins"></span>
-                    Features
-                </h3>
-                <span class="license-section__count"><?php echo count( array_filter( $features ) ); ?> enabled</span>
+            <!-- Features -->
+            <?php if ( ! empty( $info['features'] ) ) : ?>
+            <div class="license-section">
+                <div class="license-section-header">
+                    <h3><span class="dashicons dashicons-admin-plugins"></span> Features</h3>
+                    <span class="license-count"><?php echo count( array_filter( $info['features'] ) ); ?> enabled</span>
+                </div>
+                <div class="license-grid license-features-grid">
+                    <?php foreach ( $info['features'] as $key => $enabled ) : ?>
+                        <div class="license-item <?php echo $enabled ? 'enabled' : 'disabled'; ?>">
+                            <span class="dashicons <?php echo $enabled ? 'dashicons-yes' : 'dashicons-no'; ?>"></span>
+                            <span><?php echo esc_html( SkyDonate_License_Admin::format_name( $key ) ); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-            <div class="license-features-grid">
-                <?php foreach ( $features as $key => $enabled ) : ?>
-                    <div class="license-feature <?php echo $enabled ? 'license-feature--enabled' : 'license-feature--disabled'; ?>">
-                        <span class="license-feature__icon">
-                            <?php if ( $enabled ) : ?>
-                                <span class="dashicons dashicons-yes"></span>
-                            <?php else : ?>
-                                <span class="dashicons dashicons-no"></span>
-                            <?php endif; ?>
-                        </span>
-                        <span class="license-feature__name">
-                            <?php echo esc_html( SkyDonate_License_Admin::format_feature_name( $key ) ); ?>
-                        </span>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <!-- Widgets Section -->
-        <?php if ( ! empty( $widgets ) ) : ?>
-        <div class="license-section">
-            <div class="license-section__header">
-                <h3 class="license-section__title">
-                    <span class="dashicons dashicons-screenoptions"></span>
-                    Widgets
-                </h3>
-                <span class="license-section__count"><?php echo count( array_filter( $widgets ) ); ?> enabled</span>
-            </div>
-            <div class="license-widgets-grid">
-                <?php foreach ( $widgets as $key => $enabled ) : ?>
-                    <div class="license-widget <?php echo $enabled ? 'license-widget--enabled' : 'license-widget--disabled'; ?>">
-                        <div class="license-widget__icon">
+            <!-- Widgets -->
+            <?php if ( ! empty( $info['widgets'] ) ) : ?>
+            <div class="license-section">
+                <div class="license-section-header">
+                    <h3><span class="dashicons dashicons-screenoptions"></span> Widgets</h3>
+                    <span class="license-count"><?php echo count( array_filter( $info['widgets'] ) ); ?> enabled</span>
+                </div>
+                <div class="license-grid license-widgets-grid">
+                    <?php foreach ( $info['widgets'] as $key => $enabled ) : ?>
+                        <div class="license-widget-item <?php echo $enabled ? 'enabled' : 'disabled'; ?>">
                             <span class="dashicons dashicons-welcome-widgets-menus"></span>
+                            <div class="widget-info">
+                                <span class="widget-name"><?php echo esc_html( SkyDonate_License_Admin::format_name( $key ) ); ?></span>
+                                <span class="widget-status"><?php echo $enabled ? 'Enabled' : 'Disabled'; ?></span>
+                            </div>
+                            <span class="dashicons <?php echo $enabled ? 'dashicons-yes-alt' : 'dashicons-lock'; ?>"></span>
                         </div>
-                        <div class="license-widget__content">
-                            <span class="license-widget__name">
-                                <?php echo esc_html( SkyDonate_License_Admin::format_feature_name( $key ) ); ?>
-                            </span>
-                            <span class="license-widget__status">
-                                <?php echo $enabled ? 'Enabled' : 'Disabled'; ?>
-                            </span>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Layouts -->
+            <?php if ( ! empty( $info['layouts'] ) ) : ?>
+            <div class="license-section">
+                <div class="license-section-header">
+                    <h3><span class="dashicons dashicons-layout"></span> Layouts</h3>
+                </div>
+                <div class="license-grid license-layouts-grid">
+                    <?php foreach ( $info['layouts'] as $key => $layout ) : ?>
+                        <div class="license-layout-item">
+                            <span class="layout-name"><?php echo esc_html( SkyDonate_License_Admin::format_name( $key ) ); ?></span>
+                            <span class="layout-value"><?php echo esc_html( ucfirst( str_replace( '-', ' ', $layout ) ) ); ?></span>
                         </div>
-                        <div class="license-widget__badge">
-                            <?php if ( $enabled ) : ?>
-                                <span class="dashicons dashicons-yes-alt"></span>
-                            <?php else : ?>
-                                <span class="dashicons dashicons-lock"></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </div>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <!-- Layouts Section -->
-        <?php if ( ! empty( $layouts ) ) : ?>
-        <div class="license-section">
-            <div class="license-section__header">
-                <h3 class="license-section__title">
-                    <span class="dashicons dashicons-layout"></span>
-                    Layouts
-                </h3>
-            </div>
-            <div class="license-layouts-grid">
-                <?php foreach ( $layouts as $key => $layout ) : ?>
-                    <div class="license-layout">
-                        <span class="license-layout__name">
-                            <?php echo esc_html( SkyDonate_License_Admin::format_feature_name( $key ) ); ?>
-                        </span>
-                        <span class="license-layout__value">
-                            <?php echo esc_html( ucfirst( str_replace( '-', ' ', $layout ) ) ); ?>
-                        </span>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- Capabilities Section -->
-        <?php if ( ! empty( $capabilities ) ) : ?>
-        <div class="license-section">
-            <div class="license-section__header">
-                <h3 class="license-section__title">
-                    <span class="dashicons dashicons-admin-network"></span>
-                    Capabilities
-                </h3>
-            </div>
-            <div class="license-capabilities-list">
-                <?php foreach ( $capabilities as $key => $enabled ) : ?>
-                    <div class="license-capability">
-                        <span class="license-capability__toggle <?php echo $enabled ? 'toggle--on' : 'toggle--off'; ?>">
-                            <span class="toggle-track">
-                                <span class="toggle-thumb"></span>
+            <!-- Capabilities -->
+            <?php if ( ! empty( $info['capabilities'] ) ) : ?>
+            <div class="license-section">
+                <div class="license-section-header">
+                    <h3><span class="dashicons dashicons-admin-network"></span> Capabilities</h3>
+                </div>
+                <div class="license-capabilities-list">
+                    <?php foreach ( $info['capabilities'] as $key => $enabled ) : ?>
+                        <div class="license-capability">
+                            <span class="capability-toggle <?php echo $enabled ? 'on' : 'off'; ?>">
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
                             </span>
-                        </span>
-                        <span class="license-capability__name">
-                            <?php echo esc_html( SkyDonate_License_Admin::format_feature_name( $key ) ); ?>
-                        </span>
-                    </div>
-                <?php endforeach; ?>
+                            <span><?php echo esc_html( SkyDonate_License_Admin::format_name( $key ) ); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
-        </div>
-        <?php endif; ?>
+            <?php endif; ?>
 
+        </div>
     <?php endif; ?>
 
 </div>
 
-<script>
-jQuery(document).ready(function($) {
-    $('#skydonate-refresh-license').on('click', function() {
-        var $btn = $(this);
-        var originalHtml = $btn.html();
+<style>
+/* Toaster Styles */
+#skydonate-toaster {
+    position: fixed;
+    top: 40px;
+    right: 20px;
+    z-index: 999999;
+}
+.skydonate-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
+    min-width: 280px;
+}
+.skydonate-toast.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+.skydonate-toast.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+.skydonate-toast.info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.skydonate-toast .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+.skydonate-toast.hiding {
+    animation: slideOut 0.3s ease forwards;
+}
 
-        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Refreshing...');
+/* Button loading state */
+.license-btn.loading .btn-text,
+.button.loading .dashicons { display: none; }
+.license-btn.loading .btn-loading { display: inline !important; }
+.button.loading { opacity: 0.7; pointer-events: none; }
+</style>
+
+<script>
+jQuery(function($) {
+    var nonce = '<?php echo esc_js( $nonce ); ?>';
+
+    // Toaster function
+    function showToast(message, type) {
+        type = type || 'info';
+        var icon = type === 'success' ? 'yes-alt' : (type === 'error' ? 'warning' : 'info');
+        var $toast = $('<div class="skydonate-toast ' + type + '">' +
+            '<span class="dashicons dashicons-' + icon + '"></span>' +
+            '<span>' + message + '</span>' +
+        '</div>');
+
+        $('#skydonate-toaster').append($toast);
+
+        setTimeout(function() {
+            $toast.addClass('hiding');
+            setTimeout(function() { $toast.remove(); }, 300);
+        }, 4000);
+    }
+
+    // Activate License
+    $('#skydonate-activate-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var $btn = $('#activate-btn');
+        var key = $('#license_key').val();
+
+        if (!key) {
+            showToast('Please enter a license key', 'error');
+            return;
+        }
+
+        $btn.addClass('loading').prop('disabled', true);
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'skydonate_activate_license',
+                nonce: nonce,
+                license_key: key
+            },
+            success: function(response) {
+                if (response.success) {
+                    showToast(response.data.message, 'success');
+                    if (response.data.reload) {
+                        setTimeout(function() { location.reload(); }, 1500);
+                    }
+                } else {
+                    showToast(response.data.message || 'Activation failed', 'error');
+                    $btn.removeClass('loading').prop('disabled', false);
+                }
+            },
+            error: function() {
+                showToast('Connection error. Please try again.', 'error');
+                $btn.removeClass('loading').prop('disabled', false);
+            }
+        });
+    });
+
+    // Deactivate License
+    $('#deactivate-btn').on('click', function() {
+        if (!confirm('Are you sure you want to deactivate this license?')) {
+            return;
+        }
+
+        var $btn = $(this);
+        $btn.addClass('loading').prop('disabled', true);
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'skydonate_deactivate_license',
+                nonce: nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    showToast(response.data.message, 'info');
+                    if (response.data.reload) {
+                        setTimeout(function() { location.reload(); }, 1500);
+                    }
+                } else {
+                    showToast(response.data.message || 'Deactivation failed', 'error');
+                    $btn.removeClass('loading').prop('disabled', false);
+                }
+            },
+            error: function() {
+                showToast('Connection error. Please try again.', 'error');
+                $btn.removeClass('loading').prop('disabled', false);
+            }
+        });
+    });
+
+    // Refresh License
+    $('#refresh-btn').on('click', function() {
+        var $btn = $(this);
+        $btn.addClass('loading').prop('disabled', true);
+        $btn.find('.dashicons').addClass('spin');
 
         $.ajax({
             url: ajaxurl,
             type: 'POST',
             data: {
                 action: 'skydonate_refresh_license',
-                nonce: $('#skydonate_license_nonce').val()
+                nonce: nonce
             },
             success: function(response) {
-                location.reload();
+                if (response.success) {
+                    showToast(response.data.message, 'success');
+                    if (response.data.reload) {
+                        setTimeout(function() { location.reload(); }, 1500);
+                    }
+                } else {
+                    showToast(response.data.message || 'Refresh failed', 'error');
+                    $btn.removeClass('loading').prop('disabled', false);
+                    $btn.find('.dashicons').removeClass('spin');
+                }
             },
             error: function() {
-                $btn.prop('disabled', false).html(originalHtml);
-                alert('Failed to refresh license. Please try again.');
+                showToast('Connection error. Please try again.', 'error');
+                $btn.removeClass('loading').prop('disabled', false);
+                $btn.find('.dashicons').removeClass('spin');
             }
         });
     });

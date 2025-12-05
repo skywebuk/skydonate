@@ -2,7 +2,7 @@
 /**
  * SkyDonate License Client
  *
- * Validates licenses and manages feature access
+ * Handles license validation, activation, and deactivation
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,366 +17,286 @@ class SkyDonate_License_Client {
     private $server_url = 'https://skydonate.com';
 
     /**
-     * Cache key for license data
+     * Option name for license key
+     */
+    private $license_option = 'skydonate_license_key';
+
+    /**
+     * Transient name for cached data
      */
     private $cache_key = 'skydonate_license_data';
 
     /**
-     * Cache expiration (12 hours)
+     * Cache duration (12 hours)
      */
-    private $cache_expiration = 43200;
+    private $cache_duration = 43200;
 
     /**
-     * Validate license
+     * Make API request to license server
      */
-    public function validate_license( $license_key, $force_refresh = false ) {
-        // Check cache first (unless force refresh)
-        if ( ! $force_refresh ) {
-            $cached = get_transient( $this->cache_key );
-            if ( $cached !== false ) {
-                return $cached;
-            }
-        }
+    private function api_request( $endpoint, $data = array() ) {
+        $url = $this->server_url . '/?sky_license_' . $endpoint . '=1';
 
-        // Get current domain
-        $domain = wp_parse_url( home_url(), PHP_URL_HOST );
-
-        // Make API request
-        $response = wp_remote_post( $this->server_url . '/?sky_license_validate=1', array(
+        $args = array(
             'method'    => 'POST',
             'timeout'   => 30,
             'sslverify' => false,
             'headers'   => array(
                 'Content-Type' => 'application/json',
-                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
+                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION,
             ),
-            'body' => wp_json_encode( array(
-                'license' => $license_key,
-                'domain'  => $domain,
-            ) ),
-        ) );
+            'body' => wp_json_encode( $data ),
+        );
 
+        $response = wp_remote_post( $url, $args );
 
-        error_log( 'SkyDonate License Validation Response: ' . print_r( $response, true ) );
-
-        // Check for errors
+        // Connection error
         if ( is_wp_error( $response ) ) {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Connection error: ' . $response->get_error_message(),
+                'message' => 'Connection failed: ' . $response->get_error_message(),
             );
         }
 
-        // Parse response
-        $body = trim( wp_remote_retrieve_body( $response ) );
-        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
-        $data = json_decode( $body, true );
-
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            error_log( 'SkyDonate Validate Error - JSON: ' . json_last_error_msg() . ' Body: ' . substr( $body, 0, 500 ) );
+        // HTTP error
+        $code = wp_remote_retrieve_response_code( $response );
+        if ( $code !== 200 ) {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Invalid server response',
+                'message' => 'Server error: HTTP ' . $code,
             );
         }
 
-        // Cache successful response
-        if ( ! empty( $data['success'] ) ) {
-            set_transient( $this->cache_key, $data, $this->cache_expiration );
+        // Parse JSON
+        $body = trim( wp_remote_retrieve_body( $response ) );
+        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body ); // Remove BOM
+        $result = json_decode( $body, true );
+
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            error_log( 'SkyDonate License: Invalid JSON - ' . substr( $body, 0, 200 ) );
+            return array(
+                'success' => false,
+                'status'  => 'error',
+                'message' => 'Invalid server response. Please ensure the license API is installed on ' . $this->server_url,
+            );
         }
 
-        return $data;
+        return $result;
+    }
+
+    /**
+     * Get current domain
+     */
+    private function get_domain() {
+        return wp_parse_url( home_url(), PHP_URL_HOST );
+    }
+
+    /**
+     * Validate license with server
+     */
+    public function validate( $license_key = null, $force = false ) {
+        if ( $license_key === null ) {
+            $license_key = $this->get_key();
+        }
+
+        if ( empty( $license_key ) ) {
+            return array(
+                'success' => false,
+                'status'  => 'inactive',
+                'message' => 'No license key',
+            );
+        }
+
+        // Check cache
+        if ( ! $force ) {
+            $cached = get_transient( $this->cache_key );
+            if ( $cached !== false && isset( $cached['license_key'] ) && $cached['license_key'] === $license_key ) {
+                return $cached;
+            }
+        }
+
+        // Make API request
+        $result = $this->api_request( 'validate', array(
+            'license' => $license_key,
+            'domain'  => $this->get_domain(),
+        ) );
+
+        // Cache successful response
+        if ( ! empty( $result['success'] ) ) {
+            $result['license_key'] = $license_key;
+            set_transient( $this->cache_key, $result, $this->cache_duration );
+        }
+
+        return $result;
     }
 
     /**
      * Activate license
      */
-    public function activate_license( $license_key ) {
-        $domain = wp_parse_url( home_url(), PHP_URL_HOST );
+    public function activate( $license_key ) {
+        if ( empty( $license_key ) ) {
+            return array(
+                'success' => false,
+                'status'  => 'error',
+                'message' => 'License key is required',
+            );
+        }
 
-        $response = wp_remote_post( $this->server_url . '/?sky_license_activate=1', array(
-            'method'    => 'POST',
-            'timeout'   => 30,
-            'sslverify' => false,
-            'headers'   => array(
-                'Content-Type' => 'application/json',
-                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
-            ),
-            'body' => wp_json_encode( array(
-                'license' => $license_key,
-                'domain'  => $domain,
-            ) ),
+        $result = $this->api_request( 'activate', array(
+            'license' => $license_key,
+            'domain'  => $this->get_domain(),
         ) );
 
-        if ( is_wp_error( $response ) ) {
-            return array(
-                'success' => false,
-                'status'  => 'error',
-                'message' => 'Connection error: ' . $response->get_error_message(),
-            );
+        // Save on success
+        if ( ! empty( $result['success'] ) && $result['status'] === 'valid' ) {
+            update_option( $this->license_option, $license_key );
+            $result['license_key'] = $license_key;
+            set_transient( $this->cache_key, $result, $this->cache_duration );
         }
 
-        $response_code = wp_remote_retrieve_response_code( $response );
-        $body = trim( wp_remote_retrieve_body( $response ) );
-
-        // Check for HTTP errors
-        if ( $response_code !== 200 ) {
-            return array(
-                'success' => false,
-                'status'  => 'error',
-                'message' => 'Server returned HTTP ' . $response_code,
-            );
-        }
-
-        // Remove BOM if present
-        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
-
-        $data = json_decode( $body, true );
-
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            // Log the actual response for debugging
-            error_log( 'SkyDonate License Error - JSON Error: ' . json_last_error_msg() );
-            error_log( 'SkyDonate License Error - Response body: ' . substr( $body, 0, 500 ) );
-            return array(
-                'success' => false,
-                'status'  => 'error',
-                'message' => 'Invalid server response. Check debug.log for details.',
-            );
-        }
-
-        // Handle server error responses
-        if ( isset( $data['success'] ) && $data['success'] === false ) {
-            return array(
-                'success' => false,
-                'status'  => $data['status'] ?? 'error',
-                'message' => $data['message'] ?? 'License activation failed.',
-            );
-        }
-
-        // Cache successful response and save license key
-        if ( ! empty( $data['success'] ) ) {
-            update_option( 'skydonate_license_key', $license_key );
-            set_transient( $this->cache_key, $data, $this->cache_expiration );
-        }
-
-        return $data;
+        return $result;
     }
 
     /**
      * Deactivate license
      */
-    public function deactivate_license( $license_key ) {
-        $domain = wp_parse_url( home_url(), PHP_URL_HOST );
+    public function deactivate() {
+        $license_key = $this->get_key();
 
-        $response = wp_remote_post( $this->server_url . '/?sky_license_deactivate=1', array(
-            'method'    => 'POST',
-            'timeout'   => 30,
-            'sslverify' => false,
-            'headers'   => array(
-                'Content-Type' => 'application/json',
-                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
-            ),
-            'body' => wp_json_encode( array(
-                'license' => $license_key,
-                'domain'  => $domain,
-            ) ),
-        ) );
-
-        if ( is_wp_error( $response ) ) {
+        if ( empty( $license_key ) ) {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Connection error: ' . $response->get_error_message(),
+                'message' => 'No license to deactivate',
             );
         }
 
-        $body = trim( wp_remote_retrieve_body( $response ) );
-        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
-        $data = json_decode( $body, true );
-
-        // Clear cache and license key
-        $this->clear_cache();
-        delete_option( 'skydonate_license_key' );
-
-        return $data;
-    }
-
-    /**
-     * Check for updates
-     */
-    public function check_for_updates( $license_key, $current_version ) {
-        $domain = wp_parse_url( home_url(), PHP_URL_HOST );
-
-        $response = wp_remote_post( $this->server_url . '/?sky_license_update=1', array(
-            'method'  => 'POST',
-            'timeout' => 30,
-            'headers' => array(
-                'Content-Type' => 'application/json',
-            ),
-            'body' => wp_json_encode( array(
-                'license' => $license_key,
-                'domain'  => $domain,
-                'version' => $current_version,
-            ) ),
+        $result = $this->api_request( 'deactivate', array(
+            'license' => $license_key,
+            'domain'  => $this->get_domain(),
         ) );
 
-        if ( is_wp_error( $response ) ) {
-            return array(
-                'success' => false,
-                'message' => $response->get_error_message(),
-            );
-        }
+        // Always clear local data
+        delete_option( $this->license_option );
+        delete_transient( $this->cache_key );
 
-        $body = wp_remote_retrieve_body( $response );
-        return json_decode( $body, true );
+        return $result;
     }
 
     /**
-     * Check if feature is enabled
+     * Get stored license key
      */
-    public function is_feature_enabled( $feature_key ) {
-        $license_key = get_option( 'skydonate_license_key', '' );
-
-        if ( empty( $license_key ) ) {
-            return false;
-        }
-
-        $data = $this->validate_license( $license_key );
-
-        if ( empty( $data['success'] ) || $data['status'] !== 'valid' ) {
-            return false;
-        }
-
-        return ! empty( $data['features'][ $feature_key ] );
-    }
-
-    /**
-     * Check if widget is enabled
-     */
-    public function is_widget_enabled( $widget_key ) {
-        $license_key = get_option( 'skydonate_license_key', '' );
-
-        if ( empty( $license_key ) ) {
-            return false;
-        }
-
-        $data = $this->validate_license( $license_key );
-
-        if ( empty( $data['success'] ) || $data['status'] !== 'valid' ) {
-            return false;
-        }
-
-        return ! empty( $data['widgets'][ $widget_key ] );
-    }
-
-    /**
-     * Get layout for component
-     */
-    public function get_layout( $component_key ) {
-        $license_key = get_option( 'skydonate_license_key', '' );
-
-        if ( empty( $license_key ) ) {
-            return 'layout-1';
-        }
-
-        $data = $this->validate_license( $license_key );
-
-        if ( empty( $data['success'] ) || $data['status'] !== 'valid' ) {
-            return 'layout-1';
-        }
-
-        return ! empty( $data['layouts'][ $component_key ] ) ? $data['layouts'][ $component_key ] : 'layout-1';
-    }
-
-    /**
-     * Get capability
-     */
-    public function get_capability( $capability_key ) {
-        $license_key = get_option( 'skydonate_license_key', '' );
-
-        if ( empty( $license_key ) ) {
-            return false;
-        }
-
-        $data = $this->validate_license( $license_key );
-
-        if ( empty( $data['success'] ) || $data['status'] !== 'valid' ) {
-            return false;
-        }
-
-        return ! empty( $data['capabilities'][ $capability_key ] );
-    }
-
-    /**
-     * Get all license data
-     */
-    public function get_license_data() {
-        $license_key = get_option( 'skydonate_license_key', '' );
-
-        if ( empty( $license_key ) ) {
-            return null;
-        }
-
-        return $this->validate_license( $license_key );
+    public function get_key() {
+        return get_option( $this->license_option, '' );
     }
 
     /**
      * Get license status
      */
-    public function get_license_status() {
-        $license_key = get_option( 'skydonate_license_key', '' );
+    public function get_status() {
+        $key = $this->get_key();
 
-        if ( empty( $license_key ) ) {
+        if ( empty( $key ) ) {
             return 'inactive';
         }
 
-        $data = $this->validate_license( $license_key );
-
-        if ( empty( $data['success'] ) ) {
-            return 'error';
-        }
-
-        return $data['status'] ?? 'unknown';
+        $data = $this->validate( $key );
+        return $data['status'] ?? 'error';
     }
 
     /**
-     * Clear license cache
+     * Check if license is valid
+     */
+    public function is_valid() {
+        return $this->get_status() === 'valid';
+    }
+
+    /**
+     * Get license data
+     */
+    public function get_data() {
+        $key = $this->get_key();
+
+        if ( empty( $key ) ) {
+            return null;
+        }
+
+        return $this->validate( $key );
+    }
+
+    /**
+     * Clear cache
      */
     public function clear_cache() {
         delete_transient( $this->cache_key );
     }
+
+    /**
+     * Check if feature is enabled
+     */
+    public function has_feature( $feature ) {
+        $data = $this->get_data();
+        return ! empty( $data['features'][ $feature ] );
+    }
+
+    /**
+     * Check if widget is enabled
+     */
+    public function has_widget( $widget ) {
+        $data = $this->get_data();
+        return ! empty( $data['widgets'][ $widget ] );
+    }
+
+    /**
+     * Get layout setting
+     */
+    public function get_layout( $component ) {
+        $data = $this->get_data();
+        return $data['layouts'][ $component ] ?? 'layout-1';
+    }
+
+    /**
+     * Check capability
+     */
+    public function has_capability( $capability ) {
+        $data = $this->get_data();
+        return ! empty( $data['capabilities'][ $capability ] );
+    }
 }
 
 /**
- * Initialize license client
+ * Get license client instance
  */
-function skydonate_license_client() {
+function skydonate_license() {
     static $instance = null;
-
     if ( $instance === null ) {
         $instance = new SkyDonate_License_Client();
     }
-
     return $instance;
 }
 
+// Legacy function name for compatibility
+function skydonate_license_client() {
+    return skydonate_license();
+}
+
 /**
- * Helper functions for easy access
+ * Helper functions
  */
 function skydonate_is_feature_enabled( $feature ) {
-    return skydonate_license_client()->is_feature_enabled( $feature );
+    return skydonate_license()->has_feature( $feature );
 }
 
 function skydonate_is_widget_enabled( $widget ) {
-    return skydonate_license_client()->is_widget_enabled( $widget );
+    return skydonate_license()->has_widget( $widget );
 }
 
 function skydonate_get_layout( $component ) {
-    return skydonate_license_client()->get_layout( $component );
+    return skydonate_license()->get_layout( $component );
 }
 
 function skydonate_has_capability( $capability ) {
-    return skydonate_license_client()->get_capability( $capability );
+    return skydonate_license()->has_capability( $capability );
 }

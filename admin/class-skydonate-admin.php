@@ -81,8 +81,7 @@ class Skyweb_Donation_System_Admin {
      */
     public function add_admin_menu() {
         $parent_slug = 'skydonation';
-        $license_status = skydonate_license_client()->get_license_status();
-        $is_valid = ( $license_status === 'valid' );
+        $is_valid = skydonate_license()->is_valid();
 
         // If license is inactive, main menu goes to License page
         if ( ! $is_valid ) {
@@ -279,8 +278,7 @@ class Skyweb_Donation_System_Admin {
      * Universal Template Loader
      */
     private function display_page_content( $template ) {
-        $license_status = skydonate_license_client()->get_license_status();
-        $is_valid = ( $license_status === 'valid' );
+        $is_valid = skydonate_license()->is_valid();
 
         // If license is inactive, only show license page (no nav, no wrapper styling)
         if ( ! $is_valid && $template === 'license' ) {
