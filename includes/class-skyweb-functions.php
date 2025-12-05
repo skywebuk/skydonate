@@ -207,9 +207,9 @@ class Skyweb_Donation_Functions {
                 }
             }
 
-            $currency_symbol = esc_html(get_woocommerce_currency_symbol($order->get_currency()));
+            $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( $order->get_currency() ) );
             $donation_amount = 0;
-    
+
             // Calculate donation amount for relevant products in this order
             foreach ($order->get_items() as $item) {
                 $product_id = $item->get_product_id();
@@ -768,8 +768,8 @@ class Skyweb_Donation_Functions {
     public static function Get_Currency_Symbol() {
         // Get the current WooCommerce currency
         $currency = get_option('woocommerce_currency');
-        // Get the currency symbol
-        $currency_symbol = get_woocommerce_currency_symbol($currency);
+        // Get the currency symbol and decode HTML entities
+        $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( $currency ) );
         return $currency_symbol;
     }
 
@@ -909,7 +909,7 @@ class Skyweb_Donation_Functions {
 
             $country = strtolower(esc_attr($order->get_billing_country()));
             $city = esc_html($order->get_billing_city());
-            $currency_symbol = esc_html(get_woocommerce_currency_symbol($order->get_currency()));
+            $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( $order->get_currency() ) );
             $time_ago = esc_html(human_time_diff(strtotime($order->get_date_created()), time()));
 
             if ($donation_amount > 0) {
@@ -950,7 +950,7 @@ class Skyweb_Donation_Functions {
                 continue;
             }
             $donation_amount = esc_html(number_format($donation_amount, 0));
-            $currency_symbol = esc_html(get_woocommerce_currency_symbol($order->get_currency()));
+            $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( $order->get_currency() ) );
             $is_anonymous = $order->get_meta('_anonymous_donation', true);
             $customer_name = ($is_anonymous === '1')
                 ? esc_html__('Anonymous', 'skydonate')

@@ -10,7 +10,7 @@ $tabs = apply_filters('skydonation_settings_general_link_tabs', array());
         $active_class = ( $active_tab === $tab_key ) ? 'active' : '';
         ?>
         <li>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=skydonation') . '&tab=' . esc_attr($tab_key)); ?>" class="nav-link <?php echo $active_class; ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=skydonation-general') . '&tab=' . esc_attr($tab_key)); ?>" class="nav-link <?php echo $active_class; ?>">
                 <!-- <span class="nav-icon"><i class="fas fa-<?php //echo esc_attr( $data['icon'] ); ?>"></i></span> -->
                 <?php echo esc_html( $tab['label'] ); ?>
             </a>
