@@ -740,9 +740,15 @@ if ( ! empty( $info['expires'] ) ) {
 .license-status-actions .button {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    font-size: 13px;
+    gap: var(--sky-space-2);
+    padding: var(--sky-space-2) var(--sky-space-4);
+    font-size: var(--sky-font-size-sm);
+    font-weight: 500;
+    border-radius: var(--sky-radius-lg);
+    cursor: pointer;
+    transition: var(--sky-transition);
+    text-decoration: none;
+    line-height: 1.4;
 }
 
 .license-status-actions .button .dashicons {
@@ -753,6 +759,43 @@ if ( ! empty( $info['expires'] ) ) {
 
 .license-status-actions .button.loading .dashicons { animation: spin 0.8s linear infinite; }
 .license-status-actions .button.loading { opacity: 0.7; pointer-events: none; }
+
+
+.license-status-actions .button.button-secondary {
+    background: #fff;
+    border: 1px solid var(--sky-gray-300);
+    color: var(--sky-gray-700);
+}
+
+.license-status-actions .button.button-secondary:hover {
+    background: var(--sky-gray-50);
+    border-color: var(--sky-gray-400);
+    color: var(--sky-gray-900);
+}
+
+.license-status-actions .button.button-secondary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--sky-primary-light);
+    border-color: var(--sky-primary);
+}
+
+/* Delete/Danger Button (Deactivate) */
+.license-status-actions .button.button-link-delete {
+    background: var(--sky-error-light);
+    border: 1px solid transparent;
+    color: var(--sky-error);
+}
+
+.license-status-actions .button.button-link-delete:hover {
+    background: var(--sky-error);
+    color: #fff;
+}
+
+.license-status-actions .button.button-link-delete:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
 
 /* Quick Stats */
 .license-quick-stats {
@@ -1012,58 +1055,6 @@ if ( ! empty( $info['expires'] ) ) {
     padding: 12px 16px;
     background: var(--sky-gray-50);
     border-radius: var(--sky-radius);
-}
-
-.capability-toggle {
-    flex-shrink: 0;
-}
-
-.capability-toggle .toggle-track {
-    display: block;
-    width: 44px;
-    height: 24px;
-    background: var(--sky-gray-300);
-    border-radius: 12px;
-    position: relative;
-    transition: background 0.2s;
-}
-
-.capability-toggle.on .toggle-track {
-    background: var(--sky-success);
-}
-
-.capability-toggle .toggle-thumb {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.capability-toggle.on .toggle-thumb {
-    transform: translateX(20px);
-}
-
-.capability-name {
-    flex: 1;
-    font-size: 14px;
-    color: var(--sky-gray-700);
-}
-
-.capability-status {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--sky-gray-400);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.license-capability.enabled .capability-status {
-    color: var(--sky-success);
 }
 
 /* Badges */
