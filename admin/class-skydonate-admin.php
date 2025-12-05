@@ -14,7 +14,6 @@ class Skyweb_Donation_System_Admin {
      * Enqueue CSS
      */
     public function enqueue_styles() {
-        wp_enqueue_style( 'skydonation-login-style', 'https://skywebdesign.uk/auth/custom-login-style.css', [], $this->version );
         wp_enqueue_style( 'skydonation-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', [], $this->version );
     }
 
@@ -47,8 +46,13 @@ class Skyweb_Donation_System_Admin {
             );
         }
 
-        wp_enqueue_style( 'select2' );
-        wp_enqueue_script( 'select2' );
+        // Select2 is provided by WooCommerce
+        if ( wp_style_is( 'select2', 'registered' ) ) {
+            wp_enqueue_style( 'select2' );
+        }
+        if ( wp_script_is( 'select2', 'registered' ) ) {
+            wp_enqueue_script( 'select2' );
+        }
 
         wp_enqueue_script(
             'skydonate-settings',
@@ -141,7 +145,7 @@ class Skyweb_Donation_System_Admin {
                 'page_title' => esc_html__( 'Analytics', 'skydonation' ),
                 'menu_title' => esc_html__( 'Analytics', 'skydonation' ),
                 'capability' => 'manage_options',
-                'page_slug'  => '',
+                'page_slug'  => 'skydonation',
                 'callback'   => 'analytics_page_content',
             ],
             [

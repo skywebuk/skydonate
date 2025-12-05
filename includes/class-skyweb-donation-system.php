@@ -10,7 +10,7 @@ class Skyweb_Donation_System {
 		if ( defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ) {
 			$this->version = SKYWEB_DONATION_SYSTEM_VERSION;
 		} else {
-			$this->version = '1.2.0';
+			$this->version = '1.2.3';
 		}
 		$this->plugin_name = 'skyweb-donation-system';
 
@@ -163,7 +163,7 @@ class Skyweb_Donation_System {
 			default:
 				$tmr_classes .= 'notice-error is-dismissible';
 		}
-		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . 'errorr">';
+		$tmr_notice  = '<div class="' . esc_attr( $tmr_classes ) . '">';
 		$tmr_notice .= '<p>' . esc_html( $tmr_message ) . '</p>';
 		$tmr_notice .= '</div>';
 		echo wp_kses_post( $tmr_notice );

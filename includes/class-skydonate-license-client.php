@@ -331,52 +331,6 @@ class SkyDonate_License_Client {
     public function clear_cache() {
         delete_transient( $this->cache_key );
     }
-
-    /**
-     * Load remote functions if allowed
-     */
-    public function load_remote_functions() {
-        $data = $this->get_license_data();
-
-        if ( empty( $data['success'] ) || $data['status'] !== 'valid' ) {
-            return false;
-        }
-
-        // Check if remote functions are allowed
-        if ( empty( $data['capabilities']['allow_remote_functions'] ) ) {
-            return false;
-        }
-
-        // Check if URL is provided
-        if ( empty( $data['remote_functions_url'] ) ) {
-            return false;
-        }
-
-        // Fetch and execute remote functions
-        $response = wp_remote_get( $data['remote_functions_url'], array(
-            'timeout' => 15,
-        ) );
-
-        if ( is_wp_error( $response ) ) {
-            return false;
-        }
-
-        $code = wp_remote_retrieve_body( $response );
-
-        // Save to uploads directory and include
-        $upload_dir = wp_upload_dir();
-        $functions_file = $upload_dir['basedir'] . '/skydonate-remote-functions.php';
-
-        // Strip existing PHP tags and add clean one
-        $code = preg_replace( '/^<\?php\s*/i', '', $code );
-
-        if ( file_put_contents( $functions_file, '<?php ' . $code ) !== false ) {
-            include_once $functions_file;
-            return true;
-        }
-
-        return false;
-    }
 }
 
 /**
