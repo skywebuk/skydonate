@@ -56,6 +56,9 @@ class SkyDonate_License_Client {
             ) ),
         ) );
 
+
+        error_log( 'SkyDonate License Validation Response: ' . print_r( $response, true ) );
+
         // Check for errors
         if ( is_wp_error( $response ) ) {
             return array(
