@@ -209,7 +209,10 @@ class Skyweb_Donation_System_Public {
             SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
             true
         );
-        wp_localize_script('recent-donation', 'skyweb_donation_ajax', ['ajax_url' => admin_url('admin-ajax.php')]);
+        wp_localize_script('recent-donation', 'skyweb_donation_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+        ]);
 
         wp_register_script(
             'recent-donation-two',
@@ -218,7 +221,10 @@ class Skyweb_Donation_System_Public {
             SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
             true
         );
-        wp_localize_script('recent-donation-two', 'skyweb_donation_ajax', ['ajax_url' => admin_url('admin-ajax.php')]);
+        wp_localize_script('recent-donation-two', 'skyweb_donation_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+        ]);
 
         wp_register_script(
             'quick-donation',

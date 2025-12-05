@@ -603,39 +603,6 @@
             let isChecked = $(this).is(':checked');
             $('.skydonation-checkboxs input[type="checkbox"]').prop('checked', isChecked);
         });
-
-        // Function to display message for 10 seconds
-        function displayTemporaryMessage(text, color) {
-            // Create the message div
-            let messageDiv = $('<div>', {
-                id: 'skydonation-message',
-                text: text,
-                css: {
-                    display: 'none',
-                    color: color,
-                    position: 'fixed',
-                    bottom: '15px',
-                    right: '15px',
-                    backgroundColor: '#fff',
-                    padding: '18px 20px',
-                    borderLeft: '4px solid',
-                    borderColor: color,
-                    zIndex: 1000,
-                    fontSize: '16px'
-                }
-            });
-
-            // Append the div to the body and show it
-            $('body').append(messageDiv);
-            messageDiv.fadeIn();
-
-            // Remove the div after 10 seconds
-            setTimeout(function() {
-                messageDiv.fadeOut(function() {
-                    $(this).remove();
-                });
-            }, 5000); // 10000ms = 10 seconds
-        }
     });
 
 })(jQuery);

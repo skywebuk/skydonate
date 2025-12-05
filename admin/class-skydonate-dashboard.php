@@ -3,6 +3,7 @@
  * Dashboard Statistics Class
  *
  * Provides data for the donation dashboard charts and metrics
+ * HPOS-compatible queries for WooCommerce 8.0+
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,25 +13,65 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Skyweb_Donation_Dashboard {
 
     /**
+     * Check if HPOS is enabled
+     */
+    private static function is_hpos_enabled() {
+        return class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' )
+            && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+    }
+
+    /**
+     * Get order tables info for HPOS compatibility
+     */
+    private static function get_order_tables() {
+        global $wpdb;
+
+        if ( self::is_hpos_enabled() ) {
+            return [
+                'orders'      => $wpdb->prefix . 'wc_orders',
+                'orders_meta' => $wpdb->prefix . 'wc_orders_meta',
+                'id_column'   => 'id',
+                'date_column' => 'date_created_gmt',
+                'status_column' => 'status',
+            ];
+        }
+
+        return [
+            'orders'      => $wpdb->posts,
+            'orders_meta' => $wpdb->postmeta,
+            'id_column'   => 'ID',
+            'date_column' => 'post_date',
+            'status_column' => 'post_status',
+            'type_filter' => "post_type = 'shop_order' AND",
+        ];
+    }
+
+    /**
      * Get total donations amount
      */
     public static function get_total_donations( $days = 0 ) {
         global $wpdb;
 
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
+
         $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
+
+        $type_filter = $is_hpos ? '' : "AND o.post_type = 'shop_order'";
+        $status_value = $is_hpos ? 'wc-completed' : 'wc-completed';
 
         $total = $wpdb->get_var( "
             SELECT SUM(CAST(om.meta_value AS DECIMAL(10,2)))
             FROM {$wpdb->prefix}woocommerce_order_itemmeta AS om
             INNER JOIN {$wpdb->prefix}woocommerce_order_items AS oi ON om.order_item_id = oi.order_item_id
-            INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
+            INNER JOIN {$tables['orders']} AS o ON oi.order_id = o.{$tables['id_column']}
             WHERE om.meta_key = '_line_total'
             AND oi.order_item_type = 'line_item'
-            AND p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
+            {$type_filter}
+            AND o.{$tables['status_column']} = '{$status_value}'
             {$date_filter}
         " );
 
@@ -41,47 +82,44 @@ class Skyweb_Donation_Dashboard {
      * Get total number of donations
      */
     public static function get_donation_count( $days = 0 ) {
-        global $wpdb;
+        $args = [
+            'status' => 'completed',
+            'limit'  => -1,
+            'return' => 'ids',
+        ];
 
-        $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $args['date_created'] = '>=' . date( 'Y-m-d', strtotime( "-{$days} days" ) );
         }
 
-        $count = $wpdb->get_var( "
-            SELECT COUNT(*)
-            FROM {$wpdb->posts}
-            WHERE post_type = 'shop_order'
-            AND post_status = 'wc-completed'
-            {$date_filter}
-        " );
-
-        return $count ? intval( $count ) : 0;
+        $orders = wc_get_orders( $args );
+        return count( $orders );
     }
 
     /**
      * Get unique donors count
      */
     public static function get_donors_count( $days = 0 ) {
-        global $wpdb;
+        $args = [
+            'status' => 'completed',
+            'limit'  => -1,
+        ];
 
-        $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $args['date_created'] = '>=' . date( 'Y-m-d', strtotime( "-{$days} days" ) );
         }
 
-        $count = $wpdb->get_var( "
-            SELECT COUNT(DISTINCT pm.meta_value)
-            FROM {$wpdb->postmeta} AS pm
-            INNER JOIN {$wpdb->posts} AS p ON pm.post_id = p.ID
-            WHERE pm.meta_key = '_billing_email'
-            AND p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm.meta_value != ''
-            {$date_filter}
-        " );
+        $orders = wc_get_orders( $args );
+        $emails = [];
 
-        return $count ? intval( $count ) : 0;
+        foreach ( $orders as $order ) {
+            $email = $order->get_billing_email();
+            if ( ! empty( $email ) ) {
+                $emails[ $email ] = true;
+            }
+        }
+
+        return count( $emails );
     }
 
     /**
@@ -100,19 +138,37 @@ class Skyweb_Donation_Dashboard {
     public static function get_donations_by_date( $days = 30 ) {
         global $wpdb;
 
-        $results = $wpdb->get_results( $wpdb->prepare( "
-            SELECT DATE(p.post_date) as donation_date,
-                   COUNT(*) as donation_count,
-                   SUM(CAST(pm.meta_value AS DECIMAL(10,2))) as donation_total
-            FROM {$wpdb->posts} AS p
-            INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm.meta_key = '_order_total'
-            AND p.post_date >= %s
-            GROUP BY DATE(p.post_date)
-            ORDER BY donation_date ASC
-        ", date( 'Y-m-d', strtotime( "-{$days} days" ) ) ), ARRAY_A );
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
+        $type_filter = $is_hpos ? '' : "AND o.post_type = 'shop_order'";
+        $status_value = 'wc-completed';
+
+        if ( $is_hpos ) {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT DATE(o.date_created_gmt) as donation_date,
+                       COUNT(*) as donation_count,
+                       SUM(o.total_amount) as donation_total
+                FROM {$tables['orders']} AS o
+                WHERE o.status = %s
+                AND o.date_created_gmt >= %s
+                GROUP BY DATE(o.date_created_gmt)
+                ORDER BY donation_date ASC
+            ", $status_value, date( 'Y-m-d', strtotime( "-{$days} days" ) ) ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT DATE(o.post_date) as donation_date,
+                       COUNT(*) as donation_count,
+                       SUM(CAST(pm.meta_value AS DECIMAL(10,2))) as donation_total
+                FROM {$wpdb->posts} AS o
+                INNER JOIN {$wpdb->postmeta} AS pm ON o.ID = pm.post_id
+                WHERE o.post_type = 'shop_order'
+                AND o.post_status = %s
+                AND pm.meta_key = '_order_total'
+                AND o.post_date >= %s
+                GROUP BY DATE(o.post_date)
+                ORDER BY donation_date ASC
+            ", $status_value, date( 'Y-m-d', strtotime( "-{$days} days" ) ) ), ARRAY_A );
+        }
 
         // Fill in missing dates with zeros
         $data = [];
@@ -383,32 +439,22 @@ class Skyweb_Donation_Dashboard {
         $current_count = self::get_donation_count( $days );
         $current_donors = self::get_donors_count( $days );
 
-        // Get previous period stats
-        global $wpdb;
+        // Get previous period stats using HPOS-compatible wc_get_orders
         $start_previous = date( 'Y-m-d', strtotime( "-" . ( $days * 2 ) . " days" ) );
         $end_previous = date( 'Y-m-d', strtotime( "-{$days} days" ) );
 
-        $previous_total = $wpdb->get_var( $wpdb->prepare( "
-            SELECT SUM(CAST(pm.meta_value AS DECIMAL(10,2)))
-            FROM {$wpdb->posts} AS p
-            INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm.meta_key = '_order_total'
-            AND p.post_date >= %s
-            AND p.post_date < %s
-        ", $start_previous, $end_previous ) );
-        $previous_total = $previous_total ? floatval( $previous_total ) : 0;
+        $previous_orders = wc_get_orders( [
+            'status'       => 'completed',
+            'date_created' => $start_previous . '...' . $end_previous,
+            'limit'        => -1,
+        ] );
 
-        $previous_count = $wpdb->get_var( $wpdb->prepare( "
-            SELECT COUNT(*)
-            FROM {$wpdb->posts}
-            WHERE post_type = 'shop_order'
-            AND post_status = 'wc-completed'
-            AND post_date >= %s
-            AND post_date < %s
-        ", $start_previous, $end_previous ) );
-        $previous_count = $previous_count ? intval( $previous_count ) : 0;
+        $previous_total = 0;
+        foreach ( $previous_orders as $order ) {
+            $previous_total += floatval( $order->get_total() );
+        }
+
+        $previous_count = count( $previous_orders );
 
         return [
             'total' => [

@@ -122,3 +122,13 @@ final class SkyDonate {
 add_action( 'plugins_loaded', function () {
     SkyDonate::instance();
 }, 20 );
+
+/**
+ * Plugin deactivation cleanup
+ */
+register_deactivation_hook( __FILE__, function () {
+    // Clear currency changer scheduled events
+    if ( class_exists( 'Skyweb_Currency_Changer' ) ) {
+        Skyweb_Currency_Changer::deactivate();
+    }
+} );

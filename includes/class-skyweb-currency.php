@@ -71,7 +71,7 @@ class Skyweb_Currency_Changer {
                 $formatted[ $code ] = floatval( $rate_info['value'] );
             }
             update_option( 'skyweb_currency_rates', [
-                'timestamp' => current_time( 'timestamp' ),
+                'timestamp' => time(),
                 'rates'     => $formatted,
             ] );
         }
@@ -289,12 +289,12 @@ class Skyweb_Currency_Changer {
 
         $currency = sanitize_text_field($_POST['currency']);
 
-        // Save in cookie (1 day)
+        // Save in cookie (1 month - consistent with initial cookie)
         if (!headers_sent()) {
             setcookie(
                 'skyweb_selected_currency',
                 $currency,
-                time() + DAY_IN_SECONDS,
+                time() + MONTH_IN_SECONDS,
                 COOKIEPATH ?: '/',
                 COOKIE_DOMAIN,
                 is_ssl(),
@@ -372,11 +372,13 @@ class Skyweb_Currency_Changer {
 
         return $currency;
     }
+    /**
+     * Cleanup scheduled events on plugin deactivation
+     * Call this method from the main plugin file's deactivation hook
+     */
+    public static function deactivate() {
+        wp_clear_scheduled_hook( 'skyweb_update_currency_rates' );
+    }
 }
 
 endif;
-
-// 🧹 Unschedule the cron when deactivating plugin
-register_deactivation_hook( __FILE__, function() {
-    wp_clear_scheduled_hook( 'skyweb_update_currency_rates' );
-});

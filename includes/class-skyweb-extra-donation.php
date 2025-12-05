@@ -110,6 +110,7 @@ class Skyweb_Extra_Donation_Settings {
         $title      = sanitize_text_field($_POST['title'] ?? '');
         $frequency  = sanitize_text_field($_POST['donation_frequency'] ?? '');
         $name_on_plaque = sanitize_text_field($_POST['name_on_plaque'] ?? '');
+        $start_date = sanitize_text_field($_POST['start_date'] ?? '');
         $end_date   = sanitize_text_field($_POST['end_date'] ?? '');
 
         if (!$product_id || !$amount) {
@@ -224,6 +225,11 @@ class Skyweb_Extra_Donation_Settings {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('skyweb_donation_nonce')
         ]);
+
+        // Enqueue the script on checkout and cart pages
+        if ( is_checkout() || is_cart() ) {
+            wp_enqueue_script('extra-donation');
+        }
     }
 }
 

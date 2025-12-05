@@ -129,6 +129,7 @@ class Skyweb_Donation_Gift_Aid {
             </p>
 
             <form id="gift-aid-form" class="skyweb-gift-aid-form" method="post">
+                <?php wp_nonce_field( 'save_account_data', 'gift_aid_nonce' ); ?>
                 <p class="form-row skyweb-gift-aid-checkbox-row">
                     <label class="sky-smart-switch checkbox">
                         <input type="checkbox"
@@ -136,8 +137,8 @@ class Skyweb_Donation_Gift_Aid {
                             name="gift_aid_status"
                             value="yes"
                             <?php
-                                // If user already has it enabled or admin default says "checked"
-                                checked( $gift_aid === 'yes' || ( $gift_aid === 'no' && $default_checked === 1 ) );
+                                // Only check if user explicitly enabled it (not based on default for existing users)
+                                checked( $gift_aid, 'yes' );
                             ?>
                         >
                         <span class="switch"></span>
@@ -272,27 +273,21 @@ class Skyweb_Donation_Gift_Aid {
         $offset = ($paged - 1) * $limit;
 
         // Allowed order statuses (only completed and renewal)
-        $allowed_statuses = array('wc-completed', 'wc-renewal');
+        $allowed_statuses = array('completed', 'renewal');
 
-        // Query eligible orders
+        // Query eligible orders using HPOS-compatible wc_get_orders
         $args = array(
-            'post_type'      => 'shop_order',
-            'posts_per_page' => $limit,
-            'offset'         => $offset,
-            'post_status'    => $allowed_statuses,
-            'meta_query'     => array(
-                array(
-                    'key'     => 'gift_aid_it',
-                    'value'   => 'yes',
-                    'compare' => '=',
-                ),
-            ),
-            'fields' => 'ids',
-            'orderby' => 'ID',
-            'order' => 'ASC',
+            'limit'       => $limit,
+            'offset'      => $offset,
+            'status'      => $allowed_statuses,
+            'meta_key'    => 'gift_aid_it',
+            'meta_value'  => 'yes',
+            'return'      => 'ids',
+            'orderby'     => 'ID',
+            'order'       => 'ASC',
         );
 
-        $order_ids = get_posts( $args );
+        $order_ids = wc_get_orders( $args );
 
         if ( empty( $order_ids ) ) {
             wp_send_json_success([
@@ -347,7 +342,7 @@ class Skyweb_Donation_Gift_Aid {
             wp_send_json_error('Invalid nonce');
         }
 
-        if ( ! current_user_can('administrator') ) {
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
             wp_send_json_error('Permission denied');
         }
 
@@ -361,32 +356,22 @@ class Skyweb_Donation_Gift_Aid {
             wp_send_json_error('Please provide both start and end dates.');
         }
 
-        $allowed_statuses = ['wc-completed', 'wc-renewal'];
+        $allowed_statuses = ['completed', 'renewal'];
 
+        // Query eligible orders using HPOS-compatible wc_get_orders
         $args = [
-            'post_type'      => 'shop_order',
-            'posts_per_page' => $limit,
-            'offset'         => $offset,
-            'post_status'    => $allowed_statuses,
-            'meta_query'     => [
-                [
-                    'key'   => 'gift_aid_it',
-                    'value' => 'yes',
-                ],
-            ],
-            'date_query' => [
-                [
-                    'after'     => $start_date . ' 00:00:00',
-                    'before'    => $end_date . ' 23:59:59',
-                    'inclusive' => true,
-                ],
-            ],
-            'fields' => 'ids',
-            'orderby' => 'ID',
-            'order' => 'ASC',
+            'limit'       => $limit,
+            'offset'      => $offset,
+            'status'      => $allowed_statuses,
+            'meta_key'    => 'gift_aid_it',
+            'meta_value'  => 'yes',
+            'date_created' => $start_date . '...' . $end_date,
+            'return'      => 'ids',
+            'orderby'     => 'ID',
+            'order'       => 'ASC',
         ];
 
-        $order_ids = get_posts($args);
+        $order_ids = wc_get_orders($args);
 
         if ( empty( $order_ids ) ) {
             wp_send_json_success([
