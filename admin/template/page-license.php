@@ -38,7 +38,7 @@ $expires      = $data['expires'] ?? '';
                             name="skydonate_license_key"
                             id="skydonate_license_key"
                             class="license-activation-form__input"
-                            placeholder="XXXX-XXXX-XXXX-XXXX"
+                            placeholder="SKY-XXXX-XXXX-XXXX-XXXX"
                             value="<?php echo $has_license ? esc_attr( $license_info['key'] ) : ''; ?>"
                             autocomplete="off"
                         />
