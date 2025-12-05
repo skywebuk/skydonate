@@ -43,9 +43,10 @@ class SkyDonate_License_Client {
 
         // Make API request
         $response = wp_remote_post( $this->server_url . '/?sky_license_validate=1', array(
-            'method'  => 'POST',
-            'timeout' => 30,
-            'headers' => array(
+            'method'    => 'POST',
+            'timeout'   => 30,
+            'sslverify' => false,
+            'headers'   => array(
                 'Content-Type' => 'application/json',
             ),
             'body' => wp_json_encode( array(
@@ -90,9 +91,10 @@ class SkyDonate_License_Client {
         $domain = wp_parse_url( home_url(), PHP_URL_HOST );
 
         $response = wp_remote_post( $this->server_url . '/?sky_license_activate=1', array(
-            'method'  => 'POST',
-            'timeout' => 30,
-            'headers' => array(
+            'method'    => 'POST',
+            'timeout'   => 30,
+            'sslverify' => false,
+            'headers'   => array(
                 'Content-Type' => 'application/json',
             ),
             'body' => wp_json_encode( array(
@@ -158,9 +160,10 @@ class SkyDonate_License_Client {
         $domain = wp_parse_url( home_url(), PHP_URL_HOST );
 
         $response = wp_remote_post( $this->server_url . '/?sky_license_deactivate=1', array(
-            'method'  => 'POST',
-            'timeout' => 30,
-            'headers' => array(
+            'method'    => 'POST',
+            'timeout'   => 30,
+            'sslverify' => false,
+            'headers'   => array(
                 'Content-Type' => 'application/json',
             ),
             'body' => wp_json_encode( array(
