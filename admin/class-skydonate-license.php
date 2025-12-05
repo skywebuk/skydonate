@@ -65,22 +65,14 @@ class SkyDonate_License_Admin {
             return;
         }
 
-        wp_enqueue_style(
-            'skydonate-license-admin',
-            SKYDONATE_PLUGIN_URL . 'assets/css/license-admin.css',
-            array(),
-            SKYDONATE_VERSION
-        );
+        // Use correct constants
+        $plugin_url = defined( 'SKYWEB_DONATION_SYSTEM_URL' ) ? SKYWEB_DONATION_SYSTEM_URL : plugin_dir_url( dirname( __FILE__ ) );
+        $version = defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ? SKYWEB_DONATION_SYSTEM_VERSION : '1.0.0';
 
-        wp_enqueue_script(
-            'skydonate-license-admin',
-            SKYDONATE_PLUGIN_URL . 'assets/js/license-admin.js',
-            array( 'jquery' ),
-            SKYDONATE_VERSION,
-            true
-        );
+        // Styles are inline in the template, so no external CSS needed
+        // Scripts are inline in the template as well
 
-        wp_localize_script( 'skydonate-license-admin', 'skydonateLicense', array(
+        wp_localize_script( 'jquery', 'skydonateLicense', array(
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
             'nonce'   => wp_create_nonce( 'skydonate_license_nonce' ),
             'i18n'    => array(
@@ -388,18 +380,35 @@ class SkyDonate_License_Admin {
             $masked = substr( $key, 0, 12 ) . str_repeat( '*', max( 0, strlen( $key ) - 16 ) ) . substr( $key, -4 );
         }
 
+        // Get update info if available
+        $update_available = false;
+        $latest_version = '';
+        $current_version = defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ? SKYWEB_DONATION_SYSTEM_VERSION : '1.0.0';
+        if ( function_exists( 'skydonate_updater' ) && $is_valid ) {
+            $updater = skydonate_updater();
+            $update_available = $updater->is_update_available();
+            $latest_version = $updater->get_available_version();
+        }
+
+        // Get plugin info from license data
+        $plugin_info = $data['plugin_info'] ?? array();
+
         return array(
-            'key'          => $key,
-            'masked_key'   => $masked,
-            'status'       => $status,
-            'is_valid'     => $is_valid,
-            'data'         => $data,
-            'features'     => $data['features'] ?? array(),
-            'widgets'      => $data['widgets'] ?? array(),
-            'layouts'      => $data['layouts'] ?? array(),
-            'capabilities' => $data['capabilities'] ?? array(),
-            'expires'      => $data['expires'] ?? '',
-            'message'      => $data['message'] ?? '',
+            'key'              => $key,
+            'masked_key'       => $masked,
+            'status'           => $status,
+            'is_valid'         => $is_valid,
+            'data'             => $data,
+            'features'         => $data['features'] ?? array(),
+            'widgets'          => $data['widgets'] ?? array(),
+            'layouts'          => $data['layouts'] ?? array(),
+            'capabilities'     => $data['capabilities'] ?? array(),
+            'expires'          => $data['expires'] ?? '',
+            'message'          => $data['message'] ?? '',
+            'current_version'  => $current_version,
+            'latest_version'   => $latest_version ?: $current_version,
+            'update_available' => $update_available,
+            'plugin_info'      => $plugin_info,
         );
     }
 

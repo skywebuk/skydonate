@@ -28,36 +28,83 @@ add_action( 'wp_enqueue_scripts', function() {
 });
 
 
-function sky_status_check($option) {
-    if (sky_setup_check($option) ) {
-        return get_option($option) == 1;
+/**
+ * Check if a feature is enabled (considers both license and local settings)
+ *
+ * @param string $option Feature option name
+ * @return bool True if feature is enabled
+ */
+function sky_status_check( $option ) {
+    // First check if license allows this feature
+    if ( function_exists( 'skydonate_license' ) ) {
+        $license = skydonate_license();
+        if ( $license->is_active() ) {
+            // Check license-based feature permission
+            if ( ! $license->has_feature( $option ) ) {
+                return false;
+            }
+        }
+    }
+
+    // Then check local setup and option settings
+    if ( sky_setup_check( $option ) ) {
+        return get_option( $option ) == 1;
     }
     return false;
 }
-function sky_setup_check($option) {
-	$option = 'setup_'.$option;
-	return skyweb_donation_setting_up($option) == 1;
-}
-function sky_widget_status_check($option) {
-	$default_widgets = [
-		'zakat_calculator' => 'yes',
-		'zakat_calculator_classic' => 'yes',
-		'metal_values' => 'yes',
-		'recent_order' => 'yes',
-		'donation_progress' => 'yes',
-		'donation_form' => 'yes',
-		'donation_card' => 'yes',
-		'impact_slider' => 'yes',
-		'qurbani_status' => 'yes',
-		'extra_donation' => 'yes',
-		'donation_button' => 'yes',
-		'icon_slider' => 'yes',
-	];
 
-	// Retrieve and merge saved options with defaults
-	$widgets = wp_parse_args(get_option('skydonation_widgets', []), $default_widgets);
-	// Check widget status
-	return isset($widgets[$option]) && $widgets[$option] === 'on';
+/**
+ * Check if feature is enabled in setup
+ *
+ * @param string $option Option key
+ * @return bool True if setup allows feature
+ */
+function sky_setup_check( $option ) {
+    $option = 'setup_' . $option;
+    return skyweb_donation_setting_up( $option ) == 1;
+}
+
+/**
+ * Check if a widget is enabled (considers both license and local settings)
+ *
+ * @param string $option Widget option name
+ * @return bool True if widget is enabled
+ */
+function sky_widget_status_check( $option ) {
+    // First check if license allows this widget
+    if ( function_exists( 'skydonate_license' ) ) {
+        $license = skydonate_license();
+        if ( $license->is_active() ) {
+            // Check license-based widget permission
+            if ( ! $license->has_widget( $option ) ) {
+                return false;
+            }
+        }
+    }
+
+    // Default widgets list
+    $default_widgets = array(
+        'zakat_calculator'         => 'yes',
+        'zakat_calculator_classic' => 'yes',
+        'metal_values'             => 'yes',
+        'recent_order'             => 'yes',
+        'donation_progress'        => 'yes',
+        'donation_form'            => 'yes',
+        'donation_card'            => 'yes',
+        'impact_slider'            => 'yes',
+        'qurbani_status'           => 'yes',
+        'extra_donation'           => 'yes',
+        'quick_donation'           => 'yes',
+        'gift_aid_toggle'          => 'yes',
+        'donation_button'          => 'yes',
+        'icon_slider'              => 'yes',
+    );
+
+    // Retrieve and merge saved options with defaults
+    $widgets = wp_parse_args( get_option( 'skydonation_widgets', array() ), $default_widgets );
+
+    // Check widget status
+    return isset( $widgets[ $option ] ) && $widgets[ $option ] === 'on';
 }
 
 
@@ -172,16 +219,29 @@ function license_authenticate(){
 	}
 }
 
-function skyweb_donation_layout_option($option_key) {
-	// if($option_key == 'addons_donation_form_layout'){
-	// 	return ['layout2'];
-	// }
-	// if($option_key == 'recent_donation_layout'){
-	// 	return ['layout1'];
-	// }
-    $options = skyweb_donation_setting_up('options');
-    if (isset($options[$option_key])) {
-        return $options[$option_key];
+/**
+ * Get layout option for a component (considers license layouts)
+ *
+ * @param string $option_key Layout option key
+ * @return array|string Layout value(s)
+ */
+function skyweb_donation_layout_option( $option_key ) {
+    // First check if license specifies a layout
+    if ( function_exists( 'skydonate_license' ) ) {
+        $license = skydonate_license();
+        if ( $license->is_active() ) {
+            $license_layout = $license->get_layout( $option_key );
+            if ( $license_layout && $license_layout !== 'layout-1' ) {
+                // Return as array for consistency
+                return is_array( $license_layout ) ? $license_layout : array( $license_layout );
+            }
+        }
+    }
+
+    // Fall back to local options
+    $options = skyweb_donation_setting_up( 'options' );
+    if ( isset( $options[ $option_key ] ) ) {
+        return $options[ $option_key ];
     }
     return array();
 }

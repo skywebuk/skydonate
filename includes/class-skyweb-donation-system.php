@@ -29,10 +29,19 @@ class Skyweb_Donation_System {
 		$this->include_file('includes/class-skyweb-donation-system-i18n.php');
 
 		$this->include_file('includes/class-skydonate-license-client.php');
+		$this->include_file('includes/class-skydonate-updater.php');
 		$this->include_file('admin/class-skydonate-admin.php');
 		$this->include_file('admin/class-skydonate-settings.php');
 		$this->include_file('admin/class-skydonate-dashboard.php');
 		$this->include_file('admin/class-skydonate-license.php');
+
+		// Initialize license and updater
+		if ( function_exists( 'skydonate_license' ) ) {
+			skydonate_license();
+		}
+		if ( function_exists( 'skydonate_updater' ) ) {
+			skydonate_updater();
+		}
 
 		$this->include_file('public/class-skyweb-donation-system-public.php');
 

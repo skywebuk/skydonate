@@ -8,11 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $info = SkyDonate_License_Admin::get_info();
-
-echo '<pre>';
-print_r( $info );
-echo '</pre>';
-
 $is_valid = $info['is_valid'];
 $nonce = wp_create_nonce( 'skydonate_license_nonce' );
 
@@ -32,6 +27,11 @@ if ( ! empty( $info['expires'] ) ) {
     $expires_days_left = max( 0, ceil( ( $expires_timestamp - time() ) / DAY_IN_SECONDS ) );
     $is_expiring_soon = $expires_days_left <= 30 && $expires_days_left > 0;
 }
+
+// Version info
+$current_version = $info['current_version'] ?? '1.0.0';
+$latest_version = $info['latest_version'] ?? $current_version;
+$update_available = $info['update_available'] ?? false;
 ?>
 
 <div class="skydonate-license-page <?php echo ! $is_valid ? 'license-inactive' : ''; ?>">
@@ -195,6 +195,24 @@ if ( ! empty( $info['expires'] ) ) {
                     <span class="stat-label"><?php esc_html_e( 'Layouts', 'skydonate' ); ?></span>
                 </div>
                 <?php endif; ?>
+                <div class="stat-item <?php echo $update_available ? 'has-update' : ''; ?>">
+                    <span class="stat-value">
+                        <?php echo esc_html( $current_version ); ?>
+                        <?php if ( $update_available ) : ?>
+                            <span class="dashicons dashicons-arrow-right-alt" style="font-size:16px;width:16px;height:16px;color:var(--sky-success);"></span>
+                            <span style="color:var(--sky-success);"><?php echo esc_html( $latest_version ); ?></span>
+                        <?php endif; ?>
+                    </span>
+                    <span class="stat-label">
+                        <?php if ( $update_available ) : ?>
+                            <a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>" style="color:var(--sky-success);text-decoration:none;">
+                                <?php esc_html_e( 'Update Available', 'skydonate' ); ?>
+                            </a>
+                        <?php else : ?>
+                            <?php esc_html_e( 'Version', 'skydonate' ); ?>
+                        <?php endif; ?>
+                    </span>
+                </div>
             </div>
 
             <!-- Features Section -->

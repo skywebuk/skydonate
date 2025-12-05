@@ -95,6 +95,12 @@ final class SkyDonate {
         $this->define_const( 'SKYWEB_DONATION_SYSTEM_ASSETS', SKYWEB_DONATION_SYSTEM_URL . 'public' );
 
         $this->define_const( 'SKYWEB_DONATION_SYSTEM_OPTION_URL', admin_url( 'admin-post.php' ) );
+
+        // Alias constants for license system compatibility
+        $this->define_const( 'SKYDONATE_VERSION', self::VERSION );
+        $this->define_const( 'SKYDONATE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        $this->define_const( 'SKYDONATE_PLUGIN_FILE', __FILE__ );
+        $this->define_const( 'SKYDONATE_PLUGIN_BASE', plugin_basename( __FILE__ ) );
     }
 
     private function define_const( $key, $value ) {
