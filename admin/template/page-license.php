@@ -8,6 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $info = SkyDonate_License_Admin::get_info();
+
+echo '<pre>';
+print_r( $info );
+echo '</pre>';
+
 $is_valid = $info['is_valid'];
 $nonce = wp_create_nonce( 'skydonate_license_nonce' );
 
@@ -1042,20 +1047,151 @@ if ( ! empty( $info['expires'] ) ) {
 }
 
 /* Capabilities */
+/* Capabilities List */
 .license-capabilities-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--sky-space-3);
 }
 
+/* Capability Item */
 .license-capability {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: var(--sky-space-4);
+    padding: var(--sky-space-4) var(--sky-space-5);
     background: var(--sky-gray-50);
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
+    transition: var(--sky-transition);
 }
+
+.license-capability:hover {
+    background: var(--sky-gray-100);
+}
+
+.license-capability.enabled {
+    background: rgba(16, 185, 129, 0.06);
+}
+
+.license-capability.enabled:hover {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.license-capability.disabled {
+    background: var(--sky-gray-50);
+}
+
+/* Toggle Switch */
+.capability-toggle {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.capability-toggle .toggle-track {
+    display: block;
+    width: 44px;
+    height: 24px;
+    background: var(--sky-gray-300);
+    border-radius: var(--sky-radius-full);
+    position: relative;
+    transition: var(--sky-transition);
+    cursor: default;
+}
+
+.capability-toggle.on .toggle-track {
+    background: var(--sky-success);
+}
+
+.capability-toggle.off .toggle-track {
+    background: var(--sky-gray-300);
+}
+
+.capability-toggle .toggle-thumb {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: var(--sky-radius-full);
+    top: 3px;
+    left: 3px;
+    transition: var(--sky-transition);
+    box-shadow: var(--sky-shadow-sm), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.capability-toggle.on .toggle-thumb {
+    transform: translateX(20px);
+}
+
+/* Capability Name */
+.capability-name {
+    flex: 1;
+    font-size: var(--sky-font-size-sm);
+    font-weight: 500;
+    color: var(--sky-gray-700);
+}
+
+.license-capability.enabled .capability-name {
+    color: var(--sky-gray-800);
+}
+
+.license-capability.disabled .capability-name {
+    color: var(--sky-gray-500);
+}
+
+/* Capability Status */
+.capability-status {
+    font-size: var(--sky-font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: var(--sky-space-1) var(--sky-space-3);
+    border-radius: var(--sky-radius-full);
+    min-width: 44px;
+    text-align: center;
+}
+
+.license-capability.enabled .capability-status {
+    color: var(--sky-success);
+    background: var(--sky-success-light);
+}
+
+.license-capability.disabled .capability-status {
+    color: var(--sky-gray-500);
+    background: var(--sky-gray-200);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .license-capability {
+        padding: var(--sky-space-3) var(--sky-space-4);
+        gap: var(--sky-space-3);
+    }
+    
+    .capability-toggle .toggle-track {
+        width: 38px;
+        height: 20px;
+    }
+    
+    .capability-toggle .toggle-thumb {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .capability-toggle.on .toggle-thumb {
+        transform: translateX(18px);
+    }
+    
+    .capability-name {
+        font-size: var(--sky-font-size-xs);
+    }
+    
+    .capability-status {
+        font-size: 10px;
+        padding: 2px var(--sky-space-2);
+    }
+}
+
 
 /* Badges */
 .skydonate-badge {
