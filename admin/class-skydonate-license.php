@@ -42,24 +42,33 @@ class SkyDonate_License_Admin {
         $license_key = sanitize_text_field( $_POST['skydonate_license_key'] ?? '' );
 
         $client = skydonate_license_client();
+        $redirect_url = admin_url( 'admin.php?page=skydonation' );
+        $message_type = '';
+        $message = '';
 
         switch ( $action ) {
             case 'activate':
                 if ( ! empty( $license_key ) ) {
                     $result = $client->activate_license( $license_key );
-                    if ( ! empty( $result['success'] ) ) {
-                        add_settings_error( 'skydonate_license', 'license_activated', __( 'License activated successfully!', 'skydonate' ), 'success' );
+                    if ( ! empty( $result['success'] ) && $result['status'] === 'valid' ) {
+                        $message_type = 'activated';
+                        $message = 'success';
                     } else {
-                        add_settings_error( 'skydonate_license', 'license_error', $result['message'] ?? __( 'Failed to activate license.', 'skydonate' ), 'error' );
+                        $message_type = 'error';
+                        $message = urlencode( $result['message'] ?? __( 'Failed to activate license.', 'skydonate' ) );
                     }
+                } else {
+                    $message_type = 'error';
+                    $message = urlencode( __( 'Please enter a license key.', 'skydonate' ) );
                 }
                 break;
 
             case 'deactivate':
                 $saved_key = get_option( 'skydonate_license_key', '' );
                 if ( ! empty( $saved_key ) ) {
-                    $result = $client->deactivate_license( $saved_key );
-                    add_settings_error( 'skydonate_license', 'license_deactivated', __( 'License deactivated.', 'skydonate' ), 'info' );
+                    $client->deactivate_license( $saved_key );
+                    $message_type = 'deactivated';
+                    $message = 'success';
                 }
                 break;
 
@@ -68,17 +77,30 @@ class SkyDonate_License_Admin {
                 if ( ! empty( $saved_key ) ) {
                     $client->clear_cache();
                     $client->validate_license( $saved_key, true );
-                    add_settings_error( 'skydonate_license', 'license_refreshed', __( 'License data refreshed.', 'skydonate' ), 'success' );
+                    $message_type = 'refreshed';
+                    $message = 'success';
                 }
+                $redirect_url = admin_url( 'admin.php?page=skydonation-license' );
                 break;
         }
+
+        // Redirect with message
+        if ( $message_type ) {
+            $redirect_url = add_query_arg( array(
+                'skydonate_message' => $message_type,
+                'skydonate_status'  => $message,
+            ), $redirect_url );
+        }
+
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     /**
      * AJAX: Validate license
      */
     public function ajax_validate_license() {
-        check_ajax_referer( 'skydonate_license_nonce', 'nonce' );
+        check_ajax_referer( 'skydonate_license_action', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -100,7 +122,7 @@ class SkyDonate_License_Admin {
      * AJAX: Activate license
      */
     public function ajax_activate_license() {
-        check_ajax_referer( 'skydonate_license_nonce', 'nonce' );
+        check_ajax_referer( 'skydonate_license_action', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -122,7 +144,7 @@ class SkyDonate_License_Admin {
      * AJAX: Deactivate license
      */
     public function ajax_deactivate_license() {
-        check_ajax_referer( 'skydonate_license_nonce', 'nonce' );
+        check_ajax_referer( 'skydonate_license_action', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( array( 'message' => 'Unauthorized' ) );
@@ -144,7 +166,7 @@ class SkyDonate_License_Admin {
      * AJAX: Refresh license
      */
     public function ajax_refresh_license() {
-        check_ajax_referer( 'skydonate_license_nonce', 'nonce' );
+        check_ajax_referer( 'skydonate_license_action', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( array( 'message' => 'Unauthorized' ) );

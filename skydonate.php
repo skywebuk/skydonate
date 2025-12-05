@@ -3,7 +3,7 @@
  * Plugin Name:       SkyDonate
  * Plugin URI:        https://skywebdesign.co.uk/
  * Description:       A secure, user-friendly donation system built to simplify and manage charitable contributions.
- * Version:           1.2.2
+ * Version:           1.2.3
  * Author:            Sky Web Design
  * Author URI:        https://skywebdesign.co.uk/
  * Text Domain:       skydonate
@@ -62,7 +62,7 @@ if ( ! skydonate_is_wc_active() ) {
  */
 final class SkyDonate {
 
-    const VERSION = '1.2.2';
+    const VERSION = '1.2.3';
     private static $instance = null;
 
     public static function instance() {

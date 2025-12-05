@@ -15,9 +15,45 @@ $widgets      = $data['widgets'] ?? array();
 $layouts      = $data['layouts'] ?? array();
 $capabilities = $data['capabilities'] ?? array();
 $expires      = $data['expires'] ?? '';
+
+// Handle URL messages
+$message_type = isset( $_GET['skydonate_message'] ) ? sanitize_text_field( $_GET['skydonate_message'] ) : '';
+$message_status = isset( $_GET['skydonate_status'] ) ? sanitize_text_field( $_GET['skydonate_status'] ) : '';
 ?>
 
 <div class="skydonate-license-page <?php echo ! $is_valid ? 'license-page--inactive' : ''; ?>">
+
+    <?php if ( $message_type ) : ?>
+        <?php
+        $notice_class = 'notice-info';
+        $notice_message = '';
+
+        switch ( $message_type ) {
+            case 'activated':
+                $notice_class = 'notice-success';
+                $notice_message = __( 'License activated successfully!', 'skydonate' );
+                break;
+            case 'deactivated':
+                $notice_class = 'notice-info';
+                $notice_message = __( 'License deactivated.', 'skydonate' );
+                break;
+            case 'refreshed':
+                $notice_class = 'notice-success';
+                $notice_message = __( 'License data refreshed.', 'skydonate' );
+                break;
+            case 'error':
+                $notice_class = 'notice-error';
+                $notice_message = urldecode( $message_status );
+                break;
+        }
+
+        if ( $notice_message ) :
+        ?>
+            <div class="notice <?php echo esc_attr( $notice_class ); ?> is-dismissible" style="margin: 15px 0;">
+                <p><?php echo esc_html( $notice_message ); ?></p>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
 
     <?php if ( ! $is_valid ) : ?>
         <!-- Inactive License - Centered Activation Form -->
