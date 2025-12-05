@@ -105,18 +105,40 @@ class SkyDonate_License_Client {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => $response->get_error_message(),
+                'message' => 'Connection error: ' . $response->get_error_message(),
             );
         }
 
+        $response_code = wp_remote_retrieve_response_code( $response );
         $body = wp_remote_retrieve_body( $response );
-        $data = json_decode( $body, true );
 
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
+        // Check for HTTP errors
+        if ( $response_code !== 200 ) {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Invalid response from license server',
+                'message' => 'Server returned HTTP ' . $response_code,
+            );
+        }
+
+        $data = json_decode( $body, true );
+
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            // Log the actual response for debugging
+            error_log( 'SkyDonate License Error - Invalid JSON response: ' . substr( $body, 0, 500 ) );
+            return array(
+                'success' => false,
+                'status'  => 'error',
+                'message' => 'Invalid response from license server. Please contact support.',
+            );
+        }
+
+        // Handle server error responses
+        if ( isset( $data['success'] ) && $data['success'] === false ) {
+            return array(
+                'success' => false,
+                'status'  => $data['status'] ?? 'error',
+                'message' => $data['message'] ?? 'License activation failed.',
             );
         }
 
