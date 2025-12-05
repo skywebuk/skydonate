@@ -9,6 +9,7 @@ $status       = $license_info['status'];
 $data         = $license_info['data'];
 $masked_key   = $license_info['masked_key'];
 
+$is_valid     = ( $status === 'valid' );
 $features     = $data['features'] ?? array();
 $widgets      = $data['widgets'] ?? array();
 $layouts      = $data['layouts'] ?? array();
@@ -16,111 +17,110 @@ $capabilities = $data['capabilities'] ?? array();
 $expires      = $data['expires'] ?? '';
 ?>
 
-<div class="skydonate-license-page">
+<div class="skydonate-license-page <?php echo ! $is_valid ? 'license-page--inactive' : ''; ?>">
 
-    <!-- Header -->
-    <div class="license-header">
-        <div class="license-header__content">
-            <h1 class="license-header__title">License Management</h1>
-            <p class="license-header__subtitle">Manage your SkyDonate license and view enabled features</p>
-        </div>
-        <div class="license-header__logo">
-            <span class="dashicons dashicons-shield"></span>
-        </div>
-    </div>
+    <?php if ( ! $is_valid ) : ?>
+        <!-- Inactive License - Centered Activation Form -->
+        <div class="license-activation-center">
+            <div class="license-activation-card">
+                <div class="license-activation-card__logo">
+                    <span class="dashicons dashicons-shield"></span>
+                </div>
+                <h1 class="license-activation-card__title">Activate SkyDonate</h1>
+                <p class="license-activation-card__subtitle">Enter your license key to unlock all premium features</p>
 
-    <!-- Status Card -->
-    <div class="license-status-card <?php echo esc_attr( 'status--' . $status ); ?>">
-        <div class="license-status-card__icon">
-            <?php if ( $status === 'valid' ) : ?>
-                <span class="dashicons dashicons-yes-alt"></span>
-            <?php elseif ( $status === 'expired' ) : ?>
-                <span class="dashicons dashicons-warning"></span>
-            <?php else : ?>
-                <span class="dashicons dashicons-dismiss"></span>
-            <?php endif; ?>
-        </div>
-        <div class="license-status-card__content">
-            <div class="license-status-card__status">
-                <?php echo SkyDonate_License_Admin::get_status_badge( $status ); ?>
+                <form method="post" action="" class="license-activation-form" id="skydonate-license-form">
+                    <?php wp_nonce_field( 'skydonate_license_action', 'skydonate_license_nonce' ); ?>
+
+                    <div class="license-activation-form__field">
+                        <input
+                            type="text"
+                            name="skydonate_license_key"
+                            id="skydonate_license_key"
+                            class="license-activation-form__input"
+                            placeholder="XXXX-XXXX-XXXX-XXXX"
+                            value="<?php echo $has_license ? esc_attr( $license_info['key'] ) : ''; ?>"
+                            autocomplete="off"
+                        />
+                    </div>
+
+                    <button type="submit" name="skydonate_license_action" value="activate" class="license-activation-form__button">
+                        <span class="dashicons dashicons-yes"></span> Activate License
+                    </button>
+
+                    <?php if ( $has_license && $status !== 'valid' ) : ?>
+                        <p class="license-activation-form__error">
+                            <span class="dashicons dashicons-warning"></span>
+                            <?php
+                            if ( $status === 'expired' ) {
+                                echo 'Your license has expired. Please renew to continue.';
+                            } elseif ( $status === 'invalid' ) {
+                                echo 'Invalid license key. Please check and try again.';
+                            } else {
+                                echo 'License validation failed. Please try again.';
+                            }
+                            ?>
+                        </p>
+                    <?php endif; ?>
+                </form>
+
+                <div class="license-activation-card__footer">
+                    <a href="https://skydonate.com" target="_blank">Get a license</a>
+                    <span class="separator">|</span>
+                    <a href="https://skydonate.com/support" target="_blank">Need help?</a>
+                </div>
             </div>
-            <h2 class="license-status-card__title">
-                <?php if ( $status === 'valid' ) : ?>
-                    Your license is active
-                <?php elseif ( $status === 'expired' ) : ?>
-                    Your license has expired
-                <?php elseif ( $has_license ) : ?>
-                    License validation failed
-                <?php else : ?>
-                    No license activated
-                <?php endif; ?>
-            </h2>
-            <?php if ( $has_license && $masked_key ) : ?>
-                <p class="license-status-card__key">
-                    <span class="key-label">License Key:</span>
-                    <code><?php echo esc_html( $masked_key ); ?></code>
-                </p>
-            <?php endif; ?>
-            <?php if ( $expires && $status === 'valid' ) : ?>
-                <p class="license-status-card__expires">
-                    <span class="dashicons dashicons-calendar-alt"></span>
-                    Expires: <?php echo esc_html( date( 'F j, Y', strtotime( $expires ) ) ); ?>
-                </p>
-            <?php endif; ?>
         </div>
-        <?php if ( $has_license && $status === 'valid' ) : ?>
+
+    <?php else : ?>
+        <!-- Active License - Full Dashboard -->
+
+        <!-- Header -->
+        <div class="license-header">
+            <div class="license-header__content">
+                <h1 class="license-header__title">License Management</h1>
+                <p class="license-header__subtitle">Manage your SkyDonate license and view enabled features</p>
+            </div>
+            <div class="license-header__logo">
+                <span class="dashicons dashicons-shield"></span>
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="license-status-card status--valid">
+            <div class="license-status-card__icon">
+                <span class="dashicons dashicons-yes-alt"></span>
+            </div>
+            <div class="license-status-card__content">
+                <div class="license-status-card__status">
+                    <?php echo SkyDonate_License_Admin::get_status_badge( $status ); ?>
+                </div>
+                <h2 class="license-status-card__title">Your license is active</h2>
+                <?php if ( $masked_key ) : ?>
+                    <p class="license-status-card__key">
+                        <span class="key-label">License Key:</span>
+                        <code><?php echo esc_html( $masked_key ); ?></code>
+                    </p>
+                <?php endif; ?>
+                <?php if ( $expires ) : ?>
+                    <p class="license-status-card__expires">
+                        <span class="dashicons dashicons-calendar-alt"></span>
+                        Expires: <?php echo esc_html( date( 'F j, Y', strtotime( $expires ) ) ); ?>
+                    </p>
+                <?php endif; ?>
+            </div>
             <div class="license-status-card__actions">
                 <button type="button" class="button button-secondary" id="skydonate-refresh-license">
                     <span class="dashicons dashicons-update"></span> Refresh
                 </button>
+                <form method="post" action="" style="display: inline;">
+                    <?php wp_nonce_field( 'skydonate_license_action', 'skydonate_license_nonce' ); ?>
+                    <button type="submit" name="skydonate_license_action" value="deactivate" class="button button-secondary button-deactivate">
+                        <span class="dashicons dashicons-no"></span> Deactivate
+                    </button>
+                </form>
             </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- License Form -->
-    <div class="license-form-card">
-        <h3 class="license-form-card__title">
-            <?php echo $has_license ? 'Update License' : 'Activate License'; ?>
-        </h3>
-
-        <form method="post" action="" class="license-form" id="skydonate-license-form">
-            <?php wp_nonce_field( 'skydonate_license_action', 'skydonate_license_nonce' ); ?>
-
-            <div class="license-form__input-group">
-                <input
-                    type="text"
-                    name="skydonate_license_key"
-                    id="skydonate_license_key"
-                    class="license-form__input"
-                    placeholder="Enter your license key"
-                    value="<?php echo $has_license ? esc_attr( $license_info['key'] ) : ''; ?>"
-                    autocomplete="off"
-                />
-                <div class="license-form__buttons">
-                    <?php if ( $has_license ) : ?>
-                        <button type="submit" name="skydonate_license_action" value="activate" class="button button-primary">
-                            <span class="dashicons dashicons-update"></span> Update
-                        </button>
-                        <button type="submit" name="skydonate_license_action" value="deactivate" class="button button-secondary button-deactivate">
-                            <span class="dashicons dashicons-no"></span> Deactivate
-                        </button>
-                    <?php else : ?>
-                        <button type="submit" name="skydonate_license_action" value="activate" class="button button-primary button-hero">
-                            <span class="dashicons dashicons-yes"></span> Activate License
-                        </button>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <p class="license-form__help">
-                <span class="dashicons dashicons-info"></span>
-                Enter your license key to unlock all features.
-                <a href="https://skydonate.com" target="_blank">Get a license</a>
-            </p>
-        </form>
-    </div>
-
-    <?php if ( $status === 'valid' && ! empty( $data ) ) : ?>
+        </div>
 
         <!-- Features Section -->
         <?php if ( ! empty( $features ) ) : ?>
@@ -238,47 +238,12 @@ $expires      = $data['expires'] ?? '';
         </div>
         <?php endif; ?>
 
-    <?php elseif ( ! $has_license ) : ?>
-
-        <!-- No License Placeholder -->
-        <div class="license-placeholder">
-            <div class="license-placeholder__icon">
-                <span class="dashicons dashicons-lock"></span>
-            </div>
-            <h3 class="license-placeholder__title">Unlock Premium Features</h3>
-            <p class="license-placeholder__description">
-                Activate your license to access all premium features, widgets, and layouts.
-            </p>
-            <div class="license-placeholder__features">
-                <div class="placeholder-feature">
-                    <span class="dashicons dashicons-yes"></span>
-                    All Elementor Widgets
-                </div>
-                <div class="placeholder-feature">
-                    <span class="dashicons dashicons-yes"></span>
-                    Premium Layouts
-                </div>
-                <div class="placeholder-feature">
-                    <span class="dashicons dashicons-yes"></span>
-                    Priority Support
-                </div>
-                <div class="placeholder-feature">
-                    <span class="dashicons dashicons-yes"></span>
-                    Automatic Updates
-                </div>
-            </div>
-            <a href="https://skydonate.com" target="_blank" class="button button-primary button-hero">
-                Get a License
-            </a>
-        </div>
-
     <?php endif; ?>
 
 </div>
 
 <script>
 jQuery(document).ready(function($) {
-    // Refresh license button
     $('#skydonate-refresh-license').on('click', function() {
         var $btn = $(this);
         var originalHtml = $btn.html();

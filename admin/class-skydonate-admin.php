@@ -261,10 +261,22 @@ class Skyweb_Donation_System_Admin {
      * Universal Template Loader
      */
     private function display_page_content( $template ) {
-        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
-            echo '<div class="skydonation-navigation-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
-            echo '</div>';
+        $extra_class = '';
+
+        // Check if license page and license is inactive - hide navigation
+        if ( $template === 'license' ) {
+            $license_status = skydonate_license_client()->get_license_status();
+            if ( $license_status !== 'valid' ) {
+                $extra_class = ' license-inactive';
+            }
+        }
+
+        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template' . esc_attr( $extra_class ) . '">';
+            if ( $template !== 'license' || $extra_class === '' ) {
+                echo '<div class="skydonation-navigation-wrapper">';
+                    include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
+                echo '</div>';
+            }
             echo '<div class="skydonation-content-wrapper">';
                 include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
