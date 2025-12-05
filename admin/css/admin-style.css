@@ -1956,391 +1956,407 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 /* ============================================
    License Page Styles
    ============================================ */
+.license-template .skydonation-content-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
 .skydonate-license-page {
     max-width: 1000px;
+    margin: 0;
 }
 
 /* License Header */
-.license-header {
+.skydonate-license-page .license-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--sky-space-6);
-    padding-bottom: var(--sky-space-6);
-    border-bottom: 1px solid var(--sky-gray-200);
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.license-header__content {
+.skydonate-license-page .license-header__content {
     display: flex;
     flex-direction: column;
-    gap: var(--sky-space-1);
+    gap: 4px;
 }
 
-.license-header__title {
-    font-size: var(--sky-font-size-2xl);
+.skydonate-license-page .license-header__title {
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--sky-gray-900);
+    color: #111827;
+    margin: 0;
+    padding: 0;
+}
+
+.skydonate-license-page .license-header__subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
     margin: 0;
 }
 
-.license-header__subtitle {
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-500);
-    margin: 0;
-}
-
-.license-header__logo {
+.skydonate-license-page .license-header__logo {
     width: 60px;
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--sky-primary) 0%, var(--sky-primary-dark) 100%);
-    border-radius: var(--sky-radius-xl);
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    border-radius: 12px;
     color: white;
 }
 
-.license-header__logo .dashicons {
+.skydonate-license-page .license-header__logo .dashicons {
     font-size: 32px;
     width: 32px;
     height: 32px;
 }
 
 /* License Status Card */
-.license-status-card {
+.skydonate-license-page .license-status-card {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-5);
-    padding: var(--sky-space-6);
-    background: linear-gradient(135deg, var(--sky-gray-50) 0%, white 100%);
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    margin-bottom: var(--sky-space-6);
+    gap: 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, #f9fafb 0%, white 100%);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 24px;
     position: relative;
     overflow: hidden;
 }
 
-.license-status-card::before {
+.skydonate-license-page .license-status-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: var(--sky-gray-400);
+    background-color: #9ca3af;
 }
 
-.license-status-card.status--valid::before {
-    background-color: var(--sky-success);
+.skydonate-license-page .license-status-card.status--valid::before {
+    background-color: #10b981;
 }
 
-.license-status-card.status--expired::before {
-    background-color: var(--sky-warning);
+.skydonate-license-page .license-status-card.status--expired::before {
+    background-color: #f59e0b;
 }
 
-.license-status-card.status--invalid::before,
-.license-status-card.status--error::before {
-    background-color: var(--sky-error);
+.skydonate-license-page .license-status-card.status--invalid::before,
+.skydonate-license-page .license-status-card.status--error::before {
+    background-color: #ef4444;
 }
 
-.license-status-card__icon {
+.skydonate-license-page .license-status-card__icon {
     width: 64px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--sky-gray-100);
-    border-radius: var(--sky-radius-full);
+    background-color: #f3f4f6;
+    border-radius: 9999px;
     flex-shrink: 0;
 }
 
-.license-status-card.status--valid .license-status-card__icon {
-    background-color: var(--sky-success-light);
-    color: var(--sky-success);
+.skydonate-license-page .license-status-card.status--valid .license-status-card__icon {
+    background-color: #d1fae5;
+    color: #10b981;
 }
 
-.license-status-card.status--expired .license-status-card__icon {
-    background-color: var(--sky-warning-light);
-    color: var(--sky-warning);
+.skydonate-license-page .license-status-card.status--expired .license-status-card__icon {
+    background-color: #fef3c7;
+    color: #f59e0b;
 }
 
-.license-status-card.status--invalid .license-status-card__icon,
-.license-status-card.status--error .license-status-card__icon {
-    background-color: var(--sky-error-light);
-    color: var(--sky-error);
+.skydonate-license-page .license-status-card.status--invalid .license-status-card__icon,
+.skydonate-license-page .license-status-card.status--error .license-status-card__icon {
+    background-color: #fee2e2;
+    color: #ef4444;
 }
 
-.license-status-card__icon .dashicons {
+.skydonate-license-page .license-status-card__icon .dashicons {
     font-size: 32px;
     width: 32px;
     height: 32px;
 }
 
-.license-status-card__content {
+.skydonate-license-page .license-status-card__content {
     flex: 1;
 }
 
-.license-status-card__status {
-    margin-bottom: var(--sky-space-2);
+.skydonate-license-page .license-status-card__status {
+    margin-bottom: 8px;
 }
 
-.license-status-card__title {
-    font-size: var(--sky-font-size-lg);
+.skydonate-license-page .license-status-card__title {
+    font-size: 1.125rem;
     font-weight: 600;
-    color: var(--sky-gray-800);
-    margin: 0 0 var(--sky-space-2) 0;
+    color: #1f2937;
+    margin: 0 0 8px 0;
 }
 
-.license-status-card__key {
+.skydonate-license-page .license-status-card__key {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-600);
-    margin: 0 0 var(--sky-space-2) 0;
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 0 0 8px 0;
 }
 
-.license-status-card__key .key-label {
+.skydonate-license-page .license-status-card__key .key-label {
     font-weight: 500;
 }
 
-.license-status-card__key code {
-    background-color: var(--sky-gray-100);
-    padding: var(--sky-space-1) var(--sky-space-2);
-    border-radius: var(--sky-radius-md);
+.skydonate-license-page .license-status-card__key code {
+    background-color: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 6px;
     font-family: monospace;
-    font-size: var(--sky-font-size-xs);
+    font-size: 0.75rem;
 }
 
-.license-status-card__expires {
+.skydonate-license-page .license-status-card__expires {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-500);
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #6b7280;
     margin: 0;
 }
 
-.license-status-card__expires .dashicons {
+.skydonate-license-page .license-status-card__expires .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
 }
 
-.license-status-card__actions {
+.skydonate-license-page .license-status-card__actions {
     flex-shrink: 0;
 }
 
-.license-status-card__actions .button .dashicons {
+.skydonate-license-page .license-status-card__actions .button .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    margin-right: var(--sky-space-1);
+    margin-right: 4px;
     vertical-align: middle;
     margin-top: -2px;
 }
 
 /* License Badge */
-.license-badge {
+.skydonate-license-page .license-badge {
     display: inline-flex;
     align-items: center;
-    padding: var(--sky-space-1) var(--sky-space-3);
-    font-size: var(--sky-font-size-xs);
+    padding: 4px 12px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-radius: var(--sky-radius-full);
+    border-radius: 9999px;
 }
 
-.license-badge--valid {
-    background-color: var(--sky-success-light);
-    color: var(--sky-success);
+.skydonate-license-page .license-badge--valid {
+    background-color: #d1fae5;
+    color: #10b981;
 }
 
-.license-badge--expired {
-    background-color: var(--sky-warning-light);
-    color: var(--sky-warning);
+.skydonate-license-page .license-badge--expired {
+    background-color: #fef3c7;
+    color: #f59e0b;
 }
 
-.license-badge--inactive {
-    background-color: var(--sky-gray-100);
-    color: var(--sky-gray-600);
+.skydonate-license-page .license-badge--inactive {
+    background-color: #f3f4f6;
+    color: #4b5563;
 }
 
-.license-badge--invalid,
-.license-badge--error {
-    background-color: var(--sky-error-light);
-    color: var(--sky-error);
+.skydonate-license-page .license-badge--invalid,
+.skydonate-license-page .license-badge--error {
+    background-color: #fee2e2;
+    color: #ef4444;
 }
 
-.license-badge--unknown {
-    background-color: var(--sky-gray-100);
-    color: var(--sky-gray-500);
+.skydonate-license-page .license-badge--unknown {
+    background-color: #f3f4f6;
+    color: #6b7280;
 }
 
 /* License Form Card */
-.license-form-card {
+.skydonate-license-page .license-form-card {
     background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    padding: var(--sky-space-6);
-    margin-bottom: var(--sky-space-6);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.license-form-card__title {
-    font-size: var(--sky-font-size-base);
+.skydonate-license-page .license-form-card__title {
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--sky-gray-800);
-    margin: 0 0 var(--sky-space-4) 0;
+    color: #1f2937;
+    margin: 0 0 16px 0;
 }
 
-.license-form__input-group {
+.skydonate-license-page .license-form__input-group {
     display: flex;
-    gap: var(--sky-space-3);
+    gap: 12px;
     flex-wrap: wrap;
 }
 
-.license-form__input {
+.skydonate-license-page .license-form__input {
     flex: 1;
     min-width: 300px;
-    padding: var(--sky-space-3) var(--sky-space-4);
-    font-size: var(--sky-font-size-sm);
+    padding: 12px 16px;
+    font-size: 0.875rem;
     font-family: monospace;
-    color: var(--sky-gray-700);
+    color: #374151;
     background-color: white;
-    border: 1px solid var(--sky-gray-300);
-    border-radius: var(--sky-radius-lg);
-    transition: var(--sky-transition-fast);
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
 }
 
-.license-form__input:focus {
+.skydonate-license-page .license-form__input:focus {
     outline: none;
-    border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px #eef2ff;
 }
 
-.license-form__buttons {
+.skydonate-license-page .license-form__buttons {
     display: flex;
-    gap: var(--sky-space-2);
+    gap: 8px;
 }
 
-.license-form__buttons .button .dashicons {
+.skydonate-license-page .license-form__buttons .button .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    margin-right: var(--sky-space-1);
+    margin-right: 4px;
     vertical-align: middle;
     margin-top: -2px;
 }
 
-.license-form__buttons .button-deactivate {
-    color: var(--sky-error);
-    border-color: var(--sky-error);
+.skydonate-license-page .license-form__buttons .button-deactivate {
+    color: #ef4444;
+    border-color: #ef4444;
 }
 
-.license-form__buttons .button-deactivate:hover {
-    background-color: var(--sky-error-light);
-    color: var(--sky-error);
-    border-color: var(--sky-error);
+.skydonate-license-page .license-form__buttons .button-deactivate:hover {
+    background-color: #fee2e2;
+    color: #ef4444;
+    border-color: #ef4444;
 }
 
-.license-form__help {
+.skydonate-license-page .license-form__help {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    margin-top: var(--sky-space-3);
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-500);
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 0.875rem;
+    color: #6b7280;
 }
 
-.license-form__help .dashicons {
+.skydonate-license-page .license-form__help .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    color: var(--sky-gray-400);
+    color: #9ca3af;
 }
 
-.license-form__help a {
-    color: var(--sky-primary);
+.skydonate-license-page .license-form__help a {
+    color: #4f46e5;
     font-weight: 500;
 }
 
-.license-form__help a:hover {
+.skydonate-license-page .license-form__help a:hover {
     text-decoration: underline;
 }
 
 /* License Section */
-.license-section {
+.skydonate-license-page .license-section {
     background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    margin-bottom: var(--sky-space-4);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 16px;
     overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.license-section__header {
+.skydonate-license-page .license-section__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--sky-space-4) var(--sky-space-5);
-    background-color: var(--sky-gray-50);
-    border-bottom: 1px solid var(--sky-gray-200);
+    padding: 16px 20px;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.license-section__title {
+.skydonate-license-page .license-section__title {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
+    gap: 8px;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--sky-gray-700);
+    color: #374151;
     margin: 0;
 }
 
-.license-section__title .dashicons {
+.skydonate-license-page .license-section__title .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    color: var(--sky-gray-500);
+    color: #6b7280;
 }
 
-.license-section__count {
-    font-size: var(--sky-font-size-xs);
+.skydonate-license-page .license-section__count {
+    font-size: 0.75rem;
     font-weight: 500;
-    color: var(--sky-gray-500);
-    background-color: var(--sky-gray-100);
-    padding: var(--sky-space-1) var(--sky-space-2);
-    border-radius: var(--sky-radius-md);
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 6px;
 }
 
 /* Features Grid */
-.license-features-grid {
+.skydonate-license-page .license-features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-5);
+    gap: 12px;
+    padding: 20px;
 }
 
-.license-feature {
+.skydonate-license-page .license-feature {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    padding: var(--sky-space-3);
-    background-color: var(--sky-gray-50);
-    border-radius: var(--sky-radius-lg);
-    transition: var(--sky-transition-fast);
+    gap: 8px;
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
 }
 
-.license-feature--enabled {
-    background-color: var(--sky-success-light);
+.skydonate-license-page .license-feature--enabled {
+    background-color: #d1fae5;
 }
 
-.license-feature--disabled {
-    background-color: var(--sky-gray-100);
+.skydonate-license-page .license-feature--disabled {
+    background-color: #f3f4f6;
     opacity: 0.7;
 }
 
-.license-feature__icon {
+.skydonate-license-page .license-feature__icon {
     width: 24px;
     height: 24px;
     display: flex;
@@ -2349,100 +2365,100 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     flex-shrink: 0;
 }
 
-.license-feature--enabled .license-feature__icon {
-    color: var(--sky-success);
+.skydonate-license-page .license-feature--enabled .license-feature__icon {
+    color: #10b981;
 }
 
-.license-feature--disabled .license-feature__icon {
-    color: var(--sky-gray-400);
+.skydonate-license-page .license-feature--disabled .license-feature__icon {
+    color: #9ca3af;
 }
 
-.license-feature__icon .dashicons {
+.skydonate-license-page .license-feature__icon .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
 }
 
-.license-feature__name {
-    font-size: var(--sky-font-size-sm);
+.skydonate-license-page .license-feature__name {
+    font-size: 0.875rem;
     font-weight: 500;
-    color: var(--sky-gray-700);
+    color: #374151;
 }
 
 /* Widgets Grid */
-.license-widgets-grid {
+.skydonate-license-page .license-widgets-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-5);
+    gap: 12px;
+    padding: 20px;
 }
 
-.license-widget {
+.skydonate-license-page .license-widget {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-4);
+    gap: 12px;
+    padding: 16px;
     background-color: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
-    transition: var(--sky-transition-fast);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
 }
 
-.license-widget:hover {
-    border-color: var(--sky-gray-300);
-    box-shadow: var(--sky-shadow-sm);
+.skydonate-license-page .license-widget:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.license-widget--disabled {
+.skydonate-license-page .license-widget--disabled {
     opacity: 0.6;
 }
 
-.license-widget__icon {
+.skydonate-license-page .license-widget__icon {
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--sky-primary-light);
-    color: var(--sky-primary);
-    border-radius: var(--sky-radius-lg);
+    background-color: #eef2ff;
+    color: #4f46e5;
+    border-radius: 8px;
     flex-shrink: 0;
 }
 
-.license-widget--disabled .license-widget__icon {
-    background-color: var(--sky-gray-100);
-    color: var(--sky-gray-400);
+.skydonate-license-page .license-widget--disabled .license-widget__icon {
+    background-color: #f3f4f6;
+    color: #9ca3af;
 }
 
-.license-widget__icon .dashicons {
+.skydonate-license-page .license-widget__icon .dashicons {
     font-size: 20px;
     width: 20px;
     height: 20px;
 }
 
-.license-widget__content {
+.skydonate-license-page .license-widget__content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.license-widget__name {
-    font-size: var(--sky-font-size-sm);
+.skydonate-license-page .license-widget__name {
+    font-size: 0.875rem;
     font-weight: 500;
-    color: var(--sky-gray-800);
+    color: #1f2937;
 }
 
-.license-widget__status {
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-500);
+.skydonate-license-page .license-widget__status {
+    font-size: 0.75rem;
+    color: #6b7280;
 }
 
-.license-widget--enabled .license-widget__status {
-    color: var(--sky-success);
+.skydonate-license-page .license-widget--enabled .license-widget__status {
+    color: #10b981;
 }
 
-.license-widget__badge {
+.skydonate-license-page .license-widget__badge {
     width: 24px;
     height: 24px;
     display: flex;
@@ -2451,169 +2467,169 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     flex-shrink: 0;
 }
 
-.license-widget--enabled .license-widget__badge {
-    color: var(--sky-success);
+.skydonate-license-page .license-widget--enabled .license-widget__badge {
+    color: #10b981;
 }
 
-.license-widget--disabled .license-widget__badge {
-    color: var(--sky-gray-400);
+.skydonate-license-page .license-widget--disabled .license-widget__badge {
+    color: #9ca3af;
 }
 
-.license-widget__badge .dashicons {
+.skydonate-license-page .license-widget__badge .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
 }
 
 /* Layouts Grid */
-.license-layouts-grid {
+.skydonate-license-page .license-layouts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-5);
+    gap: 12px;
+    padding: 20px;
 }
 
-.license-layout {
+.skydonate-license-page .license-layout {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--sky-space-3) var(--sky-space-4);
-    background-color: var(--sky-gray-50);
-    border-radius: var(--sky-radius-lg);
+    padding: 12px 16px;
+    background-color: #f9fafb;
+    border-radius: 8px;
 }
 
-.license-layout__name {
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-600);
+.skydonate-license-page .license-layout__name {
+    font-size: 0.875rem;
+    color: #4b5563;
 }
 
-.license-layout__value {
-    font-size: var(--sky-font-size-sm);
+.skydonate-license-page .license-layout__value {
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--sky-primary);
+    color: #4f46e5;
 }
 
 /* Capabilities List */
-.license-capabilities-list {
+.skydonate-license-page .license-capabilities-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-5);
+    gap: 12px;
+    padding: 20px;
 }
 
-.license-capability {
+.skydonate-license-page .license-capability {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-3) var(--sky-space-4);
-    background-color: var(--sky-gray-50);
-    border-radius: var(--sky-radius-lg);
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #f9fafb;
+    border-radius: 8px;
 }
 
-.license-capability__toggle {
+.skydonate-license-page .license-capability__toggle {
     flex-shrink: 0;
 }
 
-.license-capability__toggle .toggle-track {
+.skydonate-license-page .license-capability__toggle .toggle-track {
     display: block;
     width: 36px;
     height: 20px;
-    background-color: var(--sky-gray-300);
-    border-radius: var(--sky-radius-full);
+    background-color: #d1d5db;
+    border-radius: 9999px;
     position: relative;
-    transition: var(--sky-transition-fast);
+    transition: all 0.15s ease-in-out;
 }
 
-.license-capability__toggle.toggle--on .toggle-track {
-    background-color: var(--sky-success);
+.skydonate-license-page .license-capability__toggle.toggle--on .toggle-track {
+    background-color: #10b981;
 }
 
-.license-capability__toggle .toggle-thumb {
+.skydonate-license-page .license-capability__toggle .toggle-thumb {
     position: absolute;
     top: 2px;
     left: 2px;
     width: 16px;
     height: 16px;
     background-color: white;
-    border-radius: var(--sky-radius-full);
-    box-shadow: var(--sky-shadow-sm);
-    transition: var(--sky-transition-fast);
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease-in-out;
 }
 
-.license-capability__toggle.toggle--on .toggle-thumb {
+.skydonate-license-page .license-capability__toggle.toggle--on .toggle-thumb {
     left: 18px;
 }
 
-.license-capability__name {
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-700);
+.skydonate-license-page .license-capability__name {
+    font-size: 0.875rem;
+    color: #374151;
 }
 
 /* License Placeholder */
-.license-placeholder {
+.skydonate-license-page .license-placeholder {
     text-align: center;
-    padding: var(--sky-space-8);
-    background: linear-gradient(135deg, var(--sky-gray-50) 0%, white 100%);
-    border: 2px dashed var(--sky-gray-300);
-    border-radius: var(--sky-radius-xl);
-    margin-top: var(--sky-space-6);
+    padding: 32px;
+    background: linear-gradient(135deg, #f9fafb 0%, white 100%);
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    margin-top: 24px;
 }
 
-.license-placeholder__icon {
+.skydonate-license-page .license-placeholder__icon {
     width: 80px;
     height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--sky-gray-100);
-    color: var(--sky-gray-400);
-    border-radius: var(--sky-radius-full);
-    margin: 0 auto var(--sky-space-5);
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    border-radius: 9999px;
+    margin: 0 auto 20px;
 }
 
-.license-placeholder__icon .dashicons {
+.skydonate-license-page .license-placeholder__icon .dashicons {
     font-size: 40px;
     width: 40px;
     height: 40px;
 }
 
-.license-placeholder__title {
-    font-size: var(--sky-font-size-xl);
+.skydonate-license-page .license-placeholder__title {
+    font-size: 1.25rem;
     font-weight: 600;
-    color: var(--sky-gray-800);
-    margin: 0 0 var(--sky-space-2) 0;
+    color: #1f2937;
+    margin: 0 0 8px 0;
 }
 
-.license-placeholder__description {
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-500);
-    margin: 0 0 var(--sky-space-6) 0;
+.skydonate-license-page .license-placeholder__description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 24px 0;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.license-placeholder__features {
+.skydonate-license-page .license-placeholder__features {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-6);
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
-.placeholder-feature {
+.skydonate-license-page .placeholder-feature {
     display: flex;
     align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-600);
+    gap: 8px;
+    font-size: 0.875rem;
+    color: #4b5563;
 }
 
-.placeholder-feature .dashicons {
+.skydonate-license-page .placeholder-feature .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
-    color: var(--sky-success);
+    color: #10b981;
 }
 
 /* Spin Animation for Refresh */
@@ -2623,52 +2639,52 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 
 /* License Page Responsive */
 @media screen and (max-width: 782px) {
-    .license-header {
+    .skydonate-license-page .license-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--sky-space-4);
+        gap: 16px;
     }
 
-    .license-status-card {
+    .skydonate-license-page .license-status-card {
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
     }
 
-    .license-status-card__actions {
+    .skydonate-license-page .license-status-card__actions {
         width: 100%;
     }
 
-    .license-status-card__actions .button {
+    .skydonate-license-page .license-status-card__actions .button {
         width: 100%;
         justify-content: center;
     }
 
-    .license-form__input-group {
+    .skydonate-license-page .license-form__input-group {
         flex-direction: column;
     }
 
-    .license-form__input {
+    .skydonate-license-page .license-form__input {
         min-width: 100%;
     }
 
-    .license-form__buttons {
+    .skydonate-license-page .license-form__buttons {
         width: 100%;
     }
 
-    .license-form__buttons .button {
+    .skydonate-license-page .license-form__buttons .button {
         flex: 1;
         justify-content: center;
     }
 
-    .license-features-grid,
-    .license-widgets-grid,
-    .license-layouts-grid,
-    .license-capabilities-list {
+    .skydonate-license-page .license-features-grid,
+    .skydonate-license-page .license-widgets-grid,
+    .skydonate-license-page .license-layouts-grid,
+    .skydonate-license-page .license-capabilities-list {
         grid-template-columns: 1fr;
     }
 
-    .license-placeholder__features {
+    .skydonate-license-page .license-placeholder__features {
         flex-direction: column;
         align-items: center;
     }
