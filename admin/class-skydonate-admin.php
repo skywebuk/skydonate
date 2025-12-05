@@ -179,6 +179,13 @@ class Skyweb_Donation_System_Admin {
                 'page_slug'  => 'skydonation-api',
                 'callback'   => 'api_page_content',
             ],
+            [
+                'page_title' => esc_html__( 'License', 'skydonation' ),
+                'menu_title' => esc_html__( 'License', 'skydonation' ),
+                'capability' => 'manage_options',
+                'page_slug'  => 'skydonation-license',
+                'callback'   => 'license_page_content',
+            ],
         ];
     }
 
@@ -248,6 +255,7 @@ class Skyweb_Donation_System_Admin {
     public function widgets_page_content() { $this->display_page_content('widgets'); }
     public function address_autoload_page_content() { $this->display_page_content('address-autoload'); }
     public function notification_page_content() { $this->display_page_content('notification'); }
+    public function license_page_content() { $this->display_page_content('license'); }
 
     /**
      * Universal Template Loader
