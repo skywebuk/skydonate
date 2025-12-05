@@ -48,6 +48,7 @@ class SkyDonate_License_Client {
             'sslverify' => false,
             'headers'   => array(
                 'Content-Type' => 'application/json',
+                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
             ),
             'body' => wp_json_encode( array(
                 'license' => $license_key,
@@ -60,19 +61,21 @@ class SkyDonate_License_Client {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => $response->get_error_message(),
+                'message' => 'Connection error: ' . $response->get_error_message(),
             );
         }
 
         // Parse response
-        $body = wp_remote_retrieve_body( $response );
+        $body = trim( wp_remote_retrieve_body( $response ) );
+        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
         $data = json_decode( $body, true );
 
         if ( json_last_error() !== JSON_ERROR_NONE ) {
+            error_log( 'SkyDonate Validate Error - JSON: ' . json_last_error_msg() . ' Body: ' . substr( $body, 0, 500 ) );
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Invalid response from license server',
+                'message' => 'Invalid server response',
             );
         }
 
@@ -96,6 +99,7 @@ class SkyDonate_License_Client {
             'sslverify' => false,
             'headers'   => array(
                 'Content-Type' => 'application/json',
+                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
             ),
             'body' => wp_json_encode( array(
                 'license' => $license_key,
@@ -112,7 +116,7 @@ class SkyDonate_License_Client {
         }
 
         $response_code = wp_remote_retrieve_response_code( $response );
-        $body = wp_remote_retrieve_body( $response );
+        $body = trim( wp_remote_retrieve_body( $response ) );
 
         // Check for HTTP errors
         if ( $response_code !== 200 ) {
@@ -123,15 +127,19 @@ class SkyDonate_License_Client {
             );
         }
 
+        // Remove BOM if present
+        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
+
         $data = json_decode( $body, true );
 
         if ( json_last_error() !== JSON_ERROR_NONE ) {
             // Log the actual response for debugging
-            error_log( 'SkyDonate License Error - Invalid JSON response: ' . substr( $body, 0, 500 ) );
+            error_log( 'SkyDonate License Error - JSON Error: ' . json_last_error_msg() );
+            error_log( 'SkyDonate License Error - Response body: ' . substr( $body, 0, 500 ) );
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => 'Invalid response from license server. Please contact support.',
+                'message' => 'Invalid server response. Check debug.log for details.',
             );
         }
 
@@ -165,6 +173,7 @@ class SkyDonate_License_Client {
             'sslverify' => false,
             'headers'   => array(
                 'Content-Type' => 'application/json',
+                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION . '; ' . home_url(),
             ),
             'body' => wp_json_encode( array(
                 'license' => $license_key,
@@ -176,11 +185,12 @@ class SkyDonate_License_Client {
             return array(
                 'success' => false,
                 'status'  => 'error',
-                'message' => $response->get_error_message(),
+                'message' => 'Connection error: ' . $response->get_error_message(),
             );
         }
 
-        $body = wp_remote_retrieve_body( $response );
+        $body = trim( wp_remote_retrieve_body( $response ) );
+        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body );
         $data = json_decode( $body, true );
 
         // Clear cache and license key
