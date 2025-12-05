@@ -77,19 +77,33 @@ class Skyweb_Donation_System_Admin {
      */
     public function add_admin_menu() {
         $parent_slug = 'skydonation';
+        $license_status = skydonate_license_client()->get_license_status();
+        $is_valid = ( $license_status === 'valid' );
 
-        add_menu_page(
-            esc_html__( 'SkyDonate', 'skydonation' ),
-            esc_html__( 'SkyDonate', 'skydonation' ),
-            'manage_options',
-            'skydonation',
-            [ $this, 'analytics_page_content' ],
-            'dashicons-skydonation',
-            20
-        );
+        // If license is inactive, main menu goes to License page
+        if ( ! $is_valid ) {
+            add_menu_page(
+                esc_html__( 'SkyDonate', 'skydonation' ),
+                esc_html__( 'SkyDonate', 'skydonation' ),
+                'manage_options',
+                'skydonation',
+                [ $this, 'license_page_content' ],
+                'dashicons-skydonation',
+                20
+            );
+        } else {
+            add_menu_page(
+                esc_html__( 'SkyDonate', 'skydonation' ),
+                esc_html__( 'SkyDonate', 'skydonation' ),
+                'manage_options',
+                'skydonation',
+                [ $this, 'analytics_page_content' ],
+                'dashicons-skydonation',
+                20
+            );
 
-        do_action( 'skyweb_donation_system_menus', $parent_slug );
-
+            do_action( 'skyweb_donation_system_menus', $parent_slug );
+        }
     }
 
     /**
@@ -261,26 +275,26 @@ class Skyweb_Donation_System_Admin {
      * Universal Template Loader
      */
     private function display_page_content( $template ) {
-        $extra_class = '';
+        $license_status = skydonate_license_client()->get_license_status();
+        $is_valid = ( $license_status === 'valid' );
 
-        // Check if license page and license is inactive - hide navigation
-        if ( $template === 'license' ) {
-            $license_status = skydonate_license_client()->get_license_status();
-            if ( $license_status !== 'valid' ) {
-                $extra_class = ' license-inactive';
-            }
+        // If license is inactive, only show license page (no nav, no wrapper styling)
+        if ( ! $is_valid && $template === 'license' ) {
+            echo '<div class="skydonation-page-wrapper license-template license-inactive">';
+                echo '<div class="skydonation-content-wrapper">';
+                    include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/page-license.php';
+                echo '</div>';
+            echo '</div>';
+            return;
         }
 
-        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template' . esc_attr( $extra_class ) . '">';
-            if ( $template !== 'license' || $extra_class === '' ) {
-                echo '<div class="skydonation-navigation-wrapper">';
-                    include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
-                echo '</div>';
-            }
+        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
+            echo '<div class="skydonation-navigation-wrapper">';
+                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
+            echo '</div>';
             echo '<div class="skydonation-content-wrapper">';
                 include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
         echo '</div>';
-
     }
 }
