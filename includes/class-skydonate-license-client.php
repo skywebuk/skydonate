@@ -34,57 +34,46 @@ class SkyDonate_License_Client {
     /**
      * Make API request to license server
      */
-    private function api_request( $endpoint, $data = array() ) {
+    private function api_request( $endpoint, $data = [] ) {
+
         $url = $this->server_url . '/?sky_license_' . $endpoint . '=1';
 
-        $args = array(
+        $args = [
             'method'    => 'POST',
             'timeout'   => 30,
             'sslverify' => false,
-            'headers'   => array(
+            'headers'   => [
                 'Content-Type' => 'application/json',
-                'User-Agent'   => 'SkyDonate/' . SKYWEB_DONATION_SYSTEM_VERSION,
-            ),
-            'body' => wp_json_encode( $data ),
-        );
+                'User-Agent'   => 'Mozilla/5.0',
+            ],
+            'body'        => wp_json_encode($data),
+            'data_format' => 'body', // CRITICAL!!!
+        ];
 
-        $response = wp_remote_post( $url, $args );
+        $response = wp_remote_post($url, $args);
 
-        // Connection error
-        if ( is_wp_error( $response ) ) {
-            return array(
+        if (is_wp_error($response)) {
+            return [
                 'success' => false,
-                'status'  => 'error',
-                'message' => 'Connection failed: ' . $response->get_error_message(),
-            );
+                'message' => 'Request failed: ' . $response->get_error_message()
+            ];
         }
 
-        // HTTP error
-        $code = wp_remote_retrieve_response_code( $response );
-        if ( $code !== 200 ) {
-            return array(
+        $body = wp_remote_retrieve_body($response);
+
+        $json = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return [
                 'success' => false,
-                'status'  => 'error',
-                'message' => 'Server error: HTTP ' . $code,
-            );
+                'message' => 'Invalid JSON input from server: ' . substr($body, 0, 200)
+            ];
         }
 
-        // Parse JSON
-        $body = trim( wp_remote_retrieve_body( $response ) );
-        $body = preg_replace( '/^\xEF\xBB\xBF/', '', $body ); // Remove BOM
-        $result = json_decode( $body, true );
-
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            error_log( 'SkyDonate License: Invalid JSON - ' . substr( $body, 0, 200 ) );
-            return array(
-                'success' => false,
-                'status'  => 'error',
-                'message' => 'Invalid server response. Please ensure the license API is installed on ' . $this->server_url,
-            );
-        }
-
-        return $result;
+        return $json;
     }
+
+
 
     /**
      * Get current domain
