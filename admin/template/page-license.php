@@ -353,40 +353,13 @@ $update_available = $info['update_available'] ?? false;
 </div>
 
 <style>
-/* ===================================
+    /* ===================================
    SkyDonate License Page Styles
+   Uses :root CSS variables from main stylesheet
    =================================== */
 
-/* CSS Variables */
-.skydonate-license-page {
-    --sky-primary: #3442ad;
-    --sky-primary-dark: #2a3590;
-    --sky-primary-light: #4a5bc4;
-    --sky-success: #10b981;
-    --sky-success-dark: #059669;
-    --sky-warning: #f59e0b;
-    --sky-warning-dark: #d97706;
-    --sky-danger: #ef4444;
-    --sky-danger-dark: #dc2626;
-    --sky-gray-50: #f9fafb;
-    --sky-gray-100: #f3f4f6;
-    --sky-gray-200: #e5e7eb;
-    --sky-gray-300: #d1d5db;
-    --sky-gray-400: #9ca3af;
-    --sky-gray-500: #6b7280;
-    --sky-gray-600: #4b5563;
-    --sky-gray-700: #374151;
-    --sky-gray-800: #1f2937;
-    --sky-gray-900: #111827;
-    --sky-radius: 8px;
-    --sky-radius-lg: 12px;
-    --sky-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    --sky-shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-    --sky-shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-}
-
 /* Toaster */
-#skydonate-toaster {
+.skydonate-license-page #skydonate-toaster {
     position: fixed;
     top: 50px;
     right: 20px;
@@ -396,12 +369,12 @@ $update_available = $info['update_available'] ?? false;
     gap: 10px;
 }
 
-.skydonate-toast {
+.skydonate-license-page .skydonate-toast {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 14px 20px;
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
     color: #fff;
     font-size: 14px;
     font-weight: 500;
@@ -411,19 +384,19 @@ $update_available = $info['update_available'] ?? false;
     max-width: 400px;
 }
 
-.skydonate-toast.success { background: linear-gradient(135deg, var(--sky-success), var(--sky-success-dark)); }
-.skydonate-toast.error { background: linear-gradient(135deg, var(--sky-danger), var(--sky-danger-dark)); }
-.skydonate-toast.info { background: linear-gradient(135deg, var(--sky-primary), var(--sky-primary-dark)); }
-.skydonate-toast.warning { background: linear-gradient(135deg, var(--sky-warning), var(--sky-warning-dark)); }
+.skydonate-license-page .skydonate-toast.success { background: linear-gradient(135deg, var(--sky-success), #059669); }
+.skydonate-license-page .skydonate-toast.error { background: linear-gradient(135deg, var(--sky-error), #dc2626); }
+.skydonate-license-page .skydonate-toast.info { background: linear-gradient(135deg, var(--sky-primary), var(--sky-primary-dark)); }
+.skydonate-license-page .skydonate-toast.warning { background: linear-gradient(135deg, var(--sky-warning), #d97706); }
 
-.skydonate-toast .dashicons {
+.skydonate-license-page .skydonate-toast .dashicons {
     font-size: 20px;
     width: 20px;
     height: 20px;
     flex-shrink: 0;
 }
 
-.skydonate-toast.hiding { animation: toastSlideOut 0.3s ease forwards; }
+.skydonate-license-page .skydonate-toast.hiding { animation: toastSlideOut 0.3s ease forwards; }
 
 @keyframes toastSlideIn {
     from { transform: translateX(100%); opacity: 0; }
@@ -436,7 +409,7 @@ $update_available = $info['update_available'] ?? false;
 }
 
 /* Activation Page */
-.license-activation-wrapper {
+.skydonate-license-page .license-activation-wrapper {
     min-height: calc(100vh - 150px);
     display: flex;
     align-items: center;
@@ -446,17 +419,17 @@ $update_available = $info['update_available'] ?? false;
     margin: -20px -20px 0 -20px;
 }
 
-.license-activation-card {
+.skydonate-license-page .license-activation-card {
     background: #fff;
-    border-radius: var(--sky-radius-lg);
+    border-radius: var(--sky-radius-xl);
     box-shadow: var(--sky-shadow-lg);
     padding: 48px;
-    max-width: 480px;
+    max-width: 520px;
     width: 100%;
     text-align: center;
 }
 
-.license-card-icon {
+.skydonate-license-page .license-card-icon {
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, var(--sky-primary), var(--sky-primary-dark));
@@ -465,66 +438,67 @@ $update_available = $info['update_available'] ?? false;
     align-items: center;
     justify-content: center;
     margin: 0 auto 24px;
-    box-shadow: 0 8px 24px rgba(52, 66, 173, 0.3);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
 }
 
-.license-card-icon .dashicons {
+.skydonate-license-page .license-card-icon .dashicons {
     font-size: 36px;
     width: 36px;
     height: 36px;
     color: #fff;
 }
 
-.license-activation-card h1 {
+.skydonate-license-page .license-activation-card h1 {
     font-size: 28px;
     font-weight: 700;
     color: var(--sky-gray-900);
     margin: 0 0 8px;
 }
 
-.license-subtitle {
+.skydonate-license-page .license-subtitle {
     color: var(--sky-gray-500);
     font-size: 16px;
     margin: 0 0 32px;
 }
 
-.license-input-group {
+.skydonate-license-page .license-input-group {
     position: relative;
     margin-bottom: 20px;
 }
 
-.license-input-group input {
+.skydonate-license-page .license-input-group input {
     width: 100%;
-    padding: 16px 20px 16px 48px;
+    padding: 16px 20px 16px 40px;
     font-size: 15px;
     border: 2px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius);
-    transition: all 0.2s;
+    border-radius: var(--sky-radius-lg);
+    transition: var(--sky-transition);
     font-family: 'SF Mono', 'Consolas', monospace;
     text-transform: uppercase;
 }
 
-.license-input-group input:focus {
+.skydonate-license-page .license-input-group input:focus {
     outline: none;
     border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px rgba(52, 66, 173, 0.1);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.license-input-group input::placeholder {
+.skydonate-license-page .license-input-group input::placeholder {
     text-transform: none;
     font-family: inherit;
     color: var(--sky-gray-400);
 }
 
-.license-input-icon {
+.skydonate-license-page .license-input-icon {
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--sky-gray-400);
+    line-height: 0;
 }
 
-.license-btn {
+.skydonate-license-page .license-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -534,33 +508,33 @@ $update_available = $info['update_available'] ?? false;
     font-size: 16px;
     font-weight: 600;
     border: none;
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--sky-transition);
 }
 
-.license-btn-primary {
+.skydonate-license-page .license-btn-primary {
     background: linear-gradient(135deg, var(--sky-primary), var(--sky-primary-dark));
     color: #fff;
-    box-shadow: 0 4px 14px rgba(52, 66, 173, 0.4);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
 }
 
-.license-btn-primary:hover {
+.skydonate-license-page .license-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(52, 66, 173, 0.5);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
 }
 
-.license-btn .btn-loading { display: none; }
-.license-btn.loading .btn-text,
-.license-btn.loading .btn-icon { display: none; }
-.license-btn.loading .btn-loading { 
+.skydonate-license-page .license-btn .btn-loading { display: none; }
+.skydonate-license-page .license-btn.loading .btn-text,
+.skydonate-license-page .license-btn.loading .btn-icon { display: none; }
+.skydonate-license-page .license-btn.loading .btn-loading { 
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
-.license-btn.loading { opacity: 0.8; pointer-events: none; }
+.skydonate-license-page .license-btn.loading { opacity: 0.8; pointer-events: none; }
 
-.spinner-icon {
+.skydonate-license-page .spinner-icon {
     width: 18px;
     height: 18px;
     border: 2px solid rgba(255,255,255,0.3);
@@ -573,24 +547,24 @@ $update_available = $info['update_available'] ?? false;
     to { transform: rotate(360deg); }
 }
 
-.license-error-msg {
+.skydonate-license-page .license-error-msg {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 20px;
     padding: 12px 16px;
-    background: rgba(239, 68, 68, 0.1);
-    border-radius: var(--sky-radius);
-    color: var(--sky-danger);
+    background: var(--sky-error-light);
+    border-radius: var(--sky-radius-lg);
+    color: var(--sky-error);
     font-size: 14px;
     text-align: left;
 }
 
-.license-error-msg .dashicons {
+.skydonate-license-page .license-error-msg .dashicons {
     flex-shrink: 0;
 }
 
-.license-card-footer {
+.skydonate-license-page .license-card-footer {
     margin-top: 32px;
     padding-top: 24px;
     border-top: 1px solid var(--sky-gray-200);
@@ -601,7 +575,7 @@ $update_available = $info['update_available'] ?? false;
     font-size: 14px;
 }
 
-.license-card-footer a {
+.skydonate-license-page .license-card-footer a {
     color: var(--sky-primary);
     text-decoration: none;
     display: inline-flex;
@@ -609,48 +583,48 @@ $update_available = $info['update_available'] ?? false;
     gap: 4px;
 }
 
-.license-card-footer a:hover { text-decoration: underline; }
-.license-card-footer .separator { color: var(--sky-gray-300); }
-.license-card-footer .dashicons { font-size: 16px; width: 16px; height: 16px; }
+.skydonate-license-page .license-card-footer a:hover { text-decoration: underline; }
+.skydonate-license-page .license-card-footer .separator { color: var(--sky-gray-300); }
+.skydonate-license-page .license-card-footer .dashicons { font-size: 16px; width: 16px; height: 16px; }
 
 /* Dashboard */
-.license-dashboard {
+.skydonate-license-page .license-dashboard {
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px 0;
 }
 
-.license-header {
+.skydonate-license-page .license-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
 }
 
-.license-header h1 {
+.skydonate-license-page .license-header h1 {
     font-size: 28px;
     font-weight: 700;
     color: var(--sky-gray-900);
     margin: 0 0 4px;
 }
 
-.license-header p {
+.skydonate-license-page .license-header p {
     color: var(--sky-gray-500);
     margin: 0;
 }
 
-.license-header-icon {
+.skydonate-license-page .license-header-icon {
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, var(--sky-primary), var(--sky-primary-dark));
-    border-radius: var(--sky-radius-lg);
+    border-radius: var(--sky-radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(52, 66, 173, 0.3);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
 }
 
-.license-header-icon .dashicons {
+.skydonate-license-page .license-header-icon .dashicons {
     font-size: 28px;
     width: 28px;
     height: 28px;
@@ -658,9 +632,9 @@ $update_available = $info['update_available'] ?? false;
 }
 
 /* Status Card */
-.license-status-card {
+.skydonate-license-page .license-status-card {
     background: #fff;
-    border-radius: var(--sky-radius-lg);
+    border-radius: var(--sky-radius-xl);
     padding: 28px;
     display: flex;
     gap: 24px;
@@ -670,15 +644,15 @@ $update_available = $info['update_available'] ?? false;
     margin-bottom: 24px;
 }
 
-.license-status-card.expiring-soon {
+.skydonate-license-page .license-status-card.expiring-soon {
     border-color: var(--sky-warning);
-    background: linear-gradient(135deg, #fff 0%, rgba(245, 158, 11, 0.05) 100%);
+    background: linear-gradient(135deg, #fff 0%, var(--sky-warning-light) 100%);
 }
 
-.license-status-icon {
+.skydonate-license-page .license-status-icon {
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, var(--sky-success), var(--sky-success-dark));
+    background: linear-gradient(135deg, var(--sky-success), #059669);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -686,25 +660,25 @@ $update_available = $info['update_available'] ?? false;
     flex-shrink: 0;
 }
 
-.license-status-icon .dashicons {
+.skydonate-license-page .license-status-icon .dashicons {
     font-size: 28px;
     width: 28px;
     height: 28px;
     color: #fff;
 }
 
-.license-status-content {
+.skydonate-license-page .license-status-content {
     flex: 1;
 }
 
-.license-status-content h2 {
+.skydonate-license-page .license-status-content h2 {
     font-size: 20px;
     font-weight: 600;
     color: var(--sky-gray-900);
     margin: 8px 0 12px;
 }
 
-.license-key-display {
+.skydonate-license-page .license-key-display {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -713,25 +687,25 @@ $update_available = $info['update_available'] ?? false;
     color: var(--sky-gray-600);
 }
 
-.license-key-display code {
+.skydonate-license-page .license-key-display code {
     background: var(--sky-gray-100);
     padding: 4px 10px;
-    border-radius: 4px;
+    border-radius: var(--sky-radius-sm);
     font-size: 13px;
 }
 
-.copy-key-btn {
+.skydonate-license-page .copy-key-btn {
     background: none;
     border: none;
     padding: 4px;
     cursor: pointer;
     color: var(--sky-gray-400);
-    transition: color 0.2s;
+    transition: var(--sky-transition-fast);
 }
 
-.copy-key-btn:hover { color: var(--sky-primary); }
+.skydonate-license-page .copy-key-btn:hover { color: var(--sky-primary); }
 
-.license-expires {
+.skydonate-license-page .license-expires {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -740,27 +714,27 @@ $update_available = $info['update_available'] ?? false;
     color: var(--sky-gray-500);
 }
 
-.license-expires.warning { color: var(--sky-warning-dark); font-weight: 500; }
-.license-expires.lifetime { color: var(--sky-success); font-weight: 500; }
+.skydonate-license-page .license-expires.warning { color: #d97706; font-weight: 500; }
+.skydonate-license-page .license-expires.lifetime { color: var(--sky-success); font-weight: 500; }
 
-.renew-link {
+.skydonate-license-page .renew-link {
     display: inline-block;
     margin-top: 8px;
-    color: var(--sky-warning-dark);
+    color: #d97706;
     font-weight: 600;
     font-size: 14px;
     text-decoration: none;
 }
 
-.renew-link:hover { text-decoration: underline; }
+.skydonate-license-page .renew-link:hover { text-decoration: underline; }
 
-.license-status-actions {
+.skydonate-license-page .license-status-actions {
     display: flex;
     gap: 10px;
     flex-shrink: 0;
 }
 
-.license-status-actions .button {
+.skydonate-license-page .license-status-actions .button {
     display: inline-flex;
     align-items: center;
     gap: var(--sky-space-2);
@@ -774,69 +748,71 @@ $update_available = $info['update_available'] ?? false;
     line-height: 1.4;
 }
 
-.license-status-actions .button .dashicons {
+.skydonate-license-page .license-status-actions .button .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
 }
 
-.license-status-actions .button.loading .dashicons { animation: spin 0.8s linear infinite; }
-.license-status-actions .button.loading { opacity: 0.7; pointer-events: none; }
+.skydonate-license-page .license-status-actions .button.loading .dashicons { animation: spin 0.8s linear infinite; }
+.skydonate-license-page .license-status-actions .button.loading { opacity: 0.7; pointer-events: none; }
 
+.skydonate-license-page .license-status-actions .button:after {
+    display: none;
+}
 
-.license-status-actions .button.button-secondary {
+.skydonate-license-page .license-status-actions .button.button-secondary {
     background: #fff;
     border: 1px solid var(--sky-gray-300);
     color: var(--sky-gray-700);
 }
 
-.license-status-actions .button.button-secondary:hover {
+.skydonate-license-page .license-status-actions .button.button-secondary:hover {
     background: var(--sky-gray-50);
     border-color: var(--sky-gray-400);
     color: var(--sky-gray-900);
 }
 
-.license-status-actions .button.button-secondary:focus {
+.skydonate-license-page .license-status-actions .button.button-secondary:focus {
     outline: none;
     box-shadow: 0 0 0 3px var(--sky-primary-light);
     border-color: var(--sky-primary);
 }
 
 /* Delete/Danger Button (Deactivate) */
-.license-status-actions .button.button-link-delete {
+.skydonate-license-page .license-status-actions .button.button-link-delete {
     background: var(--sky-error-light);
     border: 1px solid transparent;
     color: var(--sky-error);
 }
 
-.license-status-actions .button.button-link-delete:hover {
+.skydonate-license-page .license-status-actions .button.button-link-delete:hover {
     background: var(--sky-error);
     color: #fff;
 }
 
-.license-status-actions .button.button-link-delete:focus {
+.skydonate-license-page .license-status-actions .button.button-link-delete:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
-
 /* Quick Stats */
-.license-quick-stats {
+.skydonate-license-page .license-quick-stats {
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.license-quick-stats .stat-item {
+.skydonate-license-page .license-quick-stats .stat-item {
     flex: 1;
     background: #fff;
     border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
     padding: 20px;
     text-align: center;
 }
 
-.stat-value {
+.skydonate-license-page .stat-value {
     display: block;
     font-size: 28px;
     font-weight: 700;
@@ -845,7 +821,7 @@ $update_available = $info['update_available'] ?? false;
     margin-bottom: 4px;
 }
 
-.stat-label {
+.skydonate-license-page .stat-label {
     font-size: 13px;
     color: var(--sky-gray-500);
     text-transform: uppercase;
@@ -853,15 +829,15 @@ $update_available = $info['update_available'] ?? false;
 }
 
 /* Sections */
-.license-section {
+.skydonate-license-page .license-section {
     background: #fff;
     border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
+    border-radius: var(--sky-radius-xl);
     padding: 24px;
     margin-bottom: 20px;
 }
 
-.license-section-header {
+.skydonate-license-page .license-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -870,7 +846,7 @@ $update_available = $info['update_available'] ?? false;
     border-bottom: 1px solid var(--sky-gray-100);
 }
 
-.license-section-header h3 {
+.skydonate-license-page .license-section-header h3 {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -880,47 +856,47 @@ $update_available = $info['update_available'] ?? false;
     margin: 0;
 }
 
-.license-section-header h3 .dashicons {
+.skydonate-license-page .license-section-header h3 .dashicons {
     color: var(--sky-primary);
 }
 
-.license-count {
+.skydonate-license-page .license-count {
     font-size: 13px;
     color: var(--sky-gray-500);
     background: var(--sky-gray-100);
     padding: 4px 12px;
-    border-radius: 9999px;
+    border-radius: var(--sky-radius-full);
 }
 
 /* Features Grid */
-.license-grid {
+.skydonate-license-page .license-grid {
     display: grid;
     gap: 12px;
 }
 
-.license-features-grid {
+.skydonate-license-page .license-features-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-.license-item {
+.skydonate-license-page .license-item {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
     background: var(--sky-gray-50);
-    border-radius: var(--sky-radius);
-    transition: all 0.2s;
+    border-radius: var(--sky-radius-lg);
+    transition: var(--sky-transition);
 }
 
-.license-item.enabled {
-    background: rgba(16, 185, 129, 0.1);
+.skydonate-license-page .license-item.enabled {
+    background: var(--sky-success-light);
 }
 
-.license-item.disabled {
+.skydonate-license-page .license-item.disabled {
     opacity: 0.6;
 }
 
-.license-item .item-icon {
+.skydonate-license-page .license-item .item-icon {
     width: 24px;
     height: 24px;
     display: flex;
@@ -928,152 +904,151 @@ $update_available = $info['update_available'] ?? false;
     justify-content: center;
 }
 
-.license-item.enabled .item-icon .dashicons { color: var(--sky-success); }
-.license-item.disabled .item-icon .dashicons { color: var(--sky-gray-400); }
+.skydonate-license-page .license-item.enabled .item-icon .dashicons { color: var(--sky-success); }
+.skydonate-license-page .license-item.disabled .item-icon .dashicons { color: var(--sky-gray-400); }
 
-.license-item .item-name {
+.skydonate-license-page .license-item .item-name {
     font-size: 14px;
     color: var(--sky-gray-700);
 }
 
 /* Widgets Grid */
-.license-widgets-grid {
+.skydonate-license-page .license-widgets-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-.license-widget-item {
+.skydonate-license-page .license-widget-item {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 16px;
     background: var(--sky-gray-50);
-    border-radius: var(--sky-radius);
-    transition: all 0.2s;
+    border-radius: var(--sky-radius-lg);
+    transition: var(--sky-transition);
 }
 
-.license-widget-item.enabled {
+.skydonate-license-page .license-widget-item.enabled {
     background: rgba(16, 185, 129, 0.08);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
-.license-widget-item.disabled {
+.skydonate-license-page .license-widget-item.disabled {
     opacity: 0.6;
 }
 
-.license-widget-item .widget-icon {
+.skydonate-license-page .license-widget-item .widget-icon {
     width: 40px;
     height: 40px;
     background: var(--sky-gray-200);
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.license-widget-item.enabled .widget-icon {
+.skydonate-license-page .license-widget-item.enabled .widget-icon {
     background: var(--sky-success);
 }
 
-.license-widget-item .widget-icon .dashicons {
+.skydonate-license-page .license-widget-item .widget-icon .dashicons {
     color: var(--sky-gray-500);
 }
 
-.license-widget-item.enabled .widget-icon .dashicons {
+.skydonate-license-page .license-widget-item.enabled .widget-icon .dashicons {
     color: #fff;
 }
 
-.license-widget-item .widget-info {
+.skydonate-license-page .license-widget-item .widget-info {
     flex: 1;
 }
 
-.license-widget-item .widget-name {
+.skydonate-license-page .license-widget-item .widget-name {
     display: block;
     font-size: 14px;
     font-weight: 500;
     color: var(--sky-gray-800);
 }
 
-.license-widget-item .widget-status {
+.skydonate-license-page .license-widget-item .widget-status {
     font-size: 12px;
     color: var(--sky-gray-500);
 }
 
-.license-widget-item.enabled .widget-status {
+.skydonate-license-page .license-widget-item.enabled .widget-status {
     color: var(--sky-success);
 }
 
-.license-widget-item .widget-status-icon .dashicons {
+.skydonate-license-page .license-widget-item .widget-status-icon .dashicons {
     font-size: 20px;
     width: 20px;
     height: 20px;
 }
 
-.license-widget-item.enabled .widget-status-icon .dashicons {
+.skydonate-license-page .license-widget-item.enabled .widget-status-icon .dashicons {
     color: var(--sky-success);
 }
 
-.license-widget-item.disabled .widget-status-icon .dashicons {
+.skydonate-license-page .license-widget-item.disabled .widget-status-icon .dashicons {
     color: var(--sky-gray-400);
 }
 
 /* Layouts Grid */
-.license-layouts-grid {
+.skydonate-license-page .license-layouts-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
-.license-layout-item {
+.skydonate-license-page .license-layout-item {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
     background: var(--sky-gray-50);
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
 }
 
-.license-layout-item .layout-icon {
+.skydonate-license-page .license-layout-item .layout-icon {
     width: 36px;
     height: 36px;
     background: var(--sky-primary);
-    border-radius: var(--sky-radius);
+    border-radius: var(--sky-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.license-layout-item .layout-icon .dashicons {
+.skydonate-license-page .license-layout-item .layout-icon .dashicons {
     color: #fff;
     font-size: 18px;
     width: 18px;
     height: 18px;
 }
 
-.license-layout-item .layout-info {
+.skydonate-license-page .license-layout-item .layout-info {
     flex: 1;
 }
 
-.license-layout-item .layout-name {
+.skydonate-license-page .license-layout-item .layout-name {
     display: block;
     font-size: 13px;
     color: var(--sky-gray-500);
 }
 
-.license-layout-item .layout-value {
+.skydonate-license-page .license-layout-item .layout-value {
     display: block;
     font-size: 14px;
     font-weight: 600;
     color: var(--sky-gray-800);
 }
 
-/* Capabilities */
 /* Capabilities List */
-.license-capabilities-list {
+.skydonate-license-page .license-capabilities-list {
     display: flex;
     flex-direction: column;
     gap: var(--sky-space-3);
 }
 
 /* Capability Item */
-.license-capability {
+.skydonate-license-page .license-capability {
     display: flex;
     align-items: center;
     gap: var(--sky-space-4);
@@ -1083,30 +1058,30 @@ $update_available = $info['update_available'] ?? false;
     transition: var(--sky-transition);
 }
 
-.license-capability:hover {
+.skydonate-license-page .license-capability:hover {
     background: var(--sky-gray-100);
 }
 
-.license-capability.enabled {
+.skydonate-license-page .license-capability.enabled {
     background: rgba(16, 185, 129, 0.06);
 }
 
-.license-capability.enabled:hover {
+.skydonate-license-page .license-capability.enabled:hover {
     background: rgba(16, 185, 129, 0.1);
 }
 
-.license-capability.disabled {
+.skydonate-license-page .license-capability.disabled {
     background: var(--sky-gray-50);
 }
 
 /* Toggle Switch */
-.capability-toggle {
+.skydonate-license-page .capability-toggle {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
 }
 
-.capability-toggle .toggle-track {
+.skydonate-license-page .capability-toggle .toggle-track {
     display: block;
     width: 44px;
     height: 24px;
@@ -1117,15 +1092,15 @@ $update_available = $info['update_available'] ?? false;
     cursor: default;
 }
 
-.capability-toggle.on .toggle-track {
+.skydonate-license-page .capability-toggle.on .toggle-track {
     background: var(--sky-success);
 }
 
-.capability-toggle.off .toggle-track {
+.skydonate-license-page .capability-toggle.off .toggle-track {
     background: var(--sky-gray-300);
 }
 
-.capability-toggle .toggle-thumb {
+.skydonate-license-page .capability-toggle .toggle-thumb {
     position: absolute;
     width: 18px;
     height: 18px;
@@ -1137,28 +1112,28 @@ $update_available = $info['update_available'] ?? false;
     box-shadow: var(--sky-shadow-sm), 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.capability-toggle.on .toggle-thumb {
+.skydonate-license-page .capability-toggle.on .toggle-thumb {
     transform: translateX(20px);
 }
 
 /* Capability Name */
-.capability-name {
+.skydonate-license-page .capability-name {
     flex: 1;
     font-size: var(--sky-font-size-sm);
     font-weight: 500;
     color: var(--sky-gray-700);
 }
 
-.license-capability.enabled .capability-name {
+.skydonate-license-page .license-capability.enabled .capability-name {
     color: var(--sky-gray-800);
 }
 
-.license-capability.disabled .capability-name {
+.skydonate-license-page .license-capability.disabled .capability-name {
     color: var(--sky-gray-500);
 }
 
 /* Capability Status */
-.capability-status {
+.skydonate-license-page .capability-status {
     font-size: var(--sky-font-size-xs);
     font-weight: 600;
     text-transform: uppercase;
@@ -1169,125 +1144,123 @@ $update_available = $info['update_available'] ?? false;
     text-align: center;
 }
 
-.license-capability.enabled .capability-status {
+.skydonate-license-page .license-capability.enabled .capability-status {
     color: var(--sky-success);
     background: var(--sky-success-light);
 }
 
-.license-capability.disabled .capability-status {
+.skydonate-license-page .license-capability.disabled .capability-status {
     color: var(--sky-gray-500);
     background: var(--sky-gray-200);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .license-capability {
-        padding: var(--sky-space-3) var(--sky-space-4);
-        gap: var(--sky-space-3);
-    }
-    
-    .capability-toggle .toggle-track {
-        width: 38px;
-        height: 20px;
-    }
-    
-    .capability-toggle .toggle-thumb {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .capability-toggle.on .toggle-thumb {
-        transform: translateX(18px);
-    }
-    
-    .capability-name {
-        font-size: var(--sky-font-size-xs);
-    }
-    
-    .capability-status {
-        font-size: 10px;
-        padding: 2px var(--sky-space-2);
-    }
-}
-
-
 /* Badges */
-.skydonate-badge {
+.skydonate-license-page .skydonate-badge {
     display: inline-flex;
     align-items: center;
     padding: 4px 12px;
-    border-radius: 9999px;
+    border-radius: var(--sky-radius-full);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.skydonate-badge--valid { background: rgba(16, 185, 129, 0.1); color: var(--sky-success-dark); }
-.skydonate-badge--expired { background: rgba(239, 68, 68, 0.1); color: var(--sky-danger-dark); }
-.skydonate-badge--inactive { background: var(--sky-gray-100); color: var(--sky-gray-600); }
-.skydonate-badge--invalid { background: rgba(239, 68, 68, 0.1); color: var(--sky-danger-dark); }
-.skydonate-badge--error { background: rgba(239, 68, 68, 0.1); color: var(--sky-danger-dark); }
-.skydonate-badge--warning { background: rgba(245, 158, 11, 0.1); color: var(--sky-warning-dark); }
+.skydonate-license-page .skydonate-badge--valid { background: var(--sky-success-light); color: #059669; }
+.skydonate-license-page .skydonate-badge--expired { background: var(--sky-error-light); color: #dc2626; }
+.skydonate-license-page .skydonate-badge--inactive { background: var(--sky-gray-100); color: var(--sky-gray-600); }
+.skydonate-license-page .skydonate-badge--invalid { background: var(--sky-error-light); color: #dc2626; }
+.skydonate-license-page .skydonate-badge--error { background: var(--sky-error-light); color: #dc2626; }
+.skydonate-license-page .skydonate-badge--warning { background: var(--sky-warning-light); color: #d97706; }
 
 /* Footer */
-.license-footer {
+.skydonate-license-page .license-footer {
     text-align: center;
     padding-top: 24px;
     margin-top: 24px;
     border-top: 1px solid var(--sky-gray-200);
 }
 
-.license-footer p {
+.skydonate-license-page .license-footer p {
     margin: 0;
     color: var(--sky-gray-500);
     font-size: 14px;
 }
 
-.license-footer a {
+.skydonate-license-page .license-footer a {
     color: var(--sky-primary);
     text-decoration: none;
 }
 
-.license-footer a:hover {
+.skydonate-license-page .license-footer a:hover {
     text-decoration: underline;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .license-activation-card { padding: 32px 24px; }
+    .skydonate-license-page .license-activation-card { padding: 32px 24px; }
     
-    .license-status-card {
+    .skydonate-license-page .license-status-card {
         flex-direction: column;
         text-align: center;
     }
     
-    .license-status-icon { margin: 0 auto; }
+    .skydonate-license-page .license-status-icon { margin: 0 auto; }
     
-    .license-key-display {
+    .skydonate-license-page .license-key-display {
         flex-wrap: wrap;
         justify-content: center;
     }
     
-    .license-status-actions {
+    .skydonate-license-page .license-status-actions {
         width: 100%;
         justify-content: center;
     }
     
-    .license-quick-stats {
+    .skydonate-license-page .license-quick-stats {
         flex-direction: column;
     }
     
-    .license-features-grid,
-    .license-widgets-grid,
-    .license-layouts-grid {
+    .skydonate-license-page .license-features-grid,
+    .skydonate-license-page .license-widgets-grid,
+    .skydonate-license-page .license-layouts-grid {
         grid-template-columns: 1fr;
     }
     
-    .license-header {
+    .skydonate-license-page .license-header {
         flex-direction: column;
         text-align: center;
         gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .skydonate-license-page .license-capability {
+        padding: var(--sky-space-3) var(--sky-space-4);
+        gap: var(--sky-space-3);
+    }
+    
+    .skydonate-license-page .capability-toggle .toggle-track {
+        width: 38px;
+        height: 20px;
+    }
+    
+    .skydonate-license-page .capability-toggle .toggle-thumb {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .skydonate-license-page .capability-toggle.on .toggle-thumb {
+        transform: translateX(18px);
+    }
+    
+    .skydonate-license-page .capability-name {
+        font-size: var(--sky-font-size-xs);
+    }
+    
+    .skydonate-license-page .capability-status {
+        font-size: 10px;
+        padding: 2px var(--sky-space-2);
     }
 }
 </style>
@@ -1296,8 +1269,10 @@ $update_available = $info['update_available'] ?? false;
 jQuery(function($) {
     'use strict';
 
-    var nonce = <?php echo wp_json_encode( $nonce ); ?>;
-    var ajaxUrl = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
+    var nonce    = <?php echo wp_json_encode( $nonce ); ?>;
+    var ajaxUrl  = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
+    var site_url = <?php echo wp_json_encode( site_url() ); ?>;
+
 
     // Toaster function
     function showToast(message, type) {
@@ -1409,9 +1384,13 @@ jQuery(function($) {
             success: function(response) {
                 if (response.success) {
                     showToast(response.data.message, 'info');
+
                     if (response.data.reload) {
-                        setTimeout(function() { location.reload(); }, 1500);
+                        setTimeout(function() {
+                            window.location.href = site_url + '/wp-admin/admin.php?page=skydonation';
+                        }, 1500);
                     }
+
                 } else {
                     showToast(response.data.message || '<?php echo esc_js( __( 'Deactivation failed', 'skydonate' ) ); ?>', 'error');
                     $btn.removeClass('loading').prop('disabled', false);
@@ -1422,6 +1401,7 @@ jQuery(function($) {
                 $btn.removeClass('loading').prop('disabled', false);
             }
         });
+
     });
 
     // Refresh License

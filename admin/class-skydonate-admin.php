@@ -45,14 +45,9 @@ class Skyweb_Donation_System_Admin {
                 true
             );
         }
-
-        // Select2 is provided by WooCommerce
-        if ( wp_style_is( 'select2', 'registered' ) ) {
-            wp_enqueue_style( 'select2' );
-        }
-        if ( wp_script_is( 'select2', 'registered' ) ) {
-            wp_enqueue_script( 'select2' );
-        }
+        
+        wp_enqueue_style( 'select2' );
+        wp_enqueue_script( 'select2' );
 
         wp_enqueue_script(
             'skydonate-settings',

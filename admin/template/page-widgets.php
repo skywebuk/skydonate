@@ -33,9 +33,11 @@ $impact_slider 				=  skyweb_donation_setting_up('impact_slider');
 $qurbani_status 			=  true;
 $extra_donation 			=  true;
 $quick_donation 			=  true;
-$gift_aid_toggle 			        =  true;
+$gift_aid_toggle 			=  true;
 $donation_button 			=  skyweb_donation_setting_up('donation_button');
 $icon_slider 				=  skyweb_donation_setting_up('icon_slider');
+
+sky_widget_status_check('qurbani_status')
 
 ?>
 <div class="skyweb-settings-panel">

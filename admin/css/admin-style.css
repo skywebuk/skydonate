@@ -130,7 +130,7 @@
 .skydonation-navigation-wrapper {
     background: linear-gradient(135deg, #ffffff 0%, var(--sky-gray-50) 100%);
     border-radius: var(--sky-radius-xl);
-    margin-bottom: var(--sky-space-6);
+    margin-bottom: var(--sky-space-3);
     box-shadow: var(--sky-shadow);
     border: 1px solid var(--sky-gray-200);
     overflow: hidden;

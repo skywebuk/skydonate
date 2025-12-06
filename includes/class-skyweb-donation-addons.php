@@ -159,6 +159,7 @@ class SkyWeb_Donation_Addons {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-button.php');
             $widgets_manager->register(new \SkyWeb_Donation_Button());
         }
+
     
         if (sky_widget_status_check('icon_slider')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-icon-list.php');
