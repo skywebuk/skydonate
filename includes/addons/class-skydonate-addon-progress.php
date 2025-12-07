@@ -314,11 +314,13 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
                 $currency = !empty($row->order_currency) ? $row->order_currency : get_option('woocommerce_currency');
                 $amount = floatval($row->line_total);
 
-                // If not GBP, convert to GBP
+                // If not base currency, convert to base currency
                 if ( strtoupper($currency) !== get_option('woocommerce_currency') ) {
-                    $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
-                    if ( $rate && $rate > 0 ) {
-                        $amount = $amount / $rate; // convert to GBP
+                    if ( class_exists('Skydonate_Currency_Changer') ) {
+                        $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
+                        if ( $rate && $rate > 0 ) {
+                            $amount = $amount / $rate; // convert to base currency
+                        }
                     }
                 }
                 $total_gbp += round($amount);

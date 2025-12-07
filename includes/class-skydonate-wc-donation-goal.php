@@ -106,8 +106,8 @@ class WC_Donation_Goal {
 
         $total_sales = $this->get_product_total_sales_revenue($product_id);
         $total_raised = $total_sales + $offline_donation;
-        $percentage = ($total_raised / $target_sales) * 100;
-        $percentage = number_format($percentage, 0);
+        $percentage = ($target_sales > 0) ? ($total_raised / $target_sales) * 100 : 0;
+        $percentage = min(number_format($percentage, 0), 100); // Cap at 100%
 
         ob_start();
         ?>

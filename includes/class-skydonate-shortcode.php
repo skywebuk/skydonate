@@ -112,6 +112,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             $card_layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
             $card_layout             = ($card_layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
+            $custom_options     = is_array($custom_options) ? $custom_options : [];
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
             $box_arrow_hide     = get_post_meta($id, '_box_arrow_hide', true);
@@ -209,7 +210,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             echo '</div>';
 
             // ----- Date Pickers for Daily -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group">';
                 echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';
@@ -226,13 +227,13 @@ if (!class_exists('Skydonate_Shortcode')) {
             $this->name_on_plaque($id);
 
             echo '</div>'; // .donation-amount-groups
-            
+
 
             Skydonate_Functions::skydonate_submit_button($atts);
 
             echo '</form>';
         }
-        
+
         /**
          * Render donation card content
          */
@@ -266,6 +267,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             $card_layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
             $card_layout             = ($card_layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
+            $custom_options     = is_array($custom_options) ? $custom_options : [];
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
             $box_arrow_hide     = get_post_meta($id, '_box_arrow_hide', true);
@@ -362,7 +364,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             echo '</div>';
 
             // ----- Date Pickers for Daily -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group">';
                 echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';
@@ -517,7 +519,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             echo '</div>';
 
             // ----- Daily Date Picker -----
-            if (in_array('show_daily', $button_visibility) && $enable_start_date == 1 || $enable_end_date == 1) {
+            if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
                 echo '<div class="donation-daily-dates-group" style="' . ($donation_frequency === 'daily' ? 'display:block;' : 'display:none;') . '">';
                 echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
                 echo '<div class="donation-dates">';

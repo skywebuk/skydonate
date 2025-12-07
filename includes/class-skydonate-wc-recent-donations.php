@@ -196,10 +196,11 @@ function add_anonymous_donation_option($order_id) {
     </style>';
 
     echo '<form action="' . esc_url($current_url) . '" method="post" class="anonymous-donation-form">';
-    echo '<p><strong>' . __('Would you like to donate anonymously?', 'your-text-domain') . '</strong><br/>';
-    echo '<label><input type="checkbox" name="anonymous_donation" value="1" ' . $checked . '> ' . __('Yes, I would like to make my donation anonymous', 'your-text-domain') . '</label>';
+    wp_nonce_field('anonymous_donation_' . $order_id, 'anonymous_donation_nonce');
+    echo '<p><strong>' . __('Would you like to donate anonymously?', 'skydonate') . '</strong><br/>';
+    echo '<label><input type="checkbox" name="anonymous_donation" value="1" ' . $checked . '> ' . __('Yes, I would like to make my donation anonymous', 'skydonate') . '</label>';
     echo '<input type="hidden" name="order_id" value="' . esc_attr($order_id) . '">';
-    echo '<input type="submit" name="submit_anonymous_donation" class="button" value="' . __('Update', 'your-text-domain') . '"></p>';
+    echo '<input type="submit" name="submit_anonymous_donation" class="button" value="' . __('Update', 'skydonate') . '"></p>';
     echo '</form>';
 }
 
@@ -220,6 +221,31 @@ function handle_anonymous_donation_submission() {
     if (isset($_POST['submit_anonymous_donation']) && !empty($_POST['order_id'])) {
         $order_id = absint($_POST['order_id']);
 
+        // Security: Verify nonce
+        if (!isset($_POST['anonymous_donation_nonce']) || !wp_verify_nonce($_POST['anonymous_donation_nonce'], 'anonymous_donation_' . $order_id)) {
+            wc_add_notice(__('Security check failed. Please try again.', 'skydonate'), 'error');
+            return;
+        }
+
+        // Security: Verify user owns this order
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            wc_add_notice(__('Invalid order.', 'skydonate'), 'error');
+            return;
+        }
+
+        $current_user_id = get_current_user_id();
+        $order_user_id = $order->get_user_id();
+
+        // Allow if user owns the order OR if it's a guest order and they're on the thank you page with valid order key
+        $is_owner = ($current_user_id > 0 && $current_user_id === $order_user_id);
+        $is_guest_order = ($order_user_id === 0 && isset($_GET['key']) && $order->get_order_key() === $_GET['key']);
+
+        if (!$is_owner && !$is_guest_order) {
+            wc_add_notice(__('You do not have permission to update this order.', 'skydonate'), 'error');
+            return;
+        }
+
         if (isset($_POST['anonymous_donation']) && $_POST['anonymous_donation'] === '1') {
             update_post_meta($order_id, '_anonymous_donation', '1');
         } else {
@@ -227,7 +253,7 @@ function handle_anonymous_donation_submission() {
         }
 
         // Add a success notice
-        wc_add_notice(__('Your donation anonymity preference has been updated.', 'your-text-domain'), 'success');
+        wc_add_notice(__('Your donation anonymity preference has been updated.', 'skydonate'), 'success');
 
         // Redirect to avoid form resubmission issues, ensure all query params are kept
         wp_safe_redirect(esc_url_raw(add_query_arg([])));
@@ -255,7 +281,4 @@ add_action('woocommerce_order_details_before_order_table', 'add_anonymous_donati
 add_action('template_redirect', 'handle_anonymous_donation_submission');
 
 
-if (is_admin()) {
-    new WC_Recent_Donations();
-}
-?>
+new WC_Recent_Donations();
