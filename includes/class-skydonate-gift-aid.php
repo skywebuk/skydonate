@@ -10,35 +10,28 @@ class Skydonate_Gift_Aid {
 
     public function __construct() {
 
-
-
         // AJAX handlers for exporting Gift Aid orders
         add_action( 'wp_ajax_export_gift_aid_orders_ajax', [ $this, 'export_gift_aid_orders_ajax' ] );
         add_action( 'wp_ajax_export_gift_aid_orders_by_date', [ $this, 'export_gift_aid_orders_by_date' ] );
-        
 
-		if (get_option('enable_gift_aid', 0) == 1) {
-            // Initialize admin settings
-            add_action( 'admin_init', array( $this, 'admin_init' ) );
+        // Initialize admin settings
+        add_action( 'admin_init', array( $this, 'admin_init' ) );
 
-            // Add Gift Aid section to My Account page
-            add_action( 'woocommerce_before_my_account', array( $this, 'my_account_gift_aid_field' ) );
-            add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
+        // Add Gift Aid section to My Account page
+        add_action( 'woocommerce_before_my_account', array( $this, 'my_account_gift_aid_field' ) );
+        add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
 
-            // Save the Gift Aid checkbox value when order is processed
-            add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_gift_aid_checkbox' ), 45, 2 );
+        // Save the Gift Aid checkbox value when order is processed
+        add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_gift_aid_checkbox' ), 45, 2 );
 
-            // Save Gift Aid meta during WooCommerce checkout
-            add_action( 'woocommerce_checkout_create_order', array( $this, 'save_gift_aid_meta' ), 10, 2 );
+        // Save Gift Aid meta during WooCommerce checkout
+        add_action( 'woocommerce_checkout_create_order', array( $this, 'save_gift_aid_meta' ), 10, 2 );
 
-            // Apply Gift Aid to subscription renewals
-            add_action( 'woocommerce_subscriptions_renewal_order_created', array( $this, 'apply_user_gift_aid_to_subscription' ), 10, 2 );
+        // Apply Gift Aid to subscription renewals
+        add_action( 'woocommerce_subscriptions_renewal_order_created', array( $this, 'apply_user_gift_aid_to_subscription' ), 10, 2 );
 
-            // Include Gift Aid meta in WooCommerce emails
-            add_filter( 'woocommerce_email_order_meta_fields', array( $this, 'email_gift_aid_meta' ), 10, 3 );
-		}
-
-
+        // Include Gift Aid meta in WooCommerce emails
+        add_filter( 'woocommerce_email_order_meta_fields', array( $this, 'email_gift_aid_meta' ), 10, 3 );
     }
 
 

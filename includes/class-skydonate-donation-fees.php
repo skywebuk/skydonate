@@ -155,12 +155,6 @@ class WC_Donation_Fees {
 			WC()->session->set( 'optional_fee_amount', 0 );
 		}
 	}
-    
-    
-    
-    
-    
-    
 }
 
 new WC_Donation_Fees();

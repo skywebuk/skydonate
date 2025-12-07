@@ -13,16 +13,12 @@ if (!class_exists('Skydonate_Shortcode')) {
          * Shortcode render callback
          */
         public function render_shortcode($atts) {
-            $layout = skydonate_layout_option('addons_donation_form_layout');
-            if (!is_array($layout)) {
-                $layout = ['layout1'];
-            }
 
             $atts = shortcode_atts([
                 'id'          => '',
                 'placeholder' => __('Custom Amount', 'skydonate'),
                 'button_text' => __('Donate and Support', 'skydonate'),
-                'before_icon' => (in_array('layout2',  $layout) ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-credit-card"></i>' ),
+                'before_icon' => (skydonate_get_layout('recent_donation') == 'layout-2' ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-credit-card"></i>' ),
                 'after_icon'  => '<i class="fas fa-arrow-right"></i>',
             ], $atts, 'skydonate_form');
 
@@ -38,7 +34,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             }
             
             ob_start();
-            $this->render($id, $atts, $layout);
+            $this->render($id, $atts, skydonate_get_layout('recent_donation'));
             return ob_get_clean();
         }
 
@@ -46,16 +42,16 @@ if (!class_exists('Skydonate_Shortcode')) {
         /**
          * Render donation form wrapper
          */
-        protected function render($id, $atts, $layout) {
+        protected function render($id, $atts, $card_layout) {
             $close_project  = get_post_meta($id, '_close_project', true);
             $zakat_applicable = get_post_meta($id, '_zakat_applicable', true);
             $closed_message = get_post_meta($id, '_project_closed_message', true);
             $closed_title   = get_post_meta($id, '_project_closed_title', true);
             echo '<div class="donation-form-wrapper">';
             if ($close_project !== 'yes') {
-                if(in_array('layout2',  $layout)){
+                if(skydonate_get_layout('recent_donation') == 'layout-2'){
                     $this->layout_two($id,$atts);
-                }elseif(in_array('layout3',  $layout)){
+                }elseif(skydonate_get_layout('recent_donation') == 'layout-3'){
                     $this->layout_three($id,$atts);
                 }else {
                     $this->layout_one($id,$atts);
@@ -113,8 +109,8 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
-            $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
+            $card_layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
+            $card_layout             = ($card_layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
@@ -122,7 +118,7 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $deafult_amount = '';
 
-            echo '<form class="donation-form ' . esc_attr($layout) . '" data-product="' . esc_attr($id) . '">';
+            echo '<form class="donation-form ' . esc_attr($card_layout) . '" data-product="' . esc_attr($id) . '">';
 
             // ----- Donation Frequency Buttons -----
             $frequencies = [
@@ -162,7 +158,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             // ----- Donation Amounts -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
+                if($card_layout == 'list-layout'){
                     $btn_label = true;
                 }else{
                     $btn_label = false;
@@ -267,8 +263,8 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
-            $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
+            $card_layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
+            $card_layout             = ($card_layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
@@ -276,7 +272,7 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $deafult_amount = '';
 
-            echo '<form class="donation-form ' . esc_attr($layout) . '" data-product="' . esc_attr($id) . '">';
+            echo '<form class="donation-form ' . esc_attr($card_layout) . '" data-product="' . esc_attr($id) . '">';
 
             // ----- Donation Frequency Buttons -----
             $frequencies = [
@@ -316,7 +312,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             // ----- Donation Amounts -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
+                if($card_layout == 'list-layout'){
                     $btn_label = true;
                 }else{
                     $btn_label = false;
@@ -417,8 +413,8 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
-            $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
+            $card_layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
+            $card_layout             = ($card_layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true) ?: [];
             $default_option     = get_post_meta($id, '_default_option', true);
             $box_title          = get_post_meta($id, '_box_title', true);
@@ -434,7 +430,7 @@ if (!class_exists('Skydonate_Shortcode')) {
                 'yearly'  => __('Yearly', 'skydonate'),
             ];
 
-            echo '<form class="donation-form ' . esc_attr($layout) . '" data-product="' . esc_attr($id) . '">';
+            echo '<form class="donation-form ' . esc_attr($card_layout) . '" data-product="' . esc_attr($id) . '">';
 
             // ----- Donation Type Toggle -----
             if (count($button_visibility) >= 2) {
@@ -470,7 +466,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             // ----- Donation Amount Buttons -----
             echo '<div class="donation-amount-groups">';
             foreach ($frequencies as $key => $label) {
-                if($layout == 'list-layout'){
+                if($card_layout == 'list-layout'){
                     $btn_label = true;
                 }else{
                     $btn_label = false;

@@ -394,8 +394,8 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'label' => __( 'Area Background', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .donation-tabs' => 'background-color: {{VALUE}};',
-                    '.donation-form-layout2 {{WRAPPER}} .donation-tabs .button.active' => 'color: {{VALUE}};'
+                    '{{WRAPPER}} .donation-tabs' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .donation-tabs .button.active' => 'color: {{VALUE}};'
                 ],
             ]
         );
@@ -994,7 +994,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'label' => __( 'Background Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box' => 'background-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .custom-amount-box' => 'background-color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -1006,7 +1006,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
+                    '{{WRAPPER}} .custom-amount-box' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
                 ],
             ]
         );
@@ -1015,7 +1015,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'input_area_border',
-                'selector' => '.donation-form-layout2 {{WRAPPER}} .custom-amount-box',
+                'selector' => '{{WRAPPER}} .custom-amount-box',
             ]
         );
         
@@ -1027,7 +1027,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1039,7 +1039,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1057,7 +1057,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             [
                 'name' => 'input_area_title_typography',
-                'selector' => '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .total-label',
+                'selector' => '{{WRAPPER}} .custom-amount-box .total-label',
             ]
         );
 
@@ -1067,7 +1067,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'label' => __( 'Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .total-label' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .custom-amount-box .total-label' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -1079,7 +1079,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .total-label' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box .total-label' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1091,7 +1091,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .total-label' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box .total-label' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1112,7 +1112,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'label' => __( 'Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount, .donation-form-layout2 {{WRAPPER}} .custom-amount-box .currency-symbol' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .custom-amount-box .selected_amount, {{WRAPPER}} .custom-amount-box .currency-symbol' => 'color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -1123,7 +1123,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'label' => __( 'Background Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount' => 'background-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .custom-amount-box .selected_amount' => 'background-color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -1135,7 +1135,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
+                    '{{WRAPPER}} .custom-amount-box .selected_amount' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}} !important;',
                 ],
             ]
         );
@@ -1144,7 +1144,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'main_input_border',
-                'selector' => '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount',
+                'selector' => '{{WRAPPER}} .custom-amount-box .selected_amount',
             ]
         );
         
@@ -1156,7 +1156,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box .selected_amount' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1168,7 +1168,7 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
-                    '.donation-form-layout2 {{WRAPPER}} .custom-amount-box .selected_amount' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .custom-amount-box .selected_amount' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );

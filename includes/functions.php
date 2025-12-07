@@ -39,64 +39,7 @@ function sky_status_check($option) {
 	return get_option($option) == 1;
 }
 
-/**
- * Check if a widget is enabled (considers both license and local settings)
- *
- * @param string $option Widget option name
- * @return bool True if widget is enabled
- */
-function sky_widget_status_check( $option ) {
-    // First check if license allows this widget
-    if ( function_exists( 'skydonate_license' ) ) {
-        $license = skydonate_license();
-        if ( $license->is_active() ) {
-            // Check license-based widget permission
-            if ( ! $license->has_widget( $option ) ) {
-                return false;
-            }
-        }
-    }
 
-    // Default widgets list
-    $default_widgets = array(
-        'zakat_calculator'         => 'on',
-        'zakat_calculator_classic' => 'on',
-        'metal_values'             => 'on',
-        'recent_order'             => 'on',
-        'donation_progress'        => 'on',
-        'donation_form'            => 'on',
-        'donation_card'            => 'on',
-        'impact_slider'            => 'on',
-        'qurbani_status'           => 'on',
-        'extra_donation'           => 'on',
-        'quick_donation'           => 'on',
-        'gift_aid_toggle'          => 'on',
-        'donation_button'          => 'on',
-        'icon_slider'              => 'on',
-    );
-
-    // Retrieve and merge saved options with defaults
-    $widgets = wp_parse_args( get_option( 'skydonate_widgets', array() ), $default_widgets );
-
-    // Check widget status
-    return isset( $widgets[ $option ] ) && $widgets[ $option ] === 'on';
-}
-
-
-function skydonate_setting_up( string $key_to_find ) {
-	
-    $system_setup = get_option( 'skydonate_setup' );
-    if ( ! $system_setup ) {
-        return null;
-    }
-
-    $system_setup_array = json_decode( $system_setup, true );
-    if ( ! is_array( $system_setup_array ) ) {
-        return null;
-    }
-
-    return skydonate_find_key_recursive( $system_setup_array, $key_to_find );
-}
 function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     foreach ( $array as $key => $value ) {
         if ( $key === $key_to_find ) {
@@ -194,33 +137,6 @@ function license_authenticate(){
 	}
 }
 
-/**
- * Get layout option for a component (considers license layouts)
- *
- * @param string $option_key Layout option key
- * @return array|string Layout value(s)
- */
-function skydonate_layout_option( $option_key ) {
-    // First check if license specifies a layout
-    if ( function_exists( 'skydonate_license' ) ) {
-        $license = skydonate_license();
-        if ( $license->is_active() ) {
-            $license_layout = $license->get_layout( $option_key );
-            if ( $license_layout && $license_layout !== 'layout-1' ) {
-                // Return as array for consistency
-                return is_array( $license_layout ) ? $license_layout : array( $license_layout );
-            }
-        }
-    }
-
-    // Fall back to local options
-    $options = skydonate_setting_up( 'options' );
-    if ( isset( $options[ $option_key ] ) ) {
-        return $options[ $option_key ];
-    }
-    return array();
-}
-
 function skydonate_widget_list(){
 	 return [
             'zakat_calculator'			=> array('zakat-calculator-addons'),
@@ -235,17 +151,6 @@ function skydonate_widget_list(){
             'donation_button'			=> array('button'),
             'icon_slider'				=> array('icon-list'),
         ];
-}
-
-
-function extend_plugin_pro_feauture($args =array()){
-	if(!empty($args)){
-		if(isset($args['setup'])){
-			$setup = $args['setup'];
-			update_option('skydonate_setup',$args['setup']);
-			skydonate_system_properties($args);
-		}
-	}
 }
 
 function woodmart_login_form( $echo = true, $action = false, $message = false, $hidden = false, $redirect = false ) {

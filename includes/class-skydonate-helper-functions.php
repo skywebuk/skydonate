@@ -813,11 +813,7 @@ class Skydonate_Functions {
             wp_send_json_error("Missing parameters");
         }
 
-        // Layout detection
-        $layout = skydonate_layout_option('recent_donation_layout');
-        if (!is_array($layout)) {
-            $layout = ['layout1'];
-        }
+
 
         // Fetch enough orders to apply offset + limit
         $fetch_limit = $offset + $limit;
@@ -851,7 +847,7 @@ class Skydonate_Functions {
 
         ob_start();
 
-        if (in_array('layout2', $layout)) {
+        if (skydonate_get_layout('recent_donation') == 'layout-2') {
             $list_icon = isset($_POST['list_icon']) ? wp_kses_post(stripslashes($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
             Skydonate_Functions::render_recent_donations_item_layout_two(
                 $paged_order_ids,

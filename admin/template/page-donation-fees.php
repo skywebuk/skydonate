@@ -20,7 +20,6 @@
                             id="enable_donation_fees" 
                             value="1" 
                             <?php checked( get_option('enable_donation_fees'), 1 ); ?> 
-                        
                         >
                         <span class="switch"></span>
                         <small>Enable or disable the Donations fees. Check this box to activate the fees.</small>

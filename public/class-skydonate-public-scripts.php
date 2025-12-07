@@ -45,7 +45,6 @@ class SkyDonate_Public_Scripts {
      */
     private function register_addon_scripts() {
         $addon_scripts = [
-            'zakat-calculator'         => 'zakat-calculator.js',
             'zakat-calculator-classic' => 'zakat-calculator-classic.js',
             'zakat-calculator-preview' => 'zakat-calculator-preview.js',
             'recent-donation'          => 'recent-donation.js',
@@ -214,13 +213,8 @@ class SkyDonate_Public_Scripts {
      * Enqueue donation form scripts based on layout
      */
     public function enqueue_donation_form_scripts() {
-        $layout = skydonate_layout_option( 'addons_donation_form_layout' );
 
-        if ( ! is_array( $layout ) ) {
-            $layout = [ 'layout1' ];
-        }
-
-        if ( in_array( 'layout3', $layout ) ) {
+        if ( skydonate_get_layout('addons_donation_form') == 'layout-3' ) {
             wp_enqueue_script(
                 'donation-form',
                 SKYDONATE_ASSETS . '/addons/js/donation-form-three.js',

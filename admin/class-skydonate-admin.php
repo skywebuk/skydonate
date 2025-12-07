@@ -170,6 +170,7 @@ class Skydonate_Admin {
                 'capability' => 'manage_options',
                 'page_slug'  => 'skydonate-donation-fees',
                 'callback'   => 'donation_fees_page_content',
+                'validation'  => skydonate_is_feature_enabled('donation_fees'),
             ],
             [
                 'page_title' => esc_html__( 'Gift Aid', 'skydonate' ),
@@ -177,6 +178,7 @@ class Skydonate_Admin {
                 'capability' => 'manage_options',
                 'page_slug'  => 'skydonate-gift-aid',
                 'callback'   => 'gift_aid_page_content',
+                'validation'  => skydonate_is_feature_enabled('enhanced_gift_aid'),
             ],
             [
                 'page_title' => esc_html__( 'Widgets', 'skydonate' ),
