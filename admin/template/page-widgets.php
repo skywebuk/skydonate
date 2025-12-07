@@ -2,7 +2,6 @@
 <?php 
 // Default widget widgets
 $default_widgets = [
-    'zakat_calculator' => 'on',
     'zakat_calculator_classic' => 'on',
     'metal_values' => 'on',
     'recent_order' => 'on',
@@ -25,18 +24,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
 <div class="skydonate-settings-panel">
     <form class="skydonate-widget-form" method="post" action="">
         <div class="skydonate-checkboxs skydonate-widgets">
-            <?php if(sky_widget_status_check('zakat_calculator')): ?>
-            <label class="skydonate-switcher">
-                <span class="switch-label"><?php _e( 'Zakat Calculator', 'skydonate' ); ?></span>
-                <input id="zakat_calculator" name="widgets[zakat_calculator]" type="checkbox" 
-                    <?php checked( isset( $widgets['zakat_calculator'] ) && $widgets['zakat_calculator'] === 'on' ); ?>>
-                <span class="switch-toggle">
-                    <span class="switch-text on"><?php _e( 'On', 'skydonate' ); ?></span>
-                    <span class="switch-text off"><?php _e( 'Off', 'skydonate' ); ?></span>
-                </span>
-            </label>
-            <?php endif; ?>
-            <?php if(sky_widget_status_check('zakat_calculator_classic')): ?>
+            <?php if(skydonate_is_widget_enabled('zakat_calculator_classic')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Zakat Calculator Classic', 'skydonate' ); ?></span>
                 <input id="zakat_calculator_classic" name="widgets[zakat_calculator_classic]" type="checkbox" 
@@ -47,7 +35,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('metal_values')): ?>
+            <?php if(skydonate_is_widget_enabled('metal_values')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Metal Values', 'skydonate' ); ?></span>
                 <input id="metal_values" name="widgets[metal_values]" type="checkbox" 
@@ -58,7 +46,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('recent_order')): ?>
+            <?php if(skydonate_is_widget_enabled('recent_order')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Recent Donation', 'skydonate' ); ?></span>
                 <input id="recent_order" name="widgets[recent_order]" type="checkbox" 
@@ -69,7 +57,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('donation_progress')): ?>
+            <?php if(skydonate_is_widget_enabled('donation_progress')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Donation Progress', 'skydonate' ); ?></span>
                 <input id="donation_progress" name="widgets[donation_progress]" type="checkbox" 
@@ -80,7 +68,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('donation_form')): ?>
+            <?php if(skydonate_is_widget_enabled('donation_form')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Donation Form', 'skydonate' ); ?></span>
                 <input id="donation_form" name="widgets[donation_form]" type="checkbox" 
@@ -91,7 +79,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('donation_card')): ?>
+            <?php if(skydonate_is_widget_enabled('donation_card')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Donation Card', 'skydonate' ); ?></span>
                 <input id="donation_card" name="widgets[donation_card]" type="checkbox" 
@@ -102,7 +90,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('impact_slider')): ?>
+            <?php if(skydonate_is_widget_enabled('impact_slider')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Impact Slider', 'skydonate' ); ?></span>
                 <input id="impact_slider" name="widgets[impact_slider]" type="checkbox" 
@@ -113,7 +101,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('qurbani_status')): ?>
+            <?php if(skydonate_is_widget_enabled('qurbani_status')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Qurbani Status', 'skydonate' ); ?></span>
                 <input id="qurbani_status" name="widgets[qurbani_status]" type="checkbox" 
@@ -124,7 +112,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('extra_donation')): ?>
+            <?php if(skydonate_is_widget_enabled('extra_donation')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Extra Donation', 'skydonate' ); ?></span>
                 <input id="extra_donation" name="widgets[extra_donation]" type="checkbox" 
@@ -135,7 +123,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('quick_donation')): ?>
+            <?php if(skydonate_is_widget_enabled('quick_donation')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Quick Donation', 'skydonate' ); ?></span>
                 <input id="quick_donation" name="widgets[quick_donation]" type="checkbox" 
@@ -146,7 +134,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('gift_aid_toggle')): ?>
+            <?php if(skydonate_is_feature_enabled( 'enhanced_gift_aid' ) && sky_status_check( 'enable_gift_aid' ) && skydonate_is_widget_enabled('gift_aid_toggle')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Gift Aid Toggle', 'skydonate' ); ?></span>
                 <input id="gift_aid_toggle" name="widgets[gift_aid_toggle]" type="checkbox" 
@@ -157,7 +145,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('donation_button')): ?>
+            <?php if(skydonate_is_widget_enabled('donation_button')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Donation Button', 'skydonate' ); ?></span>
                 <input id="donation_button" name="widgets[donation_button]" type="checkbox" 
@@ -168,7 +156,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(sky_widget_status_check('icon_slider')): ?>
+            <?php if(skydonate_is_widget_enabled('icon_slider')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Icon Slider', 'skydonate' ); ?></span>
                 <input id="icon_slider" name="widgets[icon_slider]" type="checkbox" 

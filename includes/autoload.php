@@ -34,7 +34,6 @@ function skydonate_load_core_includes() {
     // Core classes
     skydonate_load_file( 'includes/class-skydonate-loader.php' );
     skydonate_load_file( 'includes/class-skydonate-i18n.php' );
-    skydonate_load_file( 'includes/class-skydonate-authenticate.php' );
 
     // License and updater
     skydonate_load_file( 'includes/class-skydonate-license-client.php' );
@@ -113,12 +112,12 @@ function skydonate_load_conditional_includes() {
     }
 
     // Donation goal
-    if ( sky_status_check( 'enable_donation_goal' ) ) {
+    if ( skydonate_is_feature_enabled( 'donation_goal' ) && sky_status_check( 'enable_donation_goal' ) ) {
         skydonate_load_file( 'includes/class-skydonate-wc-donation-goal.php' );
     }
 
     // Title prefix
-    if ( sky_status_check( 'enable_title_prefix' ) ) {
+    if ( skydonate_is_feature_enabled( 'title_prefix' ) && sky_status_check( 'enable_title_prefix' ) ) {
         skydonate_load_file( 'includes/class-skydonate-wc-title-prefix.php' );
     }
 }
@@ -149,7 +148,6 @@ function skydonate_load_elementor_includes() {
         'class-skydonate-addon-qurbani-status.php',
         'class-skydonate-addon-recent-order.php',
         'class-skydonate-addon-recent-order-2.php',
-        'class-skydonate-addon-zakat-calculator.php',
         'class-skydonate-addon-zakat-calculator-classic.php',
         'class-skydonate-addon-zakat-preview.php',
         'class-skydonate-addon-extra-donation.php',

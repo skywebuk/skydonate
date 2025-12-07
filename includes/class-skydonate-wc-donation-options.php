@@ -775,18 +775,15 @@ class WC_Custom_Donation_Options {
             </div>
 
             <?php
-                $layout = skydonate_layout_option('addons_donation_form_layout');
-                if (!is_array($layout)) {
-                    $layout = ['layout1'];
-                }
+            
                 $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout.jpg';
                 $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout.jpg';
                 // Correct usage of in_array()
-                if (in_array('layout2', $layout)) {
+                if (skydonate_get_layout('addons_donation_form') == 'layout-2') {
                     $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout-2.jpg';
                     $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout-2.jpg';
                 }
-                if (in_array('layout3', $layout)) {
+                if (skydonate_get_layout('addons_donation_form') == 'layout-3') {
                     $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout-3.jpg';
                     $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout-3.jpg';
                 }

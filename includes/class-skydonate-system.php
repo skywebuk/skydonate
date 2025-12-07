@@ -60,7 +60,6 @@ class Skydonate_System {
         // Core functionality
         $this->include_file( 'includes/class-skydonate-snippet-functions.php' );
         $this->include_file( 'includes/class-skydonate-loader.php' );
-        $this->include_file( 'includes/class-skydonate-authenticate.php' );
         $this->include_file( 'includes/class-skydonate-i18n.php' );
 
         // License and updater
@@ -94,11 +93,15 @@ class Skydonate_System {
         $this->include_file( 'includes/class-skydonate-wc-donation-settings.php' );
         $this->include_file( 'includes/class-skydonate-metabox.php' );
         $this->include_file( 'includes/class-skydonate-shortcode.php' );
-        $this->include_file( 'includes/class-skydonate-donation-fees.php' );
         $this->include_file( 'includes/class-skydonate-extra-donation.php' );
 
+
+        if ( skydonate_is_feature_enabled( 'donation_fees' ) ) {
+            $this->include_file( 'includes/class-skydonate-donation-fees.php' );
+        }
+
         // Currency changer
-        if ( get_option( 'skydonate_currency_changer_enabled', 0 ) == 1 ) {
+        if ( sky_status_check( 'skydonate_currency_changer_enabled' )) {
             $this->include_file( 'includes/class-skydonate-currency.php' );
             new Skydonate_Currency_Changer();
         }
@@ -106,16 +109,6 @@ class Skydonate_System {
         // Notification system
         if ( skydonate_is_feature_enabled( 'notification' ) && ! empty( get_option( 'notification_select_donations', [] ) ) ) {
             $this->include_file( 'includes/class-skydonate-notification.php' );
-        }
-
-        // Initialize admin-only classes
-        if ( is_admin() ) {
-            if ( ! class_exists( 'WC_Custom_Donation_Settings' ) ) {
-                new WC_Custom_Donation_Settings();
-            }
-            if ( ! class_exists( 'WC_Donation_Fees' ) ) {
-                new WC_Donation_Fees();
-            }
         }
 
         // Donation module
@@ -127,7 +120,9 @@ class Skydonate_System {
         }
 
         // Gift Aid
-        $this->include_file( 'includes/class-skydonate-gift-aid.php' );
+        if( skydonate_is_feature_enabled( 'enhanced_gift_aid' ) && sky_status_check( 'enable_gift_aid' ) ){
+            $this->include_file( 'includes/class-skydonate-gift-aid.php' );
+        }
 
         // Address autoload
         if ( sky_status_check( 'address_autoload_status' ) ) {
@@ -135,25 +130,25 @@ class Skydonate_System {
         }
 
         // Recent donations
-        if ( sky_status_check( 'recent_donation_list_with_country' ) ) {
+        if ( skydonate_is_feature_enabled( 'recent_donation_country' ) && sky_status_check( 'recent_donation_list_with_country' ) ) {
             $this->include_file( 'includes/class-skydonate-wc-recent-donations.php' );
             $this->conditionally_initialize_class( 'WC_Recent_Donations' );
         }
 
         // Auto complete processing
-        if ( sky_status_check( 'auto_complete_processing' ) ) {
+        if ( skydonate_is_feature_enabled( 'auto_complete_processing' ) && sky_status_check( 'auto_complete_processing' ) ) {
             $this->include_file( 'includes/class-skydonate-wc-auto-complete.php' );
             $this->conditionally_initialize_class( 'WC_Auto_Complete_Processing' );
         }
 
         // Donation goal
-        if ( sky_status_check( 'enable_donation_goal' ) ) {
+        if ( skydonate_is_feature_enabled( 'donation_goal' ) && sky_status_check( 'enable_donation_goal' ) ) {
             $this->include_file( 'includes/class-skydonate-wc-donation-goal.php' );
             $this->conditionally_initialize_class( 'WC_Donation_Goal' );
         }
 
         // Title prefix
-        if ( sky_status_check( 'enable_title_prefix' ) ) {
+        if ( skydonate_is_feature_enabled( 'title_prefix' ) && sky_status_check( 'enable_title_prefix' ) ) {
             $this->include_file( 'includes/class-skydonate-wc-title-prefix.php' );
             $this->conditionally_initialize_class( 'WC_Title_Prefix' );
         }

@@ -55,112 +55,88 @@ class Skydonate_Elementor_Addons {
     }
 
     public function register_widgets($widgets_manager) {
-        // Conditionally load and register each widget
-        if (sky_widget_status_check('zakat_calculator')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-calculator.php');
-            $widgets_manager->register(new \Skydonate_Zakat_Calculator());
-        }
-        if (sky_widget_status_check('zakat_calculator_classic')) {
+        if (skydonate_is_widget_enabled('zakat_calculator_classic')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-calculator-classic.php');
             $widgets_manager->register(new \Skydonate_Zakat_Calculator_Classic());
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-preview.php');
             $widgets_manager->register(new \Skydonate_Zakat_Preview());
         }
 
-       if (sky_widget_status_check('metal_values')) {
+       if (skydonate_is_widget_enabled('metal_values')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-metal-values.php');
             $widgets_manager->register(new \Skydonate_Metal_Values());
         }
 
+        
 
-        if (sky_widget_status_check('recent_order')) {
-            $recent_donation_layout = skydonate_layout_option('recent_donation_layout');
-            if (!is_array($recent_donation_layout)) {
-                $recent_donation_layout = ['layout1'];
-            }
-            if (is_array($recent_donation_layout)) {
-                if (in_array('layout1', $recent_donation_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order.php');
-                    $widgets_manager->register(new \Skydonate_Recent_Order());
-                }
-                if (in_array('layout2', $recent_donation_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order-2.php');
-                    $widgets_manager->register(new \Skydonate_Recent_Order_2());
-                }
+        if (skydonate_is_widget_enabled('recent_order')) {
+            if(skydonate_get_layout('recent_donation') == 'layout-2'){
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order-2.php');
+                $widgets_manager->register(new \Skydonate_Recent_Order_2());
+            } else {
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order.php');
+                $widgets_manager->register(new \Skydonate_Recent_Order());
+
             }
         }
 
-        if (sky_widget_status_check('donation_progress')) {
-            $progress_bar_layout = skydonate_layout_option('progress_bar_layout');
-            if (!is_array($progress_bar_layout)) {
-                $progress_bar_layout = ['layout1'];
-            }
-            if (is_array($progress_bar_layout)) {
-                if (in_array('layout1', $progress_bar_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress.php');
-                    $widgets_manager->register(new \Skydonate_Progress());
-                }
-                if (in_array('layout2', $progress_bar_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress-2.php');
-                    $widgets_manager->register(new \Skydonate_Progress_2());
-                }
+        if (skydonate_is_widget_enabled('donation_progress')) {
+            if(skydonate_get_layout('progress_bar') == 'layout-2'){
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress-2.php');
+                $widgets_manager->register(new \Skydonate_Progress_2());
+            } else {
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress.php');
+                $widgets_manager->register(new \Skydonate_Progress());
             }
         }
-        if (sky_widget_status_check('donation_form')) {
+        if (skydonate_is_widget_enabled('donation_form')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-form.php');
             $widgets_manager->register(new \Skydonate_Form());
         }
 
 
-         if (sky_widget_status_check('donation_card')) {
-            $addons_card_layout = skydonate_layout_option('addons_card_layout');
-
-            if (!is_array($addons_card_layout)) {
-                $addons_card_layout = ['layout1'];
-            }
-
-            if (in_array('layout1', $addons_card_layout)) {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card.php');
-              $widgets_manager->register(new \Skydonate_Card());
-            }
-            if (in_array('layout2', $addons_card_layout)) {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card-2.php');
-                $widgets_manager->register(new \Skydonate_Card_2());
+         if (skydonate_is_widget_enabled('donation_card')) {
+            if(skydonate_get_layout('addons_card') == 'layout-2'){
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-donation-form-2.php');
+                $widgets_manager->register(new \Skydonate_Donation_Form_2());
+            } else {
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-donation-form.php');
+                $widgets_manager->register(new \Skydonate_Donation_Form());
             }
         }
 
 
-        if (sky_widget_status_check('impact_slider')) {
+        if (skydonate_is_widget_enabled('impact_slider')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-impact-slider.php');
             $widgets_manager->register(new \Skydonate_Impact_Slider());
         }
 
-        if (sky_widget_status_check('qurbani_status')) {
+        if (skydonate_is_widget_enabled('qurbani_status')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-qurbani-status.php');
             $widgets_manager->register(new \Skydonate_Qurbani_Status());
         }
 
-        if (sky_widget_status_check('extra_donation')) {
+        if (skydonate_is_widget_enabled('extra_donation')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-extra-donation.php');
             $widgets_manager->register(new \Skydonate_Extra_Donation_Widget());
         }
 
-        if (sky_widget_status_check('quick_donation')) {
+        if (skydonate_is_widget_enabled('quick_donation')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-quick-donate.php');
             $widgets_manager->register(new \Skydonate_Quick_Donation());
         }
 
-        if (sky_widget_status_check('gift_aid_toggle') && get_option('enable_gift_aid', 0) == 1) {
+        if (skydonate_is_feature_enabled( 'enhanced_gift_aid' ) && sky_status_check( 'enable_gift_aid' ) && skydonate_is_widget_enabled('gift_aid_toggle') ) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-gift-aid-toggle.php');
             $widgets_manager->register(new \Skydonate_Gift_Aid_Toggle());
         }
 
-        if (sky_widget_status_check('donation_button')) {
+        if (skydonate_is_widget_enabled('donation_button')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-button.php');
             $widgets_manager->register(new \Skydonate_Button());
         }
 
-        if (sky_widget_status_check('icon_slider')) {
+        if (skydonate_is_widget_enabled('icon_slider')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-icon-list.php');
             $widgets_manager->register(new \Skydonate_Icon_List());
         }

@@ -21,13 +21,7 @@ class Skydonate_Public {
 	}
 
 	public function enqueue_styles() {
-	    
-        wp_register_style(
-            'zakat-calculator',
-            SKYDONATE_ASSETS . '/addons/css/zakat-calculator.css',
-            [],
-            SKYDONATE_VERSION  // Replace with the version number or leave as is
-        );
+        
         wp_register_style(
             'zakat-calculator-classic',
             SKYDONATE_ASSETS . '/addons/css/zakat-calculator-classic.css',
@@ -107,14 +101,7 @@ class Skydonate_Public {
             SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         
-        
-            $addons_form_layout = skydonate_layout_option('addons_donation_form_layout');
-
-            if (!is_array($addons_form_layout)) {
-                $addons_form_layout = ['layout1'];
-            }
-            
-            if (in_array('layout3',  $addons_form_layout)) {
+            if (skydonate_get_layout('addons_donation_form') == 'layout-3') {
                 wp_enqueue_style(
                     'donation-form-three',
                     SKYDONATE_ASSETS . '/addons/css/donation-form-three.css',
@@ -129,7 +116,7 @@ class Skydonate_Public {
                     SKYDONATE_VERSION,  // Replace with the version number or leave as is
                     true
                 );
-            } elseif (in_array('layout2', $addons_form_layout)) {
+            } elseif (skydonate_get_layout('addons_donation_form') == 'layout-2') {
                 wp_enqueue_style(
                     'donation-form-two',
                     SKYDONATE_ASSETS . '/addons/css/donation-form-two.css',
@@ -161,21 +148,6 @@ class Skydonate_Public {
                 );
             }
 
-        
-        // JavaScript Assets
-        wp_register_script(
-            'zakat-calculator',
-           SKYDONATE_ASSETS . '/addons/js/zakat-calculator.js',
-            ['jquery'],
-            SKYDONATE_VERSION,  // Replace with the version number or leave as is
-            true
-        );
-        
-        wp_localize_script('zakat-calculator', 'skydonate_extra_donation_ajax', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skydonate_nonce'),
-            'cart_url' => wc_get_cart_url(),
-        ]);
 
         wp_localize_script('donation-form', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -477,16 +449,10 @@ class Skydonate_Public {
 			$classes[] = 'checkout-custom-style';
 		}
 
-		$layout_option_style = skydonate_layout_option('addons_donation_form_layout');
-		$layout_option = $layout_option_style?$layout_option_style:['layout1'];
-
-		if (!is_array($layout_option)) {
-			$layout_option = ['layout1'];
-		}
-		if (in_array('layout2', $layout_option, true)) {
+		if (skydonate_get_layout('addons_donation_form') == 'layout-2') {
 			$classes[] = 'donation-form-layout2';
 		}
-		if (in_array('layout3', $layout_option, true)) {
+		if (skydonate_get_layout('addons_donation_form') == 'layout-3') {
 			$classes[] = 'donation-form-layout3';
 		}
 	

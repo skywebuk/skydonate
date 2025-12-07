@@ -45,7 +45,6 @@ class SkyDonate_Public_Styles {
      */
     private function register_addon_styles() {
         $addon_styles = [
-            'zakat-calculator'         => 'zakat-calculator.css',
             'zakat-calculator-classic' => 'zakat-calculator-classic.css',
             'zakat-calculator-preview' => 'zakat-calculator-preview.css',
             'donation-button'          => 'donation-button.css',
@@ -208,20 +207,14 @@ class SkyDonate_Public_Styles {
      * Enqueue donation form styles based on layout
      */
     public function enqueue_donation_form_styles() {
-        $layout = skydonate_layout_option( 'addons_donation_form_layout' );
-
-        if ( ! is_array( $layout ) ) {
-            $layout = [ 'layout1' ];
-        }
-
-        if ( in_array( 'layout3', $layout ) ) {
+        if ( skydonate_get_layout('addons_donation_form') == 'layout-3' ) {
             wp_enqueue_style(
                 'donation-form-three',
                 SKYDONATE_ASSETS . '/addons/css/donation-form-three.css',
                 [],
                 $this->version
             );
-        } elseif ( in_array( 'layout2', $layout ) ) {
+        } elseif ( skydonate_get_layout('addons_donation_form') == 'layout-2' ) {
             wp_enqueue_style(
                 'donation-form-two',
                 SKYDONATE_ASSETS . '/addons/css/donation-form-two.css',
