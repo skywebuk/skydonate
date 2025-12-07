@@ -110,7 +110,7 @@ final class SkyDonate {
     }
 
     private function load_dependencies() {
-        require_once SKYWEB_DONATION_SYSTEM_INCLUDES_PATH . '/class-skyweb-donation-system.php';
+        require_once SKYWEB_DONATION_SYSTEM_INCLUDES_PATH . '/class-skydonate-system.php';
     }
 
     private function start_plugin() {
