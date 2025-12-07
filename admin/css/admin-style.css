@@ -79,7 +79,7 @@
 /* ============================================
    Base Styles
    ============================================ */
-.skydonation-page-wrapper {
+.skydonate-page-wrapper {
     margin: 20px 20px 20px 0;
     font-family: var(--sky-font-family);
     font-size: var(--sky-font-size-base);
@@ -87,47 +87,47 @@
     line-height: 1.6;
 }
 
-.skydonation-content-wrapper .wrap {
+.skydonate-content-wrapper .wrap {
     margin: 0px;
 }
 
-.skydonation-page-wrapper *,
-.skydonation-page-wrapper *::before,
-.skydonation-page-wrapper *::after {
+.skydonate-page-wrapper *,
+.skydonate-page-wrapper *::before,
+.skydonate-page-wrapper *::after {
     box-sizing: border-box;
 }
 
-.skydonation-page-wrapper img {
+.skydonate-page-wrapper img {
     max-width: 100%;
     height: auto;
 }
 
-.skydonation-page-wrapper a {
+.skydonate-page-wrapper a {
     color: var(--sky-gray-600);
     text-decoration: none;
     transition: var(--sky-transition-fast);
 }
 
-.skydonation-page-wrapper a:hover {
+.skydonate-page-wrapper a:hover {
     color: var(--sky-primary-hover);
 }
 
-.skydonation-page-wrapper p {
+.skydonate-page-wrapper p {
     margin: 0 0 var(--sky-space-4) 0;
 }
 
-.skydonation-page-wrapper p:last-child {
+.skydonate-page-wrapper p:last-child {
     margin-bottom: 0;
 }
 
-.skydonation-page-wrapper .notice {
+.skydonate-page-wrapper .notice {
     display: none;
 }
 
 /* ============================================
    Navigation Menu
    ============================================ */
-.skydonation-navigation-wrapper {
+.skydonate-navigation-wrapper {
     background: linear-gradient(135deg, #ffffff 0%, var(--sky-gray-50) 100%);
     border-radius: var(--sky-radius-xl);
     margin-bottom: var(--sky-space-3);
@@ -136,7 +136,7 @@
     overflow: hidden;
 }
 
-.skydonation-navigation-menu {
+.skydonate-navigation-menu {
     display: flex;
     flex-wrap: wrap;
     padding: 8px;
@@ -145,11 +145,11 @@
     list-style: none;
 }
 
-.skydonation-navigation-menu li {
+.skydonate-navigation-menu li {
     margin: 0;
 }
 
-.skydonation-navigation-menu li .nav-link {
+.skydonate-navigation-menu li .nav-link {
     display: flex;
     align-items: center;
     gap: var(--sky-space-2);
@@ -163,30 +163,30 @@
     border-radius: var(--sky-radius-lg);
 }
 
-.skydonation-navigation-menu li .nav-link:hover {
+.skydonate-navigation-menu li .nav-link:hover {
     color: var(--sky-primary);
     background-color: var(--sky-primary-light);
 }
 
-.skydonation-navigation-menu li .nav-link.active {
+.skydonate-navigation-menu li .nav-link.active {
     color: white;
     background-color: var(--sky-primary);
     font-weight: 600;
 }
 
-.skydonation-navigation-menu li .nav-link:focus {
+.skydonate-navigation-menu li .nav-link:focus {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--sky-primary-light);
 }
 
-.skydonation-navigation-menu li .nav-link:after {
+.skydonate-navigation-menu li .nav-link:after {
     display: none;
 }
 
 /* ============================================
    Settings Panel
    ============================================ */
-.skydonation-content-wrapper {
+.skydonate-content-wrapper {
     background-color: white;
     border-radius: var(--sky-radius-xl);
     box-shadow: var(--sky-shadow);
@@ -196,7 +196,7 @@
     margin-top: 0;
 }
 
-.skyweb-settings-panel .skydonation-header {
+.skydonate-settings-panel .skydonate-header {
     margin-bottom: var(--sky-space-6);
     padding-bottom: var(--sky-space-6);
     border-bottom: 1px solid var(--sky-gray-200);
@@ -204,7 +204,7 @@
     position: static;
 }
 
-.skyweb-settings-panel .header-title {
+.skydonate-settings-panel .header-title {
     font-size: var(--sky-font-size-xl);
     font-weight: 600;
     color: var(--sky-gray-900);
@@ -212,7 +212,7 @@
     padding: 0;
 }
 
-.skyweb-settings-panel .skydonation-header-actions {
+.skydonate-settings-panel .skydonate-header-actions {
     position: static;
     margin-top: var(--sky-space-4);
 }
@@ -220,13 +220,13 @@
 /* ============================================
    Form Tables
    ============================================ */
-.skyweb-settings-panel .form-table {
+.skydonate-settings-panel .form-table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
 }
 
-.skyweb-settings-panel .form-table th {
+.skydonate-settings-panel .form-table th {
     width: 280px;
     font-weight: 600;
     font-size: var(--sky-font-size-sm);
@@ -236,42 +236,42 @@
     text-align: left;
 }
 
-.skyweb-settings-panel .form-table td {
+.skydonate-settings-panel .form-table td {
     padding: var(--sky-space-5) 0;
     vertical-align: top;
 }
 
-.skyweb-settings-panel .form-table tr {
+.skydonate-settings-panel .form-table tr {
     border-bottom: 1px solid var(--sky-gray-100);
 }
 
-.skyweb-settings-panel .form-table tr:last-child {
+.skydonate-settings-panel .form-table tr:last-child {
     border-bottom: none;
 }
 
-.skyweb-settings-panel .form-table tr:first-child > * {
+.skydonate-settings-panel .form-table tr:first-child > * {
     padding-top: 0;
 }
 
-.skyweb-settings-panel .form-table tr:last-child > * {
+.skydonate-settings-panel .form-table tr:last-child > * {
     padding-bottom: 0;
 }
 
 .form-table td p,
-.skydonation-page-wrapper p {
+.skydonate-page-wrapper p {
     margin: 0 0 var(--sky-space-4) 0;
 }
 
 /* ============================================
    Form Controls
    ============================================ */
-.skyweb-settings-panel input[type="text"],
-.skyweb-settings-panel input[type="email"],
-.skyweb-settings-panel input[type="url"],
-.skyweb-settings-panel input[type="number"],
-.skyweb-settings-panel input[type="password"],
-.skyweb-settings-panel textarea,
-.skyweb-settings-panel select {
+.skydonate-settings-panel input[type="text"],
+.skydonate-settings-panel input[type="email"],
+.skydonate-settings-panel input[type="url"],
+.skydonate-settings-panel input[type="number"],
+.skydonate-settings-panel input[type="password"],
+.skydonate-settings-panel textarea,
+.skydonate-settings-panel select {
     width: 100%;
     max-width: 400px;
     padding: var(--sky-space-3) var(--sky-space-4);
@@ -285,25 +285,25 @@
     line-height: 1.5;
 }
 
-.skyweb-settings-panel input:focus,
-.skyweb-settings-panel textarea:focus,
-.skyweb-settings-panel select:focus {
+.skydonate-settings-panel input:focus,
+.skydonate-settings-panel textarea:focus,
+.skydonate-settings-panel select:focus {
     outline: none;
     border-color: var(--sky-primary);
     box-shadow: 0 0 0 3px var(--sky-primary-light);
 }
 
-.skyweb-settings-panel input::placeholder,
-.skyweb-settings-panel textarea::placeholder {
+.skydonate-settings-panel input::placeholder,
+.skydonate-settings-panel textarea::placeholder {
     color: var(--sky-gray-400);
 }
 
-.skyweb-settings-panel textarea {
+.skydonate-settings-panel textarea {
     min-height: 100px;
     resize: vertical;
 }
 
-.skyweb-settings-panel select {
+.skydonate-settings-panel select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 0.75rem center;
@@ -313,8 +313,8 @@
     appearance: none;
 }
 
-.skyweb-settings-panel small,
-.skyweb-settings-panel .description {
+.skydonate-settings-panel small,
+.skydonate-settings-panel .description {
     margin-left: var(--sky-space-2);
     font-size: var(--sky-font-size-xs);
     color: var(--sky-gray-500);
@@ -428,7 +428,7 @@ input[type="radio"]:checked::before {
 /* ============================================
    Switcher Component (Widget Toggle)
    ============================================ */
-.skydonation-switcher {
+.skydonate-switcher {
     display: inline-flex;
     align-items: center;
     gap: var(--sky-space-3);
@@ -440,24 +440,24 @@ input[type="radio"]:checked::before {
     cursor: pointer;
 }
 
-.skydonation-switcher:hover {
+.skydonate-switcher:hover {
     background-color: white;
     border-color: var(--sky-gray-300);
     box-shadow: var(--sky-shadow-sm);
 }
 
-.skydonation-switcher .switch-label {
+.skydonate-switcher .switch-label {
     font-size: var(--sky-font-size-sm);
     font-weight: 500;
     color: var(--sky-gray-700);
     margin-right: var(--sky-space-4);
 }
 
-.skydonation-switcher input[type="checkbox"] {
+.skydonate-switcher input[type="checkbox"] {
     display: none;
 }
 
-.skydonation-switcher .switch-toggle {
+.skydonate-switcher .switch-toggle {
     position: relative;
     width: 50px;
     height: 24px;
@@ -470,7 +470,7 @@ input[type="radio"]:checked::before {
     z-index: 1;
 }
 
-.skydonation-switcher .switch-toggle::before {
+.skydonate-switcher .switch-toggle::before {
     content: "";
     position: absolute;
     top: 2px;
@@ -484,23 +484,23 @@ input[type="radio"]:checked::before {
     z-index: 2;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle {
+.skydonate-switcher input:checked ~ .switch-toggle {
     background-color: var(--sky-accent-light);
     color: var(--sky-accent);
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle::before {
+.skydonate-switcher input:checked ~ .switch-toggle::before {
     left: 28px;
     background-color: var(--sky-accent);
 }
 
-.skydonation-switcher input:disabled ~ .switch-toggle {
+.skydonate-switcher input:disabled ~ .switch-toggle {
     opacity: 0.5;
     pointer-events: none;
     cursor: not-allowed;
 }
 
-.skydonation-switcher .switch-toggle .switch-text {
+.skydonate-switcher .switch-toggle .switch-text {
     position: absolute;
     right: 7px;
     top: 7px;
@@ -509,31 +509,31 @@ input[type="radio"]:checked::before {
     transition: var(--sky-transition-fast);
 }
 
-.skydonation-switcher .switch-toggle .switch-text.on {
+.skydonate-switcher .switch-toggle .switch-text.on {
     opacity: 0;
     right: auto;
     left: 8px;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle .switch-text.on {
+.skydonate-switcher input:checked ~ .switch-toggle .switch-text.on {
     opacity: 1;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle .switch-text.off {
+.skydonate-switcher input:checked ~ .switch-toggle .switch-text.off {
     opacity: 0;
 }
 
-.skydonation-switcher .switch-label.disable {
+.skydonate-switcher .switch-label.disable {
     position: absolute;
     opacity: 0;
     margin-right: 10px;
 }
 
-.skydonation-switcher input:checked ~ .switch-label.disable {
+.skydonate-switcher input:checked ~ .switch-label.disable {
     opacity: 1;
 }
 
-.skydonation-switcher input:checked ~ .switch-label.enable {
+.skydonate-switcher input:checked ~ .switch-label.enable {
     opacity: 0;
 }
 
@@ -612,14 +612,14 @@ input[type="radio"]:checked::before {
 /* ============================================
    Widget Checkboxes Grid
    ============================================ */
-.skydonation-checkboxs {
+.skydonate-checkboxs {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--sky-space-4);
     margin-bottom: var(--sky-space-6);
 }
 
-.skydonation-widgets .skydonation-switcher {
+.skydonate-widgets .skydonate-switcher {
     width: 100%;
     justify-content: space-between;
 }
@@ -627,7 +627,7 @@ input[type="radio"]:checked::before {
 /* ============================================
    Footer Actions
    ============================================ */
-.skydonation-footer {
+.skydonate-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -638,7 +638,7 @@ input[type="radio"]:checked::before {
     margin-top: var(--sky-space-6);
 }
 
-.skydonation-footer .skydonation-switcher {
+.skydonate-footer .skydonate-switcher {
     float: none;
 }
 
@@ -911,7 +911,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 /* ============================================
    Color Picker
    ============================================ */
-.skydonation-color-field {
+.skydonate-color-field {
     width: 100px !important;
     border-radius: var(--sky-radius-md) !important;
 }
@@ -919,23 +919,23 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 /* ============================================
    WordPress Admin Menu Icon
    ============================================ */
-.dashicons-skydonation::before {
+.dashicons-skydonate::before {
     content: "\f487";
     font-family: dashicons;
 }
 
-#adminmenu .toplevel_page_skydonation .wp-menu-image img {
+#adminmenu .toplevel_page_skydonate .wp-menu-image img {
     padding-top: 8px;
 }
 
 /* ============================================
    Donation Fields Container
    ============================================ */
-#skyweb-donation-fields-container {
+#skydonate-fields-container {
     margin-bottom: var(--sky-space-4);
 }
 
-.skyweb-donation-fields {
+.skydonate-fields {
     position: relative;
     min-width: 255px;
     border: 1px solid var(--sky-gray-200);
@@ -944,7 +944,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     background-color: white;
 }
 
-.skyweb-donation-fields .header {
+.skydonate-fields .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -953,11 +953,11 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     cursor: pointer;
 }
 
-.skyweb-donation-fields .header .title {
+.skydonate-fields .header .title {
     margin: 0;
 }
 
-.skyweb-donation-fields .header .action {
+.skydonate-fields .header .action {
     width: 1.62rem;
     height: 1.62rem;
     margin: 0;
@@ -968,7 +968,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     display: inline-block;
 }
 
-.skyweb-donation-fields .header .action .toggle-indicator {
+.skydonate-fields .header .action .toggle-indicator {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -976,11 +976,11 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     transition: 0.3s;
 }
 
-.skyweb-donation-fields .header.active .action .toggle-indicator {
+.skydonate-fields .header.active .action .toggle-indicator {
     transform: rotate(0deg);
 }
 
-.skyweb-donation-fields .fields {
+.skydonate-fields .fields {
     border-top: 1px solid var(--sky-gray-200);
     padding: var(--sky-space-4);
     display: flex;
@@ -988,7 +988,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     gap: var(--sky-space-3);
 }
 
-.skyweb-donation-fields .form-field input[type="radio"] {
+.skydonate-fields .form-field input[type="radio"] {
     width: 10px;
     margin-left: 10px;
     transform: scale(1.2);
@@ -998,55 +998,55 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
    Option Cards (Product Settings)
    ============================================ */
 #field_visibility_options,
-#skyweb_donation_options_data {
+#skydonate_options_data {
     padding: var(--sky-space-6);
     display: flex;
     flex-direction: column;
     gap: var(--sky-space-6);
 }
 
-.skyweb-option-card {
+.skydonate-option-card {
     border: 1px solid var(--sky-gray-200);
     border-radius: var(--sky-radius-lg);
     padding: var(--sky-space-4);
 }
 
-.skyweb-option-card label {
+.skydonate-option-card label {
     float: none;
     margin: 0;
     display: block;
 }
 
-.skyweb-option-card .skyweb-option-title {
+.skydonate-option-card .skydonate-option-title {
     margin: 0 0 var(--sky-space-2) 0;
     font-size: var(--sky-font-size-sm);
     line-height: 1.2em;
     font-weight: 600;
 }
 
-.skyweb-option-card .skyweb-option-description {
+.skydonate-option-card .skydonate-option-description {
     margin: -6px 0 var(--sky-space-2) 0;
     padding: 0;
     color: var(--sky-gray-500);
     font-size: var(--sky-font-size-xs);
 }
 
-.skyweb-block-options,
-.skyweb-inline-options {
+.skydonate-block-options,
+.skydonate-inline-options {
     display: flex;
     flex-wrap: wrap;
     gap: var(--sky-space-2);
 }
 
-.skyweb-block-options:not(:last-child) {
+.skydonate-block-options:not(:last-child) {
     margin-bottom: var(--sky-space-3);
 }
 
-.skyweb-block-options {
+.skydonate-block-options {
     flex-direction: column;
 }
 
-.skyweb-option-card .skyweb-image-checkbox {
+.skydonate-option-card .skydonate-image-checkbox {
     border: 1px solid var(--sky-gray-200);
     padding: var(--sky-space-2) !important;
     border-radius: var(--sky-radius-lg);
@@ -1057,59 +1057,59 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     transition: var(--sky-transition-fast);
 }
 
-.skyweb-option-card .skyweb-image-checkbox:hover {
+.skydonate-option-card .skydonate-image-checkbox:hover {
     border-color: var(--sky-gray-300);
 }
 
-.skyweb-option-card .skyweb-image-checkbox:has(input[type="radio"]:checked) {
+.skydonate-option-card .skydonate-image-checkbox:has(input[type="radio"]:checked) {
     border-color: var(--sky-primary);
     background-color: var(--sky-primary-light);
 }
 
-.skyweb-option-card .skyweb-image-checkbox img {
+.skydonate-option-card .skydonate-image-checkbox img {
     margin-bottom: var(--sky-space-2);
 }
 
-.skyweb-option-card .skyweb-image-checkbox input[type="radio"] {
+.skydonate-option-card .skydonate-image-checkbox input[type="radio"] {
     order: 1;
     margin-right: var(--sky-space-2);
     display: none;
 }
 
-.skyweb-option-card .skyweb-image-checkbox .checkbox-label {
+.skydonate-option-card .skydonate-image-checkbox .checkbox-label {
     order: 2;
     font-size: var(--sky-font-size-xs);
     margin-top: auto;
 }
 
-.skyweb-option-card input.short,
-.skyweb-option-card input.short-controll {
+.skydonate-option-card input.short,
+.skydonate-option-card input.short-controll {
     max-width: 250px;
 }
 
-.skyweb-option-card.donation-currency-option .skyweb-checkbox {
+.skydonate-option-card.donation-currency-option .skydonate-checkbox {
     width: auto;
 }
 
-.skyweb-option-card.donation-currency-option select.short-controll {
+.skydonate-option-card.donation-currency-option select.short-controll {
     max-width: 300px;
 }
 
-.skyweb-input-group {
+.skydonate-input-group {
     display: flex;
     align-items: center;
 }
 
-.skyweb-input-group .woocommerce-help-tip {
+.skydonate-input-group .woocommerce-help-tip {
     order: 1;
 }
 
-.skyweb-input-group small {
+.skydonate-input-group small {
     margin-left: var(--sky-space-2);
     margin-bottom: 2px;
 }
 
-.skyweb-option-card .button {
+.skydonate-option-card .button {
     background-color: var(--sky-primary);
     color: white;
     border: 1px solid var(--sky-primary-dark);
@@ -1118,20 +1118,20 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     transition: var(--sky-transition);
 }
 
-.skyweb-option-card .button:focus,
-.skyweb-option-card .button:hover {
+.skydonate-option-card .button:focus,
+.skydonate-option-card .button:hover {
     background-color: var(--sky-primary-hover);
     color: white;
     box-shadow: none;
 }
 
-.skyweb-option-card .remove_custom_option {
+.skydonate-option-card .remove_custom_option {
     background: var(--sky-error);
     border-color: var(--sky-error);
 }
 
-.skyweb-option-card .remove_custom_option:focus,
-.skyweb-option-card .remove_custom_option:hover {
+.skydonate-option-card .remove_custom_option:focus,
+.skydonate-option-card .remove_custom_option:hover {
     background: #dc2626;
     border-color: #dc2626;
 }
@@ -1174,7 +1174,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     margin-bottom: var(--sky-space-4);
 }
 
-#woocommerce-product-data ul.wc-tabs li.skyweb_donation_fields_tab a::before {
+#woocommerce-product-data ul.wc-tabs li.skydonate_fields_tab a::before {
     content: "\f487";
 }
 
@@ -1218,7 +1218,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 }
 
 /* ============================================
-   Form Controls (skyweb-donation-system-admin3.css merge)
+   Form Controls (skydonate-admin3.css merge)
    ============================================ */
 .form-control {
     display: block;
@@ -1315,83 +1315,83 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
    Responsive Design
    ============================================ */
 @media screen and (max-width: 1200px) {
-    .skydonation-page-wrapper.general-template .card {
+    .skydonate-page-wrapper.general-template .card {
         width: calc(50% - 30px);
         padding: var(--sky-space-6);
     }
 
-    .skydonation-checkboxs {
+    .skydonate-checkboxs {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
 @media screen and (max-width: 782px) {
-    .skydonation-page-wrapper {
+    .skydonate-page-wrapper {
         margin: 10px 10px 10px 0;
     }
 
-    .skyweb-settings-panel {
+    .skydonate-settings-panel {
         padding: var(--sky-space-4);
     }
 
-    .skyweb-settings-panel .form-table th,
-    .skyweb-settings-panel .form-table td {
+    .skydonate-settings-panel .form-table th,
+    .skydonate-settings-panel .form-table td {
         display: block;
         width: 100%;
         padding: var(--sky-space-2) 0;
     }
 
-    .skyweb-settings-panel .form-table th {
+    .skydonate-settings-panel .form-table th {
         padding-bottom: var(--sky-space-1);
     }
 
-    .skyweb-settings-panel table.form-table,
-    .skyweb-settings-panel table.form-table tbody,
-    .skyweb-settings-panel table.form-table thead,
-    .skyweb-settings-panel table.form-table tr,
-    .skyweb-settings-panel table.form-table th {
+    .skydonate-settings-panel table.form-table,
+    .skydonate-settings-panel table.form-table tbody,
+    .skydonate-settings-panel table.form-table thead,
+    .skydonate-settings-panel table.form-table tr,
+    .skydonate-settings-panel table.form-table th {
         display: flex;
         flex-direction: column;
     }
 
-    .skyweb-settings-panel .form-table td > label:first-child {
+    .skydonate-settings-panel .form-table td > label:first-child {
         margin-top: 0;
     }
 
-    .skyweb-settings-panel table.form-table tr {
+    .skydonate-settings-panel table.form-table tr {
         gap: 5px;
     }
 
-    .skyweb-settings-panel input[type="text"],
-    .skyweb-settings-panel input[type="email"],
-    .skyweb-settings-panel input[type="url"],
-    .skyweb-settings-panel input[type="number"],
-    .skyweb-settings-panel textarea,
-    .skyweb-settings-panel select {
+    .skydonate-settings-panel input[type="text"],
+    .skydonate-settings-panel input[type="email"],
+    .skydonate-settings-panel input[type="url"],
+    .skydonate-settings-panel input[type="number"],
+    .skydonate-settings-panel textarea,
+    .skydonate-settings-panel select {
         max-width: 100%;
     }
 
-    .skydonation-navigation-menu {
+    .skydonate-navigation-menu {
         flex-direction: column;
     }
 
-    .skydonation-navigation-menu li .nav-link {
+    .skydonate-navigation-menu li .nav-link {
         padding: var(--sky-space-3) var(--sky-space-4);
         border-bottom: none;
         border-left: 3px solid transparent;
     }
 
-    .skydonation-navigation-menu li .nav-link.active {
+    .skydonate-navigation-menu li .nav-link.active {
         border-left-color: var(--sky-primary);
         border-bottom-color: transparent;
     }
 
-    .skydonation-footer {
+    .skydonate-footer {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .skydonation-footer .skydonation-button {
+    .skydonate-footer .skydonation-button {
         width: 100%;
     }
 
@@ -1399,11 +1399,11 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         flex-direction: column;
     }
 
-    .skydonation-checkboxs {
+    .skydonate-checkboxs {
         grid-template-columns: 1fr;
     }
 
-    .skydonation-page-wrapper.general-template .card {
+    .skydonate-page-wrapper.general-template .card {
         width: calc(100% - 30px);
     }
 
@@ -1432,22 +1432,22 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 }
 
 @media screen and (max-width: 576px) {
-    .skyweb-input-group {
+    .skydonate-input-group {
         flex-wrap: wrap;
         gap: var(--sky-space-2);
     }
 
-    .skyweb-input-group > label {
+    .skydonate-input-group > label {
         width: 100%;
     }
 
-    .skyweb-option-card input.short,
-    .skyweb-option-card input.short-controll {
+    .skydonate-option-card input.short,
+    .skydonate-option-card input.short-controll {
         max-width: 100%;
         width: calc(100% - 35px);
     }
 
-    .skyweb-inline-options .layout-option {
+    .skydonate-inline-options .layout-option {
         width: calc(50% - 5px);
     }
 }

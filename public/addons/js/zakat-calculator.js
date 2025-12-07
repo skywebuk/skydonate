@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_donation_zakat_calculator = function ($scope, $) {
+    var skydonate_zakat_calculator = function ($scope, $) {
         var zakat_calculator = $scope.find('.zakat-calculator').eq(0);
 
         if (zakat_calculator.length > 0) {
@@ -153,16 +153,16 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: skyweb_extra_donation_ajax.ajax_url,
+                    url: skydonate_extra_donation_ajax.ajax_url,
                     data: {
                         action: 'add_extra_donation_to_cart',
                         product_id: productId,
                         amount: zakatDueAmount,
-                        nonce: skyweb_extra_donation_ajax.nonce
+                        nonce: skydonate_extra_donation_ajax.nonce
                     },
                     success: function (response) {
                         if (response.success) {
-                            window.location.href = skyweb_extra_donation_ajax.cart_url;
+                            window.location.href = skydonate_extra_donation_ajax.cart_url;
                         } else {
                             console.error(response.data || 'Something went wrong.');
                             $button.removeClass('loading').prop('disabled', false);
@@ -187,6 +187,6 @@
 
     // Run this code under Elementor.
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_zakat_calculator.default', skyweb_donation_zakat_calculator);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_zakat_calculator.default', skydonate_zakat_calculator);
     });
 }(jQuery));

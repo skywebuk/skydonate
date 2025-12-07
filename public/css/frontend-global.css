@@ -9,7 +9,7 @@
     justify-content: space-around;
 }
 
-.skyweb-donate-notification {
+.skydonate-notification {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -25,19 +25,19 @@
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px;
 }
 
-.skyweb-donate-notification .name {
+.skydonate-notification .name {
     font-weight: 700;
     color: #2797ff;
     font-size: 16px;
 }
 
-.skyweb-donate-notification .time,
-.skyweb-donate-notification .location {
+.skydonate-notification .time,
+.skydonate-notification .location {
     font-size: 13px;
     line-height: 1.3em;
 }
 
-.skyweb-donate-notification .donate-button {
+.skydonate-notification .donate-button {
     float: right;
     border: 1px solid rgb(39, 151, 255);
     color: rgb(39, 151, 255);
@@ -48,12 +48,12 @@
     margin-top: 5px;
 }
 
-.skyweb-donate-notification .donate-button:hover {
+.skydonate-notification .donate-button:hover {
     background-color: #2797ff;
     color: white;
 }
 
-.skyweb-donate-notification p {
+.skydonate-notification p {
     margin: 0;
 }
 
@@ -74,11 +74,11 @@
     background-color: var(--accent-dark-color);
 }
 
-.skyweb-donate-notification strong {
+.skydonate-notification strong {
     color: #242424;
 }
 
-.skyweb-donate-notification .close {
+.skydonate-notification .close {
     background-color: #3c444e;
     color: white;
     width: 20px;
@@ -93,20 +93,20 @@
     transition: .3s;
 }
 
-.skyweb-donate-notification .close:hover {
+.skydonate-notification .close:hover {
     background-color: black;
     color: white;
 }
 
 @media screen and (min-width: 768px) {
-    .skyweb-donate-notification .close {
+    .skydonate-notification .close {
         position: absolute;
         right: -18px;
         top: 0;
         opacity: 0;
     }
 
-    .skyweb-donate-notification .close::before {
+    .skydonate-notification .close::before {
         content: "";
         position: absolute;
         right: 0;
@@ -116,30 +116,30 @@
         display: block;
     }
 
-    .skyweb-donate-notification:hover .close {
+    .skydonate-notification:hover .close {
         right: -25px;
         opacity: 1;
     }
 }
 
 @media screen and (max-width: 768px) {
-    .skyweb-donate-notification {
+    .skydonate-notification {
         bottom: 80px;
         width: calc(100% - 40px) !important;
     }
 
-    .skyweb-donate-notification .close {
+    .skydonate-notification .close {
         float: right;
         margin-left: 5px;
         margin-top: 9px;
     }
 
-    .skyweb-donate-notification .donate-button {
+    .skydonate-notification .donate-button {
         padding: 3px 12px;
         font-size: 14px;
     }
 
-    .skyweb-donate-notification .name {
+    .skydonate-notification .name {
         font-size: 14px;
     }
 

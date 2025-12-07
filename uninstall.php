@@ -22,7 +22,7 @@
  * @link       https://https://skywebdesign.co.uk/
  * @since      1.0.0
  *
- * @package    Skyweb_Donation_System
+ * @package    SkyDonate
  */
 
 // If uninstall not called from WordPress, then exit.

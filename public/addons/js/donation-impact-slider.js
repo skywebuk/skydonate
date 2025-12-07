@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_donation_impact_slider = function ($scope, $) {
+    var skydonate_impact_slider = function ($scope, $) {
         var $button = $scope.find('.modal-open-button'); // Find all slider items
 
         $button.on('click', function(){
@@ -29,6 +29,6 @@
 
     // Initialize Elementor hook
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_impact_slider.default', skyweb_donation_impact_slider);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_impact_slider.default', skydonate_impact_slider);
     });
 }(jQuery));

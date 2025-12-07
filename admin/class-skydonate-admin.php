@@ -1,6 +1,16 @@
 <?php
+/**
+ * SkyDonate Admin Class
+ *
+ * @package    SkyDonate
+ * @subpackage SkyDonate/admin
+ */
 
-class Skyweb_Donation_System_Admin {
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+class Skydonate_Admin {
 
     private $plugin_name;
     private $version;
@@ -14,7 +24,7 @@ class Skyweb_Donation_System_Admin {
      * Enqueue CSS
      */
     public function enqueue_styles() {
-        wp_enqueue_style( 'skydonation-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', [], $this->version );
+        wp_enqueue_style( 'skydonate-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', [], $this->version );
     }
 
     /**
@@ -23,11 +33,11 @@ class Skyweb_Donation_System_Admin {
     public function enqueue_scripts() {
 
         // Color Picker (only on specific tab)
-        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonation-general' ) {
+        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonate-general' ) {
             wp_enqueue_style( 'wp-color-picker' );
 
             wp_enqueue_script(
-                'skydonation-color-picker',
+                'skydonate-color-picker',
                 plugin_dir_url(__FILE__) . 'js/color-picker.js',
                 [ 'wp-color-picker' ],
                 '1.0.0',
@@ -36,7 +46,7 @@ class Skyweb_Donation_System_Admin {
         }
 
         // Chart.js for Analytics Dashboard (main page)
-        if ( isset($_GET['page']) && $_GET['page'] === 'skydonation' ) {
+        if ( isset($_GET['page']) && $_GET['page'] === 'skydonate' ) {
             wp_enqueue_script(
                 'chartjs',
                 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
@@ -45,7 +55,7 @@ class Skyweb_Donation_System_Admin {
                 true
             );
         }
-        
+
         wp_enqueue_style( 'select2' );
         wp_enqueue_script( 'select2' );
 
@@ -57,9 +67,9 @@ class Skyweb_Donation_System_Admin {
             true
         );
 
-        wp_localize_script( 'skydonate-settings', 'skydonation_setting', [
+        wp_localize_script( 'skydonate-settings', 'skydonate_setting', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'skydonation_settings_nonce' ),
+            'nonce'    => wp_create_nonce( 'skydonate_settings_nonce' ),
         ]);
 
         wp_enqueue_script(
@@ -75,32 +85,32 @@ class Skyweb_Donation_System_Admin {
      * Admin Menu
      */
     public function add_admin_menu() {
-        $parent_slug = 'skydonation';
+        $parent_slug = 'skydonate';
         $is_valid = skydonate_license()->is_valid();
 
         // If license is inactive, main menu goes to License page
         if ( ! $is_valid ) {
             add_menu_page(
-                esc_html__( 'SkyDonate', 'skydonation' ),
-                esc_html__( 'SkyDonate', 'skydonation' ),
+                esc_html__( 'SkyDonate', 'skydonate' ),
+                esc_html__( 'SkyDonate', 'skydonate' ),
                 'manage_options',
-                'skydonation',
+                'skydonate',
                 [ $this, 'license_page_content' ],
-                'dashicons-skydonation',
+                'dashicons-skydonate',
                 20
             );
         } else {
             add_menu_page(
-                esc_html__( 'SkyDonate', 'skydonation' ),
-                esc_html__( 'SkyDonate', 'skydonation' ),
+                esc_html__( 'SkyDonate', 'skydonate' ),
+                esc_html__( 'SkyDonate', 'skydonate' ),
                 'manage_options',
-                'skydonation',
+                'skydonate',
                 [ $this, 'analytics_page_content' ],
-                'dashicons-skydonation',
+                'dashicons-skydonate',
                 20
             );
 
-            do_action( 'skyweb_donation_system_menus', $parent_slug );
+            do_action( 'skydonate_menus', $parent_slug );
         }
     }
 
@@ -108,10 +118,10 @@ class Skyweb_Donation_System_Admin {
      * Dashboard Tabs
      */
     public function admin_dashboard_menu_tabs( $current_page ) {
-        $sub_menus = apply_filters( 'skyweb_donation_system_menu_array', [] );
+        $sub_menus = apply_filters( 'skydonate_menu_array', [] );
 
         if ( ! empty( $sub_menus ) ) { ?>
-            <ul class="skydonation-navigation-menu">
+            <ul class="skydonate-navigation-menu">
 
                 <?php foreach ( $sub_menus as $sub_menu ) :
                     // Skip if validation is set and returns false
@@ -119,7 +129,7 @@ class Skyweb_Donation_System_Admin {
                         continue;
                     }
 
-                    $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonation';
+                    $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonate';
                     $class     = isset( $sub_menu['class'] ) ? esc_attr( $sub_menu['class'] ) : '';
                 ?>
                     <li <?php echo $class ? 'class="' . $class . '"' : ''; ?>>
@@ -137,71 +147,71 @@ class Skyweb_Donation_System_Admin {
     /**
      * Submenu Array
      */
-    public function skyweb_donation_system_menu_array( $menus ) {
+    public function skydonate_menu_array( $menus ) {
 
         return [
             [
-                'page_title' => esc_html__( 'Analytics', 'skydonation' ),
-                'menu_title' => esc_html__( 'Analytics', 'skydonation' ),
+                'page_title' => esc_html__( 'Analytics', 'skydonate' ),
+                'menu_title' => esc_html__( 'Analytics', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation',
+                'page_slug'  => 'skydonate',
                 'callback'   => 'analytics_page_content',
             ],
             [
-                'page_title' => esc_html__( 'General', 'skydonation' ),
-                'menu_title' => esc_html__( 'General', 'skydonation' ),
+                'page_title' => esc_html__( 'General', 'skydonate' ),
+                'menu_title' => esc_html__( 'General', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-general',
+                'page_slug'  => 'skydonate-general',
                 'callback'   => 'general_page_content',
             ],
             [
-                'page_title' => esc_html__( 'Donation Fees', 'skydonation' ),
-                'menu_title' => esc_html__( 'Donation Fees', 'skydonation' ),
+                'page_title' => esc_html__( 'Donation Fees', 'skydonate' ),
+                'menu_title' => esc_html__( 'Donation Fees', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-donation-fees',
+                'page_slug'  => 'skydonate-donation-fees',
                 'callback'   => 'donation_fees_page_content',
             ],
             [
-                'page_title' => esc_html__( 'Gift Aid', 'skydonation' ),
-                'menu_title' => esc_html__( 'Gift Aid', 'skydonation' ),
+                'page_title' => esc_html__( 'Gift Aid', 'skydonate' ),
+                'menu_title' => esc_html__( 'Gift Aid', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-gift-aid',
+                'page_slug'  => 'skydonate-gift-aid',
                 'callback'   => 'gift_aid_page_content',
             ],
             [
-                'page_title' => esc_html__( 'Widgets', 'skydonation' ),
-                'menu_title' => esc_html__( 'Widgets', 'skydonation' ),
+                'page_title' => esc_html__( 'Widgets', 'skydonate' ),
+                'menu_title' => esc_html__( 'Widgets', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-widgets',
+                'page_slug'  => 'skydonate-widgets',
                 'callback'   => 'widgets_page_content',
             ],
             [
-                'page_title' => esc_html__( 'Address Autocomplete', 'skydonation' ),
-                'menu_title' => esc_html__( 'Address Autocomplete', 'skydonation' ),
+                'page_title' => esc_html__( 'Address Autocomplete', 'skydonate' ),
+                'menu_title' => esc_html__( 'Address Autocomplete', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-address-autoload',
+                'page_slug'  => 'skydonate-address-autoload',
                 'callback'   => 'address_autoload_page_content',
             ],
             [
-                'page_title' => esc_html__( 'Notification', 'skydonation' ),
-                'menu_title' => esc_html__( 'Notification', 'skydonation' ),
+                'page_title' => esc_html__( 'Notification', 'skydonate' ),
+                'menu_title' => esc_html__( 'Notification', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-notification',
+                'page_slug'  => 'skydonate-notification',
                 'callback'   => 'notification_page_content',
                 'validation'  => skydonate_is_feature_enabled('notification'),
             ],
             [
-                'page_title' => esc_html__( 'API', 'skydonation' ),
-                'menu_title' => esc_html__( 'API', 'skydonation' ),
+                'page_title' => esc_html__( 'API', 'skydonate' ),
+                'menu_title' => esc_html__( 'API', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-api',
+                'page_slug'  => 'skydonate-api',
                 'callback'   => 'api_page_content',
             ],
             [
-                'page_title' => esc_html__( 'License', 'skydonation' ),
-                'menu_title' => esc_html__( 'License', 'skydonation' ),
+                'page_title' => esc_html__( 'License', 'skydonate' ),
+                'menu_title' => esc_html__( 'License', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-license',
+                'page_slug'  => 'skydonate-license',
                 'callback'   => 'license_page_content',
             ],
         ];
@@ -210,8 +220,8 @@ class Skyweb_Donation_System_Admin {
     /**
      * Register submenu pages
      */
-    public function skyweb_donation_system_menus( $parent_slug ) {
-        $sub_menus = apply_filters( 'skyweb_donation_system_menu_array', [] );
+    public function skydonate_menus( $parent_slug ) {
+        $sub_menus = apply_filters( 'skydonate_menu_array', [] );
 
         if ( ! empty( $sub_menus ) ) {
 
@@ -238,33 +248,33 @@ class Skyweb_Donation_System_Admin {
     /**
      * General Settings Tabs
      */
-    public function skyweb_general_settings_tabs() {
+    public function skydonate_general_settings_tabs() {
         return [
             'general' => [
-                'label' => __( 'General', 'skyweb-donation-system' ),
+                'label' => __( 'General', 'skydonate' ),
                 'icon'  => 'info-circle',
             ],
             'extra-donation' => [
-                'label' => __( 'Extra Donation', 'skyweb-donation-system' ),
+                'label' => __( 'Extra Donation', 'skydonate' ),
                 'icon'  => 'info-circle',
             ],
             'advanced' => [
-                'label' => __( 'Advanced', 'skyweb-donation-system' ),
+                'label' => __( 'Advanced', 'skydonate' ),
                 'icon'  => 'info-circle',
             ],
             'currency' => [
-                'label' => __( 'Currency', 'skyweb-donation-system' ),
+                'label' => __( 'Currency', 'skydonate' ),
                 'icon'  => 'money-bill-wave',
             ],
             'colors' => [
-                'label' => __( 'Colors', 'skyweb-donation-system' ),
+                'label' => __( 'Colors', 'skydonate' ),
                 'icon'  => 'info-circle',
             ],
         ];
     }
 
     public function register_elementor_widgets() {
-        register_setting( 'skydonation_widgets_group', 'skydonation_widgets' );
+        register_setting( 'skydonate_widgets_group', 'skydonate_widgets' );
     }
 
     /**
@@ -277,11 +287,11 @@ class Skyweb_Donation_System_Admin {
     public function gift_aid_page_content() { $this->display_page_content('gift-aid'); }
     public function widgets_page_content() { $this->display_page_content('widgets'); }
     public function address_autoload_page_content() { $this->display_page_content('address-autoload'); }
-    public function notification_page_content() { 
+    public function notification_page_content() {
         if(!skydonate_is_feature_enabled('notification')){
             return false;
-        }    
-        $this->display_page_content('notification'); 
+        }
+        $this->display_page_content('notification');
     }
     public function license_page_content() { $this->display_page_content('license'); }
 
@@ -293,21 +303,24 @@ class Skyweb_Donation_System_Admin {
 
         // If license is inactive, only show license page (no nav, no wrapper styling)
         if ( ! $is_valid && $template === 'license' ) {
-            echo '<div class="skydonation-page-wrapper license-template license-inactive">';
-                echo '<div class="skydonation-content-wrapper">';
-                    include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/page-license.php';
+            echo '<div class="skydonate-page-wrapper license-template license-inactive">';
+                echo '<div class="skydonate-content-wrapper">';
+                    include_once SKYDONATE_ADMIN_PATH . '/template/page-license.php';
                 echo '</div>';
             echo '</div>';
             return;
         }
 
-        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
-            echo '<div class="skydonation-navigation-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
+        echo '<div class="skydonate-page-wrapper ' . esc_attr( $template ) . '-template">';
+            echo '<div class="skydonate-navigation-wrapper">';
+                include_once SKYDONATE_ADMIN_PATH . '/template/navigation.php';
             echo '</div>';
-            echo '<div class="skydonation-content-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/page-{$template}.php";
+            echo '<div class="skydonate-content-wrapper">';
+                include_once SKYDONATE_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
         echo '</div>';
     }
 }
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_Admin', 'Skyweb_Donation_System_Admin' );

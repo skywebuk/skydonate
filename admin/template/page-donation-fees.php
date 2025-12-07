@@ -3,8 +3,8 @@
 
 ?>
 
-<div class="skyweb-settings-panel">
-    <form class="skydonation-donation-fees-form" method="post" action="">
+<div class="skydonate-settings-panel">
+    <form class="skydonate-donation-fees-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         <table class="form-table">
@@ -66,7 +66,7 @@
         <br>
         <br>
         <p>
-            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonation' ); ?></button>
+            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </p>
     </form>
 </div>

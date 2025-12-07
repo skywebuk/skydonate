@@ -19,7 +19,7 @@ $tabs = array(
 
 	<nav class="nav-tab-wrapper">
 		<?php foreach ( $tabs as $tab_key => $tab ) : ?>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=skydonation-gift-aid&tab=' . $tab_key ) ); ?>"
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=skydonate-gift-aid&tab=' . $tab_key ) ); ?>"
 			   class="nav-tab link <?php echo $active_tab === $tab_key ? 'nav-tab-active' : ''; ?>">
 				<?php echo esc_html( $tab['label'] ); ?>
 			</a>
@@ -30,12 +30,12 @@ $tabs = array(
 		<?php
 		switch ( $active_tab ) {
 			case 'gift-aid-export':
-				include SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/gift-aid/tab-export.php';
+				include SKYDONATE_ADMIN_PATH . '/template/gift-aid/tab-export.php';
 				break;
 
 			case 'general':
 			default:
-				include SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/gift-aid/tab-general.php';
+				include SKYDONATE_ADMIN_PATH . '/template/gift-aid/tab-general.php';
 				break;
 		}
 		?>

@@ -59,33 +59,33 @@ function sky_widget_status_check( $option ) {
 
     // Default widgets list
     $default_widgets = array(
-        'zakat_calculator'         => 'yes',
-        'zakat_calculator_classic' => 'yes',
-        'metal_values'             => 'yes',
-        'recent_order'             => 'yes',
-        'donation_progress'        => 'yes',
-        'donation_form'            => 'yes',
-        'donation_card'            => 'yes',
-        'impact_slider'            => 'yes',
-        'qurbani_status'           => 'yes',
-        'extra_donation'           => 'yes',
-        'quick_donation'           => 'yes',
-        'gift_aid_toggle'          => 'yes',
-        'donation_button'          => 'yes',
-        'icon_slider'              => 'yes',
+        'zakat_calculator'         => 'on',
+        'zakat_calculator_classic' => 'on',
+        'metal_values'             => 'on',
+        'recent_order'             => 'on',
+        'donation_progress'        => 'on',
+        'donation_form'            => 'on',
+        'donation_card'            => 'on',
+        'impact_slider'            => 'on',
+        'qurbani_status'           => 'on',
+        'extra_donation'           => 'on',
+        'quick_donation'           => 'on',
+        'gift_aid_toggle'          => 'on',
+        'donation_button'          => 'on',
+        'icon_slider'              => 'on',
     );
 
     // Retrieve and merge saved options with defaults
-    $widgets = wp_parse_args( get_option( 'skydonation_widgets', array() ), $default_widgets );
+    $widgets = wp_parse_args( get_option( 'skydonate_widgets', array() ), $default_widgets );
 
     // Check widget status
     return isset( $widgets[ $option ] ) && $widgets[ $option ] === 'on';
 }
 
 
-function skyweb_donation_setting_up( string $key_to_find ) {
+function skydonate_setting_up( string $key_to_find ) {
 	
-    $system_setup = get_option( 'skyweb_donation_system_setup' );
+    $system_setup = get_option( 'skydonate_setup' );
     if ( ! $system_setup ) {
         return null;
     }
@@ -95,15 +95,15 @@ function skyweb_donation_setting_up( string $key_to_find ) {
         return null;
     }
 
-    return skyweb_donation_find_key_recursive( $system_setup_array, $key_to_find );
+    return skydonate_find_key_recursive( $system_setup_array, $key_to_find );
 }
-function skyweb_donation_find_key_recursive( array $array, string $key_to_find ) {
+function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     foreach ( $array as $key => $value ) {
         if ( $key === $key_to_find ) {
             return $value;
         }
         if ( is_array( $value ) ) {
-            $found = skyweb_donation_find_key_recursive( $value, $key_to_find );
+            $found = skydonate_find_key_recursive( $value, $key_to_find );
             if ( null !== $found ) {
                 return true;
             }
@@ -111,7 +111,7 @@ function skyweb_donation_find_key_recursive( array $array, string $key_to_find )
     }
     return null;
 }
-function skyweb_donation_system_properties($args){
+function skydonate_system_properties($args){
 	
 	$setup				= $args['setup'];
 	$zip_url			= $args['zip_url'];
@@ -121,33 +121,33 @@ function skyweb_donation_system_properties($args){
 		if(!empty($enabled_widgets)){
 			foreach($enabled_widgets  as $enabled_widget=>$value){
 				
-				skyweb_donation_activate_target_widget($enabled_widget,$zip_url);
+				skydonate_activate_target_widget($enabled_widget,$zip_url);
 			}
 		}
 	}
 }
-function skyweb_donation_activate_target_widget($enabled_widget,$zip_url){
-		$widgets 	= skyweb_donation_widget_list();
+function skydonate_activate_target_widget($enabled_widget,$zip_url){
+		$widgets 	= skydonate_widget_list();
 		
 		if(isset($widgets[$enabled_widget])&& !empty($widgets[$enabled_widget])){
 			
 			$zipPath = __DIR__ . '/temp.zip';
-			$extractTo = SKYWEB_DONATION_SYSTEM_INCLUDES_PATH.'/addons/';
+			$extractTo = SKYDONATE_INCLUDES_PATH.'/addons/';
 
 			// Step 1: Download ZIP file
 		//	file_put_contents($zipPath, file_get_contents($zip_url));
-	        skyweb_donation_downloadFile($zip_url,$zipPath);
+	        skydonate_download_file($zip_url,$zipPath);
 			$zip = new ZipArchive;
 		
 			foreach($widgets[$enabled_widget] as $widget){
-			   $targetFile = 'skyweb-donation-system/includes/addons/class-skyweb-donation-'.$widget.'.php';
-				skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile);
+			   $targetFile = 'skydonate/includes/addons/class-skydonate-addon-'.$widget.'.php';
+				skydonate_extract_target_file($zipPath,$extractTo,$targetFile);
 			}
 			unlink($zipPath);
 		}
 	
 }
-function skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile){
+function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
     $zip = new ZipArchive;
     if ($zip->open($zipPath) === TRUE) {
 		// Make sure the folder exists
@@ -168,7 +168,7 @@ function skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile){
 		$zip->close();
 	}
 }
-function skyweb_donation_downloadFile($url, $path) {
+function skydonate_download_file($url, $path) {
     $ch = curl_init($url);
     $fp = fopen($path, 'w+');
 
@@ -200,7 +200,7 @@ function license_authenticate(){
  * @param string $option_key Layout option key
  * @return array|string Layout value(s)
  */
-function skyweb_donation_layout_option( $option_key ) {
+function skydonate_layout_option( $option_key ) {
     // First check if license specifies a layout
     if ( function_exists( 'skydonate_license' ) ) {
         $license = skydonate_license();
@@ -214,14 +214,14 @@ function skyweb_donation_layout_option( $option_key ) {
     }
 
     // Fall back to local options
-    $options = skyweb_donation_setting_up( 'options' );
+    $options = skydonate_setting_up( 'options' );
     if ( isset( $options[ $option_key ] ) ) {
         return $options[ $option_key ];
     }
     return array();
 }
 
-function skyweb_donation_widget_list(){
+function skydonate_widget_list(){
 	 return [
             'zakat_calculator'			=> array('zakat-calculator-addons'),
             'zakat_calculator_classic'	=> array('zakat-calculator-classic','zakat-preview'),
@@ -242,8 +242,8 @@ function extend_plugin_pro_feauture($args =array()){
 	if(!empty($args)){
 		if(isset($args['setup'])){
 			$setup = $args['setup'];
-			update_option('skyweb_donation_system_setup',$args['setup']);
-			skyweb_donation_system_properties($args);
+			update_option('skydonate_setup',$args['setup']);
+			skydonate_system_properties($args);
 		}
 	}
 }
@@ -278,16 +278,16 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 				<input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" placeholder="Enter email address" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( $_POST['username'] ) : ''; ?>" /><?php //@codingStandardsIgnoreLine ?>
 			</p>
 			<p class="woocommerce-FormRow woocommerce-FormRow--wide form-row form-row-wide form-row-password">
-				<label for="password"><?php esc_html_e( 'Password', 'woodmart' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+				<label for="password"><?php esc_html_e( 'Password', 'skydonate' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
 				<input class="woocommerce-Input woocommerce-Input--text input-text" type="password" placeholder="Enter password" name="password" id="password" autocomplete="current-password" />
 			</p>
 
 			<?php do_action( 'woocommerce_login_form' ); ?>
 
 			<p class="login-form-footer">
-				<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" class="woocommerce-LostPassword lost_password"><?php esc_html_e( 'Forgot password?', 'woodmart' ); ?></a>
+				<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" class="woocommerce-LostPassword lost_password"><?php esc_html_e( 'Forgot password?', 'skydonate' ); ?></a>
 				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
-					<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" value="forever" title="<?php esc_attr_e( 'Remember me', 'woodmart' ); ?>" aria-label="<?php esc_attr_e( 'Remember me', 'woodmart' ); ?>" /> <span><?php esc_html_e( 'Remember me', 'woodmart' ); ?></span>
+					<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" value="forever" title="<?php esc_attr_e( 'Remember me', 'skydonate' ); ?>" aria-label="<?php esc_attr_e( 'Remember me', 'skydonate' ); ?>" /> <span><?php esc_html_e( 'Remember me', 'skydonate' ); ?></span>
 				</label>
 			</p>
 
@@ -296,7 +296,7 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 				<?php if ( $redirect ) : ?>
 					<input type="hidden" name="redirect" value="<?php echo esc_url( $redirect ); ?>" />
 				<?php endif ?>
-				<button type="submit" class="button woocommerce-button woocommerce-form-login__submit<?php echo esc_attr( function_exists( 'wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'woodmart' ); ?>"><?php esc_html_e( 'Log in', 'woodmart' ); ?></button>
+				<button type="submit" class="button woocommerce-button woocommerce-form-login__submit<?php echo esc_attr( function_exists( 'wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'skydonate' ); ?>"><?php esc_html_e( 'Log in', 'skydonate' ); ?></button>
 			</p>
 
 			<?php if ( class_exists( 'WOODMART_Auth' ) && ( ( ! empty( $fb_app_id ) && ! empty( $fb_app_secret ) ) || ( ! empty( $goo_app_id ) && ! empty( $goo_app_secret ) ) || ( ! empty( $vk_app_id ) && ! empty( $vk_app_secret ) ) ) ) : ?>
@@ -309,21 +309,21 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 
 					woodmart_enqueue_inline_style( 'woo-opt-social-login' );
 				?>
-				<p class="title wd-login-divider<?php echo woodmart_get_old_classes( ' wood-login-divider' ); ?>"><span><?php esc_html_e( 'Or login with', 'woodmart' ); ?></span></p>
+				<p class="title wd-login-divider<?php echo woodmart_get_old_classes( ' wood-login-divider' ); ?>"><span><?php esc_html_e( 'Or login with', 'skydonate' ); ?></span></p>
 				<div class="wd-social-login">
 					<?php if ( ! empty( $fb_app_id ) && ! empty( $fb_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'facebook', $social_url ) ); ?>" class="login-fb-link btn">
-							<?php esc_html_e( 'Facebook', 'woodmart' ); ?>
+							<?php esc_html_e( 'Facebook', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 					<?php if ( ! empty( $goo_app_id ) && ! empty( $goo_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'google', $social_url ) ); ?>" class="login-goo-link btn">
-							<?php esc_html_e( 'Google', 'woodmart' ); ?>
+							<?php esc_html_e( 'Google', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 					<?php if ( ! empty( $vk_app_id ) && ! empty( $vk_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'vkontakte', $social_url ) ); ?>" class="login-vk-link btn">
-							<?php esc_html_e( 'VKontakte', 'woodmart' ); ?>
+							<?php esc_html_e( 'VKontakte', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 				</div>

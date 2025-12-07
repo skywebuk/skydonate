@@ -1,21 +1,21 @@
 <?php
 
-$products = Skyweb_Donation_Functions::Get_Title('product', 'ids');
+$products = Skydonate_Functions::Get_Title('product', 'ids');
 
 
-$saved_donations = get_option('skydonation_extra_donation_items', []);
+$saved_donations = get_option('skydonate_extra_donation_items', []);
 
 ?>
 
-<div class="skyweb-settings-panel">
-    <form class="skydonation-extra-donation-form" method="post" action="">
+<div class="skydonate-settings-panel">
+    <form class="skydonate-extra-donation-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         
         <table class="form-table">
             <tr>
                 <th scope="row">
-                    <label><?php _e('Donation Fields', 'skydonation'); ?></label>
+                    <label><?php _e('Donation Fields', 'skydonate'); ?></label>
                 </th>
                 <td>
                     <div id="extra-donation-options-container">
@@ -24,13 +24,13 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
                             <?php foreach ($saved_donations as $donation) : ?>
                                 <div class="donation-accordion">
                                     <div class="donation-header">
-                                        <strong><?php _e('Donation Option', 'skydonation'); ?></strong>
+                                        <strong><?php _e('Donation Option', 'skydonate'); ?></strong>
                                         <button type="button" class="toggle-fields">▼</button>
                                     </div>
                                     <div class="donation-fields" style="display:none;">
                                         <button type="button" class="remove-option">×</button>
                                         <p>
-                                            <label><?php _e('Select Donation', 'skydonation'); ?></label><br>
+                                            <label><?php _e('Select Donation', 'skydonate'); ?></label><br>
                                             <select name="donation_item[][id]">
                                                 <?php foreach ($products as $id => $name) : ?>
                                                     <option value="<?php echo esc_attr($id); ?>" <?php selected($id, $donation['id']); ?>>
@@ -41,12 +41,12 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
                                         </p>
 
                                         <p>
-                                            <label><?php _e('Donation Amount', 'skydonation'); ?></label><br>
+                                            <label><?php _e('Donation Amount', 'skydonate'); ?></label><br>
                                             <input type="number" name="donation_item[][amount]" value="<?php echo esc_attr($donation['amount']); ?>" min="1" step="any" />
                                         </p>
 
                                         <p>
-                                            <label><?php _e('Donation Title', 'skydonation'); ?></label><br>
+                                            <label><?php _e('Donation Title', 'skydonate'); ?></label><br>
                                             <input type="text" name="donation_item[][title]" value="<?php echo esc_attr($donation['title'] ?? ''); ?>" placeholder="Enter a custom donation title." />
                                         </p>
                                     </div>
@@ -56,14 +56,14 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
                             <!-- Default empty donation option -->
                             <div class="donation-accordion">
                                 <div class="donation-header">
-                                    <strong><?php _e('Donation Option', 'skydonation'); ?></strong>
+                                    <strong><?php _e('Donation Option', 'skydonate'); ?></strong>
                                     <button type="button" class="toggle-fields">▼</button>
                                 </div>
                                 <div class="donation-fields" style="display:none;">
                                     <button type="button" class="remove-option">×</button>
 
                                     <p>
-                                        <label><?php _e('Select Donation', 'skydonation'); ?></label><br>
+                                        <label><?php _e('Select Donation', 'skydonate'); ?></label><br>
                                         <select name="donation_item[][id]">
                                             <?php foreach ($products as $id => $name) : ?>
                                                 <option value="<?php echo esc_attr($id); ?>"><?php echo esc_html($name); ?></option>
@@ -72,12 +72,12 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
                                     </p>
 
                                     <p>
-                                        <label><?php _e('Donation Amount', 'skydonation'); ?></label><br>
+                                        <label><?php _e('Donation Amount', 'skydonate'); ?></label><br>
                                         <input type="number" name="donation_item[][amount]" value="10" min="1" step="any" />
                                     </p>
 
                                     <p>
-                                        <label><?php _e('Donation Title', 'skydonation'); ?></label><br>
+                                        <label><?php _e('Donation Title', 'skydonate'); ?></label><br>
                                         <input type="text" name="donation_item[][title]" value="" placeholder="Enter a custom donation title." />
                                     </p>
                                 </div>
@@ -88,7 +88,7 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
 
                     <!-- Add Fields Button -->
                     <p>
-                        <button type="button" class="button add-donation-option"><?php _e('Add Fields', 'skydonation'); ?></button>
+                        <button type="button" class="button add-donation-option"><?php _e('Add Fields', 'skydonate'); ?></button>
                     </p>
 
                 </td>
@@ -98,7 +98,7 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
         <br>
         <p>
             <button type="submit" class="skydonation-button">
-                <?php _e('Save Settings', 'skydonation'); ?>
+                <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>
     </form>

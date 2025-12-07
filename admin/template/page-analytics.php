@@ -2,18 +2,18 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Include dashboard class if not already included
-if ( ! class_exists( 'Skyweb_Donation_Dashboard' ) ) {
-    require_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/class-skydonate-dashboard.php';
+if ( ! class_exists( 'Skydonate_Dashboard' ) ) {
+    require_once SKYDONATE_ADMIN_PATH . '/class-skydonate-dashboard.php';
 }
 
 // Get dashboard data
-$comparison = Skyweb_Donation_Dashboard::get_comparison_stats( 30 );
-$monthly_data = Skyweb_Donation_Dashboard::get_monthly_donations();
-$campaigns = Skyweb_Donation_Dashboard::get_donations_by_campaign( 6 );
-$countries = Skyweb_Donation_Dashboard::get_donations_by_country( 8 );
-$distribution = Skyweb_Donation_Dashboard::get_donation_distribution();
-$top_donors = Skyweb_Donation_Dashboard::get_top_donors( 5 );
-$recent_donations = Skyweb_Donation_Dashboard::get_recent_donations( 5 );
+$comparison = Skydonate_Dashboard::get_comparison_stats( 30 );
+$monthly_data = Skydonate_Dashboard::get_monthly_donations();
+$campaigns = Skydonate_Dashboard::get_donations_by_campaign( 6 );
+$countries = Skydonate_Dashboard::get_donations_by_country( 8 );
+$distribution = Skydonate_Dashboard::get_donation_distribution();
+$top_donors = Skydonate_Dashboard::get_top_donors( 5 );
+$recent_donations = Skydonate_Dashboard::get_recent_donations( 5 );
 $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( get_option('woocommerce_currency') ) );
 
 // Prepare chart data
@@ -35,15 +35,15 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
     <!-- Dashboard Header -->
     <div class="sky-dashboard-header">
         <div class="sky-dashboard-title">
-            <h1><?php esc_html_e( 'Donation Analytics', 'skydonation' ); ?></h1>
-            <p><?php esc_html_e( 'Track your donation performance and donor engagement', 'skydonation' ); ?></p>
+            <h1><?php esc_html_e( 'Donation Analytics', 'skydonate' ); ?></h1>
+            <p><?php esc_html_e( 'Track your donation performance and donor engagement', 'skydonate' ); ?></p>
         </div>
         <div class="sky-dashboard-actions">
             <select id="sky-date-range" class="sky-select">
-                <option value="30"><?php esc_html_e( 'Last 30 Days', 'skydonation' ); ?></option>
-                <option value="60"><?php esc_html_e( 'Last 60 Days', 'skydonation' ); ?></option>
-                <option value="90"><?php esc_html_e( 'Last 90 Days', 'skydonation' ); ?></option>
-                <option value="365"><?php esc_html_e( 'Last 12 Months', 'skydonation' ); ?></option>
+                <option value="30"><?php esc_html_e( 'Last 30 Days', 'skydonate' ); ?></option>
+                <option value="60"><?php esc_html_e( 'Last 60 Days', 'skydonate' ); ?></option>
+                <option value="90"><?php esc_html_e( 'Last 90 Days', 'skydonate' ); ?></option>
+                <option value="365"><?php esc_html_e( 'Last 12 Months', 'skydonate' ); ?></option>
             </select>
         </div>
     </div>
@@ -58,7 +58,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                 </svg>
             </div>
             <div class="sky-stat-content">
-                <span class="sky-stat-label"><?php esc_html_e( 'Total Raised', 'skydonation' ); ?></span>
+                <span class="sky-stat-label"><?php esc_html_e( 'Total Raised', 'skydonate' ); ?></span>
                 <span class="sky-stat-value"><?php echo esc_html( $currency_symbol . number_format( $comparison['total']['current'], 0 ) ); ?></span>
                 <span class="sky-stat-change <?php echo $comparison['total']['change'] >= 0 ? 'positive' : 'negative'; ?>">
                     <?php if ( $comparison['total']['change'] >= 0 ) : ?>
@@ -78,7 +78,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                 </svg>
             </div>
             <div class="sky-stat-content">
-                <span class="sky-stat-label"><?php esc_html_e( 'Total Donations', 'skydonation' ); ?></span>
+                <span class="sky-stat-label"><?php esc_html_e( 'Total Donations', 'skydonate' ); ?></span>
                 <span class="sky-stat-value"><?php echo esc_html( number_format( $comparison['count']['current'] ) ); ?></span>
                 <span class="sky-stat-change <?php echo $comparison['count']['change'] >= 0 ? 'positive' : 'negative'; ?>">
                     <?php if ( $comparison['count']['change'] >= 0 ) : ?>
@@ -101,9 +101,9 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                 </svg>
             </div>
             <div class="sky-stat-content">
-                <span class="sky-stat-label"><?php esc_html_e( 'Unique Donors', 'skydonation' ); ?></span>
+                <span class="sky-stat-label"><?php esc_html_e( 'Unique Donors', 'skydonate' ); ?></span>
                 <span class="sky-stat-value"><?php echo esc_html( number_format( $comparison['donors']['current'] ) ); ?></span>
-                <span class="sky-stat-sub"><?php esc_html_e( 'Last 30 days', 'skydonation' ); ?></span>
+                <span class="sky-stat-sub"><?php esc_html_e( 'Last 30 days', 'skydonate' ); ?></span>
             </div>
         </div>
 
@@ -114,9 +114,9 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                 </svg>
             </div>
             <div class="sky-stat-content">
-                <span class="sky-stat-label"><?php esc_html_e( 'Average Donation', 'skydonation' ); ?></span>
+                <span class="sky-stat-label"><?php esc_html_e( 'Average Donation', 'skydonate' ); ?></span>
                 <span class="sky-stat-value"><?php echo esc_html( $currency_symbol . number_format( $comparison['average']['current'], 2 ) ); ?></span>
-                <span class="sky-stat-sub"><?php esc_html_e( 'Per transaction', 'skydonation' ); ?></span>
+                <span class="sky-stat-sub"><?php esc_html_e( 'Per transaction', 'skydonate' ); ?></span>
             </div>
         </div>
     </div>
@@ -125,10 +125,10 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
     <div class="sky-charts-row">
         <div class="sky-chart-card sky-chart-large">
             <div class="sky-chart-header">
-                <h3><?php esc_html_e( 'Donation Trends', 'skydonation' ); ?></h3>
+                <h3><?php esc_html_e( 'Donation Trends', 'skydonate' ); ?></h3>
                 <div class="sky-chart-legend">
-                    <span class="sky-legend-item amount"><span class="sky-legend-dot"></span><?php esc_html_e( 'Amount', 'skydonation' ); ?></span>
-                    <span class="sky-legend-item count"><span class="sky-legend-dot"></span><?php esc_html_e( 'Count', 'skydonation' ); ?></span>
+                    <span class="sky-legend-item amount"><span class="sky-legend-dot"></span><?php esc_html_e( 'Amount', 'skydonate' ); ?></span>
+                    <span class="sky-legend-item count"><span class="sky-legend-dot"></span><?php esc_html_e( 'Count', 'skydonate' ); ?></span>
                 </div>
             </div>
             <div class="sky-chart-body">
@@ -138,7 +138,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
 
         <div class="sky-chart-card">
             <div class="sky-chart-header">
-                <h3><?php esc_html_e( 'By Campaign', 'skydonation' ); ?></h3>
+                <h3><?php esc_html_e( 'By Campaign', 'skydonate' ); ?></h3>
             </div>
             <div class="sky-chart-body">
                 <canvas id="campaignChart"></canvas>
@@ -150,7 +150,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
     <div class="sky-charts-row">
         <div class="sky-chart-card">
             <div class="sky-chart-header">
-                <h3><?php esc_html_e( 'By Country', 'skydonation' ); ?></h3>
+                <h3><?php esc_html_e( 'By Country', 'skydonate' ); ?></h3>
             </div>
             <div class="sky-chart-body">
                 <canvas id="countryChart"></canvas>
@@ -159,7 +159,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
 
         <div class="sky-chart-card">
             <div class="sky-chart-header">
-                <h3><?php esc_html_e( 'Amount Distribution', 'skydonation' ); ?></h3>
+                <h3><?php esc_html_e( 'Amount Distribution', 'skydonate' ); ?></h3>
             </div>
             <div class="sky-chart-body">
                 <canvas id="distributionChart"></canvas>
@@ -171,16 +171,16 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
     <div class="sky-tables-row">
         <div class="sky-table-card">
             <div class="sky-table-header">
-                <h3><?php esc_html_e( 'Top Donors', 'skydonation' ); ?></h3>
-                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-orders' ) ); ?>" class="sky-view-all"><?php esc_html_e( 'View All', 'skydonation' ); ?></a>
+                <h3><?php esc_html_e( 'Top Donors', 'skydonate' ); ?></h3>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-orders' ) ); ?>" class="sky-view-all"><?php esc_html_e( 'View All', 'skydonate' ); ?></a>
             </div>
             <div class="sky-table-body">
                 <table class="sky-data-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e( 'Donor', 'skydonation' ); ?></th>
-                            <th><?php esc_html_e( 'Donations', 'skydonation' ); ?></th>
-                            <th><?php esc_html_e( 'Total', 'skydonation' ); ?></th>
+                            <th><?php esc_html_e( 'Donor', 'skydonate' ); ?></th>
+                            <th><?php esc_html_e( 'Donations', 'skydonate' ); ?></th>
+                            <th><?php esc_html_e( 'Total', 'skydonate' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,7 +202,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                             <?php endforeach; ?>
                         <?php else : ?>
                             <tr>
-                                <td colspan="3" class="sky-empty-state"><?php esc_html_e( 'No donations yet', 'skydonation' ); ?></td>
+                                <td colspan="3" class="sky-empty-state"><?php esc_html_e( 'No donations yet', 'skydonate' ); ?></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -212,16 +212,16 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
 
         <div class="sky-table-card">
             <div class="sky-table-header">
-                <h3><?php esc_html_e( 'Recent Donations', 'skydonation' ); ?></h3>
-                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-orders' ) ); ?>" class="sky-view-all"><?php esc_html_e( 'View All', 'skydonation' ); ?></a>
+                <h3><?php esc_html_e( 'Recent Donations', 'skydonate' ); ?></h3>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-orders' ) ); ?>" class="sky-view-all"><?php esc_html_e( 'View All', 'skydonate' ); ?></a>
             </div>
             <div class="sky-table-body">
                 <table class="sky-data-table">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e( 'Donor', 'skydonation' ); ?></th>
-                            <th><?php esc_html_e( 'Amount', 'skydonation' ); ?></th>
-                            <th><?php esc_html_e( 'Date', 'skydonation' ); ?></th>
+                            <th><?php esc_html_e( 'Donor', 'skydonate' ); ?></th>
+                            <th><?php esc_html_e( 'Amount', 'skydonate' ); ?></th>
+                            <th><?php esc_html_e( 'Date', 'skydonate' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -236,13 +236,13 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                                     </td>
                                     <td><strong><?php echo esc_html( get_woocommerce_currency_symbol( $donation['currency'] ) . number_format( $donation['amount'], 0 ) ); ?></strong></td>
                                     <td>
-                                        <span class="sky-time-ago"><?php echo esc_html( $donation['time_ago'] ); ?> <?php esc_html_e( 'ago', 'skydonation' ); ?></span>
+                                        <span class="sky-time-ago"><?php echo esc_html( $donation['time_ago'] ); ?> <?php esc_html_e( 'ago', 'skydonate' ); ?></span>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else : ?>
                             <tr>
-                                <td colspan="3" class="sky-empty-state"><?php esc_html_e( 'No donations yet', 'skydonation' ); ?></td>
+                                <td colspan="3" class="sky-empty-state"><?php esc_html_e( 'No donations yet', 'skydonate' ); ?></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -254,16 +254,16 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
     <!-- Campaign Performance Table -->
     <div class="sky-full-table-card">
         <div class="sky-table-header">
-            <h3><?php esc_html_e( 'Campaign Performance', 'skydonation' ); ?></h3>
+            <h3><?php esc_html_e( 'Campaign Performance', 'skydonate' ); ?></h3>
         </div>
         <div class="sky-table-body">
             <table class="sky-data-table sky-campaign-table">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e( 'Campaign', 'skydonation' ); ?></th>
-                        <th><?php esc_html_e( 'Donations', 'skydonation' ); ?></th>
-                        <th><?php esc_html_e( 'Total Raised', 'skydonation' ); ?></th>
-                        <th><?php esc_html_e( 'Progress', 'skydonation' ); ?></th>
+                        <th><?php esc_html_e( 'Campaign', 'skydonate' ); ?></th>
+                        <th><?php esc_html_e( 'Donations', 'skydonate' ); ?></th>
+                        <th><?php esc_html_e( 'Total Raised', 'skydonate' ); ?></th>
+                        <th><?php esc_html_e( 'Progress', 'skydonate' ); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -292,7 +292,7 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
                     else :
                     ?>
                         <tr>
-                            <td colspan="4" class="sky-empty-state"><?php esc_html_e( 'No campaigns yet', 'skydonation' ); ?></td>
+                            <td colspan="4" class="sky-empty-state"><?php esc_html_e( 'No campaigns yet', 'skydonate' ); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

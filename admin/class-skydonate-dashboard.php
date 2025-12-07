@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Skyweb_Donation_Dashboard {
+class Skydonate_Dashboard {
 
     /**
      * Check if HPOS is enabled
@@ -225,7 +225,7 @@ class Skyweb_Donation_Dashboard {
             $product = wc_get_product( $row['product_id'] );
             $data[] = [
                 'id'          => $row['product_id'],
-                'name'        => $product ? $product->get_name() : __( 'Unknown Product', 'skydonation' ),
+                'name'        => $product ? $product->get_name() : __( 'Unknown Product', 'skydonate' ),
                 'amount'      => floatval( $row['total_amount'] ),
                 'count'       => intval( $row['order_count'] ),
             ];
@@ -342,7 +342,7 @@ class Skyweb_Donation_Dashboard {
         $data = [];
         foreach ( $results as $row ) {
             $data[] = [
-                'name'   => trim( $row['first_name'] . ' ' . $row['last_name'] ) ?: __( 'Anonymous', 'skydonation' ),
+                'name'   => trim( $row['first_name'] . ' ' . $row['last_name'] ) ?: __( 'Anonymous', 'skydonate' ),
                 'email'  => $row['email'],
                 'amount' => floatval( $row['total_amount'] ),
                 'count'  => intval( $row['donation_count'] ),
@@ -370,7 +370,7 @@ class Skyweb_Donation_Dashboard {
             $data[] = [
                 'id'        => $order->get_id(),
                 'name'      => $is_anonymous === '1'
-                    ? __( 'Anonymous', 'skydonation' )
+                    ? __( 'Anonymous', 'skydonate' )
                     : $order->get_billing_first_name() . ' ' . substr( $order->get_billing_last_name(), 0, 1 ) . '.',
                 'amount'    => $order->get_total(),
                 'currency'  => $order->get_currency(),

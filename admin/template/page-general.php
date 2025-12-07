@@ -6,14 +6,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $SKDS, $SKDS_notice;
 
 $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
-$tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
+$tabs       = apply_filters( 'skydonate_general_settings_tabs', [] );
 ?>
 
 <?php
 	if ( $SKDS_notice ) {
         echo '<header>';
 		$SKDS->plugin_admin_notice(
-			esc_html__( 'Settings has been updated!', 'skyweb-invoice' ),
+			esc_html__( 'Settings has been updated!', 'skydonate' ),
 			'success'
 		);
         echo '</header>';
@@ -23,7 +23,7 @@ $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 
 <div class="wrap">
 
-	<?php do_action( 'skyweb_donation_settings_nav_before' ); ?>
+	<?php do_action( 'skydonate_settings_nav_before' ); ?>
 
 	<nav class="nav-tab-wrapper">
 		<?php if ( ! empty( $tabs ) ) : ?>
@@ -32,7 +32,7 @@ $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 				?>
 				<a
 					id="<?php echo esc_attr( $tab_key ); ?>"
-					href="<?php echo esc_url( admin_url( 'admin.php?page=skydonation-general&tab=' . esc_attr( $tab_key ) ) ); ?>"
+					href="<?php echo esc_url( admin_url( 'admin.php?page=skydonate-general&tab=' . esc_attr( $tab_key ) ) ); ?>"
 					class="nav-tab <?php echo esc_attr( $active_class ); ?>"
 				>
 					<?php echo esc_html( $tab['label'] ); ?>
@@ -43,8 +43,8 @@ $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 
 	<div class="tab-content">
 		<?php
-		do_action( 'skyweb_donation_settings_message' );
-		do_action( 'skyweb_donation_settings_form_before' );
+		do_action( 'skydonate_settings_message' );
+		do_action( 'skydonate_settings_form_before' );
 
 		$templates = [
 			'general'        => '/template/general/general.php',
@@ -56,13 +56,13 @@ $tabs       = apply_filters( 'skyweb_general_settings_tabs', [] );
 
 		if ( isset( $templates[ $active_tab ] ) ) {
 			$SKDS->load_plugin_template(
-				SKYWEB_DONATION_SYSTEM_ADMIN_PATH . $templates[ $active_tab ]
+				SKYDONATE_ADMIN_PATH . $templates[ $active_tab ]
 			);
 		}else{
-			$SKDS->load_plugin_template( SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/general/settings.php' );
+			$SKDS->load_plugin_template( SKYDONATE_ADMIN_PATH . '/template/general/settings.php' );
 		}
 
-		do_action( 'skyweb_donation_settings_form_after' );
+		do_action( 'skydonate_settings_form_after' );
 		?>
 	</div>
 
