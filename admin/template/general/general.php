@@ -9,6 +9,7 @@
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         <table class="form-table">
 
+            <?php if(skydonate_is_feature_enabled('sky_donations_module')): ?>
             <tr>
                 <th scope="row"><label for="enable_sky_donations_module">Enable Sky Donations Module</label></th>
                 <td>
@@ -16,7 +17,9 @@
                     <small>Enable or disable the Sky Donations module. Check this box to activate the module.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('custom_login_form')): ?>
             <tr>
                 <th scope="row"><label for="enable_custom_login_form">Enable Custom Login Form</label></th>
                 <td>
@@ -24,7 +27,9 @@
                     <small>Enable or disable a custom login form provided by the Sky Donations plugin.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('checkout_custom_field_style')): ?>
             <tr>
                 <th scope="row"><label for="checkout_custom_field_style">Checkout Custom Field Style</label></th>
                 <td>
@@ -32,6 +37,7 @@
                     <small>Check the styling option for custom fields during the checkout process.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
             <tr>
                 <th scope="row"><label for="recent_donation_list_with_country">Recent Donation List with Country Name and Flag</label></th>

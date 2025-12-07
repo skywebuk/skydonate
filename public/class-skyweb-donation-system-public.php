@@ -317,14 +317,22 @@ class Skyweb_Donation_System_Public {
             null
         );
 
-        
 		wp_enqueue_style(
 			'additional-fees-styles', 
 			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/additional-fees-styles.css', 
 			array(), 
 			SKYWEB_DONATION_SYSTEM_VERSION
 		);
-	
+
+        if(skydonate_is_feature_enabled('checkout_custom_field_style') && sky_status_check('checkout_custom_field_style')){
+            wp_enqueue_style(
+                'checkout-custom-style', 
+                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/checkout-custom-style.css', 
+                array(), 
+                SKYWEB_DONATION_SYSTEM_VERSION
+            );
+        }
+        
 		wp_enqueue_style(
 			'bootstrap', 
 			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS. '/css/bootstrap-min.css', 
@@ -455,7 +463,7 @@ class Skyweb_Donation_System_Public {
 	}
 
 	public function add_checkout_custom_style_class($classes) {
-		if (sky_status_check('checkout_custom_field_style')) {
+		if (skydonate_is_feature_enabled('checkout_custom_field_style') && sky_status_check('checkout_custom_field_style')) {
 			$classes[] = 'checkout-custom-style';
 		}
 

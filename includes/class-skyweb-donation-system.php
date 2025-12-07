@@ -58,7 +58,7 @@ class Skyweb_Donation_System {
 			new Skyweb_Currency_Changer();
 		}
 
-		if ( get_option('setup_enable_notification') === '1' && !empty(get_option('notification_select_donations', [])) ) {
+		if ( skydonate_is_feature_enabled('notification') && !empty(get_option('notification_select_donations', [])) ) {
 			$this->include_file('includes/class-skyweb-notification.php');
 		}
 
@@ -71,7 +71,7 @@ class Skyweb_Donation_System {
 			}
 		}
 
-		if ( sky_status_check('enable_sky_donations_module') ) {
+		if ( sky_status_check('enable_sky_donations_module') && skydonate_is_feature_enabled('sky_donations_module') ) {
 			$this->include_file('includes/class-wc-custom-donation-options.php');
 			$this->include_file('includes/class-wc-field-visibility.php');
 			$this->conditionally_initialize_class('WC_Custom_Donation_Options');
@@ -80,7 +80,7 @@ class Skyweb_Donation_System {
 
 		$this->include_file('includes/class-skyweb-donation-gift-aid.php');
 
-		if ( get_option('address_autoload_status', 0) == 1 ) {
+		if ( sky_status_check('address_autoload_status') ) {
 			$this->include_file('includes/class-skyweb-donation-address-autoload.php');
 		}
 
@@ -136,7 +136,7 @@ class Skyweb_Donation_System {
 		$this->loader->add_filter('body_class', $plugin_public, 'add_checkout_custom_style_class');
 		$this->loader->add_filter( 'woocommerce_locate_template', $plugin_public, 'sky_donation_woocommerce_myaccount_login_template', 10, 3 );
 
-		if ( sky_status_check('enable_custom_login_form') ) {
+		if ( skydonate_is_feature_enabled('custom_login_form') && sky_status_check('enable_custom_login_form') ) {
 			$this->loader->add_filter( 'woocommerce_locate_template', $plugin_public, 'sky_donation_woocommerce_myaccount_custom_login_template', 10, 3 );
 		}
 

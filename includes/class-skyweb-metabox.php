@@ -13,12 +13,14 @@ class Skyweb_Donation_Metabox {
      * Add Metabox
      */
     public function add_metabox() {
-        add_meta_box(
-            'skyweb_notification_options', // Metabox ID
-            'Notification Options',        // Title
-            [$this, 'render_metabox'],     // Callback
-            ['post', 'page', 'product'],                        // Post type
-        );
+        if ( skydonate_is_feature_enabled('notification') ) {
+            add_meta_box(
+                'skyweb_notification_options',
+                'Notification Options',
+                [$this, 'render_metabox'],
+                ['post', 'page', 'product']
+            );
+        }
     }
 
     /**
@@ -48,9 +50,6 @@ class Skyweb_Donation_Metabox {
     
         // Get dynamic product options
         $products = Skyweb_Donation_Functions::Get_Title('product', 'ids');
-        if (empty($products)) {
-            $products = ['' => 'No products available'];
-        }
     
         // Security nonce
         wp_nonce_field('skyweb_notification_options_nonce_action', 'skyweb_notification_options_nonce');
@@ -60,7 +59,7 @@ class Skyweb_Donation_Metabox {
             <table class="table">
                 <thead>
                     <tr>
-                        <th  colspan="5">
+                        <th colspan="5">
                             <label>
                                 <input type="checkbox" name="skyweb_enable_notification" value="1" <?php checked($meta_values['enable_notification'], 'yes'); ?> />
                                 Enable Notification
@@ -72,14 +71,17 @@ class Skyweb_Donation_Metabox {
                     <tr>
                         <td colspan="5">
                             <label for="skyweb_select_donation">Select Donations For Notification:</label><br>
-                            <!-- Multi-select dropdown for products -->
-                            <select name="skyweb_select_donation[]" id="skyweb_select_donation" class="select_type_items" multiple="multiple" style="width: 100%;">
-                                <?php foreach ($products as $id => $title): ?>
-                                    <option value="<?php echo esc_attr($id); ?>" <?php echo in_array($id, (array)$meta_values['select_donation']) ? 'selected' : ''; ?>>
-                                        <?php echo esc_html($title); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php if ( ! empty( $products ) ) : ?>
+                                <select name="skyweb_select_donation[]" id="skyweb_select_donation" class="select_type_items" multiple="multiple" style="width: 100%;">
+                                    <?php foreach ($products as $id => $title): ?>
+                                        <option value="<?php echo esc_attr($id); ?>" <?php echo in_array($id, (array)$meta_values['select_donation']) ? 'selected' : ''; ?>>
+                                            <?php echo esc_html($title); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else : ?>
+                                <p class="description"><?php esc_html_e('No products available', 'skyweb'); ?></p>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr>
@@ -114,12 +116,13 @@ class Skyweb_Donation_Metabox {
                             <input type="number" name="skyweb_limit" id="skyweb_limit" class="form-control" value="<?php echo esc_attr($meta_values['limit'] ?: 10); ?>" />
                         </td>
                         <td>
+                            <?php $start_date = $meta_values['start_date'] ?: '7'; ?>
                             <label for="skyweb_start_date">Start Date:</label><br>
                             <select name="skyweb_start_date" id="skyweb_start_date" class="form-control">
-                                <option value="3" <?php selected($meta_values['start_date'], '3'); ?>><?php _e('Last 3 Days', 'skyweb'); ?></option>
-                                <option value="7" <?php selected($meta_values['start_date'], '7'); ?>><?php _e('Last 7 Days', 'skyweb'); ?></option>
-                                <option value="14" <?php selected($meta_values['start_date'], '14'); ?>><?php _e('Last 2 Weeks', 'skyweb'); ?></option>
-                                <option value="0" <?php selected($meta_values['start_date'], '0'); ?>><?php _e('Show All', 'skyweb'); ?></option>
+                                <option value="3" <?php selected($start_date, '3'); ?>><?php _e('Last 3 Days', 'skyweb'); ?></option>
+                                <option value="7" <?php selected($start_date, '7'); ?>><?php _e('Last 7 Days', 'skyweb'); ?></option>
+                                <option value="14" <?php selected($start_date, '14'); ?>><?php _e('Last 2 Weeks', 'skyweb'); ?></option>
+                                <option value="0" <?php selected($start_date, '0'); ?>><?php _e('Show All', 'skyweb'); ?></option>
                             </select>
                         </td>
                         <td>
@@ -150,13 +153,23 @@ class Skyweb_Donation_Metabox {
      * @param int $post_id
      */
     public function save_metabox_data($post_id) {
-        // Verify nonce
-        if (!isset($_POST['skyweb_notification_options_nonce']) || !wp_verify_nonce($_POST['skyweb_notification_options_nonce'], 'skyweb_notification_options_nonce_action')) {
+        // Check if feature is enabled
+        if ( ! skydonate_is_feature_enabled('notification') ) {
             return;
         }
 
-        // Check autosave or permissions
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE || !current_user_can('edit_post', $post_id)) {
+        // Verify nonce
+        if ( ! isset($_POST['skyweb_notification_options_nonce']) || ! wp_verify_nonce($_POST['skyweb_notification_options_nonce'], 'skyweb_notification_options_nonce_action') ) {
+            return;
+        }
+
+        // Check autosave
+        if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
+            return;
+        }
+
+        // Check permissions
+        if ( ! current_user_can('edit_post', $post_id) ) {
             return;
         }
 
@@ -175,33 +188,35 @@ class Skyweb_Donation_Metabox {
             'gap_time'
         ];
 
+        $checkbox_fields = ['enable_notification', 'emoji', 'location_visibility', 'title_visibility', 'timestamp'];
+        $numeric_fields  = ['limit', 'start_time', 'visible_time', 'gap_time'];
+
         foreach ($fields as $field) {
-            $key = '_skyweb_' . $field;
+            $key       = '_skyweb_' . $field;
+            $post_key  = 'skyweb_' . $field;
 
-            // Handle select_donation (multiple values, should be saved as an array)
+            // Handle select_donation (multiple values)
             if ($field === 'select_donation') {
-                // If there are selected donations, sanitize the values as an array
-                $value = isset($_POST['skyweb_' . $field]) ? array_map('sanitize_text_field', $_POST['skyweb_' . $field]) : [];
+                $value = isset($_POST[$post_key]) && is_array($_POST[$post_key]) 
+                    ? array_map('sanitize_text_field', $_POST[$post_key]) 
+                    : [];
             } else {
-                // For other fields, sanitize single values
-                $value = isset($_POST['skyweb_' . $field]) ? sanitize_text_field($_POST['skyweb_' . $field]) : '';
+                $value = isset($_POST[$post_key]) ? sanitize_text_field($_POST[$post_key]) : '';
             }
 
-            // Handle checkboxes (saving 'yes' or 'no')
-            if (in_array($field, ['enable_notification', 'emoji', 'location_visibility', 'title_visibility', 'timestamp'])) {
-                $value = $value === '1' ? 'yes' : 'no';
+            // Handle checkboxes
+            if ( in_array($field, $checkbox_fields, true) ) {
+                $value = ($value === '1') ? 'yes' : 'no';
             }
 
-            // Handle numeric fields (limit, start_time, visible_time, gap_time)
-            if (in_array($field, ['limit', 'start_time', 'visible_time', 'gap_time'])) {
+            // Handle numeric fields
+            if ( in_array($field, $numeric_fields, true) ) {
                 $value = absint($value);
             }
 
-            // Save the meta value
             update_post_meta($post_id, $key, $value);
         }
     }
-
 }
 
 // Initialize the Metabox

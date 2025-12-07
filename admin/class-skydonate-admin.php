@@ -114,12 +114,17 @@ class Skyweb_Donation_System_Admin {
             <ul class="skydonation-navigation-menu">
 
                 <?php foreach ( $sub_menus as $sub_menu ) :
+                    // Skip if validation is set and returns false
+                    if ( isset( $sub_menu['validation'] ) && ! $sub_menu['validation'] ) {
+                        continue;
+                    }
+
                     $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonation';
                     $class     = isset( $sub_menu['class'] ) ? esc_attr( $sub_menu['class'] ) : '';
                 ?>
                     <li <?php echo $class ? 'class="' . $class . '"' : ''; ?>>
                         <a href="<?php echo admin_url( 'admin.php?page=' . $page_slug ); ?>"
-                           class="nav-link <?php echo ( $current_page == $page_slug ) ? 'active' : ''; ?>">
+                        class="nav-link <?php echo ( $current_page == $page_slug ) ? 'active' : ''; ?>">
                             <?php echo esc_html( $sub_menu['page_title'] ); ?>
                         </a>
                     </li>
@@ -183,6 +188,7 @@ class Skyweb_Donation_System_Admin {
                 'capability' => 'manage_options',
                 'page_slug'  => 'skydonation-notification',
                 'callback'   => 'notification_page_content',
+                'validation'  => skydonate_is_feature_enabled('notification'),
             ],
             [
                 'page_title' => esc_html__( 'API', 'skydonation' ),
@@ -210,6 +216,11 @@ class Skyweb_Donation_System_Admin {
         if ( ! empty( $sub_menus ) ) {
 
             foreach ( $sub_menus as $sub_menu ) {
+                // Skip if validation is set and returns false
+                if ( isset( $sub_menu['validation'] ) && ! $sub_menu['validation'] ) {
+                    continue;
+                }
+
                 $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : $parent_slug;
 
                 add_submenu_page(
@@ -266,7 +277,12 @@ class Skyweb_Donation_System_Admin {
     public function gift_aid_page_content() { $this->display_page_content('gift-aid'); }
     public function widgets_page_content() { $this->display_page_content('widgets'); }
     public function address_autoload_page_content() { $this->display_page_content('address-autoload'); }
-    public function notification_page_content() { $this->display_page_content('notification'); }
+    public function notification_page_content() { 
+        if(!skydonate_is_feature_enabled('notification')){
+            return false;
+        }    
+        $this->display_page_content('notification'); 
+    }
     public function license_page_content() { $this->display_page_content('license'); }
 
     /**

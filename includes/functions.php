@@ -34,34 +34,9 @@ add_action( 'wp_enqueue_scripts', function() {
  * @param string $option Feature option name
  * @return bool True if feature is enabled
  */
-function sky_status_check( $option ) {
-    // First check if license allows this feature
-    if ( function_exists( 'skydonate_license' ) ) {
-        $license = skydonate_license();
-        if ( $license->is_active() ) {
-            // Check license-based feature permission
-            if ( ! $license->has_feature( $option ) ) {
-                return false;
-            }
-        }
-    }
 
-    // Then check local setup and option settings
-    if ( sky_setup_check( $option ) ) {
-        return get_option( $option ) == 1;
-    }
-    return false;
-}
-
-/**
- * Check if feature is enabled in setup
- *
- * @param string $option Option key
- * @return bool True if setup allows feature
- */
-function sky_setup_check( $option ) {
-    $option = 'setup_' . $option;
-    return skyweb_donation_setting_up( $option ) == 1;
+function sky_status_check($option) {
+	return get_option($option) == 1;
 }
 
 /**
