@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                     <form class="gift-aid-full-export" method="post" action="">
                         <input type="hidden" name="action" value="skydonate_gift_aid_export">
                         <?php wp_nonce_field( 'skydonate_gift_aid_export_action', 'skydonate_gift_aid_export_nonce' ); ?>
-                        <button type="submit" class="skydonate-button">
+                        <button type="submit" class="skydonation-button">
                             <?php esc_html_e( 'Export CSV', 'skydonate' ); ?>
                             <span class="dashicons dashicons-download"></span>
                         </button>
@@ -58,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                             </div>
                         </div>
                         <p>
-                            <button type="submit" class="skydonate-button">
+                            <button type="submit" class="skydonation-button">
                                 <?php esc_html_e( 'Export CSV', 'skydonate' ); ?>
                                 <span class="dashicons dashicons-download"></span>
                             </button>

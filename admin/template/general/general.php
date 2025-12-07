@@ -96,7 +96,7 @@
 
         <br>
         <p>
-            <button type="submit" class="skydonate-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
+            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </p>
     </form>
 </div>

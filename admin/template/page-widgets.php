@@ -190,7 +190,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                     <span class="switch-text off"><?php _e( 'Off', 'skydonate' ); ?></span>
                 </span>
             </label>
-            <button type="submit" class="skydonate-button" ><?php _e( 'Save Settings', 'skydonate' ); ?></button>
+            <button type="submit" class="skydonation-button" ><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </div>
     </form>
 </div>

@@ -105,7 +105,7 @@ $geo_default_all = get_option('skydonate_geo_default_all', 0); // New switch
 
         <br>
         <p>
-            <button type="submit" class="skydonate-button">
+            <button type="submit" class="skydonation-button">
                 <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>

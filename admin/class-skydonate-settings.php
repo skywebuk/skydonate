@@ -637,7 +637,7 @@ class Skydonate_Settings_Functions {
                         <td class="form-group-control">
                             <div class="text-field text-field-outlined">
                                 <input type="text" name="<?php echo esc_attr($name); ?>" value="<?php echo $value; ?>" class="regular-text"/>
-                                <button type="button" data-value="<?php echo esc_attr($name); ?>" class="skydonate-button upload-media">Upload</button>
+                                <button type="button" data-value="<?php echo esc_attr($name); ?>" class="skydonation-button upload-media">Upload</button>
                         </div>
                             <div class="text-field-helper-line">
                                 <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo $description; ?></div>
@@ -1047,7 +1047,7 @@ class Skydonate_Settings_Functions {
                     ?>
                     <tr class="form-group  <?php echo $wrapper_class; ?>">
                         <td class="form-group__control" colspan="2">
-                            <button class="skydonate-button <?php echo $class; ?>" name="<?php echo esc_attr($name); ?>"
+                            <button class="skydonation-button <?php echo $class; ?>" name="<?php echo esc_attr($name); ?>"
                                     id="<?php echo esc_attr($component['id']); ?>"> <span class="button__ripple"></span>
                                 <span class="button__label"><?php echo esc_attr($component['button_text']); ?></span>
                             </button>

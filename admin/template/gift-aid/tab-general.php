@@ -91,7 +91,7 @@ $default_logo = SKYDONATE_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
         </table>
 
         <p>
-            <button type="submit" class="skydonate-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
+            <button type="submit" class="skydonation-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
         </p>
 
         <div class="skydonate-gift-aid-success-message" style="display:none;">

@@ -97,7 +97,7 @@ $saved_donations = get_option('skydonate_extra_donation_items', []);
 
         <br>
         <p>
-            <button type="submit" class="skydonate-button">
+            <button type="submit" class="skydonation-button">
                 <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>

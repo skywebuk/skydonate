@@ -111,7 +111,7 @@ $default_address2_mode = get_option('address_autoload_address2_mode', 'normal');
         </table>
 
         <p>
-            <button type="submit" class="skydonate-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
+            <button type="submit" class="skydonation-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
         </p>
 
         <div class="skydonate-address-autoload-success-message" style="display:none;">

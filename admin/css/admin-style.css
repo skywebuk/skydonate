@@ -540,7 +540,7 @@ input[type="radio"]:checked::before {
 /* ============================================
    Buttons
    ============================================ */
-.skydonate-button {
+.skydonation-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -560,24 +560,24 @@ input[type="radio"]:checked::before {
     box-shadow: var(--sky-shadow-sm);
 }
 
-.skydonate-button:hover,
-.skydonate-button:not(:disabled):hover {
+.skydonation-button:hover,
+.skydonation-button:not(:disabled):hover {
     background: linear-gradient(135deg, var(--sky-primary-hover) 0%, var(--sky-primary-dark) 100%);
     transform: translateY(-1px);
     box-shadow: var(--sky-shadow-md);
     color: white;
 }
 
-.skydonate-button:active {
+.skydonation-button:active {
     transform: translateY(0);
 }
 
-.skydonate-button:focus {
+.skydonation-button:focus {
     outline: none;
     box-shadow: 0 0 0 3px var(--sky-primary-light), var(--sky-shadow-md);
 }
 
-.skydonate-button:disabled {
+.skydonation-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
@@ -585,7 +585,7 @@ input[type="radio"]:checked::before {
 }
 
 .button.loading,
-.skydonate-button.loading {
+.skydonation-button.loading {
     position: relative;
     display: flex !important;
     align-items: center;
@@ -595,7 +595,7 @@ input[type="radio"]:checked::before {
 }
 
 .button.loading::after,
-.skydonate-button.loading::after {
+.skydonation-button.loading::after {
     content: "";
     width: 14px;
     height: 14px;
@@ -1391,7 +1391,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         align-items: stretch;
     }
 
-    .skydonate-footer .skydonate-button {
+    .skydonate-footer .skydonation-button {
         width: 100%;
     }
 

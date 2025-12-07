@@ -165,7 +165,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -204,7 +204,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -241,7 +241,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -280,7 +280,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -318,7 +318,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -354,7 +354,7 @@
             e.preventDefault();
 
             var formData = $(this).serializeArray();
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
 
             $btn.addClass('loading').prop('disabled', true);
 
@@ -387,7 +387,7 @@
             e.preventDefault(); // Prevent default form submission
             
             const $form = $(this);
-            const $btn = $form.find('.skydonate-button');
+            const $btn = $form.find('.skydonation-button');
             const formData = $form.serializeArray();
 
             // Add loading state to button
@@ -425,7 +425,7 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -497,7 +497,7 @@
 
 
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
             
             $.ajax({
@@ -527,7 +527,7 @@
             var formData = $(this).serializeArray();
 
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
@@ -570,7 +570,7 @@
 
 
             // Add loading state
-            var $btn = $('.skydonate-button');
+            var $btn = $('.skydonation-button');
             $btn.addClass('loading').prop('disabled', true);
 
 
