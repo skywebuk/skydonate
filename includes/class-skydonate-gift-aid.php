@@ -246,11 +246,11 @@ class Skydonate_Gift_Aid {
         $gift_aid = $order->get_meta( 'gift_aid_it' );
         ?>
         <div style="border:0.25em solid lightgreen; border-radius: 0.5em; padding: 1em; margin-top:1em;">
-            <p><strong><?php esc_html_e('Important:', 'wc-uk-gift-aid'); ?></strong> <?php esc_html_e('You should only check this box if the customer has consented by some other means. It is your responsibility to submit accurate data to HMRC.', 'wc-uk-gift-aid'); ?></p>
+            <p><strong><?php esc_html_e('Important:', 'skydonate'); ?></strong> <?php esc_html_e('You should only check this box if the customer has consented by some other means. It is your responsibility to submit accurate data to HMRC.', 'skydonate'); ?></p>
             <p>
                 <label for="gift_aid_it">
                     <input type="checkbox" name="gift_aid_it" id="gift_aid_it" value="yes" <?php checked( $gift_aid, 'yes' ); ?> />
-                    <?php esc_html_e('Gift Aid Consented', 'wc-uk-gift-aid'); ?>
+                    <?php esc_html_e('Gift Aid Consented', 'skydonate'); ?>
                 </label>
             </p>
         </div>

@@ -319,14 +319,14 @@
     z-index: 4;
 }
 
-.donation-amount-groups .donation-custom .skyweb-currency-wrapper {
+.donation-amount-groups .donation-custom .skydonate-currency-wrapper {
     position: relative;
     overflow: hidden;
     height: 50px;
     z-index: 2;
 }
 
-.donation-amount-groups .donation-custom .skyweb-currency-wrapper .currency-symbol {
+.donation-amount-groups .donation-custom .skydonate-currency-wrapper .currency-symbol {
     font-size: 18px;
     color: var(--accent-color);
     display: flex;
@@ -343,7 +343,7 @@
     background: white var(--sky-select-arrow) no-repeat scroll right -2px center / 20px 20px;
 }
 
-.donation-amount-groups .donation-custom .skyweb-currency-select {
+.donation-amount-groups .donation-custom .skydonate-currency-select {
     position: absolute;
     left: 0;
     top: 0;

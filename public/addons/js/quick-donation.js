@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_quick_donation = function ($scope, $) {
+    var skydonate_quick_donation = function ($scope, $) {
 
         var $frequency = $scope.find('.qd-frequency');
         var $amount = $scope.find('.qd-amount');
@@ -117,8 +117,8 @@
     // Elementor frontend hook
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skyweb_quick_donation.default',
-            skyweb_quick_donation
+            'frontend/element_ready/skydonate_quick_donation.default',
+            skydonate_quick_donation
         );
     });
 

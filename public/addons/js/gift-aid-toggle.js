@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_gift_aid_toggle = function ($scope, $) {
+    var skydonate_gift_aid_toggle = function ($scope, $) {
         var $giftAid = $scope.find('.skydonate-gift-aid-toggle');
         var $checkbox = $giftAid.find('#gift_aid_it');
         var defaultState = $checkbox.data('value'); // "checked" or ""
@@ -27,8 +27,8 @@
 
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skyweb_gift_aid_toggle.default',
-            skyweb_gift_aid_toggle
+            'frontend/element_ready/skydonate_gift_aid_toggle.default',
+            skydonate_gift_aid_toggle
         );
     });
 })(jQuery);
