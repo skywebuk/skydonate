@@ -59,20 +59,20 @@ function sky_widget_status_check( $option ) {
 
     // Default widgets list
     $default_widgets = array(
-        'zakat_calculator'         => 'yes',
-        'zakat_calculator_classic' => 'yes',
-        'metal_values'             => 'yes',
-        'recent_order'             => 'yes',
-        'donation_progress'        => 'yes',
-        'donation_form'            => 'yes',
-        'donation_card'            => 'yes',
-        'impact_slider'            => 'yes',
-        'qurbani_status'           => 'yes',
-        'extra_donation'           => 'yes',
-        'quick_donation'           => 'yes',
-        'gift_aid_toggle'          => 'yes',
-        'donation_button'          => 'yes',
-        'icon_slider'              => 'yes',
+        'zakat_calculator'         => 'on',
+        'zakat_calculator_classic' => 'on',
+        'metal_values'             => 'on',
+        'recent_order'             => 'on',
+        'donation_progress'        => 'on',
+        'donation_form'            => 'on',
+        'donation_card'            => 'on',
+        'impact_slider'            => 'on',
+        'qurbani_status'           => 'on',
+        'extra_donation'           => 'on',
+        'quick_donation'           => 'on',
+        'gift_aid_toggle'          => 'on',
+        'donation_button'          => 'on',
+        'icon_slider'              => 'on',
     );
 
     // Retrieve and merge saved options with defaults
