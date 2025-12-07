@@ -140,7 +140,7 @@ function skydonate_activate_target_widget($enabled_widget,$zip_url){
 			$zip = new ZipArchive;
 		
 			foreach($widgets[$enabled_widget] as $widget){
-			   $targetFile = 'skyweb-donation-system/includes/addons/class-skyweb-donation-'.$widget.'.php';
+			   $targetFile = 'skydonate/includes/addons/class-skydonate-addon-'.$widget.'.php';
 				skydonate_extract_target_file($zipPath,$extractTo,$targetFile);
 			}
 			unlink($zipPath);

@@ -32,7 +32,7 @@ if (!class_exists('WC_Custom_Donation_Settings')) {
 
         public function conditionally_add_title_prefix_class() {
             if (sky_status_check('enable_title_prefix')) {
-                require_once plugin_dir_path(__FILE__) . 'class-wc-title-prefix.php';
+                require_once plugin_dir_path(__FILE__) . 'class-skydonate-wc-title-prefix.php';
                 new WC_Title_Prefix();
             }
         }

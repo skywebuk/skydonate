@@ -4,13 +4,13 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Addons {
+class Skydonate_Elementor_Addons {
 
     public function __construct() {
         add_action('elementor/init', [$this, 'register_elementor_controls']);
         add_action('elementor/elements/categories_registered', [$this, 'register_widget_categories']);
-        
-        
+
+
         // Hook the API data update function to the daily cron event
         add_action('daily_api_data_update', [$this, 'fetch_and_store_api_data']);
         // Schedule the fetch operation to run daily
@@ -18,7 +18,7 @@ class SkyWeb_Donation_Addons {
             wp_schedule_event(time(), 'daily', 'daily_api_data_update');
         }
     }
-    
+
 
     public static function Get_Title($post_type = 'post') {
         // query for your post type
@@ -31,7 +31,7 @@ class SkyWeb_Donation_Addons {
         // create a list with needed information
         // the key equals the ID, the value is the post_title
         $post_title = wp_list_pluck($posts_array, 'post_title', 'ID');
-        
+
         return $post_title;
     }
 
@@ -57,115 +57,115 @@ class SkyWeb_Donation_Addons {
     public function register_widgets($widgets_manager) {
         // Conditionally load and register each widget
         if (sky_widget_status_check('zakat_calculator')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-zakat-calculator-addons.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-calculator.php');
             $widgets_manager->register(new \SkyWeb_Donation_Zakat_Calculator_Addons());
         }
         if (sky_widget_status_check('zakat_calculator_classic')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-zakat-calculator-classic.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-calculator-classic.php');
             $widgets_manager->register(new \SkyWeb_Donation_Zakat_Calculator_Classic());
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-zakat-preview.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-zakat-preview.php');
             $widgets_manager->register(new \SkyWeb_Donation_Zakat_Preview());
         }
-    
+
        if (sky_widget_status_check('metal_values')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-metal-values-addons.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-metal-values.php');
             $widgets_manager->register(new \SkyWeb_Donation_Metal_Values_Addons());
         }
-    
-        
+
+
         if (sky_widget_status_check('recent_order')) {
-            $recent_donation_layout = skyweb_donation_layout_option('recent_donation_layout');
+            $recent_donation_layout = skydonate_layout_option('recent_donation_layout');
             if (!is_array($recent_donation_layout)) {
                 $recent_donation_layout = ['layout1'];
             }
             if (is_array($recent_donation_layout)) {
                 if (in_array('layout1', $recent_donation_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-recent-order-addon.php');
+                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order.php');
                     $widgets_manager->register(new \SkyWeb_Donation_Recent_Order_Addon());
                 }
                 if (in_array('layout2', $recent_donation_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-recent-order-addon-2.php');
+                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order-2.php');
                     $widgets_manager->register(new \SkyWeb_Donation_Recent_Order_Addon_2());
                 }
             }
         }
-        
+
         if (sky_widget_status_check('donation_progress')) {
-            $progress_bar_layout = skyweb_donation_layout_option('progress_bar_layout');
+            $progress_bar_layout = skydonate_layout_option('progress_bar_layout');
             if (!is_array($progress_bar_layout)) {
                 $progress_bar_layout = ['layout1'];
             }
             if (is_array($progress_bar_layout)) {
                 if (in_array('layout1', $progress_bar_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-progress-addon.php');
+                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress.php');
                     $widgets_manager->register(new \SkyWeb_Donation_Progress_Addon());
-                } 
+                }
                 if (in_array('layout2', $progress_bar_layout)) {
-                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-progress-addon-2.php');
+                    require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-progress-2.php');
                     $widgets_manager->register(new \SkyWeb_Donation_Progress_Addon_2());
                 }
             }
         }
         if (sky_widget_status_check('donation_form')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-form-addon.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-form.php');
             $widgets_manager->register(new \SkyWeb_Donation_Form_Addon());
         }
-        
+
 
          if (sky_widget_status_check('donation_card')) {
-            $addons_card_layout = skyweb_donation_layout_option('addons_card_layout');
+            $addons_card_layout = skydonate_layout_option('addons_card_layout');
 
             if (!is_array($addons_card_layout)) {
                 $addons_card_layout = ['layout1'];
             }
-            
+
             if (in_array('layout1', $addons_card_layout)) {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-card-addon.php');
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card.php');
               $widgets_manager->register(new \SkyWeb_Donation_Card_Addon());
             }
             if (in_array('layout2', $addons_card_layout)) {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-card-addon-2.php');
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card-2.php');
                 $widgets_manager->register(new \SkyWeb_Donation_Card_Addon_2());
             }
-        }        
-        
-    
+        }
+
+
         if (sky_widget_status_check('impact_slider')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-impact-slider.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-impact-slider.php');
             $widgets_manager->register(new \SkyWeb_Donation_Impact_Slider());
         }
-        
+
         if (sky_widget_status_check('qurbani_status')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-qurbani-status.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-qurbani-status.php');
             $widgets_manager->register(new \SkyWeb_Donation_Qurbani_Status());
         }
-        
+
         if (sky_widget_status_check('extra_donation')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-extra-donation.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-extra-donation.php');
             $widgets_manager->register(new \SkyWeb_Extra_Donation());
         }
-        
+
         if (sky_widget_status_check('quick_donation')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-quick-donate.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-quick-donate.php');
             $widgets_manager->register(new \SkyWeb_Quick_Donation());
         }
-        
+
         if (sky_widget_status_check('gift_aid_toggle') && get_option('enable_gift_aid', 0) == 1) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-gift-aid-toggle.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-gift-aid-toggle.php');
             $widgets_manager->register(new \SkyWeb_Gift_Aid_Toggle());
         }
-    
+
         if (sky_widget_status_check('donation_button')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-button.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-button.php');
             $widgets_manager->register(new \SkyWeb_Donation_Button());
         }
-    
+
         if (sky_widget_status_check('icon_slider')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skyweb-donation-icon-list.php');
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-icon-list.php');
             $widgets_manager->register(new \SkyWeb_Donation_Icon_List());
         }
-		
-    }   
+
+    }
 
 
     public function register_elementor_controls() {
@@ -174,9 +174,9 @@ class SkyWeb_Donation_Addons {
 
     public function register_widget_categories($elements_manager) {
         $elements_manager->add_category(
-            'skyweb_donation',
+            'skydonate',
             [
-                'title' => __('SkyWeb Donation', 'skydonate'),
+                'title' => __('SkyDonate', 'skydonate'),
                 'icon' => 'fa fa-donate',
             ],
             1
@@ -253,7 +253,7 @@ class SkyWeb_Donation_Addons {
         // Store the results if there are no errors
         $this->store_api_data($results);
     }
-    
+
     // Clear scheduled event on plugin deactivation
     public static function deactivate() {
         wp_clear_scheduled_hook('daily_api_data_update');
@@ -262,7 +262,10 @@ class SkyWeb_Donation_Addons {
 }
 
 // Initialize the class
-new SkyWeb_Donation_Addons();
+new Skydonate_Elementor_Addons();
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_Elementor_Addons', 'SkyWeb_Donation_Addons' );
 
 // Register deactivation hook
-register_deactivation_hook(SKYWEB_DONATION_SYSTEM_FILE, ['SkyWeb_Donation_Addons', 'deactivate']);
+register_deactivation_hook(SKYWEB_DONATION_SYSTEM_FILE, ['Skydonate_Elementor_Addons', 'deactivate']);
