@@ -43,10 +43,10 @@ add_filter('wc_ppcp_get_order_item', function($item, $order_item){
 }, 10, 2);
 
 if ($register_text_replacements == 1) {
-    function skyweb_start_buffer() {
+    function skydonate_start_buffer() {
         ob_start();
     }
-    function skyweb_end_buffer() {
+    function skydonate_end_buffer() {
         $html = ob_get_clean();
         $html = str_replace('Search for posts', 'Search for Appeals', $html);
         $html = str_replace('Browse products', 'Browse projects', $html);
@@ -72,35 +72,35 @@ if ($register_text_replacements == 1) {
         $html = str_replace('Product short description', 'Donation short description', $html);
         echo $html;
     }
-    add_action('wp_head', 'skyweb_start_buffer');
-    add_action('wp_footer', 'skyweb_end_buffer');
+    add_action('wp_head', 'skydonate_start_buffer');
+    add_action('wp_footer', 'skydonate_end_buffer');
 
-    function skyweb_order_button_text() {
+    function skydonate_order_button_text() {
         return 'PROCESS PAYMENT';
     }
-    add_filter('woocommerce_order_button_text', 'skyweb_order_button_text');
+    add_filter('woocommerce_order_button_text', 'skydonate_order_button_text');
 
-    function skyweb_single_add_to_cart_text() {
+    function skydonate_single_add_to_cart_text() {
         return __('Donate and Support', 'woocommerce');
     }
-    add_filter('woocommerce_product_single_add_to_cart_text', 'skyweb_single_add_to_cart_text');
+    add_filter('woocommerce_product_single_add_to_cart_text', 'skydonate_single_add_to_cart_text');
 
-    function skyweb_archive_add_to_cart_text() {
+    function skydonate_archive_add_to_cart_text() {
         return __('Donate and Support', 'woocommerce');
     }
-    add_filter('woocommerce_product_add_to_cart_text', 'skyweb_archive_add_to_cart_text');
+    add_filter('woocommerce_product_add_to_cart_text', 'skydonate_archive_add_to_cart_text');
 
-    function skyweb_translate_product($translated, $text, $domain) {
+    function skydonate_translate_product($translated, $text, $domain) {
         if ($domain === 'woocommerce') {
             if ($translated === 'Product') $translated = 'Project';
             if ($translated === 'Products') $translated = 'Projects';
         }
         return $translated;
     }
-    add_filter('gettext', 'skyweb_translate_product', 20, 3);
-    add_filter('ngettext', 'skyweb_translate_product', 20, 3);
+    add_filter('gettext', 'skydonate_translate_product', 20, 3);
+    add_filter('ngettext', 'skydonate_translate_product', 20, 3);
 
-    function skyweb_frontend_js() { ?>
+    function skydonate_frontend_js() { ?>
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", function() {
                 const updateCartMessages = () => {
@@ -130,9 +130,9 @@ if ($register_text_replacements == 1) {
             });
         </script><?php
     }
-    add_action('wp_footer', 'skyweb_frontend_js', 100);
+    add_action('wp_footer', 'skydonate_frontend_js', 100);
 
-    function skyweb_admin_order_text($translated, $text, $domain) {
+    function skydonate_admin_order_text($translated, $text, $domain) {
         if (is_admin() && current_user_can('manage_woocommerce')) {
             $screen_id = isset($_GET['page']) ? $_GET['page'] : '';
             if (strpos($screen_id, 'wc') !== false || (isset($_GET['post_type']) && $_GET['post_type'] === 'shop_order')) {
@@ -155,26 +155,26 @@ if ($register_text_replacements == 1) {
         }
         return $translated;
     }
-    add_filter('gettext', 'skyweb_admin_order_text', 20, 3);
-    add_filter('ngettext', 'skyweb_admin_order_text', 20, 3);
+    add_filter('gettext', 'skydonate_admin_order_text', 20, 3);
+    add_filter('ngettext', 'skydonate_admin_order_text', 20, 3);
 
-    function skyweb_set_display_name($user_id) {
+    function skydonate_set_display_name($user_id) {
         $data = get_userdata($user_id);
         $display_name = !empty($data->first_name) ? $data->first_name : 'Donor';
         wp_update_user(['ID' => $user_id, 'display_name' => $display_name]);
     }
-    add_action('user_register', 'skyweb_set_display_name');
+    add_action('user_register', 'skydonate_set_display_name');
 
-    function skyweb_email_order_donation($translated, $text, $domain) {
+    function skydonate_email_order_donation($translated, $text, $domain) {
         if ($domain === 'woocommerce' && strpos($translated, 'Order #') !== false) {
             $translated = str_replace('Order #', 'Donation #', $translated);
         }
         return $translated;
     }
-    add_filter('gettext', 'skyweb_email_order_donation', 999, 3);
-    add_filter('ngettext', 'skyweb_email_order_donation', 999, 3);
+    add_filter('gettext', 'skydonate_email_order_donation', 999, 3);
+    add_filter('ngettext', 'skydonate_email_order_donation', 999, 3);
 
-    function skyweb_replace_order_donation($translated, $text, $domain) {
+    function skydonate_replace_order_donation($translated, $text, $domain) {
         $map = array(
             'Order' => 'Donation',
             'Orders' => 'Donations',
@@ -184,7 +184,7 @@ if ($register_text_replacements == 1) {
         if (isset($map[$text])) return $map[$text];
         return $translated;
     }
-    add_filter('gettext', 'skyweb_replace_order_donation', 20, 3);
+    add_filter('gettext', 'skydonate_replace_order_donation', 20, 3);
     add_filter('ngettext', function($translation, $single, $plural, $number, $domain) {
         $map = array(
             'Order' => ['Donation', 'Donations'],
@@ -203,52 +203,52 @@ if ($register_text_replacements == 1) {
 
 if ($init_woocommerce_customizations == 1) {
 
-    add_filter('woocommerce_get_order_item_totals', 'skyweb_remove_cart_subtotal', 10, 2);
-    function skyweb_remove_cart_subtotal($totals, $order) {
+    add_filter('woocommerce_get_order_item_totals', 'skydonate_remove_cart_subtotal', 10, 2);
+    function skydonate_remove_cart_subtotal($totals, $order) {
         if (isset($totals['cart_subtotal'])) {
             unset($totals['cart_subtotal']);
         }
         return $totals;
     }
 
-    add_filter('woocommerce_cart_calculate_fees', 'skyweb_hide_recurring_totals', 10, 1);
-    function skyweb_hide_recurring_totals($cart) {
+    add_filter('woocommerce_cart_calculate_fees', 'skydonate_hide_recurring_totals', 10, 1);
+    function skydonate_hide_recurring_totals($cart) {
         if (!empty($cart->recurring_cart_key)) {
             remove_action('woocommerce_cart_totals_after_order_total', ['WC_Subscriptions_Cart', 'display_recurring_totals'], 10);
             remove_action('woocommerce_review_order_after_order_total', ['WC_Subscriptions_Cart', 'display_recurring_totals'], 10);
         }
     }
 
-    add_filter('woocommerce_checkout_fields', 'skyweb_remove_checkout_username');
-    function skyweb_remove_checkout_username($fields) {
+    add_filter('woocommerce_checkout_fields', 'skydonate_remove_checkout_username');
+    function skydonate_remove_checkout_username($fields) {
         unset($fields['account']['account_username']);
         return $fields;
     }
 
-    add_filter('woocommerce_new_customer_data', 'skyweb_set_email_as_username');
-    function skyweb_set_email_as_username($new_customer_data) {
+    add_filter('woocommerce_new_customer_data', 'skydonate_set_email_as_username');
+    function skydonate_set_email_as_username($new_customer_data) {
         if (isset($new_customer_data['user_email'])) {
             $new_customer_data['user_login'] = $new_customer_data['user_email'];
         }
         return $new_customer_data;
     }
 
-    add_filter('woocommerce_registration_errors', 'skyweb_clean_registration_errors', 10, 3);
-    function skyweb_clean_registration_errors($errors, $sanitized_user_login, $user_email) {
+    add_filter('woocommerce_registration_errors', 'skydonate_clean_registration_errors', 10, 3);
+    function skydonate_clean_registration_errors($errors, $sanitized_user_login, $user_email) {
         if (isset($_POST['username'])) {
             unset($_POST['username']);
         }
         return $errors;
     }
 
-    add_filter('woocommerce_default_address_fields', 'skyweb_remove_address_username');
-    function skyweb_remove_address_username($address_fields) {
+    add_filter('woocommerce_default_address_fields', 'skydonate_remove_address_username');
+    function skydonate_remove_address_username($address_fields) {
         unset($address_fields['username']);
         return $address_fields;
     }
 
-    add_action('woocommerce_register_form_start', 'skyweb_hide_register_username_field');
-    function skyweb_hide_register_username_field() {
+    add_action('woocommerce_register_form_start', 'skydonate_hide_register_username_field');
+    function skydonate_hide_register_username_field() {
         ?>
         <style>
             #reg_username_field {
@@ -258,16 +258,16 @@ if ($init_woocommerce_customizations == 1) {
         <?php
     }
 
-    add_filter('woocommerce_product_data_tabs', 'skyweb_remove_product_tabs');
-    function skyweb_remove_product_tabs($tabs) {
+    add_filter('woocommerce_product_data_tabs', 'skydonate_remove_product_tabs');
+    function skydonate_remove_product_tabs($tabs) {
         unset($tabs['inventory']);
         unset($tabs['shipping']);
         unset($tabs['linked_product']);
         return $tabs;
     }
 
-    add_action('admin_head', 'skyweb_hide_product_panels');
-    function skyweb_hide_product_panels() {
+    add_action('admin_head', 'skydonate_hide_product_panels');
+    function skydonate_hide_product_panels() {
         ?>
         <style>
             #inventory_product_data,
@@ -279,13 +279,13 @@ if ($init_woocommerce_customizations == 1) {
         <?php
     }
 
-    add_action('admin_head', 'skyweb_hide_product_date');
-    function skyweb_hide_product_date() {
+    add_action('admin_head', 'skydonate_hide_product_date');
+    function skydonate_hide_product_date() {
         echo '<style>.postbox-header { display: none; }</style>';
     }
 
-    add_action('add_meta_boxes', 'skyweb_remove_product_descriptions', 99);
-    function skyweb_remove_product_descriptions() {
+    add_action('add_meta_boxes', 'skydonate_remove_product_descriptions', 99);
+    function skydonate_remove_product_descriptions() {
         remove_post_type_support('product', 'editor');
     }
 
@@ -293,15 +293,15 @@ if ($init_woocommerce_customizations == 1) {
 }
 
 if ($init_order_postcode_search == 1) {
-    add_action('restrict_manage_posts', 'skyweb_add_order_postcode_search');
-    function skyweb_add_order_postcode_search() {
+    add_action('restrict_manage_posts', 'skydonate_add_order_postcode_search');
+    function skydonate_add_order_postcode_search() {
         global $typenow;
         if ($typenow === 'shop_order') { ?>
             <input type="text" name="postcode" id="postcode" placeholder="<?php _e('Search by Postcode', 'your-text-domain'); ?>" value="<?php echo isset($_GET['postcode']) ? esc_attr($_GET['postcode']) : ''; ?>" />
         <?php }
     }
-    add_action('pre_get_posts', 'skyweb_filter_orders_by_postcode');
-    function skyweb_filter_orders_by_postcode($query) {
+    add_action('pre_get_posts', 'skydonate_filter_orders_by_postcode');
+    function skydonate_filter_orders_by_postcode($query) {
         global $pagenow, $typenow;
         if ($pagenow === 'edit.php' && $typenow === 'shop_order' && !empty($_GET['postcode'])) {
             $postcode = sanitize_text_field($_GET['postcode']);
@@ -315,8 +315,8 @@ if ($init_order_postcode_search == 1) {
 }
 
 if ($init_menu_label_changes == 1) {
-    add_filter('woocommerce_register_post_type_product', 'skyweb_change_product_labels');
-    function skyweb_change_product_labels($args) {
+    add_filter('woocommerce_register_post_type_product', 'skydonate_change_product_labels');
+    function skydonate_change_product_labels($args) {
         $args['labels']['name'] = 'Donation Forms';
         $args['labels']['singular_name'] = 'Donation Form';
         $args['labels']['menu_name'] = 'Donation Forms';
@@ -332,7 +332,7 @@ if ($init_menu_label_changes == 1) {
         $args['labels']['parent_item_colon'] = 'Parent Donation Form:';
         return $args;
     }
-    function skyweb_change_menu_items($menu) {
+    function skydonate_change_menu_items($menu) {
         if (empty($menu)) return $menu;
         foreach ($menu as $key => $value) {
             if ($menu[$key][0] === 'WooCommerce') {
@@ -353,9 +353,9 @@ if ($init_menu_label_changes == 1) {
         }
         return $menu;
     }
-    add_filter('custom_menu_order', 'skyweb_change_menu_items');
-    add_filter('menu_order', 'skyweb_change_menu_items');
-    function skyweb_change_submenu_labels() {
+    add_filter('custom_menu_order', 'skydonate_change_menu_items');
+    add_filter('menu_order', 'skydonate_change_menu_items');
+    function skydonate_change_submenu_labels() {
         global $menu, $submenu;
         foreach ($menu as $key => $value) {
             if ($menu[$key][0] === 'WooCommerce') {
@@ -370,11 +370,11 @@ if ($init_menu_label_changes == 1) {
             }
         }
     }
-    add_action('admin_menu', 'skyweb_change_submenu_labels');
+    add_action('admin_menu', 'skydonate_change_submenu_labels');
 }
 
 if ($init_stripe_order_meta_modifications == 1) {
-    function skyweb_allow_order_payment_without_login($allcaps, $caps, $args) {
+    function skydonate_allow_order_payment_without_login($allcaps, $caps, $args) {
         if (isset($caps[0]) && $caps[0] === 'pay_for_order') {
             $order_id = isset($args[2]) ? $args[2] : null;
             $order    = wc_get_order($order_id);
@@ -392,8 +392,8 @@ if ($init_stripe_order_meta_modifications == 1) {
         }
         return $allcaps;
     }
-    add_filter('user_has_cap', 'skyweb_allow_order_payment_without_login', 10, 3);
-    function skyweb_checkout_existing_customer_login($data) {
+    add_filter('user_has_cap', 'skydonate_allow_order_payment_without_login', 10, 3);
+    function skydonate_checkout_existing_customer_login($data) {
         $email = isset($data['billing_email']) ? $data['billing_email'] : '';
         if (!is_user_logged_in() && $email && email_exists($email)) {
             $user = get_user_by('email', $email);
@@ -403,30 +403,30 @@ if ($init_stripe_order_meta_modifications == 1) {
                 if (!session_id()) {
                     session_start();
                 }
-                $_SESSION['skyweb_flag'] = "133";
-                $_SESSION['skyweb_user'] = $user_id;
+                $_SESSION['skydonate_flag'] = "133";
+                $_SESSION['skydonate_user'] = $user_id;
             }
         }
         return $data;
     }
-    add_filter('woocommerce_checkout_posted_data', 'skyweb_checkout_existing_customer_login', 10, 1);
-    function skyweb_clear_user_session_on_new_order($order_id) {
-        if (!empty($_SESSION['skyweb_flag']) && $_SESSION['skyweb_flag'] == 133) {
+    add_filter('woocommerce_checkout_posted_data', 'skydonate_checkout_existing_customer_login', 10, 1);
+    function skydonate_clear_user_session_on_new_order($order_id) {
+        if (!empty($_SESSION['skydonate_flag']) && $_SESSION['skydonate_flag'] == 133) {
             nocache_headers();
             wp_clear_auth_cookie();
-            if (!empty($_SESSION['skyweb_user'])) {
-                $session = WP_Session_Tokens::get_instance($_SESSION['skyweb_user']);
+            if (!empty($_SESSION['skydonate_user'])) {
+                $session = WP_Session_Tokens::get_instance($_SESSION['skydonate_user']);
                 $session->destroy_all();
             }
-            $_SESSION['skyweb_flag'] = '';
-            $_SESSION['skyweb_user'] = '';
+            $_SESSION['skydonate_flag'] = '';
+            $_SESSION['skydonate_user'] = '';
         }
     }
-    add_action('woocommerce_new_order', 'skyweb_clear_user_session_on_new_order');
+    add_action('woocommerce_new_order', 'skydonate_clear_user_session_on_new_order');
 }
 
 if ($init_guest_checkout_for_existing_customers == 1) {
-    function skyweb_url_product_attribute_option_shortcode($atts) {
+    function skydonate_url_product_attribute_option_shortcode($atts) {
         $atts = shortcode_atts(array(
             'attribute' => ''
         ), $atts, 'url_product_attribute_option');
@@ -441,31 +441,31 @@ if ($init_guest_checkout_for_existing_customers == 1) {
 
         return 'None';
     }
-    add_shortcode('url_product_attribute_option', 'skyweb_url_product_attribute_option_shortcode');
-    function skyweb_enqueue_variation_description_scripts() {
+    add_shortcode('url_product_attribute_option', 'skydonate_url_product_attribute_option_shortcode');
+    function skydonate_enqueue_variation_description_scripts() {
         if (function_exists('is_product') && is_product()) {
             wp_enqueue_script(
-                'skyweb-ajax-variation-description',
+                'skydonate-ajax-variation-description',
                 get_template_directory_uri() . '/js/ajax-variation-description.js',
                 array('jquery'),
                 null,
                 true
             );
-            wp_localize_script('skyweb-ajax-variation-description', 'skyweb_ajax_var_desc', array(
+            wp_localize_script('skydonate-ajax-variation-description', 'skydonate_ajax_var_desc', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
             ));
         }
     }
-    add_action('wp_enqueue_scripts', 'skyweb_enqueue_variation_description_scripts');
-    function skyweb_variation_description_display_shortcode() {
+    add_action('wp_enqueue_scripts', 'skydonate_enqueue_variation_description_scripts');
+    function skydonate_variation_description_display_shortcode() {
         ob_start(); ?>
         <div id="variation_description_display"></div>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
             $('.variations_form').on('found_variation', function(event, variation) {
                 if (variation) {
-                    $.post(skyweb_ajax_var_desc.ajax_url, {
-                        action: 'skyweb_fetch_variation_description',
+                    $.post(skydonate_ajax_var_desc.ajax_url, {
+                        action: 'skydonate_fetch_variation_description',
                         variation_id: variation.variation_id
                     }, function(response) {
                         $('#variation_description_display').html(response);
@@ -477,8 +477,8 @@ if ($init_guest_checkout_for_existing_customers == 1) {
         <?php
         return ob_get_clean();
     }
-    add_shortcode('variation_description_display', 'skyweb_variation_description_display_shortcode');
-    function skyweb_fetch_variation_description() {
+    add_shortcode('variation_description_display', 'skydonate_variation_description_display_shortcode');
+    function skydonate_fetch_variation_description() {
         $variation_id = isset($_POST['variation_id']) ? intval($_POST['variation_id']) : 0;
 
         if ($variation_id) {
@@ -495,19 +495,19 @@ if ($init_guest_checkout_for_existing_customers == 1) {
 
         wp_die();
     }
-    add_action('wp_ajax_skyweb_fetch_variation_description', 'skyweb_fetch_variation_description');
-    add_action('wp_ajax_nopriv_skyweb_fetch_variation_description', 'skyweb_fetch_variation_description');
-    function skyweb_replace_loop_add_to_cart_button() {
+    add_action('wp_ajax_skydonate_fetch_variation_description', 'skydonate_fetch_variation_description');
+    add_action('wp_ajax_nopriv_skydonate_fetch_variation_description', 'skydonate_fetch_variation_description');
+    function skydonate_replace_loop_add_to_cart_button() {
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
-        add_action('woocommerce_after_shop_loop_item', 'skyweb_custom_view_product_button', 10);
+        add_action('woocommerce_after_shop_loop_item', 'skydonate_custom_view_product_button', 10);
     }
-    add_action('wp', 'skyweb_replace_loop_add_to_cart_button');
-    function skyweb_custom_view_product_button() {
+    add_action('wp', 'skydonate_replace_loop_add_to_cart_button');
+    function skydonate_custom_view_product_button() {
         global $product;
         $link = get_permalink($product->get_id());
         echo '<a href="' . esc_url($link) . '" class="button view_product_button">Donate and Support</a>';
     }
-    function skyweb_replace_add_to_cart_with_donate() {
+    function skydonate_replace_add_to_cart_with_donate() {
         if (is_shop() || is_product_category()) { ?>
             <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
@@ -527,12 +527,12 @@ if ($init_guest_checkout_for_existing_customers == 1) {
             </script>
         <?php }
     }
-    add_action('wp_footer', 'skyweb_replace_add_to_cart_with_donate', 100);
+    add_action('wp_footer', 'skydonate_replace_add_to_cart_with_donate', 100);
 }
 
 if ($add_checkout_password_note == 1) {
-    add_action('wp_footer', 'skyweb_add_password_note_script');
-    function skyweb_add_password_note_script() {
+    add_action('wp_footer', 'skydonate_add_password_note_script');
+    function skydonate_add_password_note_script() {
         if (is_checkout()) { ?>
             <script type="text/javascript">
                 jQuery(document).ready(function($){
@@ -553,7 +553,7 @@ if ($add_checkout_password_note == 1) {
 }
 
 if ($init_project_column_for_orders == 1) {
-    function skyweb_account_orders_columns($columns) {
+    function skydonate_account_orders_columns($columns) {
         $new_columns = array();
         foreach ($columns as $key => $name) {
             $new_columns[$key] = $name;
@@ -563,8 +563,8 @@ if ($init_project_column_for_orders == 1) {
         }
         return $new_columns;
     }
-    add_filter('woocommerce_account_orders_columns', 'skyweb_account_orders_columns');
-    function skyweb_account_orders_project_column($order) {
+    add_filter('woocommerce_account_orders_columns', 'skydonate_account_orders_columns');
+    function skydonate_account_orders_project_column($order) {
         $date_created = $order->get_date_created();
         $date_for_attribute = $date_created ? $date_created->date_i18n('Y-m-d H:i:s') : '';
         foreach ($order->get_items() as $item) {
@@ -577,14 +577,14 @@ if ($init_project_column_for_orders == 1) {
             echo '</div>';
         }
     }
-    add_action('woocommerce_my_account_my_orders_column_order-products', 'skyweb_account_orders_project_column');
-    function skyweb_admin_orders_columns($columns) {
+    add_action('woocommerce_my_account_my_orders_column_order-products', 'skydonate_account_orders_project_column');
+    function skydonate_admin_orders_columns($columns) {
         $columns['product_names'] = __('Project', 'woocommerce');
         return $columns;
     }
-    add_filter('manage_woocommerce_page_wc-orders_columns', 'skyweb_admin_orders_columns', 20);
+    add_filter('manage_woocommerce_page_wc-orders_columns', 'skydonate_admin_orders_columns', 20);
 
-    function skyweb_admin_orders_custom_column($column, $order_id) {
+    function skydonate_admin_orders_custom_column($column, $order_id) {
         if ($column === 'product_names') {
             $order = wc_get_order($order_id);
             $items = $order->get_items();
@@ -595,8 +595,8 @@ if ($init_project_column_for_orders == 1) {
             echo implode(', ', $product_names);
         }
     }
-    add_action('manage_woocommerce_page_wc-orders_custom_column', 'skyweb_admin_orders_custom_column', 10, 2);
-    function skyweb_enqueue_order_date_script() {
+    add_action('manage_woocommerce_page_wc-orders_custom_column', 'skydonate_admin_orders_custom_column', 10, 2);
+    function skydonate_enqueue_order_date_script() {
         if (is_account_page()) { ?>
             <script>
             jQuery(document).ready(function($) {
@@ -613,12 +613,12 @@ if ($init_project_column_for_orders == 1) {
             </script>
         <?php }
     }
-    add_action('wp_footer', 'skyweb_enqueue_order_date_script');
+    add_action('wp_footer', 'skydonate_enqueue_order_date_script');
 }
 
 if ($init_email_product_name_replacement == 1) {
-    add_filter('woocommerce_email_subject_customer_note', 'skyweb_replace_product_name_in_email', 10, 2);
-    function skyweb_replace_product_name_in_email($subject, $order) {
+    add_filter('woocommerce_email_subject_customer_note', 'skydonate_replace_product_name_in_email', 10, 2);
+    function skydonate_replace_product_name_in_email($subject, $order) {
         if (strpos($subject, '{product_name}') !== false) {
             $product_names = [];
             foreach ($order->get_items() as $item) {
@@ -631,8 +631,8 @@ if ($init_email_product_name_replacement == 1) {
 }
 
 if ($customize_woocommerce_login_message == 1) {
-    add_filter('gettext', 'skyweb_customize_woocommerce_login_message', 20, 3);
-    function skyweb_customize_woocommerce_login_message($translated_text, $text, $domain) {
+    add_filter('gettext', 'skydonate_customize_woocommerce_login_message', 20, 3);
+    function skydonate_customize_woocommerce_login_message($translated_text, $text, $domain) {
         if ($domain === 'woocommerce' && $text === 'Please log in to your account to view this order.') {
             $translated_text = 'Your donation was successful. It looks like you have an account with us. To view your donation details, please sign in to your account.';
         }
@@ -736,8 +736,8 @@ if($init_checkout_email_typo_correction == 1){
 }
 
 if($init_guest_checkout_data_saver == 1){
-    add_action('woocommerce_checkout_order_processed', 'skyweb_save_guest_checkout_data', 10, 3);
-    function skyweb_save_guest_checkout_data($order_id, $posted_data, $order){
+    add_action('woocommerce_checkout_order_processed', 'skydonate_save_guest_checkout_data', 10, 3);
+    function skydonate_save_guest_checkout_data($order_id, $posted_data, $order){
         if(is_user_logged_in()) return;
         if(isset($posted_data['save_checkout_data']) && $posted_data['save_checkout_data'] != '1') return;
         $expiry = time() + (90 * DAY_IN_SECONDS);
@@ -752,16 +752,16 @@ if($init_guest_checkout_data_saver == 1){
         wc_setcookie('guest_billing_state',$order->get_billing_state(),$expiry);
         wc_setcookie('guest_data_saved','yes',$expiry);
     }
-    add_action('wp_footer','skyweb_guest_checkout_ajax_save');
-    function skyweb_guest_checkout_ajax_save(){
+    add_action('wp_footer','skydonate_guest_checkout_ajax_save');
+    function skydonate_guest_checkout_ajax_save(){
         if(!is_checkout()||is_user_logged_in()) return; ?>
         <script type="text/javascript">
         jQuery(document).ready(function($){
             var saveTimer,savedData={};
             function saveCheckoutData(){
                 var newData={
-                    action:'skyweb_save_guest_checkout_ajax',
-                    nonce:'<?php echo wp_create_nonce("skyweb_guest_checkout_nonce"); ?>',
+                    action:'skydonate_save_guest_checkout_ajax',
+                    nonce:'<?php echo wp_create_nonce("skydonate_guest_checkout_nonce"); ?>',
                     billing_first_name:$('#billing_first_name').val(),
                     billing_last_name:$('#billing_last_name').val(),
                     billing_email:$('#billing_email').val(),
@@ -780,10 +780,10 @@ if($init_guest_checkout_data_saver == 1){
         </script>
         <?php
     }
-    add_action('wp_ajax_skyweb_save_guest_checkout_ajax','skyweb_handle_guest_checkout_ajax');
-    add_action('wp_ajax_nopriv_skyweb_save_guest_checkout_ajax','skyweb_handle_guest_checkout_ajax');
-    function skyweb_handle_guest_checkout_ajax(){
-        if(!wp_verify_nonce($_POST['nonce'],'skyweb_guest_checkout_nonce')) wp_die('Security check failed');
+    add_action('wp_ajax_skydonate_save_guest_checkout_ajax','skydonate_handle_guest_checkout_ajax');
+    add_action('wp_ajax_nopriv_skydonate_save_guest_checkout_ajax','skydonate_handle_guest_checkout_ajax');
+    function skydonate_handle_guest_checkout_ajax(){
+        if(!wp_verify_nonce($_POST['nonce'],'skydonate_guest_checkout_nonce')) wp_die('Security check failed');
         $expiry = time() + (90 * DAY_IN_SECONDS);
         if(!empty($_POST['billing_email'])){
             wc_setcookie('guest_billing_first_name',sanitize_text_field($_POST['billing_first_name']),$expiry);
@@ -799,8 +799,8 @@ if($init_guest_checkout_data_saver == 1){
         }
         wp_send_json_success('Data saved');
     }
-    add_filter('woocommerce_checkout_get_value','skyweb_prefill_guest_checkout_fields',10,2);
-    function skyweb_prefill_guest_checkout_fields($value,$input){
+    add_filter('woocommerce_checkout_get_value','skydonate_prefill_guest_checkout_fields',10,2);
+    function skydonate_prefill_guest_checkout_fields($value,$input){
         if(is_user_logged_in()||!empty($value)) return $value;
         $cookie_map=[
             'billing_first_name'=>'guest_billing_first_name',
@@ -816,8 +816,8 @@ if($init_guest_checkout_data_saver == 1){
         if(isset($cookie_map[$input]) && isset($_COOKIE[$cookie_map[$input]])) return sanitize_text_field($_COOKIE[$cookie_map[$input]]);
         return $value;
     }
-    add_action('woocommerce_review_order_before_submit','skyweb_add_guest_data_save_checkbox');
-    function skyweb_add_guest_data_save_checkbox(){
+    add_action('woocommerce_review_order_before_submit','skydonate_add_guest_data_save_checkbox');
+    function skydonate_add_guest_data_save_checkbox(){
         if(is_user_logged_in()) return; ?>
         <p class="form-row save-guest-data" style="margin: 15px 0;">
             <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
@@ -827,10 +827,10 @@ if($init_guest_checkout_data_saver == 1){
         </p>
         <?php
     }
-    add_action('woocommerce_before_checkout_form','skyweb_show_guest_data_notice');
-    function skyweb_show_guest_data_notice(){
+    add_action('woocommerce_before_checkout_form','skydonate_show_guest_data_notice');
+    function skydonate_show_guest_data_notice(){
         if(!is_user_logged_in() && isset($_COOKIE['guest_data_saved']) && $_COOKIE['guest_data_saved']==='yes'){
-            if(isset($_GET['clear_guest_data']) && $_GET['clear_guest_data']==='1'){skyweb_clear_guest_checkout_cookies();wp_redirect(wc_get_checkout_url());exit;}
+            if(isset($_GET['clear_guest_data']) && $_GET['clear_guest_data']==='1'){skydonate_clear_guest_checkout_cookies();wp_redirect(wc_get_checkout_url());exit;}
             ?>
             <div class="woocommerce-info">
                 <span><?php esc_html_e('Welcome back! We\'ve filled in your details from your last order.','woocommerce'); ?></span>
@@ -839,17 +839,17 @@ if($init_guest_checkout_data_saver == 1){
             <?php
         }
     }
-    function skyweb_clear_guest_checkout_cookies(){
+    function skydonate_clear_guest_checkout_cookies(){
         $guest_cookies=['guest_billing_first_name','guest_billing_last_name','guest_billing_email','guest_billing_phone','guest_billing_address_1','guest_billing_city','guest_billing_postcode','guest_billing_country','guest_billing_state','guest_data_saved'];
         foreach($guest_cookies as $cookie){wc_setcookie($cookie,'',time()-HOUR_IN_SECONDS);}
     }
-    add_action('init','skyweb_litespeed_cookie_configuration');
-    function skyweb_litespeed_cookie_configuration(){
+    add_action('init','skydonate_litespeed_cookie_configuration');
+    function skydonate_litespeed_cookie_configuration(){
         if(!defined('LSCWP_V')) return;
         add_filter('litespeed_vary_cookies',function($cookies){$cookies[]='guest_data_saved';$cookies[]='guest_billing_email';return $cookies;});
     }
-    add_action('wp_head','skyweb_guest_checkout_custom_css');
-    function skyweb_guest_checkout_custom_css(){
+    add_action('wp_head','skydonate_guest_checkout_custom_css');
+    function skydonate_guest_checkout_custom_css(){
         if(!is_checkout()) return; ?>
         <style>
         .save-guest-data{background:#f7f7f7;padding:12px;border-radius:4px;margin:20px 0 10px;}

@@ -4,6 +4,6 @@
 ?>
 
 <div class="skydonation-dashboard-content">
-<?php include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/partials-links.php'; ?>
+<?php include_once SKYDONATE_ADMIN_PATH . '/template/partials-links.php'; ?>
   <h3>Upcomming module</h3>
 </div>

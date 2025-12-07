@@ -24,87 +24,87 @@ class Skydonate_Public {
 	    
         wp_register_style(
             'zakat-calculator',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/zakat-calculator.css',
+            SKYDONATE_ASSETS . '/addons/css/zakat-calculator.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'zakat-calculator-classic',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/zakat-calculator-classic.css',
+            SKYDONATE_ASSETS . '/addons/css/zakat-calculator-classic.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'zakat-calculator-preview',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/zakat-calculator-preview.css',
+            SKYDONATE_ASSETS . '/addons/css/zakat-calculator-preview.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'donation-button',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-button.css',
+            SKYDONATE_ASSETS . '/addons/css/donation-button.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'quick-donation',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/quick-donation.css',
+            SKYDONATE_ASSETS . '/addons/css/quick-donation.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'lity-lightbox',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/lity-min.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/lity-min.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION
+            SKYDONATE_VERSION
         );
         wp_register_style(
             'donation-icon-list',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-icon-list.css',
+            SKYDONATE_ASSETS . '/addons/css/donation-icon-list.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'donation-impact-slider',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-impact-slider.css',
+            SKYDONATE_ASSETS . '/addons/css/donation-impact-slider.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'recent-donation',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/recent-donation.css',
+            SKYDONATE_ASSETS . '/addons/css/recent-donation.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'recent-donation-two',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/recent-donation-two.css',
+            SKYDONATE_ASSETS . '/addons/css/recent-donation-two.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'donation-progress',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-progress.css',
+            SKYDONATE_ASSETS . '/addons/css/donation-progress.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
-            'skyweb-swiper',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/css/swiper.min.css',
+            'skydonate-swiper',
+            SKYDONATE_ASSETS . '/css/swiper.min.css',
             [],
             '5.4.5'
         );
         wp_register_style(
             'swiper-override',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/swiper-override.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/swiper-override.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
             'donation-card',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-card.css',
+            SKYDONATE_ASSETS . '/addons/css/donation-card.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+            SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         
         
@@ -117,46 +117,46 @@ class Skydonate_Public {
             if (in_array('layout3',  $addons_form_layout)) {
                 wp_enqueue_style(
                     'donation-form-three',
-                    SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-three.css',
+                    SKYDONATE_ASSETS . '/addons/css/donation-form-three.css',
                     [],
-                    SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION  // Replace with the version number or leave as is
                 );
                 // JavaScript Assets
                 wp_enqueue_script(
                     'donation-form',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-form-three.js',
+                SKYDONATE_ASSETS . '/addons/js/donation-form-three.js',
                     ['jquery'],
-                    SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION,  // Replace with the version number or leave as is
                     true
                 );
             } elseif (in_array('layout2', $addons_form_layout)) {
                 wp_enqueue_style(
                     'donation-form-two',
-                    SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-two.css',
+                    SKYDONATE_ASSETS . '/addons/css/donation-form-two.css',
                     [],
-                    SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION  // Replace with the version number or leave as is
                 );
                 // JavaScript Assets
                 wp_enqueue_script(
                     'donation-form',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-form.js',
+                SKYDONATE_ASSETS . '/addons/js/donation-form.js',
                     ['jquery'],
-                    SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION,  // Replace with the version number or leave as is
                     true
                 );
             }else {
                 wp_enqueue_style(
                     'donation-form-one',
-                    SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-one.css',
+                    SKYDONATE_ASSETS . '/addons/css/donation-form-one.css',
                     [],
-                    SKYWEB_DONATION_SYSTEM_VERSION  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION  // Replace with the version number or leave as is
                 );
                 // JavaScript Assets
                 wp_enqueue_script(
                     'donation-form',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-form.js',
+                SKYDONATE_ASSETS . '/addons/js/donation-form.js',
                     ['jquery'],
-                    SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+                    SKYDONATE_VERSION,  // Replace with the version number or leave as is
                     true
                 );
             }
@@ -165,151 +165,151 @@ class Skydonate_Public {
         // JavaScript Assets
         wp_register_script(
             'zakat-calculator',
-           SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/zakat-calculator.js',
+           SKYDONATE_ASSETS . '/addons/js/zakat-calculator.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
         
-        wp_localize_script('zakat-calculator', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('zakat-calculator', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce'),
+            'nonce'    => wp_create_nonce('skydonate_nonce'),
             'cart_url' => wc_get_cart_url(),
         ]);
 
-        wp_localize_script('donation-form', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('donation-form', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce'),
+            'nonce'    => wp_create_nonce('skydonate_nonce'),
         ]);
 
 
         wp_register_script(
             'zakat-calculator-classic',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/zakat-calculator-classic.js',
+            SKYDONATE_ASSETS . '/addons/js/zakat-calculator-classic.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
 
-        wp_localize_script('zakat-calculator-classic', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('zakat-calculator-classic', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce'),
+            'nonce'    => wp_create_nonce('skydonate_nonce'),
             'cart_url' => wc_get_cart_url(),
         ]);
 
         wp_register_script(
             'zakat-calculator-preview',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/zakat-calculator-preview.js',
+            SKYDONATE_ASSETS . '/addons/js/zakat-calculator-preview.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
 
-        wp_localize_script('zakat-calculator-preview', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('zakat-calculator-preview', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce'),
+            'nonce'    => wp_create_nonce('skydonate_nonce'),
             'cart_url' => wc_get_cart_url(),
         ]);
 
         // JavaScript Assets
         wp_register_script(
             'recent-donation',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/recent-donation.js',
+            SKYDONATE_ASSETS . '/addons/js/recent-donation.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
-        wp_localize_script('recent-donation', 'skyweb_donation_ajax', [
+        wp_localize_script('recent-donation', 'skydonate_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+            'nonce'    => wp_create_nonce('skydonate_nonce')
         ]);
 
         wp_register_script(
             'recent-donation-two',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/recent-donation-two.js',
+            SKYDONATE_ASSETS . '/addons/js/recent-donation-two.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
-        wp_localize_script('recent-donation-two', 'skyweb_donation_ajax', [
+        wp_localize_script('recent-donation-two', 'skydonate_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+            'nonce'    => wp_create_nonce('skydonate_nonce')
         ]);
 
         wp_register_script(
             'quick-donation',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/quick-donation.js',
+            SKYDONATE_ASSETS . '/addons/js/quick-donation.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
 
-        wp_localize_script('quick-donation', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('quick-donation', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+            'nonce'    => wp_create_nonce('skydonate_nonce')
         ]);
 
         wp_register_script(
             'gift-aid-toggle',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/gift-aid-toggle.js',
+            SKYDONATE_ASSETS . '/addons/js/gift-aid-toggle.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
 
         wp_register_script(
             'lity-lightbox',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/lity-min.js',
+            SKYDONATE_PUBLIC_ASSETS . '/js/lity-min.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,
+            SKYDONATE_VERSION,
             true
         );
         wp_register_script(
             'donation-progress',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-progress.js',
+            SKYDONATE_ASSETS . '/addons/js/donation-progress.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
         wp_register_script(
             'donation-card',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-card.js',
+            SKYDONATE_ASSETS . '/addons/js/donation-card.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
         wp_register_script(
             'donation-impact-slider',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-impact-slider.js',
+            SKYDONATE_ASSETS . '/addons/js/donation-impact-slider.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
 
         wp_register_script(
             'donation-button',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-button.js',
+            SKYDONATE_ASSETS . '/addons/js/donation-button.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
         wp_register_script(
             'donation-icon-list',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-icon-list.js',
+            SKYDONATE_ASSETS . '/addons/js/donation-icon-list.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,  // Replace with the version number or leave as is
+            SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
         wp_register_script(
-            'skyweb-swiper',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/js/swiper.min.js',
+            'skydonate-swiper',
+            SKYDONATE_ASSETS . '/js/swiper.min.js',
             ['jquery'],
             '5.4.5',
             true
         );
     
         // Localize the script with `ajaxurl`
-        wp_localize_script('donation-card', 'skywebDonation', array(
+        wp_localize_script('donation-card', 'skydonateDonation', array(
             'ajax_url' => admin_url('admin-ajax.php')
         ));
         
@@ -329,41 +329,41 @@ class Skydonate_Public {
 
 		wp_enqueue_style(
 			'additional-fees-styles', 
-			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/additional-fees-styles.css', 
+			SKYDONATE_PUBLIC_ASSETS . '/css/additional-fees-styles.css', 
 			array(), 
-			SKYWEB_DONATION_SYSTEM_VERSION
+			SKYDONATE_VERSION
 		);
 
         if(skydonate_is_feature_enabled('checkout_custom_field_style') && sky_status_check('checkout_custom_field_style')){
             wp_enqueue_style(
                 'checkout-custom-style', 
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/checkout-custom-style.css', 
+                SKYDONATE_PUBLIC_ASSETS . '/css/checkout-custom-style.css', 
                 array(), 
-                SKYWEB_DONATION_SYSTEM_VERSION
+                SKYDONATE_VERSION
             );
         }
         
 		wp_enqueue_style(
 			'bootstrap', 
-			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS. '/css/bootstrap-min.css', 
+			SKYDONATE_PUBLIC_ASSETS. '/css/bootstrap-min.css', 
 			array(), 
-			SKYWEB_DONATION_SYSTEM_VERSION
+			SKYDONATE_VERSION
 		);
 		if (is_account_page() || is_checkout()) {
 			wp_enqueue_style(
 				'wc-registration-style', 
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/wc-registration.css', 
+				SKYDONATE_PUBLIC_ASSETS . '/css/wc-registration.css', 
 				array(), 
-				SKYWEB_DONATION_SYSTEM_VERSION
+				SKYDONATE_VERSION
 			);
 		}
 		
 		// Enqueue main frontend stylesheet
 		wp_enqueue_style(
 			'frontend-global',
-			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/frontend-global.css',
+			SKYDONATE_PUBLIC_ASSETS . '/css/frontend-global.css',
 			array(),
-			SKYWEB_DONATION_SYSTEM_VERSION
+			SKYDONATE_VERSION
 		);
 
 		// Get saved colors with defaults
@@ -390,18 +390,18 @@ class Skydonate_Public {
 		if (sky_status_check('enable_donation_goal')) {
 			wp_enqueue_style(
 				'donation-goal', 
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/donation-goal.css', 
+				SKYDONATE_PUBLIC_ASSETS . '/css/donation-goal.css', 
 				array(), 
-				SKYWEB_DONATION_SYSTEM_VERSION
+				SKYDONATE_VERSION
 			);
 		}
 	
 		if (sky_status_check('recent_donation_list_with_country')) {
 			wp_enqueue_style(
 				'recent-donations', 
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/recent-donations.css', 
+				SKYDONATE_PUBLIC_ASSETS . '/css/recent-donations.css', 
 				array(), 
-				SKYWEB_DONATION_SYSTEM_VERSION
+				SKYDONATE_VERSION
 			);
 			wp_enqueue_style(
 				'flag-icons', 
@@ -414,9 +414,9 @@ class Skydonate_Public {
 		if (is_account_page() || is_checkout()) {
 			wp_enqueue_script(
 				'wc-registration-script', 
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS. '/js/wc-registration.js', 
+				SKYDONATE_PUBLIC_ASSETS. '/js/wc-registration.js', 
 				array('jquery'), 
-				SKYWEB_DONATION_SYSTEM_VERSION, 
+				SKYDONATE_VERSION, 
 				true
 			);
 		}
@@ -431,17 +431,17 @@ class Skydonate_Public {
 		
 		wp_enqueue_script(
 			'wc-single-script', 
-			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/wc-single.js', 
+			SKYDONATE_PUBLIC_ASSETS . '/js/wc-single.js', 
 			array('jquery'), 
-			SKYWEB_DONATION_SYSTEM_VERSION, 
+			SKYDONATE_VERSION, 
 			true
 		);
 
 		wp_enqueue_script(
 			'sky-frontend-global', 
-			SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/frontend-global.js', 
+			SKYDONATE_PUBLIC_ASSETS . '/js/frontend-global.js', 
 			array('jquery'), 
-			SKYWEB_DONATION_SYSTEM_VERSION, 
+			SKYDONATE_VERSION, 
 			true
 		);
         
@@ -451,9 +451,9 @@ class Skydonate_Public {
 		if ( is_account_page() ) {
 			wp_enqueue_script(
 				'account-page',
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/account-page.js',
+				SKYDONATE_PUBLIC_ASSETS . '/js/account-page.js',
 				array('jquery'),
-				SKYWEB_DONATION_SYSTEM_VERSION,
+				SKYDONATE_VERSION,
 				true
 			);
 			// Pass AJAX URL and nonce to JS
@@ -464,9 +464,9 @@ class Skydonate_Public {
 			// Enqueue CSS for Account Page styling
 			wp_enqueue_style(
 				'account-page-style',
-				SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/account-page.css',
+				SKYDONATE_PUBLIC_ASSETS . '/css/account-page.css',
 				array(),
-				SKYWEB_DONATION_SYSTEM_VERSION
+				SKYDONATE_VERSION
 			);
 
 		}

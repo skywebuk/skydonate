@@ -10,7 +10,7 @@ class SkyDonation_Functions {
         add_action( 'wp_ajax_skydonation_advanced_settings', [ $this, 'skydonation_advanced_settings' ] );
         add_action( 'wp_ajax_skydonation_widget_save_setting', [ $this, 'skydonation_widget_save_setting' ] );
         add_action( 'wp_ajax_skydonation_fees_settings', [ $this, 'skydonation_fees_settings' ] );
-        add_action( 'wp_ajax_save_skyweb_gift_aid_settings', [ $this, 'save_skyweb_gift_aid_settings' ] );
+        add_action( 'wp_ajax_save_skydonate_gift_aid_settings', [ $this, 'save_skydonate_gift_aid_settings' ] );
         add_action( 'wp_ajax_save_address_autoload_settings', [ $this, 'save_address_autoload_settings' ] );
         add_action( 'wp_ajax_save_skydonation_color_settings', [ $this, 'save_skydonation_color_settings' ] );
         add_action( 'wp_ajax_skydonation_api_settings', [ $this, 'skydonation_api_settings' ] );
@@ -172,33 +172,33 @@ class SkyDonation_Functions {
         $baseCurrency = get_option('woocommerce_currency');
     
         // Initialize selected currencies array
-        $skyweb_selected_currency = array();
+        $skydonate_selected_currency = array();
     
         // Extract selected currency values
         foreach ($formData as $item) {
-            if (isset($item['name'], $item['value']) && $item['name'] === 'skyweb_selected_currency[]') {
+            if (isset($item['name'], $item['value']) && $item['name'] === 'skydonate_selected_currency[]') {
                 $value = sanitize_text_field($item['value']);
                 if (!empty($value)) {
-                    $skyweb_selected_currency[] = strtoupper($value);
+                    $skydonate_selected_currency[] = strtoupper($value);
                 }
             }
         }
 
         // Ensure base currency is included
-        if (!in_array($baseCurrency, $skyweb_selected_currency)) {
-            $skyweb_selected_currency[] = $baseCurrency;
+        if (!in_array($baseCurrency, $skydonate_selected_currency)) {
+            $skydonate_selected_currency[] = $baseCurrency;
         }
 
         // Ensure unique values
-        $skyweb_selected_currency = array_unique($skyweb_selected_currency);
+        $skydonate_selected_currency = array_unique($skydonate_selected_currency);
     
         // Specify the allowed keys that you want to save
         $allowed_keys = array(
-            'skyweb_currency_changer_enabled',
-            'skyweb_selected_currency',
-            'skyweb_geo_currency_enabled',
-            'skyweb_geo_currency_mode',
-            'skyweb_geo_default_all',
+            'skydonate_currency_changer_enabled',
+            'skydonate_selected_currency',
+            'skydonate_geo_currency_enabled',
+            'skydonate_geo_currency_mode',
+            'skydonate_geo_default_all',
         );
     
         // Map formData into key => value pairs
@@ -206,12 +206,12 @@ class SkyDonation_Functions {
     
         // Update the options
         foreach ($allowed_keys as $key) {
-            if ($key === 'skyweb_selected_currency') {
-                update_option($key, $skyweb_selected_currency);
-            } elseif ($key === 'skyweb_currency_changer_enabled' || $key === 'skyweb_geo_currency_enabled' || $key === 'skyweb_geo_default_all') {
+            if ($key === 'skydonate_selected_currency') {
+                update_option($key, $skydonate_selected_currency);
+            } elseif ($key === 'skydonate_currency_changer_enabled' || $key === 'skydonate_geo_currency_enabled' || $key === 'skydonate_geo_default_all') {
                 $value = isset($received_data[$key]) ? 1 : 0;
                 update_option($key, $value);
-            } elseif ($key === 'skyweb_geo_currency_mode') {
+            } elseif ($key === 'skydonate_geo_currency_mode') {
                 $value = isset($received_data[$key]) ? sanitize_text_field($received_data[$key]) : 'all';
                 update_option($key, $value);
             } else {
@@ -327,7 +327,7 @@ class SkyDonation_Functions {
 
 
 
-    public function save_skyweb_gift_aid_settings() {
+    public function save_skydonate_gift_aid_settings() {
         // Verify nonce for security
         check_ajax_referer('skydonation_settings_nonce', 'nonce');
 

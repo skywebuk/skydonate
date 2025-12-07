@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_donation_zakat_calculator_classic = function ($scope, $) {
+    var skydonate_zakat_calculator_classic = function ($scope, $) {
         var zakat_calculator = $scope.find('.classic-zakat-calculator').eq(0);
         var pricing = zakat_calculator.data('settings');
         var toggle_button = zakat_calculator.find('.zakat-toggle-button');
@@ -93,6 +93,6 @@
     };
 
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_zakat_calculator_classic.default', skyweb_donation_zakat_calculator_classic);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_zakat_calculator_classic.default', skydonate_zakat_calculator_classic);
     });
 }(jQuery));

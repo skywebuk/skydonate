@@ -4,9 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Skyweb_Donation_Gift_Aid' ) ) :
+if ( ! class_exists( 'Skydonate_Gift_Aid' ) ) :
 
-class Skyweb_Donation_Gift_Aid {
+class Skydonate_Gift_Aid {
 
     public function __construct() {
 
@@ -23,7 +23,7 @@ class Skyweb_Donation_Gift_Aid {
 
             // Add Gift Aid section to My Account page
             add_action( 'woocommerce_before_my_account', array( $this, 'my_account_gift_aid_field' ) );
-            add_action( 'wp_ajax_save_gift_aid', [$this, 'skyweb_ajax_save_gift_aid'] );
+            add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
 
             // Save the Gift Aid checkbox value when order is processed
             add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_gift_aid_checkbox' ), 45, 2 );
@@ -116,21 +116,21 @@ class Skyweb_Donation_Gift_Aid {
         $gift_aid_description  = get_option( 'gift_aid_description' ) ?: 'Boost your donation by 25p of Gift Aid for every £1 you donate, at no extra cost to you.';
         $gift_aid_label        = get_option( 'gift_aid_checkbox_label' ) ?: 'Yes, I would like to claim Gift Aid';
         $gift_aid_note         = get_option( 'gift_aid_note' ) ?: 'I understand that if I pay less Income Tax and/or Capital Gains Tax than the amount of Gift Aid claimed on all my donations in that tax year it is my responsibility to pay any difference. Please remember to notify Global Helping Hands: if you want to cancel this declaration, change your name or home address or no longer pay sufficient tax on your income and/or capital gains.';
-        $gift_aid_logo         = get_option( 'gift_aid_logo' ) ?: SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
+        $gift_aid_logo         = get_option( 'gift_aid_logo' ) ?: SKYDONATE_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
         $default_checked       = get_option( 'gift_aid_default_status', 1 ) ?: 1;
         ?>
-        <div class="my-account-gift-aid skyweb-gift-aid-wrapper">
-            <img src="<?php echo esc_url( $gift_aid_logo ); ?>" alt="<?php esc_attr_e( 'Gift Aid Logo', 'skydonate' ); ?>" class="skyweb-gift-aid-logo">
+        <div class="my-account-gift-aid skydonate-gift-aid-wrapper">
+            <img src="<?php echo esc_url( $gift_aid_logo ); ?>" alt="<?php esc_attr_e( 'Gift Aid Logo', 'skydonate' ); ?>" class="skydonate-gift-aid-logo">
 
-            <h3 class="skyweb-gift-aid-title"><?php esc_html_e( 'Gift Aid', 'skydonate' ); ?></h3>
+            <h3 class="skydonate-gift-aid-title"><?php esc_html_e( 'Gift Aid', 'skydonate' ); ?></h3>
 
-            <p class="skyweb-gift-aid-description">
+            <p class="skydonate-gift-aid-description">
                 <?php echo esc_html( $gift_aid_description ); ?>
             </p>
 
-            <form id="gift-aid-form" class="skyweb-gift-aid-form" method="post">
+            <form id="gift-aid-form" class="skydonate-gift-aid-form" method="post">
                 <?php wp_nonce_field( 'save_account_data', 'gift_aid_nonce' ); ?>
-                <p class="form-row skyweb-gift-aid-checkbox-row">
+                <p class="form-row skydonate-gift-aid-checkbox-row">
                     <label class="sky-smart-switch checkbox">
                         <input type="checkbox"
                             class="input-checkbox"
@@ -146,24 +146,24 @@ class Skyweb_Donation_Gift_Aid {
                     </label>
                 </p>
 
-                <p class="gift-aid-note skyweb-gift-aid-note-text">
+                <p class="gift-aid-note skydonate-gift-aid-note-text">
                     <?php echo esc_html( $gift_aid_note ); ?>
                 </p>
 
-                <p class="mb-0 skyweb-gift-aid-button-row">
-                    <button type="submit" class="button primary-button skyweb-gift-aid-submit">
+                <p class="mb-0 skydonate-gift-aid-button-row">
+                    <button type="submit" class="button primary-button skydonate-gift-aid-submit">
                         <?php esc_html_e( 'Save changes', 'skydonate' ); ?>
                     </button>
                 </p>
 
-                <div id="gift-aid-message" class="skyweb-gift-aid-message"></div>
+                <div id="gift-aid-message" class="skydonate-gift-aid-message"></div>
             </form>
         </div>
         <?php
     }
 
 
-    public function skyweb_ajax_save_gift_aid() {
+    public function skydonate_ajax_save_gift_aid() {
         // Check nonce
         if ( ! isset($_POST['gift_aid_nonce']) || ! wp_verify_nonce( $_POST['gift_aid_nonce'], 'save_account_data' ) ) {
             wp_send_json_error( array( 'message' => 'Nonce verification failed.' ) );
@@ -214,7 +214,7 @@ class Skyweb_Donation_Gift_Aid {
             $new_columns[ $key ] = $label;
 
             if ( 'order_status' === $key ) {
-                $new_columns['gift_aid'] = __( 'Gift Aid', 'skyweb' );
+                $new_columns['gift_aid'] = __( 'Gift Aid', 'skydonate' );
             }
         }
 
@@ -432,4 +432,4 @@ class Skyweb_Donation_Gift_Aid {
 
 endif;
 
-new Skyweb_Donation_Gift_Aid();
+new Skydonate_Gift_Aid();

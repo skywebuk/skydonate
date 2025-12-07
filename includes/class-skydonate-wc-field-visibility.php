@@ -75,19 +75,19 @@ class WC_Field_Visibility {
         
         ?>
         <div id="field_visibility_options" class="panel woocommerce_options_panel">
-            <div class="skyweb-option-card field-visibility-settings">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card field-visibility-settings">
+                <h3 class="skydonate-option-title">
                     <?php _e('Field Visibility Settings', 'woocommerce'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Configure the visibility, labeling, and notifications for this custom field.', 'woocommerce'); ?>
                 </p>
                 <br>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <!-- Enable Field Visibility -->
-                    <div class="skyweb-input-group">
-                        <label for="field_visibility_enabled" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="field_visibility_enabled" class="skydonate-label">
                             <?php _e('Field Visibility', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -100,8 +100,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Condition Value -->
-                    <div class="skyweb-input-group">
-                        <label for="field_visibility_value" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="field_visibility_value" class="skydonate-label">
                             <?php _e('Condition Value', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -114,8 +114,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Field Label -->
-                    <div class="skyweb-input-group">
-                        <label for="field_label" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="field_label" class="skydonate-label">
                             <?php _e('Field Label', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -128,8 +128,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Field Placeholder -->
-                    <div class="skyweb-input-group">
-                        <label for="field_placeholder" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="field_placeholder" class="skydonate-label">
                             <?php _e('Field Placeholder', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -142,8 +142,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Show Field Label -->
-                    <div class="skyweb-input-group">
-                        <label for="field_label_visibility" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="field_label_visibility" class="skydonate-label">
                             <?php _e('Show Field Label', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -156,8 +156,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Email Notification -->
-                    <div class="skyweb-input-group">
-                        <label for="email_notification_enabled" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="email_notification_enabled" class="skydonate-label">
                             <?php _e('Email Notification', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 
@@ -170,8 +170,8 @@ class WC_Field_Visibility {
                     </div>
 
                     <!-- Custom Email Recipient -->
-                    <div class="skyweb-input-group">
-                        <label for="custom_email_recipient" class="skyweb-label">
+                    <div class="skydonate-input-group">
+                        <label for="custom_email_recipient" class="skydonate-label">
                             <?php _e('Email Recipient', 'woocommerce'); ?>
                         </label>
                         <span class="woocommerce-help-tip" 

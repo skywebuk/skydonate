@@ -2,7 +2,7 @@
     $(document).ready(function() {
 
         function convertCurrency(baseCurrency, targetCurrency, amount) {
-            var rates = skyweb_currency_changer_ajax.rates || {};
+            var rates = skydonate_currency_changer_ajax.rates || {};
             var from = (baseCurrency || '').toUpperCase();
             var to = (targetCurrency || '').toUpperCase();
 
@@ -19,9 +19,9 @@
         }
 
         // ✅ Handle currency selectors
-        $('.skyweb-currency-select').each(function() {
+        $('.skydonate-currency-select').each(function() {
             var $select = $(this);
-            var $wrapper = $select.closest('.skyweb-currency-wrapper');
+            var $wrapper = $select.closest('.skydonate-currency-wrapper');
             var $label = $wrapper.find('.currency-symbol');
 
             // 🔹 Set initial symbol
@@ -42,17 +42,17 @@
 
                 // Update all currency labels and selects
                 $('.currency-symbol').html(symbol);
-                $('.skyweb-currency-select').val(selectedCurrency);
+                $('.skydonate-currency-select').val(selectedCurrency);
 
                 // 🔹 AJAX: save selected currency
                 $.ajax({
-                    url: skyweb_currency_changer_ajax.ajax_url,
+                    url: skydonate_currency_changer_ajax.ajax_url,
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        action: 'skyweb_change_currency',
+                        action: 'skydonate_change_currency',
                         currency: selectedCurrency,
-                        nonce: skyweb_currency_changer_ajax.nonce
+                        nonce: skydonate_currency_changer_ajax.nonce
                     },
                     success: function(response) {
                         if (response.success) {
@@ -74,7 +74,7 @@
 
                     if (!isNaN(originalAmount)) {
                         var converted = convertCurrency(
-                            skyweb_currency_changer_ajax.woocommerce_currency,
+                            skydonate_currency_changer_ajax.woocommerce_currency,
                             selectedCurrency,
                             originalAmount
                         );

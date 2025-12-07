@@ -3,10 +3,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
+class Skydonate_Progress extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_progress';
+        return 'skydonate_progress';
     }
 
     public function get_title() {
@@ -18,7 +18,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     public function get_style_depends() {
@@ -53,7 +53,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
                 'label' => __('Product Title', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'),
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'),
                 'default' => '',
                 'label_block' => true,
                 'condition' => [
@@ -68,7 +68,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
                 'label' => __('Category', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_cat'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_cat'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -83,7 +83,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
                 'label' => __('Tag', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_tag'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_tag'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -200,8 +200,8 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
 
         $product_ids = array_merge(
             $filter_product_title,
-            Skyweb_Donation_Functions::get_product_ids_by_multiple_taxonomies($filter_category, 'product_cat'),
-            Skyweb_Donation_Functions::get_product_ids_by_multiple_taxonomies($filter_tag, 'product_tag')
+            Skydonate_Functions::get_product_ids_by_multiple_taxonomies($filter_category, 'product_cat'),
+            Skydonate_Functions::get_product_ids_by_multiple_taxonomies($filter_tag, 'product_tag')
         );
         $product_ids = array_unique($product_ids);
         $total_raised = 0;
@@ -244,7 +244,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
             'raised' => $total_raised,
             'target' => $target_sales_sum,
             'duration' => $settings['progress_duration'],
-            'symbol' => Skyweb_Donation_Functions::Get_Currency_Symbol(),
+            'symbol' => Skydonate_Functions::Get_Currency_Symbol(),
         ];
 
         $this->add_render_attribute('wrapper_attributes', 'data-settings', wp_json_encode($bar_settings));
@@ -253,7 +253,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
             echo '<div class="progress-info">' . sprintf(
                 __('<span class="raised">%s</span> of <span class="goal">%s</span> goal', 'skydonate'),
                 wc_price(0),
-                Skyweb_Donation_Functions::Get_Currency_Symbol() . number_format($target_sales_sum)
+                Skydonate_Functions::Get_Currency_Symbol() . number_format($target_sales_sum)
             ) . '</div>';
             echo '<div class="progress-bar-background">';
                 echo '<div class="progress-bar">';
@@ -316,7 +316,7 @@ class SkyWeb_Donation_Progress_Addon extends \Elementor\Widget_Base {
 
                 // If not GBP, convert to GBP
                 if ( strtoupper($currency) !== get_option('woocommerce_currency') ) {
-                    $rate = Skyweb_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
+                    $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
                     if ( $rate && $rate > 0 ) {
                         $amount = $amount / $rate; // convert to GBP
                     }

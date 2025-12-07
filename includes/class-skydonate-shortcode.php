@@ -1,19 +1,19 @@
 <?php
 
 
-if (!class_exists('Skyweb_Donation_Shortcode')) {
+if (!class_exists('Skydonate_Shortcode')) {
 
-    class Skyweb_Donation_Shortcode {
+    class Skydonate_Shortcode {
 
         public function __construct() {
-            add_shortcode('skyweb_donation_form', [$this, 'render_shortcode']);
+            add_shortcode('skydonate_form', [$this, 'render_shortcode']);
         }
 
         /**
          * Shortcode render callback
          */
         public function render_shortcode($atts) {
-            $layout = skyweb_donation_layout_option('addons_donation_form_layout');
+            $layout = skydonate_layout_option('addons_donation_form_layout');
             if (!is_array($layout)) {
                 $layout = ['layout1'];
             }
@@ -24,7 +24,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 'button_text' => __('Donate and Support', 'skydonate'),
                 'before_icon' => (in_array('layout2',  $layout) ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-credit-card"></i>' ),
                 'after_icon'  => '<i class="fas fa-arrow-right"></i>',
-            ], $atts, 'skyweb_donation_form');
+            ], $atts, 'skydonate_form');
 
             $id = intval($atts['id']);
 
@@ -62,7 +62,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 }
             } else {
                 echo '<div class="donation-closed">';
-                    echo '<div class="clossing-img"><img src="' . esc_url(SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/img/give.png') . '" alt="Project Closed"/></div>';
+                    echo '<div class="clossing-img"><img src="' . esc_url(SKYDONATE_PUBLIC_ASSETS . '/img/give.png') . '" alt="Project Closed"/></div>';
                     if (!empty($closed_title)) {
                         echo '<h4>' . esc_html($closed_title) . '</h4>';
                     }
@@ -113,7 +113,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
+            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
             $default_option     = get_post_meta($id, '_default_option', true);
@@ -178,8 +178,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 foreach ($custom_options as $option) {
                     $amount_key = ($key === 'once') ? 'price' : $key;
                     $amount = !empty($option[$amount_key]) ? $option[$amount_key] : 0;
-                    if(!empty($_COOKIE['skyweb_selected_currency']) && $_COOKIE['skyweb_selected_currency'] !== get_option('woocommerce_currency')){
-                        $new_amount = Skyweb_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skyweb_selected_currency'], $amount);
+                    if(!empty($_COOKIE['skydonate_selected_currency']) && $_COOKIE['skydonate_selected_currency'] !== get_option('woocommerce_currency')){
+                        $new_amount = Skydonate_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skydonate_selected_currency'], $amount);
                     }else {
                         $new_amount = $amount;
                     }
@@ -203,8 +203,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             // ----- Custom Input -----
             echo '<div class="donation-custom">';
-            if (class_exists('Skyweb_Currency_Changer')) {
-                echo Skyweb_Currency_Changer::currency_changer();
+            if (class_exists('Skydonate_Currency_Changer')) {
+                echo Skydonate_Currency_Changer::currency_changer();
             }
             echo '<input type="number" class="custom-amount-input" min="1" step="0.01" name="selected_amount" inputmode="numeric" value="' . esc_attr($deafult_amount) . '" placeholder="0.00">';
             if(!empty($atts['placeholder'])){
@@ -232,7 +232,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
             echo '</div>'; // .donation-amount-groups
             
 
-            Skyweb_Donation_Functions::skydonate_submit_button($atts);
+            Skydonate_Functions::skydonate_submit_button($atts);
 
             echo '</form>';
         }
@@ -267,7 +267,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
+            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true);
             $default_option     = get_post_meta($id, '_default_option', true);
@@ -331,8 +331,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 foreach ($custom_options as $option) {
                     $amount_key = ($key === 'once') ? 'price' : $key;
                     $amount = !empty($option[$amount_key]) ? $option[$amount_key] : 0;
-                    if(!empty($_COOKIE['skyweb_selected_currency']) && $_COOKIE['skyweb_selected_currency'] !== get_option('woocommerce_currency')){
-                        $new_amount = Skyweb_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skyweb_selected_currency'], $amount);
+                    if(!empty($_COOKIE['skydonate_selected_currency']) && $_COOKIE['skydonate_selected_currency'] !== get_option('woocommerce_currency')){
+                        $new_amount = Skydonate_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skydonate_selected_currency'], $amount);
                     }else {
                         $new_amount = $amount;
                     }
@@ -356,8 +356,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             // ----- Custom Input -----
             echo '<div class="donation-custom">';
-            if (class_exists('Skyweb_Currency_Changer')) {
-                echo Skyweb_Currency_Changer::currency_changer();
+            if (class_exists('Skydonate_Currency_Changer')) {
+                echo Skydonate_Currency_Changer::currency_changer();
             }
             echo '<input type="number" class="custom-amount-input" min="1" step="0.01" name="selected_amount" inputmode="numeric" value="' . esc_attr($deafult_amount) . '" placeholder="0.00">';
             if(!empty($atts['placeholder'])){
@@ -384,7 +384,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             echo '</div>'; // .donation-amount-groups
 
-            Skyweb_Donation_Functions::skydonate_submit_button($atts);
+            Skydonate_Functions::skydonate_submit_button($atts);
 
             echo '</form>';
         }
@@ -417,7 +417,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             $donation_frequency = get_post_meta($id, '_donation_frequency', true) ?: 'once';
             $button_visibility  = (array) get_post_meta($id, '_button_visibility', true) ?: ['show_once'];
-            $layout             = get_post_meta($id, '_skyweb_selected_layout', true) ?: 'layout_one';
+            $layout             = get_post_meta($id, '_skydonate_selected_layout', true) ?: 'layout_one';
             $layout             = ($layout == 'layout_one') ? 'grid-layout' : 'list-layout';
             $custom_options     = get_post_meta($id, '_custom_options', true) ?: [];
             $default_option     = get_post_meta($id, '_default_option', true);
@@ -486,8 +486,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
                 foreach ($custom_options as $option) {
                     $amount_key = ($key === 'once') ? 'price' : $key;
                     $amount = !empty($option[$amount_key]) ? $option[$amount_key] : 0;
-                    if(!empty($_COOKIE['skyweb_selected_currency']) && $_COOKIE['skyweb_selected_currency'] !== get_option('woocommerce_currency')){
-                        $new_amount = Skyweb_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skyweb_selected_currency'], $amount);
+                    if(!empty($_COOKIE['skydonate_selected_currency']) && $_COOKIE['skydonate_selected_currency'] !== get_option('woocommerce_currency')){
+                        $new_amount = Skydonate_Currency_Changer::convert_currency(get_option('woocommerce_currency'), $_COOKIE['skydonate_selected_currency'], $amount);
                     }else {
                         $new_amount = $amount;
                     }
@@ -511,8 +511,8 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             // ----- Custom Amount Input -----
             echo '<div class="donation-custom">';
-            if (class_exists('Skyweb_Currency_Changer')) {
-                echo Skyweb_Currency_Changer::currency_changer();
+            if (class_exists('Skydonate_Currency_Changer')) {
+                echo Skydonate_Currency_Changer::currency_changer();
             }
             echo '<input type="number" class="custom-amount-input" min="1" step="0.01" name="selected_amount" inputmode="numeric" value="' . esc_attr($default_amount) . '" placeholder="' . (!empty($atts['placeholder']) ? esc_attr($atts['placeholder']) : esc_attr(__('0.00','skydonate'))) . '">';
             if(!empty($atts['placeholder'])){
@@ -539,7 +539,7 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
 
             echo '</div>'; // .donation-amount-groups
 
-            Skyweb_Donation_Functions::skydonate_submit_button($atts);
+            Skydonate_Functions::skydonate_submit_button($atts);
 
             echo '</form>';
         }
@@ -565,5 +565,5 @@ if (!class_exists('Skyweb_Donation_Shortcode')) {
     }
 
     // Initialize the class
-    new Skyweb_Donation_Shortcode();
+    new Skydonate_Shortcode();
 }

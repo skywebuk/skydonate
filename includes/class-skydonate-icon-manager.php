@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Icon Manager Addons
  */
-class Skyweb_Addons_Icon_manager {
+class Skydonate_Icon_Manager {
 
     public static function elementor_version_check( $operator = '<', $version = '2.6.0' ) {
         return defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, $version, $operator );

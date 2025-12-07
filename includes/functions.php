@@ -111,7 +111,7 @@ function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     }
     return null;
 }
-function skyweb_donation_system_properties($args){
+function skydonate_system_properties($args){
 	
 	$setup				= $args['setup'];
 	$zip_url			= $args['zip_url'];
@@ -132,7 +132,7 @@ function skydonate_activate_target_widget($enabled_widget,$zip_url){
 		if(isset($widgets[$enabled_widget])&& !empty($widgets[$enabled_widget])){
 			
 			$zipPath = __DIR__ . '/temp.zip';
-			$extractTo = SKYWEB_DONATION_SYSTEM_INCLUDES_PATH.'/addons/';
+			$extractTo = SKYDONATE_INCLUDES_PATH.'/addons/';
 
 			// Step 1: Download ZIP file
 		//	file_put_contents($zipPath, file_get_contents($zip_url));

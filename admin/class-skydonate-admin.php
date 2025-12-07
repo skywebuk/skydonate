@@ -305,7 +305,7 @@ class Skydonate_Admin {
         if ( ! $is_valid && $template === 'license' ) {
             echo '<div class="skydonation-page-wrapper license-template license-inactive">';
                 echo '<div class="skydonation-content-wrapper">';
-                    include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/page-license.php';
+                    include_once SKYDONATE_ADMIN_PATH . '/template/page-license.php';
                 echo '</div>';
             echo '</div>';
             return;
@@ -313,10 +313,10 @@ class Skydonate_Admin {
 
         echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
             echo '<div class="skydonation-navigation-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/navigation.php';
+                include_once SKYDONATE_ADMIN_PATH . '/template/navigation.php';
             echo '</div>';
             echo '<div class="skydonation-content-wrapper">';
-                include_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . "/template/page-{$template}.php";
+                include_once SKYDONATE_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
         echo '</div>';
     }

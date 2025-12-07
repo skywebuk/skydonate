@@ -6,14 +6,14 @@
     
 
     // Fetch product IDs and titles
-    $products = Skyweb_Donation_Functions::Get_Title('product', 'ids'); // Adjust according to your data structure
+    $products = Skydonate_Functions::Get_Title('product', 'ids'); // Adjust according to your data structure
 
     // Ensure $selected_ids is an array
     if (!is_array($selected_ids)) {
         $selected_ids = [];
     }
 ?>
-<div class="skyweb-settings-panel">
+<div class="skydonate-settings-panel">
     <form class="skydonation-notification-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>

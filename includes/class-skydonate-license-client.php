@@ -138,7 +138,7 @@ class SkyDonate_License_Client {
         add_filter( 'site_status_tests', array( $this, 'add_site_health_test' ) );
 
         // Handle deactivation cleanup
-        register_deactivation_hook( SKYWEB_DONATION_SYSTEM_FILE ?? __FILE__, array( $this, 'on_deactivation' ) );
+        register_deactivation_hook( SKYDONATE_FILE ?? __FILE__, array( $this, 'on_deactivation' ) );
     }
 
     /**

@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
+class Skydonate_Card extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_card_addon';
+        return 'skydonate_card';
     }
 
     public function get_title() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }        
     
     public function get_style_depends() {
@@ -77,7 +77,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
             [
                 'label' => __('Donation Title', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'),
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'),
                 'default' => '',
                 'multiple' => false,
                 'label_block' => true,
@@ -106,7 +106,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                 'label' => __('Category', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_cat'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_cat'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -123,7 +123,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                 'label' => __('Tag', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_tag'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_tag'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -139,7 +139,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
             [
                 'label' => __('Exclude Donation', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'),
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'),
                 'default' => '',
                 'multiple' => true,
                 'label_block' => true,
@@ -1355,7 +1355,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'submit_button_style_section',
             [
-                'label' => __( 'Submit Button', 'skyweb-donation' ),
+                'label' => __( 'Submit Button', 'skydonate' ),
                 'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -1366,7 +1366,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         | Normal State
         ------------------------*/
         $this->start_controls_tab('submit_button_normal', [
-            'label' => __( 'Normal', 'skyweb-donation' ),
+            'label' => __( 'Normal', 'skydonate' ),
         ]);
         
         $this->add_group_control(
@@ -1380,7 +1380,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_text_color',
             [
-                'label'     => __( 'Text Color', 'skyweb-donation' ),
+                'label'     => __( 'Text Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .single_add_to_cart_button' => 'color: {{VALUE}};',
@@ -1408,7 +1408,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_border_radius',
             [
-                'label'      => __( 'Border Radius', 'skyweb-donation' ),
+                'label'      => __( 'Border Radius', 'skydonate' ),
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
@@ -1428,7 +1428,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'submit_button_padding',
             [
-                'label'      => __( 'Padding', 'skyweb-donation' ),
+                'label'      => __( 'Padding', 'skydonate' ),
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
@@ -1440,7 +1440,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'submit_button_margin',
             [
-                'label'      => __( 'Margin', 'skyweb-donation' ),
+                'label'      => __( 'Margin', 'skydonate' ),
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
@@ -1452,7 +1452,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'submit_button_width',
             [
-                'label'      => __( 'Width', 'skyweb-donation' ),
+                'label'      => __( 'Width', 'skydonate' ),
                 'type'       => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%', 'em' ],
                 'range'      => [
@@ -1470,19 +1470,19 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'submit_button_align',
             [
-                'label'   => __( 'Alignment', 'skyweb-donation' ),
+                'label'   => __( 'Alignment', 'skydonate' ),
                 'type'    => \Elementor\Controls_Manager::CHOOSE,
                 'options' => [
                     'flex-start' => [
-                        'title' => __( 'Left', 'skyweb-donation' ),
+                        'title' => __( 'Left', 'skydonate' ),
                         'icon'  => 'eicon-text-align-left',
                     ],
                     'center' => [
-                        'title' => __( 'Center', 'skyweb-donation' ),
+                        'title' => __( 'Center', 'skydonate' ),
                         'icon'  => 'eicon-text-align-center',
                     ],
                     'flex-end' => [
-                        'title' => __( 'Right', 'skyweb-donation' ),
+                        'title' => __( 'Right', 'skydonate' ),
                         'icon'  => 'eicon-text-align-right',
                     ],
                 ],
@@ -1496,7 +1496,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_left_icon_heading',
             [
-                'label'     => esc_html__( 'Left Icon', 'skyweb-donation' ),
+                'label'     => esc_html__( 'Left Icon', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -1515,7 +1515,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_right_icon_heading',
             [
-                'label'     => esc_html__( 'Right Icon', 'skyweb-donation' ),
+                'label'     => esc_html__( 'Right Icon', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -1536,13 +1536,13 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         | Hover State
         ------------------------*/
         $this->start_controls_tab('submit_button_hover', [
-            'label' => __( 'Hover', 'skyweb-donation' ),
+            'label' => __( 'Hover', 'skydonate' ),
         ]);
         
         $this->add_control(
             'submit_button_hover_text_color',
             [
-                'label'     => __( 'Text Color', 'skyweb-donation' ),
+                'label'     => __( 'Text Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .single_add_to_cart_button:hover' => 'color: {{VALUE}};',
@@ -1570,7 +1570,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_hover_border_radius',
             [
-                'label'      => __( 'Border Radius', 'skyweb-donation' ),
+                'label'      => __( 'Border Radius', 'skydonate' ),
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
@@ -1590,7 +1590,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
         $this->add_control(
             'submit_button_hover_transition',
             [
-                'label'     => __( 'Transition Duration', 'skyweb-donation' ),
+                'label'     => __( 'Transition Duration', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::SLIDER,
                 'range'     => [
                     'px' => [ 'max' => 3, 'step' => 0.1 ],
@@ -1830,7 +1830,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                                     echo sprintf(
                                         __('Raised <span class="amount" data-number="%s" >%s<span class="number">0</span></span>', 'skydonate'),
                                         $total_raised,
-                                        Skyweb_Donation_Functions::Get_Currency_Symbol()
+                                        Skydonate_Functions::Get_Currency_Symbol()
                                     );
                                     echo '</span>';
 
@@ -1845,7 +1845,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                                     echo sprintf(
                                         __('Target <span class="amount" data-number="%s">%s<span class="number">0</span></span>', 'skydonate'),
                                         $target_sales,
-                                        Skyweb_Donation_Functions::Get_Currency_Symbol()
+                                        Skydonate_Functions::Get_Currency_Symbol()
                                     );
                                     echo '</span>';
                                 echo '</div>';
@@ -1874,7 +1874,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                 $before_icon = '';
                 if (isset($settings['icon_before_media_type'])) {
                     if ($settings['icon_before_media_type'] === 'icon' && !empty($settings['icon_before_icon']['value'])) {
-                        $before_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
+                        $before_icon = Skydonate_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
                     } elseif ($settings['icon_before_media_type'] === 'image' && !empty($settings['icon_before_image']['url'])) {
                         $before_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_before_image_size', 'icon_before_image');
                     }
@@ -1884,7 +1884,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                 $after_icon = '';
                 if (isset($settings['icon_after_media_type'])) {
                     if ($settings['icon_after_media_type'] === 'icon' && !empty($settings['icon_after_icon']['value'])) {
-                        $after_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
+                        $after_icon = Skydonate_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
                     } elseif ($settings['icon_after_media_type'] === 'image' && !empty($settings['icon_after_image']['url'])) {
                         $after_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_after_image_size', 'icon_after_image');
                     }
@@ -1899,7 +1899,7 @@ class SkyWeb_Donation_Card_Addon extends \Elementor\Widget_Base {
                 ];
 
                 // Build shortcode string
-                $shortcode = '[skyweb_donation_form';
+                $shortcode = '[skydonate_form';
                 foreach ($atts as $key => $value) {
                     if ($value !== '') {
                         $shortcode .= ' ' . $key . '="' . $value . '"';

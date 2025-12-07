@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class Skyweb_Extra_Donation_Settings {
+class Skydonate_Extra_Donation {
 
     public function __construct() {
         
@@ -103,7 +103,7 @@ class Skyweb_Extra_Donation_Settings {
     }
 
     public function add_extra_donation_to_cart() {
-        check_ajax_referer('skyweb_donation_nonce', 'nonce');
+        check_ajax_referer('skydonate_nonce', 'nonce');
         $product_id = intval($_POST['product_id'] ?? 0);
         $amount     = floatval($_POST['amount'] ?? 0);
         $extra      = $_POST['extra'] ?? false;
@@ -192,7 +192,7 @@ class Skyweb_Extra_Donation_Settings {
      * AJAX: Remove donation from cart
      */
     public function remove_extra_donation_from_cart() {
-        check_ajax_referer('skyweb_donation_nonce', 'nonce');
+        check_ajax_referer('skydonate_nonce', 'nonce');
 
         $product_id = intval($_POST['product_id'] ?? 0);
         if (!$product_id) wp_send_json_error(['message' => 'Invalid product ID']);
@@ -215,15 +215,15 @@ class Skyweb_Extra_Donation_Settings {
     public function enqueue_scripts() {
         wp_register_script(
             'extra-donation',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/extra-donation.js',
+            SKYDONATE_ASSETS . '/addons/js/extra-donation.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,
+            SKYDONATE_VERSION,
             true
         );
 
-        wp_localize_script('extra-donation', 'skyweb_extra_donation_ajax', [
+        wp_localize_script('extra-donation', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_donation_nonce')
+            'nonce'    => wp_create_nonce('skydonate_nonce')
         ]);
 
         // Enqueue the script on checkout and cart pages
@@ -233,4 +233,4 @@ class Skyweb_Extra_Donation_Settings {
     }
 }
 
-new Skyweb_Extra_Donation_Settings();
+new Skydonate_Extra_Donation();

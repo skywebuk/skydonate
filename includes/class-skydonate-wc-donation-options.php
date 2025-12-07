@@ -5,22 +5,22 @@ if (!defined('ABSPATH')) {
 
 class WC_Custom_Donation_Options {
     public function __construct() {
-        add_action('woocommerce_product_data_tabs', [$this, 'skyweb_register_product_data_tabs']);
-        add_action('woocommerce_product_data_panels', [$this, 'skyweb_render_product_data_panels']);
-        add_action('save_post', [$this, 'skyweb_save_product_fields']);
-        add_filter('woocommerce_get_item_data', [$this, 'skyweb_display_cart_item_custom_data'], 10, 2);
-        add_action('woocommerce_checkout_create_order_line_item', [$this, 'skyweb_save_order_item_custom_data'], 10, 4);
-        add_filter('woocommerce_add_cart_item_data', [$this, 'skyweb_capture_cart_item_custom_data'], 10, 3);
-        add_filter('woocommerce_is_subscription', [$this, 'skyweb_maybe_mark_donation_as_subscription'], 10, 3);
-        add_action( 'woocommerce_add_to_cart', array( $this, 'skyweb_subscription_schemes_on_add_to_cart' ), 19, 6 );
-        add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'skyweb_apply_subscriptions' ), 5, 1 );
+        add_action('woocommerce_product_data_tabs', [$this, 'skydonate_register_product_data_tabs']);
+        add_action('woocommerce_product_data_panels', [$this, 'skydonate_render_product_data_panels']);
+        add_action('save_post', [$this, 'skydonate_save_product_fields']);
+        add_filter('woocommerce_get_item_data', [$this, 'skydonate_display_cart_item_custom_data'], 10, 2);
+        add_action('woocommerce_checkout_create_order_line_item', [$this, 'skydonate_save_order_item_custom_data'], 10, 4);
+        add_filter('woocommerce_add_cart_item_data', [$this, 'skydonate_capture_cart_item_custom_data'], 10, 3);
+        add_filter('woocommerce_is_subscription', [$this, 'skydonate_maybe_mark_donation_as_subscription'], 10, 3);
+        add_action( 'woocommerce_add_to_cart', array( $this, 'skydonate_subscription_schemes_on_add_to_cart' ), 19, 6 );
+        add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'skydonate_apply_subscriptions' ), 5, 1 );
         add_filter( 'wc_stripe_force_save_source', '__return_true' );
         add_filter( 'wc_stripe_skip_payment_request', '__return_false' );
         add_filter( 'woocommerce_cart_needs_payment', [ $this, 'force_payment_for_zero_total' ], 10, 2 );
-        add_filter( 'woocommerce_subscriptions_product_price_string', [$this, 'skyweb_custom_subscription_price_string'], 10, 3 );
+        add_filter( 'woocommerce_subscriptions_product_price_string', [$this, 'skydonate_custom_subscription_price_string'], 10, 3 );
     }
     
-    public function skyweb_custom_subscription_price_string( $subscription_string, $product, $include ) {
+    public function skydonate_custom_subscription_price_string( $subscription_string, $product, $include ) {
         if ( ! function_exists( 'wcs_get_price_including_tax' ) || ! is_object( $product ) ) {
             return $subscription_string;
         }
@@ -98,7 +98,7 @@ class WC_Custom_Donation_Options {
     /**
      * Capture custom cart item data for donations and subscriptions.
      */
-     public function skyweb_capture_cart_item_custom_data($cart_item, $product_id, $variation_id = 0) {
+     public function skydonate_capture_cart_item_custom_data($cart_item, $product_id, $variation_id = 0) {
         // --- Handle variable products ---
         $product_id = $variation_id ? $variation_id : $product_id;
         $today   = date('Y-m-d');
@@ -197,15 +197,15 @@ class WC_Custom_Donation_Options {
     /**
      * Apply subscription schemes when adding to cart
      */
-    public static function skyweb_subscription_schemes_on_add_to_cart($item_key, $product_id, $quantity, $variation_id, $variation, $cart_item) {
-        self::skyweb_apply_subscriptions(WC()->cart);
+    public static function skydonate_subscription_schemes_on_add_to_cart($item_key, $product_id, $quantity, $variation_id, $variation, $cart_item) {
+        self::skydonate_apply_subscriptions(WC()->cart);
     }
 
 
     /**
      * Apply subscriptions to all applicable cart items
      */
-    public static function skyweb_apply_subscriptions($cart) {
+    public static function skydonate_apply_subscriptions($cart) {
         foreach ($cart->cart_contents as $key => $item) {
             if (isset($item['bos4w_data']) && !empty($item['bos4w_data'])) {
                 $cart->cart_contents[$key] = self::apply_subscription($item);
@@ -308,7 +308,7 @@ class WC_Custom_Donation_Options {
      * @param WC_Product  $product         The product object.
      * @return bool
      */
-    public function skyweb_maybe_mark_donation_as_subscription( $is_subscription, $product_id, $product ) {
+    public function skydonate_maybe_mark_donation_as_subscription( $is_subscription, $product_id, $product ) {
         // If WooCommerce cart is not initialized (e.g., in backend or cron)
         if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
             return $is_subscription;
@@ -322,7 +322,7 @@ class WC_Custom_Donation_Options {
     }
 
 
-    public function skyweb_display_cart_item_custom_data($item_data, $cart_item) {
+    public function skydonate_display_cart_item_custom_data($item_data, $cart_item) {
         // Display other fields
         if (!empty($cart_item['donation_type'])) {
             $item_data[] = [
@@ -341,7 +341,7 @@ class WC_Custom_Donation_Options {
         return $item_data;
     }
     
-    public function skyweb_save_order_item_custom_data($item, $cart_item_key, $values, $order) {
+    public function skydonate_save_order_item_custom_data($item, $cart_item_key, $values, $order) {
         if (!empty($values['donation_option']) && $values['donation_option'] === 'Daily') {
             // Save daily donation meta
             $item->add_meta_data('_start_date', $values['start_date'], true);
@@ -372,17 +372,17 @@ class WC_Custom_Donation_Options {
     }
     
     // Add custom tabs
-    public function skyweb_register_product_data_tabs($tabs) {
-        $tabs['skyweb_donation_fields'] = [
+    public function skydonate_register_product_data_tabs($tabs) {
+        $tabs['skydonate_donation_fields'] = [
             'label' => __('Donation Fields', 'skydonate'),
-            'target' => 'skyweb_donation_options_data',
+            'target' => 'skydonate_options_data',
             'class' => ['show_if_simple', 'show_if_variable'],
             'priority' => 21,
         ];
         return $tabs;
     }
 
-    public function skyweb_render_product_data_panels() {
+    public function skydonate_render_product_data_panels() {
         global $post;
         $donation_frequency = get_post_meta($post->ID, '_donation_frequency', true) ?: 'once';
         $button_visibility = get_post_meta($post->ID, '_button_visibility', true) ?: [];
@@ -391,7 +391,7 @@ class WC_Custom_Donation_Options {
         $box_title = get_post_meta($post->ID, '_box_title', true);
         $box_arrow_hide = get_post_meta($post->ID, '_box_arrow_hide', true);
         $donation_currency_override = get_post_meta($post->ID, '_donation_currency_override', true);
-        $skyweb_selected_layout = get_post_meta($post->ID, '_skyweb_selected_layout', true) ?: 'layout_one';
+        $skydonate_selected_layout = get_post_meta($post->ID, '_skydonate_selected_layout', true) ?: 'layout_one';
         $close_project = get_post_meta($post->ID, '_close_project', true);
         $zakat_applicable = get_post_meta($post->ID, '_zakat_applicable', true);
         $project_closed_message = get_post_meta($post->ID, '_project_closed_message', true);
@@ -420,18 +420,18 @@ class WC_Custom_Donation_Options {
         }
 
         ?>
-        <div id="skyweb_donation_options_data" class="panel woocommerce_options_panel">
+        <div id="skydonate_options_data" class="panel woocommerce_options_panel">
             <!-- Donation Frequency Options -->
-            <div class="skyweb-option-card button-display-options">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card button-display-options">
+                <h3 class="skydonate-option-title">
                     <?php _e('Donation Frequency Options', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Select which donation frequency buttons you want to display on the form. You can enable one or multiple options.', 'skydonate'); ?>
                 </p>
-                <div class="skyweb-inline-options">
+                <div class="skydonate-inline-options">
                     <!-- One-Time Donation -->
-                    <label class="skyweb-checkbox">
+                    <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
                             value="show_once"
@@ -440,7 +440,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Daily Donation -->
-                    <label class="skyweb-checkbox">
+                    <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
                             value="show_daily"
@@ -449,7 +449,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Weekly Donation -->
-                    <label class="skyweb-checkbox">
+                    <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
                             value="show_weekly"
@@ -458,7 +458,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Monthly Donation -->
-                    <label class="skyweb-checkbox">
+                    <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
                             value="show_monthly"
@@ -467,7 +467,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Yearly Donation -->
-                    <label class="skyweb-checkbox">
+                    <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
                             value="show_yearly"
@@ -478,60 +478,60 @@ class WC_Custom_Donation_Options {
             </div>
 
             <!-- Donation Fields -->
-            <div class="skyweb-option-card donation-fields-option">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card donation-fields-option">
+                <h3 class="skydonate-option-title">
                     <?php _e('Donation Fields', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Add, edit, and configure custom donation options with prices for different frequencies. You can set a default option and hide options as needed.', 'skydonate'); ?>
                 </p>
 
-                <div id="skyweb-donation-fields-container" class="skyweb-block-options">
+                <div id="skydonate-fields-container" class="skydonate-block-options">
                     <?php if (!empty($custom_options)): ?>
                         <?php foreach ($custom_options as $option):
                             $publish = isset($option['publish']) ? $option['publish'] : 0;
                         ?>
-                        <div class="skyweb-donation-fields">
+                        <div class="skydonate-fields">
                             <div class="header">
                                 <h4 class="title"><?php _e('Donation Option', 'skydonate'); ?> <?php echo $count; ?></h4>
                                 <button type="button" class="action toggle-option"><span class="toggle-indicator"></span></button>
                             </div>
                             <div class="fields">
-                                <div class="skyweb-input-group">
+                                <div class="skydonate-input-group">
                                     <label><?php _e('Label', 'skydonate'); ?></label>
                                     <input type="text" class="short" name="custom_option_label[]" value="<?php echo esc_attr($option['label']); ?>" placeholder="<?php _e('Option label', 'skydonate'); ?>">
                                 </div>
-                                <div class="skyweb-input-group once-field">
+                                <div class="skydonate-input-group once-field">
                                     <label><?php _e('One-Time', 'skydonate'); ?></label>
                                     <input type="number" class="short" name="custom_option_price[]" value="<?php echo esc_attr($option['price'] ?? 0); ?>" min="0">
                                 </div>
-                                <div class="skyweb-input-group daily-field">
+                                <div class="skydonate-input-group daily-field">
                                     <label><?php _e('Daily', 'skydonate'); ?></label>
                                     <input type="number" class="short" name="custom_option_daily[]" value="<?php echo esc_attr($option['daily'] ?? 0); ?>" min="0">
                                 </div>
-                                <div class="skyweb-input-group weekly-field">
+                                <div class="skydonate-input-group weekly-field">
                                     <label><?php _e('Weekly', 'skydonate'); ?></label>
                                     <input type="number" class="short" name="custom_option_weekly[]" value="<?php echo esc_attr($option['weekly'] ?? 0); ?>" min="0">
                                 </div>
-                                <div class="skyweb-input-group monthly-field">
+                                <div class="skydonate-input-group monthly-field">
                                     <label><?php _e('Monthly', 'skydonate'); ?></label>
                                     <input type="number" class="short" name="custom_option_monthly[]" value="<?php echo esc_attr($option['monthly'] ?? 0); ?>" min="0">
                                 </div>
-                                <div class="skyweb-input-group yearly-field">
+                                <div class="skydonate-input-group yearly-field">
                                     <label><?php _e('Yearly', 'skydonate'); ?></label>
                                     <input type="number" class="short" name="custom_option_yearly[]" value="<?php echo esc_attr($option['yearly'] ?? 0); ?>" min="0">
                                 </div>
-                                <div class="skyweb-input-group">
+                                <div class="skydonate-input-group">
                                     <label><?php _e('Default', 'skydonate'); ?></label>
                                     <input type="radio" name="default_option" value="<?php echo esc_attr($count); ?>" <?php checked($default_option, $count); ?>>
                                     <small><?php _e('Set this option as the pre-selected donation amount.', 'skydonate'); ?></small>
                                 </div>
-                                <div class="skyweb-input-group">
+                                <div class="skydonate-input-group">
                                     <label><?php _e('Hide', 'skydonate'); ?></label>
                                     <input type="checkbox" name="publish_project_item[]" value="<?php echo esc_attr($count); ?>" <?php checked($publish, $count); ?>>
                                     <small><?php _e('Hide this option from the donation form.', 'skydonate'); ?></small>
                                 </div>
-                                <div class="skyweb-input-group">
+                                <div class="skydonate-input-group">
                                     <button type="button" class="button remove_custom_option"><?php _e('Remove', 'skydonate'); ?></button>
                                 </div>
                             </div>
@@ -549,19 +549,19 @@ class WC_Custom_Donation_Options {
 
 
             <!-- Box Title -->
-            <div class="skyweb-option-card box-title-option">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card box-title-option">
+                <h3 class="skydonate-option-title">
                     <?php _e('Box Title', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Enter the title that will appear at the top of the donation box.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <input type="text" class="short-controll" name="box_title" value="<?php echo esc_attr($box_title); ?>">
                 </div>
 
-                <label class="skyweb-checkbox close-project-checkbox">
+                <label class="skydonate-checkbox close-project-checkbox">
                     <input type="checkbox" 
                         name="box_arrow_hide" 
                         id="box_arrow_hide" 
@@ -572,15 +572,15 @@ class WC_Custom_Donation_Options {
             </div>
 
             <!-- Donation Currency Option -->
-            <div class="skyweb-option-card donation-currency-option">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card donation-currency-option">
+                <h3 class="skydonate-option-title">
                     <?php _e('Donation Currency', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Disable the currency switcher and use the default currency for this donation.', 'skydonate'); ?>
                 </p>
 
-                <label class="skyweb-checkbox">
+                <label class="skydonate-checkbox">
                     <input type="checkbox" 
                         name="donation_currency_override" 
                         id="donation_currency_override" 
@@ -594,17 +594,17 @@ class WC_Custom_Donation_Options {
 
 
             <!-- Set Active Donation Frequency -->
-            <div class="skyweb-option-card active-donation-frequency">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card active-donation-frequency">
+                <h3 class="skydonate-option-title">
                     <?php _e('Set Default Donation Frequency', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Choose which donation frequency should be pre-selected by default on the donation form.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-inline-options">
+                <div class="skydonate-inline-options">
                     <!-- One-Time Donation -->
-                    <label class="skyweb-radio once">
+                    <label class="skydonate-radio once">
                         <input type="radio" 
                             name="donation_frequency" 
                             value="once"
@@ -613,7 +613,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Daily Donation -->
-                    <label class="skyweb-radio daily">
+                    <label class="skydonate-radio daily">
                         <input type="radio" 
                             name="donation_frequency" 
                             value="daily"
@@ -622,7 +622,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Weekly Donation -->
-                    <label class="skyweb-radio weekly">
+                    <label class="skydonate-radio weekly">
                         <input type="radio" 
                             name="donation_frequency" 
                             value="weekly"
@@ -631,7 +631,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Monthly Donation -->
-                    <label class="skyweb-radio monthly">
+                    <label class="skydonate-radio monthly">
                         <input type="radio" 
                             name="donation_frequency" 
                             value="monthly"
@@ -640,7 +640,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Yearly Donation -->
-                    <label class="skyweb-radio yearly">
+                    <label class="skydonate-radio yearly">
                         <input type="radio" 
                             name="donation_frequency" 
                             value="yearly"
@@ -651,20 +651,20 @@ class WC_Custom_Donation_Options {
             </div>
 
             <!-- Daily Donation Date Range -->
-            <div class="skyweb-option-card daily-date-card" style="display: <?php echo ($donation_frequency === 'daily') ? 'block' : 'block'; ?>;">
+            <div class="skydonate-option-card daily-date-card" style="display: <?php echo ($donation_frequency === 'daily') ? 'block' : 'block'; ?>;">
 
-                <h3 class="skyweb-option-title">
+                <h3 class="skydonate-option-title">
                     <?php _e('Enable Donation Start Date', 'skydonate'); ?>
                 </h3>
 
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Turn this option on to display the start date field on the donation form. This setting applies only to Daily Donations. When disabled, donors will not be able to choose a start date.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
 
                     <!-- Enable Start Date Checkbox -->
-                    <label class="skyweb-checkbox enable-start-date">
+                    <label class="skydonate-checkbox enable-start-date">
                         <input type="checkbox" 
                             id="enable_start_date" 
                             name="enable_start_date" 
@@ -674,7 +674,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Start Date Input Field -->
-                    <div class="skyweb-input-group start-date-group-field">
+                    <div class="skydonate-input-group start-date-group-field">
                         <label for="start_date">
                             <?php _e('Start Date', 'skydonate'); ?>
                         </label>
@@ -690,17 +690,17 @@ class WC_Custom_Donation_Options {
 
                 <br>
 
-                <h3 class="skyweb-option-title">
+                <h3 class="skydonate-option-title">
                     <?php _e('Enable Donation End Date', 'skydonate'); ?>
                 </h3>
 
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Turn this option on to display the end date field on the donation form. This setting applies only to Daily Donations. When disabled, donors will not be able to set an end date.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <!-- Enable End Date Checkbox -->
-                    <label class="skyweb-checkbox enable-end-date">
+                    <label class="skydonate-checkbox enable-end-date">
                         <input type="checkbox" 
                             id="enable_end_date" 
                             name="enable_end_date" 
@@ -711,7 +711,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- End Date Input Field -->
-                    <div class="skyweb-input-group end-date-group-field">
+                    <div class="skydonate-input-group end-date-group-field">
                         <label for="end_date">
                             <?php _e('End Date', 'skydonate'); ?>
                         </label>
@@ -731,18 +731,18 @@ class WC_Custom_Donation_Options {
 
 
             <!-- Target & Offline Donation Settings -->
-            <div class="skyweb-option-card target-sales-offline-settings">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card target-sales-offline-settings">
+                <h3 class="skydonate-option-title">
                     <?php _e('Donation Goal Settings', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Set the fundraising goal and include any offline donation amounts to be considered.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <!-- Target Sales Goal -->
-                    <div class="skyweb-input-group target-sales-goal-field">
-                        <label for="target_sales_goal" class="skyweb-label">
+                    <div class="skydonate-input-group target-sales-goal-field">
+                        <label for="target_sales_goal" class="skydonate-label">
                             <?php _e('Target Sales Goal', 'skydonate'); ?>
                         </label>
                         <span class="woocommerce-help-tip" tabindex="0" 
@@ -757,8 +757,8 @@ class WC_Custom_Donation_Options {
                     </div>
 
                     <!-- Offline Donation -->
-                    <div class="skyweb-input-group offline-donation-field">
-                        <label for="offline_donation" class="skyweb-label">
+                    <div class="skydonate-input-group offline-donation-field">
+                        <label for="offline_donation" class="skydonate-label">
                             <?php _e('Offline Donation', 'skydonate'); ?>
                         </label>
                         <span class="woocommerce-help-tip" tabindex="0" 
@@ -775,35 +775,35 @@ class WC_Custom_Donation_Options {
             </div>
 
             <?php
-                $layout = skyweb_donation_layout_option('addons_donation_form_layout');
+                $layout = skydonate_layout_option('addons_donation_form_layout');
                 if (!is_array($layout)) {
                     $layout = ['layout1'];
                 }
-                $grid_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/grid-layout.jpg';
-                $list_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/list-layout.jpg';
+                $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout.jpg';
+                $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout.jpg';
                 // Correct usage of in_array()
                 if (in_array('layout2', $layout)) {
-                    $grid_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/grid-layout-2.jpg';
-                    $list_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/list-layout-2.jpg';
+                    $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout-2.jpg';
+                    $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout-2.jpg';
                 }
                 if (in_array('layout3', $layout)) {
-                    $grid_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/grid-layout-3.jpg';
-                    $list_image = SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS . 'images/list-layout-3.jpg';
+                    $grid_image = SKYDONATE_ADMIN_ASSETS . 'images/grid-layout-3.jpg';
+                    $list_image = SKYDONATE_ADMIN_ASSETS . 'images/list-layout-3.jpg';
                 }
             ?>
 
-            <div class="skyweb-option-card layout-selection">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card layout-selection">
+                <h3 class="skydonate-option-title">
                     <?php _e('Choose Layout Style', 'skydonate'); ?>
                 </h3>
-                <div class="skyweb-inline-options">
+                <div class="skydonate-inline-options">
                     <!-- Grid Layout Option -->
                     <div class="layout-option">
-                        <label class="skyweb-image-checkbox">
+                        <label class="skydonate-image-checkbox">
                             <input type="radio"
-                                name="skyweb_selected_layout"
+                                name="skydonate_selected_layout"
                                 value="layout_one"
-                                <?php checked($skyweb_selected_layout, 'layout_one'); ?> />
+                                <?php checked($skydonate_selected_layout, 'layout_one'); ?> />
                             <img src="<?php echo esc_url($grid_image); ?>"
                                 alt="<?php esc_attr_e('Grid Layout', 'skydonate'); ?>" />
                             <span class="checkbox-label">
@@ -814,11 +814,11 @@ class WC_Custom_Donation_Options {
 
                     <!-- List Layout Option -->
                     <div class="layout-option">
-                        <label class="skyweb-image-checkbox">
+                        <label class="skydonate-image-checkbox">
                             <input type="radio"
-                                name="skyweb_selected_layout"
+                                name="skydonate_selected_layout"
                                 value="layout_two"
-                                <?php checked($skyweb_selected_layout, 'layout_two'); ?> />
+                                <?php checked($skydonate_selected_layout, 'layout_two'); ?> />
                             <img src="<?php echo esc_url($list_image); ?>"
                                 alt="<?php esc_attr_e('List Layout', 'skydonate'); ?>" />
                             <span class="checkbox-label">
@@ -828,17 +828,17 @@ class WC_Custom_Donation_Options {
                     </div>
                 </div>
             </div>
-            <div class="skyweb-option-card zakat-applicable-settings">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card zakat-applicable-settings">
+                <h3 class="skydonate-option-title">
                     <?php _e('Zakat Applicable', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Enable or disable whether this project is eligible for Zakat donations.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <!-- Zakat Applicable Switch -->
-                    <label class="skyweb-checkbox zakat-applicable-switch">
+                    <label class="skydonate-checkbox zakat-applicable-switch">
                         <input type="checkbox"
                             name="zakat_applicable"
                             id="zakat_applicable"
@@ -849,17 +849,17 @@ class WC_Custom_Donation_Options {
                 </div>
             </div>
             <!-- Close Project Settings -->
-            <div class="skyweb-option-card close-project-settings">
-                <h3 class="skyweb-option-title">
+            <div class="skydonate-option-card close-project-settings">
+                <h3 class="skydonate-option-title">
                     <?php _e('Close Project Settings', 'skydonate'); ?>
                 </h3>
-                <p class="skyweb-option-description">
+                <p class="skydonate-option-description">
                     <?php _e('Configure the project closure options, including the title and message displayed when a project is closed.', 'skydonate'); ?>
                 </p>
 
-                <div class="skyweb-block-options">
+                <div class="skydonate-block-options">
                     <!-- Close Project Checkbox -->
-                    <label class="skyweb-checkbox close-project-checkbox">
+                    <label class="skydonate-checkbox close-project-checkbox">
                         <input type="checkbox" 
                             name="close_project" 
                             id="close_project" 
@@ -869,7 +869,7 @@ class WC_Custom_Donation_Options {
                     </label>
 
                     <!-- Project Closed Title -->
-                    <div class="skyweb-input-group project-closed-title-field">
+                    <div class="skydonate-input-group project-closed-title-field">
                         <label for="project_closed_title">
                             <?php _e('Title', 'skydonate'); ?>
                         </label>
@@ -882,7 +882,7 @@ class WC_Custom_Donation_Options {
                     </div>
 
                     <!-- Project Closed Subtitle -->
-                    <div class="skyweb-input-group form-field project-closed-message-field">
+                    <div class="skydonate-input-group form-field project-closed-message-field">
                         <label for="project_closed_message">
                             <?php _e('Subtitle', 'skydonate'); ?>
                         </label>
@@ -900,7 +900,7 @@ class WC_Custom_Donation_Options {
         <?php
     }
 
-    public function skyweb_save_product_fields($post_id) {
+    public function skydonate_save_product_fields($post_id) {
         if (!isset($_POST['skydonate_product_nonce']) || !wp_verify_nonce($_POST['skydonate_product_nonce'], 'save_product_nonce')) {
             return;
         }
@@ -937,7 +937,7 @@ class WC_Custom_Donation_Options {
         $donation_frequency = isset($_POST['donation_frequency']) ? sanitize_text_field($_POST['donation_frequency']) : 'once';
         $button_visibility = isset($_POST['button_visibility']) ? array_map('sanitize_text_field', $_POST['button_visibility']) : [];
         $box_title = isset($_POST['box_title']) ? sanitize_text_field($_POST['box_title']) : '';
-        $skyweb_selected_layout = isset($_POST['skyweb_selected_layout']) ? sanitize_text_field($_POST['skyweb_selected_layout']) : 'layout_one';
+        $skydonate_selected_layout = isset($_POST['skydonate_selected_layout']) ? sanitize_text_field($_POST['skydonate_selected_layout']) : 'layout_one';
         $default_option = isset($_POST['default_option']) ? sanitize_text_field($_POST['default_option']) : '';
 
         $enable_end_date = isset($_POST['enable_end_date']) ? sanitize_text_field($_POST['enable_end_date']) : '0';
@@ -964,7 +964,7 @@ class WC_Custom_Donation_Options {
         update_post_meta($post_id, '_box_title', $box_title);
         update_post_meta($post_id, '_box_arrow_hide', $box_arrow_hide);
         update_post_meta($post_id, '_donation_currency_override', $donation_currency_override);
-        update_post_meta($post_id, '_skyweb_selected_layout', $skyweb_selected_layout);
+        update_post_meta($post_id, '_skydonate_selected_layout', $skydonate_selected_layout);
         update_post_meta($post_id, '_enable_end_date', $enable_end_date);
         update_post_meta($post_id, '_end_date', $end_date);
         update_post_meta($post_id, '_enable_start_date', $enable_start_date);

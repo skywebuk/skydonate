@@ -56,10 +56,10 @@ $tabs       = apply_filters( 'skydonate_general_settings_tabs', [] );
 
 		if ( isset( $templates[ $active_tab ] ) ) {
 			$SKDS->load_plugin_template(
-				SKYWEB_DONATION_SYSTEM_ADMIN_PATH . $templates[ $active_tab ]
+				SKYDONATE_ADMIN_PATH . $templates[ $active_tab ]
 			);
 		}else{
-			$SKDS->load_plugin_template( SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/general/settings.php' );
+			$SKDS->load_plugin_template( SKYDONATE_ADMIN_PATH . '/template/general/settings.php' );
 		}
 
 		do_action( 'skydonate_settings_form_after' );

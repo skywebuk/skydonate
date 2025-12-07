@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class Skyweb_Notification {
+class Skydonate_Notification {
     public function __construct() {
         add_action('wp_head', [$this, 'output_notifications_js']); 
         add_action('customize_register', [$this, 'register_customizer_settings']);
@@ -14,23 +14,23 @@ class Skyweb_Notification {
         $post_id = get_the_ID();
         $timing = [];
         $selected_items = [];
-        $button_text = get_theme_mod('skyweb_notification_button_text', __('Donate', 'skydonate'));
+        $button_text = get_theme_mod('skydonate_notification_button_text', __('Donate', 'skydonate'));
 
         // Retrieve the enable_notification meta value
-        $enable_notification = get_post_meta($post_id, '_skyweb_enable_notification', true);
+        $enable_notification = get_post_meta($post_id, '_skydonate_enable_notification', true);
 
         // Check if notifications are enabled
         if ($enable_notification == 'yes') {
-            $selected_items = get_post_meta($post_id, '_skyweb_select_donation', true);
-            $location_visibility = get_post_meta($post_id, '_skyweb_location_visibility', true);
-            $title_visibility = get_post_meta($post_id, '_skyweb_title_visibility', true);
-            $emoji_visibility    = get_post_meta($post_id, '_skyweb_emoji', true);
-            $timestamp           = get_post_meta($post_id, '_skyweb_timestamp', true);
-            $limit               = get_post_meta($post_id, '_skyweb_limit', true);
-            $start_date_option   = get_post_meta($post_id, '_skyweb_start_date', false);
-            $timing['start_time'] = get_post_meta($post_id, '_skyweb_start_time', true);
-            $timing['visible_time'] = get_post_meta($post_id, '_skyweb_visible_time', true);
-            $timing['gap_time'] = get_post_meta($post_id, '_skyweb_gap_time', true);
+            $selected_items = get_post_meta($post_id, '_skydonate_select_donation', true);
+            $location_visibility = get_post_meta($post_id, '_skydonate_location_visibility', true);
+            $title_visibility = get_post_meta($post_id, '_skydonate_title_visibility', true);
+            $emoji_visibility    = get_post_meta($post_id, '_skydonate_emoji', true);
+            $timestamp           = get_post_meta($post_id, '_skydonate_timestamp', true);
+            $limit               = get_post_meta($post_id, '_skydonate_limit', true);
+            $start_date_option   = get_post_meta($post_id, '_skydonate_start_date', false);
+            $timing['start_time'] = get_post_meta($post_id, '_skydonate_start_time', true);
+            $timing['visible_time'] = get_post_meta($post_id, '_skydonate_visible_time', true);
+            $timing['gap_time'] = get_post_meta($post_id, '_skydonate_gap_time', true);
         }else {
             $selected_items = get_option('notification_select_donations', []);
             $emoji_visibility = get_option('enable_emoji_notifications') ? 'yes' : 'no';
@@ -70,7 +70,7 @@ class Skyweb_Notification {
         }
         
 
-        $orders = Skyweb_Donation_Functions::get_orders_ids_by_product_id($selected_items, ['wc-completed'], $limit, $start_date);
+        $orders = Skydonate_Functions::get_orders_ids_by_product_id($selected_items, ['wc-completed'], $limit, $start_date);
         
         // WooCommerce country codes and names
         $countries = WC()->countries->get_countries();
@@ -147,7 +147,7 @@ class Skyweb_Notification {
                         continue;
                     }
                     // Start building notification output
-                    $output = '<div class="skyweb-donate-notification">';
+                    $output = '<div class="skydonate-notification">';
                     $output .= '<button class="close"><i class="fa-solid fa-xmark"></i></button>';
                     $output .= '<a href="' . esc_url($product->get_permalink()) . '" class="donate-button">' . esc_html($button_text) . '</a>';
                     $output .= '<div class="name">';
@@ -220,15 +220,15 @@ class Skyweb_Notification {
                         $("body").append(html);
         
                         // Close button handler
-                        $(document).on("click", ".skyweb-donate-notification .close", function() {
-                            $(this).closest(".skyweb-donate-notification").fadeOut(300, function() {
+                        $(document).on("click", ".skydonate-notification .close", function() {
+                            $(this).closest(".skydonate-notification").fadeOut(300, function() {
                                 $(this).remove();
                             });
                         });
         
                         // Set a timeout for fading out the notification
                         setTimeout(function() {
-                            $(".skyweb-donate-notification").fadeOut(300, function() {
+                            $(".skydonate-notification").fadeOut(300, function() {
                                 $(this).remove();
                                 // Introduce a 10-second delay before showing the next notification
                                 setTimeout(function() {
@@ -253,183 +253,183 @@ class Skyweb_Notification {
 
     public function register_customizer_settings($wp_customize) {
         // Add Section
-        $wp_customize->add_section('skyweb_notification_section', [
-            'title'       => __('Skyweb Notification', 'skyweb'),
-            'description' => __('Customize the Skyweb Notifications style.', 'skyweb'),
+        $wp_customize->add_section('skydonate_notification_section', [
+            'title'       => __('Skydonate Notification', 'skydonate'),
+            'description' => __('Customize the Skydonate Notifications style.', 'skydonate'),
             'priority'    => 30,
         ]);
 
         // Accent Color
-        $wp_customize->add_setting('skyweb_notification_accent_color', [
+        $wp_customize->add_setting('skydonate_notification_accent_color', [
             'default'           => '#2797ff',
             'sanitize_callback' => 'sanitize_hex_color',
         ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skyweb_notification_accent_color', [
-            'label'    => __('Accent Color', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
-            'settings' => 'skyweb_notification_accent_color',
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_accent_color', [
+            'label'    => __('Accent Color', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
+            'settings' => 'skydonate_notification_accent_color',
         ]));
 
 
-        $wp_customize->add_setting('skyweb_notification_title_color', [
+        $wp_customize->add_setting('skydonate_notification_title_color', [
             'default'           => '#2797ff',
             'sanitize_callback' => 'sanitize_hex_color',
         ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skyweb_notification_title_color', [
-            'label'    => __('Title Color', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
-            'settings' => 'skyweb_notification_title_color',
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_title_color', [
+            'label'    => __('Title Color', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
+            'settings' => 'skydonate_notification_title_color',
         ]));
 
         // Text Color
-        $wp_customize->add_setting('skyweb_notification_text_color', [
+        $wp_customize->add_setting('skydonate_notification_text_color', [
             'default'           => '#212830',
             'sanitize_callback' => 'sanitize_hex_color',
         ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skyweb_notification_text_color', [
-            'label'    => __('Text Color', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
-            'settings' => 'skyweb_notification_text_color',
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_text_color', [
+            'label'    => __('Text Color', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
+            'settings' => 'skydonate_notification_text_color',
         ]));
 
         // Background Color
-        $wp_customize->add_setting('skyweb_notification_bg_color', [
+        $wp_customize->add_setting('skydonate_notification_bg_color', [
             'default'           => '#ffffff',
             'sanitize_callback' => 'sanitize_hex_color',
         ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skyweb_notification_bg_color', [
-            'label'    => __('Background Color', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
-            'settings' => 'skyweb_notification_bg_color',
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_bg_color', [
+            'label'    => __('Background Color', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
+            'settings' => 'skydonate_notification_bg_color',
         ]));
 
         // Border Size
-        $wp_customize->add_setting('skyweb_notification_border_size', [
+        $wp_customize->add_setting('skydonate_notification_border_size', [
             'default'           => '1',
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_border_size', [
-            'label'    => __('Border Size (px)', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_border_size', [
+            'label'    => __('Border Size (px)', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'number',
-            'settings' => 'skyweb_notification_border_size',
+            'settings' => 'skydonate_notification_border_size',
         ]);
 
         // Border Radius
-        $wp_customize->add_setting('skyweb_notification_border_radius', [
+        $wp_customize->add_setting('skydonate_notification_border_radius', [
             'default'           => '5',
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_border_radius', [
-            'label'    => __('Border Radius (px)', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_border_radius', [
+            'label'    => __('Border Radius (px)', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'number',
-            'settings' => 'skyweb_notification_border_radius',
+            'settings' => 'skydonate_notification_border_radius',
         ]);
 
         // Border Color
-        $wp_customize->add_setting('skyweb_notification_border_color', [
+        $wp_customize->add_setting('skydonate_notification_border_color', [
             'default'           => '#ffffff',
             'sanitize_callback' => 'sanitize_hex_color',
         ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skyweb_notification_border_color', [
-            'label'    => __('Border Color', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
-            'settings' => 'skyweb_notification_border_color',
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_border_color', [
+            'label'    => __('Border Color', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
+            'settings' => 'skydonate_notification_border_color',
         ]));
 
         // Show Shadow Checkbox
-        $wp_customize->add_setting('skyweb_notification_show_shadow', [
+        $wp_customize->add_setting('skydonate_notification_show_shadow', [
             'default'           => false,
             'sanitize_callback' => 'wp_validate_boolean',
         ]);
-        $wp_customize->add_control('skyweb_notification_show_shadow', [
-            'label'    => __('Show Shadow', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_show_shadow', [
+            'label'    => __('Show Shadow', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'checkbox',
-            'settings' => 'skyweb_notification_show_shadow',
+            'settings' => 'skydonate_notification_show_shadow',
         ]);
 
         // Button Text
-        $wp_customize->add_setting('skyweb_notification_button_text', [
-            'default'           => __('Donate', 'skyweb'),
+        $wp_customize->add_setting('skydonate_notification_button_text', [
+            'default'           => __('Donate', 'skydonate'),
             'sanitize_callback' => 'sanitize_text_field',
         ]);
-        $wp_customize->add_control('skyweb_notification_button_text', [
-            'label'    => __('Button Text', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_button_text', [
+            'label'    => __('Button Text', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'text',
-            'settings' => 'skyweb_notification_button_text',
+            'settings' => 'skydonate_notification_button_text',
         ]);
 
 
         // Position Option (Select)
-        $wp_customize->add_setting('skyweb_notification_position', [
+        $wp_customize->add_setting('skydonate_notification_position', [
             'default'           => 'top',
             'sanitize_callback' => [$this, 'sanitize_position_option'],
         ]);
-        $wp_customize->add_control('skyweb_notification_position', [
-            'label'    => __('Mobile Position', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_position', [
+            'label'    => __('Mobile Position', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'select',
             'choices'  => [
-                'top'    => __('Top', 'skyweb'),
-                'bottom' => __('Bottom', 'skyweb'),
+                'top'    => __('Top', 'skydonate'),
+                'bottom' => __('Bottom', 'skydonate'),
             ],
-            'settings' => 'skyweb_notification_position',
+            'settings' => 'skydonate_notification_position',
         ]);
 
         // Box Width Setting
-        $wp_customize->add_setting('skyweb_notification_box_width', [
+        $wp_customize->add_setting('skydonate_notification_box_width', [
             'default'           => 360,
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_box_width', [
-            'label'       => __('Box Width (px)', 'skyweb'),
-            'section'     => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_box_width', [
+            'label'       => __('Box Width (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
             'type'        => 'number',
             'input_attrs' => [
                 'min' => 100, // Minimum value
                 'max' => 1920, // Maximum value
                 'step' => 10, // Step value
             ],
-            'description' => __('Enter the width of the notification box in pixels (default: 360px).', 'skyweb'),
+            'description' => __('Enter the width of the notification box in pixels (default: 360px).', 'skydonate'),
         ]);
 
         // Title Font Size
-        $wp_customize->add_setting('skyweb_notification_title_font_size', [
+        $wp_customize->add_setting('skydonate_notification_title_font_size', [
             'default'           => '16',
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_title_font_size', [
-            'label'    => __('Title Font Size (px)', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_title_font_size', [
+            'label'    => __('Title Font Size (px)', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'number',
-            'settings' => 'skyweb_notification_title_font_size',
+            'settings' => 'skydonate_notification_title_font_size',
         ]);
 
         // Text Font Size
-        $wp_customize->add_setting('skyweb_notification_text_font_size', [
+        $wp_customize->add_setting('skydonate_notification_text_font_size', [
             'default'           => '13',
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_text_font_size', [
-            'label'    => __('Text Font Size (px)', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_text_font_size', [
+            'label'    => __('Text Font Size (px)', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'number',
-            'settings' => 'skyweb_notification_text_font_size',
+            'settings' => 'skydonate_notification_text_font_size',
         ]);
 
         // Button Font Size
-        $wp_customize->add_setting('skyweb_notification_button_font_size', [
+        $wp_customize->add_setting('skydonate_notification_button_font_size', [
             'default'           => '16',
             'sanitize_callback' => 'absint',
         ]);
-        $wp_customize->add_control('skyweb_notification_button_font_size', [
-            'label'    => __('Button Font Size (px)', 'skyweb'),
-            'section'  => 'skyweb_notification_section',
+        $wp_customize->add_control('skydonate_notification_button_font_size', [
+            'label'    => __('Button Font Size (px)', 'skydonate'),
+            'section'  => 'skydonate_notification_section',
             'type'     => 'number',
-            'settings' => 'skyweb_notification_button_font_size',
+            'settings' => 'skydonate_notification_button_font_size',
         ]);
 
 
@@ -446,25 +446,25 @@ class Skyweb_Notification {
     public function customizer_style() {
         // Retrieve theme mod values with default fallback
 
-        $title_color = esc_attr(get_theme_mod('skyweb_notification_title_color', '#2797ff'));
-        $accent_color = esc_attr(get_theme_mod('skyweb_notification_accent_color', '#2797ff'));
-        $text_color = esc_attr(get_theme_mod('skyweb_notification_text_color', '#212830'));
-        $bg_color = esc_attr(get_theme_mod('skyweb_notification_bg_color', '#ffffff'));
-        $border_color = esc_attr(get_theme_mod('skyweb_notification_border_color', '#ffffff'));
-        $border_radius = absint(get_theme_mod('skyweb_notification_border_radius', 6));
-        $border_size = absint(get_theme_mod('skyweb_notification_border_size', 1));
-        $title_size = absint(get_theme_mod('skyweb_notification_title_font_size', 1));
-        $button_size = absint(get_theme_mod('skyweb_notification_button_font_size', 1));
-        $text_size = absint(get_theme_mod('skyweb_notification_text_font_size', 1));
-        $box_width = absint(get_theme_mod('skyweb_notification_box_width', 360));
-        $shadow = get_theme_mod('skyweb_notification_show_shadow', false);
+        $title_color = esc_attr(get_theme_mod('skydonate_notification_title_color', '#2797ff'));
+        $accent_color = esc_attr(get_theme_mod('skydonate_notification_accent_color', '#2797ff'));
+        $text_color = esc_attr(get_theme_mod('skydonate_notification_text_color', '#212830'));
+        $bg_color = esc_attr(get_theme_mod('skydonate_notification_bg_color', '#ffffff'));
+        $border_color = esc_attr(get_theme_mod('skydonate_notification_border_color', '#ffffff'));
+        $border_radius = absint(get_theme_mod('skydonate_notification_border_radius', 6));
+        $border_size = absint(get_theme_mod('skydonate_notification_border_size', 1));
+        $title_size = absint(get_theme_mod('skydonate_notification_title_font_size', 1));
+        $button_size = absint(get_theme_mod('skydonate_notification_button_font_size', 1));
+        $text_size = absint(get_theme_mod('skydonate_notification_text_font_size', 1));
+        $box_width = absint(get_theme_mod('skydonate_notification_box_width', 360));
+        $shadow = get_theme_mod('skydonate_notification_show_shadow', false);
 
-        $position = get_theme_mod('skyweb_notification_position', 'top');
+        $position = get_theme_mod('skydonate_notification_position', 'top');
     
         // Inline styles
         ?>
         <style>
-            .skyweb-donate-notification {
+            .skydonate-notification {
                 <?php if (!empty($border_radius)): ?>
                     border-radius: <?php echo $border_radius; ?>px;
                 <?php endif; ?>
@@ -492,7 +492,7 @@ class Skyweb_Notification {
                 <?php endif; ?>
             }
 
-            .skyweb-donate-notification .name {
+            .skydonate-notification .name {
                 <?php if (!empty($accent_color)): ?>
                     color: <?php echo $accent_color; ?>;
                 <?php endif; ?>
@@ -504,13 +504,13 @@ class Skyweb_Notification {
                 line-height: 1.2em;
             }
 
-            .skyweb-donate-notification .name small {
+            .skydonate-notification .name small {
                 <?php if (!empty($title_color)): ?>
                     color: <?php echo $title_color; ?>;
                 <?php endif; ?>
             }
 
-            .skyweb-donate-notification .donate-button {
+            .skydonate-notification .donate-button {
                 <?php if (!empty($accent_color)): ?>
                     border: 1px solid <?php echo $accent_color; ?>;
                     color: <?php echo $accent_color; ?>;
@@ -521,21 +521,21 @@ class Skyweb_Notification {
                 <?php endif; ?>
             }
 
-            .skyweb-donate-notification .donate-button:hover {
+            .skydonate-notification .donate-button:hover {
                 <?php if (!empty($accent_color)): ?>
                     background-color: <?php echo $accent_color; ?>;
                     color: #ffffff; /* Optional for better readability on hover */
                 <?php endif; ?>
             }
 
-            .skyweb-donate-notification strong {
+            .skydonate-notification strong {
                 <?php if (!empty($text_color)): ?>
                     color: <?php echo $text_color; ?>;
                 <?php endif; ?>
             }
 
-            .skyweb-donate-notification .time,
-            .skyweb-donate-notification .location {
+            .skydonate-notification .time,
+            .skydonate-notification .location {
                 <?php if (!empty($text_size)): ?>
                     font-size: <?php echo $text_size; ?>px;
                 <?php endif; ?>
@@ -543,7 +543,7 @@ class Skyweb_Notification {
 
             <?php if (!empty($position) && $position == 'top'): ?>
                 @media screen and (max-width: 768px) {
-                    .skyweb-donate-notification {
+                    .skydonate-notification {
                         bottom: auto;
                         top: 20px;
                     }
@@ -556,4 +556,4 @@ class Skyweb_Notification {
     
 }
 
-new Skyweb_Notification();
+new Skydonate_Notification();

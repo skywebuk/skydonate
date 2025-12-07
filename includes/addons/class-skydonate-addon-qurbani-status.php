@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Qurbani_Status extends \Elementor\Widget_Base {
+class Skydonate_Qurbani_Status extends \Elementor\Widget_Base {
 
 
     public function get_name() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Qurbani_Status extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return [ 'skyweb_donation' ];
+        return [ 'skydonate' ];
     }
 
     public function get_keywords() {

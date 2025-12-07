@@ -71,12 +71,12 @@
                 product_id: productId,
                 amount: selectedAmount,
                 donation_frequency: selectedFrequency,
-                nonce: skyweb_extra_donation_ajax.nonce
+                nonce: skydonate_extra_donation_ajax.nonce
             };
 
             // ===== AJAX Request =====
             $.ajax({
-                url: skyweb_extra_donation_ajax.ajax_url,
+                url: skydonate_extra_donation_ajax.ajax_url,
                 type: 'POST',
                 data: data,
                 success: function (response) {

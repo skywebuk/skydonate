@@ -2,8 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 
-<div class="skyweb-settings-panel">
-    <div class="skyweb-gift-aid-export-form">
+<div class="skydonate-settings-panel">
+    <div class="skydonate-gift-aid-export-form">
         <table class="form-table">
 
             <!-- Export All Declarations -->

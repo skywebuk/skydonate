@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool True if file was loaded
  */
 function skydonate_load_file( $file ) {
-    $filepath = SKYWEB_DONATION_SYSTEM_DIR_PATH . $file;
+    $filepath = SKYDONATE_DIR_PATH . $file;
     if ( file_exists( $filepath ) ) {
         require_once $filepath;
         return true;
@@ -82,7 +82,7 @@ function skydonate_load_woocommerce_includes() {
  */
 function skydonate_load_conditional_includes() {
     // Currency changer
-    if ( get_option( 'skyweb_currency_changer_enabled', 0 ) == 1 ) {
+    if ( get_option( 'skydonate_currency_changer_enabled', 0 ) == 1 ) {
         skydonate_load_file( 'includes/class-skydonate-currency.php' );
     }
 

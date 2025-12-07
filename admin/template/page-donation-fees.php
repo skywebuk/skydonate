@@ -3,7 +3,7 @@
 
 ?>
 
-<div class="skyweb-settings-panel">
+<div class="skydonate-settings-panel">
     <form class="skydonation-donation-fees-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>

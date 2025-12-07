@@ -1,10 +1,10 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class SkyWeb_Extra_Donation extends \Elementor\Widget_Base {
+class Skydonate_Extra_Donation_Widget extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_extra_donation';
+        return 'skydonate_extra_donation';
     }
 
     public function get_title() {
@@ -16,7 +16,7 @@ class SkyWeb_Extra_Donation extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     public function get_script_depends() {
@@ -165,15 +165,15 @@ class SkyWeb_Extra_Donation extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
         $title = esc_html($settings['donation_title']);
 
-        echo '<div class="skyweb-extra-donation-widget">';
+        echo '<div class="skydonate-extra-donation-widget">';
 
         if( !empty($title) ){
             echo '<h3>' . $title . '</h3>';
         }
 
-        // Display donation items if Skyweb_Extra_Donation exists
-        if (class_exists('Skyweb_Extra_Donation_Settings')) {
-            $donation_class = new Skyweb_Extra_Donation_Settings();
+        // Display donation items if Skydonate_Extra_Donation exists
+        if (class_exists('Skydonate_Extra_Donation')) {
+            $donation_class = new Skydonate_Extra_Donation();
             echo $donation_class->render_donation_shortcode();
         }
 

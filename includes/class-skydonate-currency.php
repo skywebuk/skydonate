@@ -3,9 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'Skyweb_Currency_Changer' ) ) :
+if ( ! class_exists( 'Skydonate_Currency_Changer' ) ) :
 
-class Skyweb_Currency_Changer {
+class Skydonate_Currency_Changer {
     
     private $api_url;
 
@@ -25,11 +25,11 @@ class Skyweb_Currency_Changer {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
 
         // AJAX handlers
-        add_action('wp_ajax_skyweb_change_currency', [$this, 'ajax_change_currency']);
-        add_action('wp_ajax_nopriv_skyweb_change_currency', [$this, 'ajax_change_currency']);
+        add_action('wp_ajax_skydonate_change_currency', [$this, 'ajax_change_currency']);
+        add_action('wp_ajax_nopriv_skydonate_change_currency', [$this, 'ajax_change_currency']);
 
-        add_action('wp_ajax_skyweb_update_amount_on_currency', [$this, 'skyweb_update_amount_on_currency']);
-        add_action('wp_ajax_nopriv_skyweb_update_amount_on_currency', [$this, 'skyweb_update_amount_on_currency']);
+        add_action('wp_ajax_skydonate_update_amount_on_currency', [$this, 'skydonate_update_amount_on_currency']);
+        add_action('wp_ajax_nopriv_skydonate_update_amount_on_currency', [$this, 'skydonate_update_amount_on_currency']);
 
         // WooCommerce currency filter
         add_filter('woocommerce_currency', [$this, 'set_woocommerce_currency']);
@@ -39,15 +39,15 @@ class Skyweb_Currency_Changer {
         
         // Schedule daily update
         add_action('wp', [$this, 'schedule_currency_update']);
-        add_action('skyweb_update_currency_rates', [$this, 'update_currency_rates']);
+        add_action('skydonate_update_currency_rates', [$this, 'update_currency_rates']);
     }
 
     /**
      * Schedule the daily event
      */
     public function schedule_currency_update() {
-        if ( ! wp_next_scheduled( 'skyweb_update_currency_rates' ) ) {
-            wp_schedule_event( time(), 'daily', 'skyweb_update_currency_rates' );
+        if ( ! wp_next_scheduled( 'skydonate_update_currency_rates' ) ) {
+            wp_schedule_event( time(), 'daily', 'skydonate_update_currency_rates' );
         }
     }
 
@@ -70,7 +70,7 @@ class Skyweb_Currency_Changer {
             foreach ( $data['data'] as $code => $rate_info ) {
                 $formatted[ $code ] = floatval( $rate_info['value'] );
             }
-            update_option( 'skyweb_currency_rates', [
+            update_option( 'skydonate_currency_rates', [
                 'timestamp' => time(),
                 'rates'     => $formatted,
             ] );
@@ -81,7 +81,7 @@ class Skyweb_Currency_Changer {
      * Retrieve the full saved rates array
      */
     public static function get_saved_rates() {
-        $data = get_option( 'skyweb_currency_rates', [] );
+        $data = get_option( 'skydonate_currency_rates', [] );
         return $data['rates'] ?? [];
     }
 
@@ -128,24 +128,24 @@ class Skyweb_Currency_Changer {
      */
     public function enqueue_scripts() {
         wp_enqueue_style(
-            'skyweb-currency',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/css/currency.css',
+            'skydonate-currency',
+            SKYDONATE_ASSETS . '/css/currency.css',
             [],
-            SKYWEB_DONATION_SYSTEM_VERSION
+            SKYDONATE_VERSION
         );
 
         wp_enqueue_script(
-            'skyweb-currency',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/js/currency.js',
+            'skydonate-currency',
+            SKYDONATE_ASSETS . '/js/currency.js',
             ['jquery'],
-            SKYWEB_DONATION_SYSTEM_VERSION,
+            SKYDONATE_VERSION,
             true
         );
 
-        wp_localize_script('skyweb-currency', 'skyweb_currency_changer_ajax', [
+        wp_localize_script('skydonate-currency', 'skydonate_currency_changer_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skyweb_currency_changer_nonce'),
-            'rates'    => Skyweb_Currency_Changer::get_saved_rates(),
+            'nonce'    => wp_create_nonce('skydonate_currency_changer_nonce'),
+            'rates'    => Skydonate_Currency_Changer::get_saved_rates(),
             'woocommerce_currency' => get_option('woocommerce_currency')
         ]);
     }
@@ -155,26 +155,26 @@ class Skyweb_Currency_Changer {
      */
     public function maybe_set_currency_cookie() {
         // Skip if cookie already exists
-        if (isset($_COOKIE['skyweb_selected_currency'])) {
+        if (isset($_COOKIE['skydonate_selected_currency'])) {
             return;
         }
 
-        $geo_enabled = get_option('skyweb_geo_currency_enabled', 0);
-        $geo_mode = get_option('skyweb_geo_currency_mode', 'all'); // 'all' or 'selected'
-        $geo_default_all = get_option('skyweb_geo_default_all', 0); // Show all currencies by default
+        $geo_enabled = get_option('skydonate_geo_currency_enabled', 0);
+        $geo_mode = get_option('skydonate_geo_currency_mode', 'all'); // 'all' or 'selected'
+        $geo_default_all = get_option('skydonate_geo_default_all', 0); // Show all currencies by default
 
         // If default-all is enabled, just use all currencies
         if ($geo_default_all) {
             $selected_currencies = array_keys(get_woocommerce_currencies());
             $currency_to_set = get_woocommerce_currency(); // Default WooCommerce currency
         } else {
-            $selected_currencies = (array) get_option('skyweb_selected_currency', []);
+            $selected_currencies = (array) get_option('skydonate_selected_currency', []);
             $currency_to_set = get_woocommerce_currency();
 
             // Geolocation detection
             if ($geo_enabled) {
-                $country_code = Skyweb_Donation_Functions::get_user_country_name('code');
-                $detected_currency = Skyweb_Donation_Functions::get_currency_by_country_code($country_code);
+                $country_code = Skydonate_Functions::get_user_country_name('code');
+                $detected_currency = Skydonate_Functions::get_currency_by_country_code($country_code);
 
                 if ($geo_mode === 'all' && !empty($detected_currency)) {
                     $currency_to_set = $detected_currency;
@@ -192,7 +192,7 @@ class Skyweb_Currency_Changer {
         // Set cookie
         if (!headers_sent()) {
             setcookie(
-                'skyweb_selected_currency',
+                'skydonate_selected_currency',
                 $currency_to_set,
                 time() + MONTH_IN_SECONDS,
                 COOKIEPATH ?: '/',
@@ -201,7 +201,7 @@ class Skyweb_Currency_Changer {
                 true
             );
         }
-        $_COOKIE['skyweb_selected_currency'] = $currency_to_set;
+        $_COOKIE['skydonate_selected_currency'] = $currency_to_set;
     }
 
     /**
@@ -210,11 +210,11 @@ class Skyweb_Currency_Changer {
     public static function currency_changer() {
         $post_id = get_the_ID();
         $donation_currency_override = get_post_meta($post_id, '_donation_currency_override', true);
-        $selected_currencies = (array) get_option('skyweb_selected_currency', []);
+        $selected_currencies = (array) get_option('skydonate_selected_currency', []);
         $default_currency = get_woocommerce_currency();
 
         // Include all currencies if default-all is enabled
-        $geo_default_all = get_option('skyweb_geo_default_all', 0);
+        $geo_default_all = get_option('skydonate_geo_default_all', 0);
         if ($geo_default_all) {
             $selected_currencies = array_keys(get_woocommerce_currencies());
         }
@@ -225,14 +225,14 @@ class Skyweb_Currency_Changer {
         }
 
         // Detect user country → map to currency
-        $geo_enabled = get_option('skyweb_geo_currency_enabled', 0);
-        $geo_mode = get_option('skyweb_geo_currency_mode', 'all');
-        $country_code = Skyweb_Donation_Functions::get_user_country_name('code');
-        $detected_currency = Skyweb_Donation_Functions::get_currency_by_country_code($country_code);
+        $geo_enabled = get_option('skydonate_geo_currency_enabled', 0);
+        $geo_mode = get_option('skydonate_geo_currency_mode', 'all');
+        $country_code = Skydonate_Functions::get_user_country_name('code');
+        $detected_currency = Skydonate_Functions::get_currency_by_country_code($country_code);
         
 
-        if (!empty($_COOKIE['skyweb_selected_currency'])) {
-            $current_currency = sanitize_text_field($_COOKIE['skyweb_selected_currency']);
+        if (!empty($_COOKIE['skydonate_selected_currency'])) {
+            $current_currency = sanitize_text_field($_COOKIE['skydonate_selected_currency']);
         } elseif ($geo_enabled) {
             if ($geo_mode === 'all' && !empty($detected_currency)) {
                 $current_currency = $detected_currency;
@@ -241,7 +241,7 @@ class Skyweb_Currency_Changer {
             } else {
                 $current_currency = $default_currency;
             }
-            $_COOKIE['skyweb_selected_currency'] = $current_currency;
+            $_COOKIE['skydonate_selected_currency'] = $current_currency;
         } else {
             $current_currency = $default_currency;
         }
@@ -258,10 +258,10 @@ class Skyweb_Currency_Changer {
         
 
         // --- Build markup ---
-        $html  = '<div class="skyweb-currency-wrapper '.($disable_switcher ? 'switcher-off' : 'switcher-on').'">';
+        $html  = '<div class="skydonate-currency-wrapper '.($disable_switcher ? 'switcher-off' : 'switcher-on').'">';
         $html .= '<div class="currency-symbol"><span class="currency-symbol">' . esc_html(get_woocommerce_currency_symbol($current_currency)) . '</span></div>';
         if(!$disable_switcher):
-        $html .= '<select class="skyweb-currency-select" style="position:absolute;">';
+        $html .= '<select class="skydonate-currency-select" style="position:absolute;">';
         foreach ($selected_currencies as $currency) {
             $symbol = get_woocommerce_currency_symbol($currency);
             $name   = $all_currencies[$currency] ?? $currency;
@@ -279,7 +279,7 @@ class Skyweb_Currency_Changer {
      * AJAX handler for currency change
      */
     public function ajax_change_currency() {
-        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'skyweb_currency_changer_nonce')) {
+        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'skydonate_currency_changer_nonce')) {
             wp_send_json_error('Invalid nonce');
         }
 
@@ -292,7 +292,7 @@ class Skyweb_Currency_Changer {
         // Save in cookie (1 month - consistent with initial cookie)
         if (!headers_sent()) {
             setcookie(
-                'skyweb_selected_currency',
+                'skydonate_selected_currency',
                 $currency,
                 time() + MONTH_IN_SECONDS,
                 COOKIEPATH ?: '/',
@@ -301,14 +301,14 @@ class Skyweb_Currency_Changer {
                 true
             );
         }
-        $_COOKIE['skyweb_selected_currency'] = $currency;
+        $_COOKIE['skydonate_selected_currency'] = $currency;
 
         wp_send_json_success(['currency' => $currency]);
     }
 
-    public function skyweb_update_amount_on_currency() {
+    public function skydonate_update_amount_on_currency() {
         // Verify nonce
-        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'skyweb_currency_changer_nonce')) {
+        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'skydonate_currency_changer_nonce')) {
             wp_send_json_error(['message' => 'Invalid nonce']);
         }
 
@@ -321,7 +321,7 @@ class Skyweb_Currency_Changer {
         $amount   = floatval($_POST['amount']); // ensure it's numeric
 
         // Get rate
-        $rate = Skyweb_Currency_Changer::get_rate('GBP', $currency);
+        $rate = Skydonate_Currency_Changer::get_rate('GBP', $currency);
 
         if (!$rate || !is_numeric($rate)) {
             wp_send_json_error(['message' => 'Invalid or missing exchange rate']);
@@ -350,18 +350,18 @@ class Skyweb_Currency_Changer {
             return $currency;
         }
 
-        if (!empty($_COOKIE['skyweb_selected_currency'])) {
-            return sanitize_text_field($_COOKIE['skyweb_selected_currency']);
+        if (!empty($_COOKIE['skydonate_selected_currency'])) {
+            return sanitize_text_field($_COOKIE['skydonate_selected_currency']);
         }
 
-        $geo_enabled = get_option('skyweb_geo_currency_enabled', 0);
-        $geo_mode = get_option('skyweb_geo_currency_mode', 'all');
-        $geo_default_all = get_option('skyweb_geo_default_all', 0);
+        $geo_enabled = get_option('skydonate_geo_currency_enabled', 0);
+        $geo_mode = get_option('skydonate_geo_currency_mode', 'all');
+        $geo_default_all = get_option('skydonate_geo_default_all', 0);
 
         if ($geo_enabled) {
-            $country_code = Skyweb_Donation_Functions::get_user_country_name('code');
-            $detected_currency = Skyweb_Donation_Functions::get_currency_by_country_code($country_code);
-            $selected_currencies = (array) get_option('skyweb_selected_currency', []);
+            $country_code = Skydonate_Functions::get_user_country_name('code');
+            $detected_currency = Skydonate_Functions::get_currency_by_country_code($country_code);
+            $selected_currencies = (array) get_option('skydonate_selected_currency', []);
 
             if ($geo_mode === 'all' && !empty($detected_currency)) {
                 return $detected_currency;
@@ -377,7 +377,7 @@ class Skyweb_Currency_Changer {
      * Call this method from the main plugin file's deactivation hook
      */
     public static function deactivate() {
-        wp_clear_scheduled_hook( 'skyweb_update_currency_rates' );
+        wp_clear_scheduled_hook( 'skydonate_update_currency_rates' );
     }
 }
 

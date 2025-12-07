@@ -4,9 +4,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
+class Skydonate_Zakat_Calculator extends \Elementor\Widget_Base {
     public function get_name() {
-        return 'skyweb_donation_zakat_calculator';
+        return 'skydonate_zakat_calculator';
     }
     public function get_title() {
         return __('Zakat Calculator', 'skydonate');
@@ -15,7 +15,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         return 'eicon-table';
     }
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }                                                                                                                                                          
     public function get_style_depends() {                                                                                                                           
         return [                                                                                                                                                    
@@ -242,11 +242,11 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'product_title',
             [
-                'label' => esc_html__('Select Donation Form', 'skyweb'),
-                'description' => esc_html__('Select a donation form for donate now button', 'skyweb'),
+                'label' => esc_html__('Select Donation Form', 'skydonate'),
+                'description' => esc_html__('Select a donation form for donate now button', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT,
                 'multiple' => true,
-                'options' => SkyWeb_Donation_Addons::Get_Title('product'),
+                'options' => Skydonate_Elementor_Addons::Get_Title('product'),
             ]
         );
         
@@ -272,7 +272,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'preview_section_style',
             [
-                'label' => __( 'Preview Section', 'skyweb' ),
+                'label' => __( 'Preview Section', 'skydonate' ),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -281,7 +281,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'preview_color',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .zakat-calculator .zakat-preview' => 'color: {{VALUE}};',
@@ -294,7 +294,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'preview_background',
-                'label' => __( 'Background', 'skyweb' ),
+                'label' => __( 'Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} .zakat-calculator .zakat-preview',
             ]
@@ -304,19 +304,19 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'preview_text_align',
             [
-                'label' => __( 'Text Align', 'skyweb' ),
+                'label' => __( 'Text Align', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::CHOOSE,
                 'options' => [
                     'left' => [
-                        'title' => __( 'Left', 'skyweb' ),
+                        'title' => __( 'Left', 'skydonate' ),
                         'icon' => 'eicon-text-align-left',
                     ],
                     'center' => [
-                        'title' => __( 'Center', 'skyweb' ),
+                        'title' => __( 'Center', 'skydonate' ),
                         'icon' => 'eicon-text-align-center',
                     ],
                     'right' => [
-                        'title' => __( 'Right', 'skyweb' ),
+                        'title' => __( 'Right', 'skydonate' ),
                         'icon' => 'eicon-text-align-right',
                     ],
                 ],
@@ -331,7 +331,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'preview_margin',
             [
-                'label' => __( 'Margin', 'skyweb' ),
+                'label' => __( 'Margin', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -345,7 +345,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'preview_padding',
             [
-                'label' => __( 'Padding', 'skyweb' ),
+                'label' => __( 'Padding', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -368,7 +368,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'preview_radius',
             [
-                'label' => __( 'Border Radius', 'skyweb' ),
+                'label' => __( 'Border Radius', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
@@ -395,7 +395,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'button_section_style',
             [
-                'label' => __( 'Button', 'skyweb' ),
+                'label' => __( 'Button', 'skydonate' ),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -416,7 +416,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_tab(
             'tab_button_normal',
             [
-                'label' => __( 'Normal', 'skyweb' ),
+                'label' => __( 'Normal', 'skydonate' ),
             ]
         );
     
@@ -424,7 +424,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'button_text_color',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} input[type="submit"], {{WRAPPER}} button' => 'color: {{VALUE}};',
@@ -437,7 +437,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'button_background_color',
-                'label' => __( 'Background', 'skyweb' ),
+                'label' => __( 'Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} input[type="submit"], {{WRAPPER}} button',
             ]
@@ -447,7 +447,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_margin',
             [
-                'label' => __( 'Margin', 'skyweb' ),
+                'label' => __( 'Margin', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -461,7 +461,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_padding',
             [
-                'label' => __( 'Padding', 'skyweb' ),
+                'label' => __( 'Padding', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -484,7 +484,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_radius',
             [
-                'label' => __( 'Border Radius', 'skyweb' ),
+                'label' => __( 'Border Radius', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
@@ -507,7 +507,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_height',
             [
-                'label' => __( 'Height', 'skyweb' ),
+                'label' => __( 'Height', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%' ],
                 'range' => [
@@ -531,7 +531,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_width',
             [
-                'label' => __( 'Width', 'skyweb' ),
+                'label' => __( 'Width', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%' ],
                 'range' => [
@@ -555,19 +555,19 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'button_floting',
             [
-                'label' => __( 'Button Floating', 'skyweb' ),
+                'label' => __( 'Button Floating', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::CHOOSE,
                 'options' => [
                     'left' => [
-                        'title' => __( 'Left', 'skyweb' ),
+                        'title' => __( 'Left', 'skydonate' ),
                         'icon' => 'eicon-text-align-left',
                     ],
                     'none' => [
-                        'title' => __( 'None', 'skyweb' ),
+                        'title' => __( 'None', 'skydonate' ),
                         'icon' => 'eicon-text-align-center',
                     ],
                     'right' => [
-                        'title' => __( 'Right', 'skyweb' ),
+                        'title' => __( 'Right', 'skydonate' ),
                         'icon' => 'eicon-text-align-right',
                     ],
                 ],
@@ -585,7 +585,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_tab(
             'tab_button_hover',
             [
-                'label' => __( 'Hover', 'skyweb' ),
+                'label' => __( 'Hover', 'skydonate' ),
             ]
         );
     
@@ -593,7 +593,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'button_hover_color',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} input[type="submit"]:hover, {{WRAPPER}} button:hover' => 'color: {{VALUE}};',
@@ -606,7 +606,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'button_hover_background',
-                'label' => __( 'Hover Background', 'skyweb' ),
+                'label' => __( 'Hover Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} input[type="submit"]:hover, {{WRAPPER}} button:hover',
             ]
@@ -616,7 +616,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'button_hover_border_color',
             [
-                'label' => __( 'Border Color', 'skyweb' ),
+                'label' => __( 'Border Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} input[type="submit"]:hover, {{WRAPPER}} button:hover' => 'border-color: {{VALUE}};',
@@ -645,7 +645,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'input_style_section',
             [
-                'label' => __( 'Input Field', 'skyweb' ),
+                'label' => __( 'Input Field', 'skydonate' ),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -656,7 +656,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_tab(
             'tab_input_normal',
             [
-                'label' => __( 'Normal', 'skyweb' ),
+                'label' => __( 'Normal', 'skydonate' ),
             ]
         );
 
@@ -671,7 +671,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_control(
             'input_text_color',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .zakat-calculator select, {{WRAPPER}} .zakat-calculator input[type="text"], {{WRAPPER}} .zakat-calculator input[type="email"], {{WRAPPER}} .zakat-calculator input[type="url"], {{WRAPPER}} .zakat-calculator input[type="password"], {{WRAPPER}} .zakat-calculator input[type="search"], {{WRAPPER}} .zakat-calculator input[type="number"], {{WRAPPER}} .zakat-calculator input[type="tel"], {{WRAPPER}} .zakat-calculator input[type="date"], {{WRAPPER}} .zakat-calculator input[type="month"], {{WRAPPER}} .zakat-calculator input[type="week"], {{WRAPPER}} .zakat-calculator input[type="time"], {{WRAPPER}} .zakat-calculator input[type="datetime"], {{WRAPPER}} .zakat-calculator input[type="datetime-local"], {{WRAPPER}} .zakat-calculator input[type="color"], {{WRAPPER}} .zakat-calculator textarea, {{WRAPPER}} .zakat-calculator ::placeholder' => 'color: {{VALUE}};',
@@ -683,7 +683,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'input_background_color',
-                'label' => __( 'Background', 'skyweb' ),
+                'label' => __( 'Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} .zakat-calculator select, {{WRAPPER}} .zakat-calculator input[type="text"], {{WRAPPER}} .zakat-calculator input[type="email"], {{WRAPPER}} .zakat-calculator input[type="url"], {{WRAPPER}} .zakat-calculator input[type="password"], {{WRAPPER}} .zakat-calculator input[type="search"], {{WRAPPER}} .zakat-calculator input[type="number"], {{WRAPPER}} .zakat-calculator input[type="tel"], {{WRAPPER}} .zakat-calculator input[type="date"], {{WRAPPER}} .zakat-calculator input[type="month"], {{WRAPPER}} .zakat-calculator input[type="week"], {{WRAPPER}} .zakat-calculator input[type="time"], {{WRAPPER}} .zakat-calculator input[type="datetime"], {{WRAPPER}} .zakat-calculator input[type="datetime-local"], {{WRAPPER}} .zakat-calculator input[type="color"], {{WRAPPER}} .zakat-calculator textarea'
             ]
@@ -692,7 +692,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_margin',
             [
-                'label' => __( 'Margin', 'skyweb' ),
+                'label' => __( 'Margin', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -705,7 +705,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_padding',
             [
-                'label' => __( 'Padding', 'skyweb' ),
+                'label' => __( 'Padding', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors' => [
@@ -726,7 +726,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_radius',
             [
-                'label' => __( 'Border Radius', 'skyweb' ),
+                'label' => __( 'Border Radius', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
@@ -739,7 +739,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_box_height',
             [
-                'label' => __( 'Height', 'skyweb' ),
+                'label' => __( 'Height', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%' ],
                 'range' => [
@@ -762,7 +762,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_box_width',
             [
-                'label' => __( 'Width', 'skyweb' ),
+                'label' => __( 'Width', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%' ],
                 'range' => [
@@ -801,14 +801,14 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_tab(
             'tab_input_focus',
             [
-                'label' => __( 'Focus', 'skyweb' ),
+                'label' => __( 'Focus', 'skydonate' ),
             ]
         );
 
         $this->add_control(
             'input_focus_text_color',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .zakat-calculator select:focus, {{WRAPPER}} .zakat-calculator input[type="text"]:focus, {{WRAPPER}} .zakat-calculator input[type="email"]:focus, {{WRAPPER}} .zakat-calculator input[type="url"]:focus, {{WRAPPER}} .zakat-calculator input[type="password"]:focus, {{WRAPPER}} .zakat-calculator input[type="search"]:focus, {{WRAPPER}} .zakat-calculator input[type="number"]:focus, {{WRAPPER}} .zakat-calculator input[type="tel"]:focus, {{WRAPPER}} .zakat-calculator input[type="date"]:focus, {{WRAPPER}} .zakat-calculator input[type="month"]:focus, {{WRAPPER}} .zakat-calculator input[type="week"]:focus, {{WRAPPER}} .zakat-calculator input[type="time"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime-local"]:focus, {{WRAPPER}} .zakat-calculator input[type="color"]:focus, {{WRAPPER}} .zakat-calculator textarea:focus' => 'color: {{VALUE}};',
@@ -820,7 +820,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'input_focus_background_color',
-                'label' => __( 'Background', 'skyweb' ),
+                'label' => __( 'Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} .zakat-calculator select:focus, {{WRAPPER}} .zakat-calculator input[type="text"]:focus, {{WRAPPER}} .zakat-calculator input[type="email"]:focus, {{WRAPPER}} .zakat-calculator input[type="url"]:focus, {{WRAPPER}} .zakat-calculator input[type="password"]:focus, {{WRAPPER}} .zakat-calculator input[type="search"]:focus, {{WRAPPER}} .zakat-calculator input[type="number"]:focus, {{WRAPPER}} .zakat-calculator input[type="tel"]:focus, {{WRAPPER}} .zakat-calculator input[type="date"]:focus, {{WRAPPER}} .zakat-calculator input[type="month"]:focus, {{WRAPPER}} .zakat-calculator input[type="week"]:focus, {{WRAPPER}} .zakat-calculator input[type="time"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime-local"]:focus, {{WRAPPER}} .zakat-calculator input[type="color"]:focus, {{WRAPPER}} .zakat-calculator textarea:focus'
             ]
@@ -830,7 +830,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'input_focus_border',
-                'label' => __( 'Border', 'skyweb' ),
+                'label' => __( 'Border', 'skydonate' ),
                 'selector' => '{{WRAPPER}} .zakat-calculator select:focus, {{WRAPPER}} .zakat-calculator input[type="text"]:focus, {{WRAPPER}} .zakat-calculator input[type="email"]:focus, {{WRAPPER}} .zakat-calculator input[type="url"]:focus, {{WRAPPER}} .zakat-calculator input[type="password"]:focus, {{WRAPPER}} .zakat-calculator input[type="search"]:focus, {{WRAPPER}} .zakat-calculator input[type="number"]:focus, {{WRAPPER}} .zakat-calculator input[type="tel"]:focus, {{WRAPPER}} .zakat-calculator input[type="date"]:focus, {{WRAPPER}} .zakat-calculator input[type="month"]:focus, {{WRAPPER}} .zakat-calculator input[type="week"]:focus, {{WRAPPER}} .zakat-calculator input[type="time"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime"]:focus, {{WRAPPER}} .zakat-calculator input[type="datetime-local"]:focus, {{WRAPPER}} .zakat-calculator input[type="color"]:focus, {{WRAPPER}} .zakat-calculator textarea:focus',
             ]
         );
@@ -838,7 +838,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_focus_radius',
             [
-                'label' => __( 'Border Radius', 'skyweb' ),
+                'label' => __( 'Border Radius', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [
@@ -862,14 +862,14 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->start_controls_tab(
             'tab_input_hover',
             [
-                'label' => __( 'Hover', 'skyweb' ),
+                'label' => __( 'Hover', 'skydonate' ),
             ]
         );
         
         $this->add_control(
             'input_text_color_hover',
             [
-                'label' => __( 'Text Color', 'skyweb' ),
+                'label' => __( 'Text Color', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .zakat-calculator select:hover, {{WRAPPER}} .zakat-calculator input[type="text"]:hover, {{WRAPPER}} .zakat-calculator input[type="email"]:hover, {{WRAPPER}} .zakat-calculator input[type="url"]:hover, {{WRAPPER}} .zakat-calculator input[type="password"]:hover, {{WRAPPER}} .zakat-calculator input[type="search"]:hover, {{WRAPPER}} .zakat-calculator input[type="number"]:hover, {{WRAPPER}} .zakat-calculator input[type="tel"]:hover, {{WRAPPER}} .zakat-calculator input[type="date"]:hover, {{WRAPPER}} .zakat-calculator input[type="month"]:hover, {{WRAPPER}} .zakat-calculator input[type="week"]:hover, {{WRAPPER}} .zakat-calculator input[type="time"]:hover, {{WRAPPER}} .zakat-calculator input[type="datetime"]:hover, {{WRAPPER}} .zakat-calculator input[type="datetime-local"]:hover, {{WRAPPER}} .zakat-calculator input[type="color"]:hover, {{WRAPPER}} .zakat-calculator textarea:hover' => 'color: {{VALUE}};',
@@ -881,7 +881,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Background::get_type(),
             [
                 'name' => 'input_background_color_hover',
-                'label' => __( 'Background', 'skyweb' ),
+                'label' => __( 'Background', 'skydonate' ),
                 'types' => [ 'classic', 'gradient' ],
                 'selector' => '{{WRAPPER}} .zakat-calculator select:hover, {{WRAPPER}} .zakat-calculator input[type="text"]:hover, {{WRAPPER}} .zakat-calculator input[type="email"]:hover, {{WRAPPER}} .zakat-calculator input[type="url"]:hover, {{WRAPPER}} .zakat-calculator input[type="password"]:hover, {{WRAPPER}} .zakat-calculator input[type="search"]:hover, {{WRAPPER}} .zakat-calculator input[type="number"]:hover, {{WRAPPER}} .zakat-calculator input[type="tel"]:hover, {{WRAPPER}} .zakat-calculator input[type="date"]:hover, {{WRAPPER}} .zakat-calculator input[type="month"]:hover, {{WRAPPER}} .zakat-calculator input[type="week"]:hover, {{WRAPPER}} .zakat-calculator input[type="time"]:hover, {{WRAPPER}} .zakat-calculator input[type="datetime"]:hover, {{WRAPPER}} .zakat-calculator input[type="datetime-local"]:hover, {{WRAPPER}} .zakat-calculator input[type="color"]:hover, {{WRAPPER}} .zakat-calculator textarea:hover',
             ]
@@ -898,7 +898,7 @@ class SkyWeb_Donation_Zakat_Calculator_Addons extends \Elementor\Widget_Base {
         $this->add_responsive_control(
             'input_radius_hover',
             [
-                'label' => __( 'Border Radius', 'skyweb' ),
+                'label' => __( 'Border Radius', 'skydonate' ),
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%' ],
                 'selectors' => [

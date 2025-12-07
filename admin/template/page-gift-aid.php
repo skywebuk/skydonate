@@ -30,12 +30,12 @@ $tabs = array(
 		<?php
 		switch ( $active_tab ) {
 			case 'gift-aid-export':
-				include SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/gift-aid/tab-export.php';
+				include SKYDONATE_ADMIN_PATH . '/template/gift-aid/tab-export.php';
 				break;
 
 			case 'general':
 			default:
-				include SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/template/gift-aid/tab-general.php';
+				include SKYDONATE_ADMIN_PATH . '/template/gift-aid/tab-general.php';
 				break;
 		}
 		?>

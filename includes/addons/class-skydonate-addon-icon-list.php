@@ -14,10 +14,10 @@ use Elementor\Group_Control_Text_Shadow;
 use Elementor\Icons_Manager;
 
 
-class SkyWeb_Donation_Icon_List extends Widget_Base {
+class Skydonate_Icon_List extends Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_icon_list';
+        return 'skydonate_icon_list';
     }
 
     public function get_title() {
@@ -29,15 +29,15 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     public function get_style_depends() {
-        return ['donation-icon-list', 'skyweb-swiper', 'donation-card', 'swiper-override'];
+        return ['donation-icon-list', 'skydonate-swiper', 'donation-card', 'swiper-override'];
     }
 
     public function get_script_depends() {
-        return ['donation-icon-list', 'skyweb-swiper'];
+        return ['donation-icon-list', 'skydonate-swiper'];
     }
 
     protected function register_controls() {
@@ -67,7 +67,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
             [
                 'label' => __('Donation Item', 'skydonate'),
                 'type' => Controls_Manager::SELECT,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'), // Ensure this returns product IDs
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'), // Ensure this returns product IDs
                 'default' => '',
             ]
         );
@@ -887,7 +887,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
         $settings = $this->get_settings_for_display();                                                                                         
         
         // Set base wrapper attributes                                                                                                                                   
-        $this->add_render_attribute( 'wrapper_attributes', 'class', 'skyweb-donation-icon-list' );      
+        $this->add_render_attribute( 'wrapper_attributes', 'class', 'skydonate-icon-list' );      
         
         // Handle slider settings
         if (!empty($settings['slider_on']) && $settings['slider_on'] === 'yes') {                                                                                                                      
@@ -985,7 +985,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
             return;
         }
         $action = $item['action_status'] ?? 'link';
-        echo '<div class="skyweb-donation-icon-item">';
+        echo '<div class="skydonate-icon-item">';
             if($action === 'link'){
                 $product_url = esc_url(get_permalink($product_id));
                 echo '<a href="' . $product_url . '" class="icon-action">';
@@ -1042,7 +1042,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
         $before_icon = '';
         if (isset($settings['icon_before_media_type'])) {
             if ($settings['icon_before_media_type'] === 'icon' && !empty($settings['icon_before_icon']['value'])) {
-                $before_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
+                $before_icon = Skydonate_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
             } elseif ($settings['icon_before_media_type'] === 'image' && !empty($settings['icon_before_image']['url'])) {
                 $before_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_before_image_size', 'icon_before_image');
             }
@@ -1052,7 +1052,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
         $after_icon = '';
         if (isset($settings['icon_after_media_type'])) {
             if ($settings['icon_after_media_type'] === 'icon' && !empty($settings['icon_after_icon']['value'])) {
-                $after_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
+                $after_icon = Skydonate_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
             } elseif ($settings['icon_after_media_type'] === 'image' && !empty($settings['icon_after_image']['url'])) {
                 $after_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_after_image_size', 'icon_after_image');
             }
@@ -1067,7 +1067,7 @@ class SkyWeb_Donation_Icon_List extends Widget_Base {
         ];
 
         // Build shortcode string
-        $shortcode = '[skyweb_donation_form';
+        $shortcode = '[skydonate_form';
         foreach ($atts as $key => $value) {
             if ($value !== '') {
                 $shortcode .= ' ' . $key . '="' . $value . '"';

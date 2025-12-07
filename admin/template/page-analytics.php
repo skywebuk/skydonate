@@ -2,18 +2,18 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Include dashboard class if not already included
-if ( ! class_exists( 'Skyweb_Donation_Dashboard' ) ) {
-    require_once SKYWEB_DONATION_SYSTEM_ADMIN_PATH . '/class-skydonate-dashboard.php';
+if ( ! class_exists( 'Skydonate_Dashboard' ) ) {
+    require_once SKYDONATE_ADMIN_PATH . '/class-skydonate-dashboard.php';
 }
 
 // Get dashboard data
-$comparison = Skyweb_Donation_Dashboard::get_comparison_stats( 30 );
-$monthly_data = Skyweb_Donation_Dashboard::get_monthly_donations();
-$campaigns = Skyweb_Donation_Dashboard::get_donations_by_campaign( 6 );
-$countries = Skyweb_Donation_Dashboard::get_donations_by_country( 8 );
-$distribution = Skyweb_Donation_Dashboard::get_donation_distribution();
-$top_donors = Skyweb_Donation_Dashboard::get_top_donors( 5 );
-$recent_donations = Skyweb_Donation_Dashboard::get_recent_donations( 5 );
+$comparison = Skydonate_Dashboard::get_comparison_stats( 30 );
+$monthly_data = Skydonate_Dashboard::get_monthly_donations();
+$campaigns = Skydonate_Dashboard::get_donations_by_campaign( 6 );
+$countries = Skydonate_Dashboard::get_donations_by_country( 8 );
+$distribution = Skydonate_Dashboard::get_donation_distribution();
+$top_donors = Skydonate_Dashboard::get_top_donors( 5 );
+$recent_donations = Skydonate_Dashboard::get_recent_donations( 5 );
 $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( get_option('woocommerce_currency') ) );
 
 // Prepare chart data

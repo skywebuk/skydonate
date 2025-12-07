@@ -3,10 +3,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
+class Skydonate_Gift_Aid_Toggle extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_gift_aid_toggle';
+        return 'skydonate_gift_aid_toggle';
     }
 
     public function get_title() {
@@ -18,7 +18,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return [ 'skyweb_donation' ];
+        return [ 'skydonate' ];
     }
 
     public function get_script_depends() {
@@ -63,7 +63,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'   => __( 'Gift Aid Image', 'skydonate' ),
                 'type'    => \Elementor\Controls_Manager::MEDIA,
                 'default' => [
-                    'url' => SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg',
+                    'url' => SKYDONATE_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg',
                 ],
             ]
         );
@@ -84,7 +84,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             [
                 'name'     => 'checkbox_typography',
-                'selector' => '{{WRAPPER}} .skyweb-gift-aid-toggle .checkbox',
+                'selector' => '{{WRAPPER}} .skydonate-gift-aid-toggle .checkbox',
             ]
         );
 
@@ -95,7 +95,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'     => __( 'Text Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .checkbox' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .checkbox' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -108,7 +108,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', 'em', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .checkbox' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .checkbox' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -136,7 +136,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                     'px' => [ 'min' => 0, 'max' => 500 ],
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-image img' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-image img' => 'width: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -152,7 +152,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                     'px' => [ 'min' => 0, 'max' => 500 ],
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-image img' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-image img' => 'height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -170,7 +170,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 ],
                 'default'   => 'right',
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-image' => 'float: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-image' => 'float: {{VALUE}};',
                 ],
             ]
         );
@@ -183,7 +183,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', 'em', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-image' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-image' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -196,7 +196,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', 'em', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-image' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-image' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -218,7 +218,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Typography::get_type(),
             [
                 'name'     => 'gift_aid_note_typography',
-                'selector' => '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note',
+                'selector' => '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note',
             ]
         );
 
@@ -229,7 +229,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'     => __( 'Text Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -241,7 +241,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'     => __( 'Link Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note a' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note a' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -253,7 +253,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'     => __( 'Link Hover Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note a:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note a:hover' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -270,7 +270,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                     'px' => [ 'min' => 0, 'max' => 1200 ],
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'width: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -282,7 +282,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'label'     => __( 'Background Color', 'skydonate' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -295,7 +295,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', 'em', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -308,7 +308,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', 'em', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -318,7 +318,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name'     => 'gift_aid_note_border',
-                'selector' => '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note',
+                'selector' => '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note',
             ]
         );
 
@@ -330,7 +330,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
                 'type'       => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -340,7 +340,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
                 'name'     => 'gift_aid_note_box_shadow',
-                'selector' => '{{WRAPPER}} .skyweb-gift-aid-toggle .gift-aid-note',
+                'selector' => '{{WRAPPER}} .skydonate-gift-aid-toggle .gift-aid-note',
             ]
         );
 
@@ -360,7 +360,7 @@ class SkyWeb_Gift_Aid_Toggle extends \Elementor\Widget_Base {
             $gift_aid_checked = get_user_meta($user_id, 'gift_aid_status', true) === 'no' ? '' : 'checked';
         }
         ?>
-        <div class="skyweb-gift-aid-toggle">
+        <div class="skydonate-gift-aid-toggle">
             <?php if ($image): ?>
                 <div class="gift-aid-image">
                     <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($label); ?>" />

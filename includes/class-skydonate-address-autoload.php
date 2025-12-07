@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-class Skyweb_Donation_Address_Autoload {
+class Skydonate_Address_Autoload {
 
 	private static $instance = null;
 
@@ -57,11 +57,11 @@ class Skyweb_Donation_Address_Autoload {
 		if ( empty( $api_key ) ) return;
 
 		// Register empty script for inline JS
-		wp_register_script( 'skyweb-address-autoload', '', ['jquery'], null, true );
-		wp_enqueue_script( 'skyweb-address-autoload' );
+		wp_register_script( 'skydonate-address-autoload', '', ['jquery'], null, true );
+		wp_enqueue_script( 'skydonate-address-autoload' );
 
 		// Inline JS for autocomplete
-		wp_add_inline_script( 'skyweb-address-autoload', "
+		wp_add_inline_script( 'skydonate-address-autoload', "
 			function bf_wc_address_autocomplete() {
 				var fields = {
 					'billing_address_1': document.getElementById('billing_address_1'),
@@ -275,7 +275,7 @@ class Skyweb_Donation_Address_Autoload {
 		wp_enqueue_script(
 			'google-places-api',
 			$script_url,
-			array( 'skyweb-address-autoload' ),
+			array( 'skydonate-address-autoload' ),
 			null,
 			true
 		);
@@ -286,4 +286,4 @@ class Skyweb_Donation_Address_Autoload {
 }
 
 // Initialize frontend autocomplete
-Skyweb_Donation_Address_Autoload::get_instance();
+Skydonate_Address_Autoload::get_instance();

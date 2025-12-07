@@ -312,7 +312,7 @@
             });
         });
 
-        $('.skyweb-address-autoload-form').on('submit', function (e) {
+        $('.skydonate-address-autoload-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
             // Serialize form data into an array of objects
@@ -383,7 +383,7 @@
 
         });
         
-        $('.skyweb-gift-aid-form').on('submit', function (e) {
+        $('.skydonate-gift-aid-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
             const $form = $(this);
@@ -398,7 +398,7 @@
                 url: skydonation_setting.ajax_url,
                 method: 'POST',
                 data: {
-                    action: 'save_skyweb_gift_aid_settings',
+                    action: 'save_skydonate_gift_aid_settings',
                     nonce: skydonation_setting.nonce,
                     formData: formData
                 },

@@ -80,21 +80,21 @@ final class SkyDonate {
 
     private function define_constants() {
 
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_VERSION', self::VERSION );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_FILE', __FILE__ );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_BASE', plugin_basename( __FILE__ ) );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_DIR_PATH', plugin_dir_path( __FILE__ ) );
+        $this->define_const( 'SKYDONATE_VERSION', self::VERSION );
+        $this->define_const( 'SKYDONATE_FILE', __FILE__ );
+        $this->define_const( 'SKYDONATE_BASE', plugin_basename( __FILE__ ) );
+        $this->define_const( 'SKYDONATE_DIR_PATH', plugin_dir_path( __FILE__ ) );
 
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_INCLUDES_PATH', SKYWEB_DONATION_SYSTEM_DIR_PATH . 'includes' );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_ADMIN_PATH', SKYWEB_DONATION_SYSTEM_DIR_PATH . 'admin' );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_PUBLIC_PATH', SKYWEB_DONATION_SYSTEM_DIR_PATH . 'public' );
+        $this->define_const( 'SKYDONATE_INCLUDES_PATH', SKYDONATE_DIR_PATH . 'includes' );
+        $this->define_const( 'SKYDONATE_ADMIN_PATH', SKYDONATE_DIR_PATH . 'admin' );
+        $this->define_const( 'SKYDONATE_PUBLIC_PATH', SKYDONATE_DIR_PATH . 'public' );
 
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_URL', plugin_dir_url( __FILE__ ) );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS', SKYWEB_DONATION_SYSTEM_URL . 'public' );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_ADMIN_ASSETS', SKYWEB_DONATION_SYSTEM_URL . 'admin/' );
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_ASSETS', SKYWEB_DONATION_SYSTEM_URL . 'public' );
+        $this->define_const( 'SKYDONATE_URL', plugin_dir_url( __FILE__ ) );
+        $this->define_const( 'SKYDONATE_PUBLIC_ASSETS', SKYDONATE_URL . 'public' );
+        $this->define_const( 'SKYDONATE_ADMIN_ASSETS', SKYDONATE_URL . 'admin/' );
+        $this->define_const( 'SKYDONATE_ASSETS', SKYDONATE_URL . 'public' );
 
-        $this->define_const( 'SKYWEB_DONATION_SYSTEM_OPTION_URL', admin_url( 'admin-post.php' ) );
+        $this->define_const( 'SKYDONATE_OPTION_URL', admin_url( 'admin-post.php' ) );
 
         // Alias constants for license system compatibility
         $this->define_const( 'SKYDONATE_VERSION', self::VERSION );
@@ -110,11 +110,11 @@ final class SkyDonate {
     }
 
     private function load_dependencies() {
-        require_once SKYWEB_DONATION_SYSTEM_INCLUDES_PATH . '/class-skydonate-system.php';
+        require_once SKYDONATE_INCLUDES_PATH . '/class-skydonate-system.php';
     }
 
     private function start_plugin() {
-        $plugin = new Skyweb_Donation_System();
+        $plugin = new Skydonate_System();
         $plugin->run();
 
         $GLOBALS['SKDS']        = $plugin;
@@ -134,7 +134,7 @@ add_action( 'plugins_loaded', function () {
  */
 register_deactivation_hook( __FILE__, function () {
     // Clear currency changer scheduled events
-    if ( class_exists( 'Skyweb_Currency_Changer' ) ) {
-        Skyweb_Currency_Changer::deactivate();
+    if ( class_exists( 'Skydonate_Currency_Changer' ) ) {
+        Skydonate_Currency_Changer::deactivate();
     }
 } );

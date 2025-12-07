@@ -385,17 +385,17 @@ input.date-picker.jui-picker {
     transform-origin: center;
 }
 
-.skyweb-gift-aid-toggle {
+.skydonate-gift-aid-toggle {
     padding-top: 5px;
 }
 
-.skyweb-gift-aid-toggle .gift-aid-image {
+.skydonate-gift-aid-toggle .gift-aid-image {
     width: 100px;
     float: right;
     margin-left: 10px;
 }
 
-.skyweb-gift-aid-toggle .gift-aid-note {
+.skydonate-gift-aid-toggle .gift-aid-note {
     margin: 24px 0 0 0;
     background: #E4F8FF;
     padding: 24px;

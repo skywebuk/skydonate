@@ -39,8 +39,8 @@ class Skydonate_System {
      * Initialize the plugin
      */
     public function __construct() {
-        if ( defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ) {
-            $this->version = SKYWEB_DONATION_SYSTEM_VERSION;
+        if ( defined( 'SKYDONATE_VERSION' ) ) {
+            $this->version = SKYDONATE_VERSION;
         } else {
             $this->version = '1.2.3';
         }
@@ -98,9 +98,9 @@ class Skydonate_System {
         $this->include_file( 'includes/class-skydonate-extra-donation.php' );
 
         // Currency changer
-        if ( get_option( 'skyweb_currency_changer_enabled', 0 ) == 1 ) {
+        if ( get_option( 'skydonate_currency_changer_enabled', 0 ) == 1 ) {
             $this->include_file( 'includes/class-skydonate-currency.php' );
-            new Skyweb_Currency_Changer();
+            new Skydonate_Currency_Changer();
         }
 
         // Notification system
@@ -301,7 +301,7 @@ class Skydonate_System {
      * @param string $file Relative path from plugin directory
      */
     private function include_file( $file ) {
-        $filepath = SKYWEB_DONATION_SYSTEM_DIR_PATH . $file;
+        $filepath = SKYDONATE_DIR_PATH . $file;
         if ( file_exists( $filepath ) ) {
             require_once $filepath;
         }

@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Metal_Values_Addons extends \Elementor\Widget_Base {
+class Skydonate_Metal_Values extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_metal_values';
+        return 'skydonate_metal_values';
     }
 
     public function get_title() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Metal_Values_Addons extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     protected function _register_controls() {

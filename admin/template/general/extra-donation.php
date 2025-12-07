@@ -1,13 +1,13 @@
 <?php
 
-$products = Skyweb_Donation_Functions::Get_Title('product', 'ids');
+$products = Skydonate_Functions::Get_Title('product', 'ids');
 
 
 $saved_donations = get_option('skydonation_extra_donation_items', []);
 
 ?>
 
-<div class="skyweb-settings-panel">
+<div class="skydonate-settings-panel">
     <form class="skydonation-extra-donation-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>

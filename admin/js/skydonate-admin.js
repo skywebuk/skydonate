@@ -73,44 +73,44 @@
 
             if (showDailyChecked) {
                 $('.daily-date-card').show();
-                $('.active-donation-frequency .skyweb-radio.daily').show();
-                $('#skyweb-donation-fields-container .skyweb-input-group.daily-field').show();
+                $('.active-donation-frequency .skydonate-radio.daily').show();
+                $('#skydonate-fields-container .skydonate-input-group.daily-field').show();
             } else {
                 $('.daily-date-card').hide();
-                $('.active-donation-frequency .skyweb-radio.daily').hide();
-                $('#skyweb-donation-fields-container .skyweb-input-group.daily-field').hide();
+                $('.active-donation-frequency .skydonate-radio.daily').hide();
+                $('#skydonate-fields-container .skydonate-input-group.daily-field').hide();
             }
 
             if (showMonthlyChecked) {
-                $('.active-donation-frequency .skyweb-radio.monthly').show();
-                $('#skyweb-donation-fields-container .skyweb-input-group.monthly-field').show();
+                $('.active-donation-frequency .skydonate-radio.monthly').show();
+                $('#skydonate-fields-container .skydonate-input-group.monthly-field').show();
             } else {
-                $('.active-donation-frequency .skyweb-radio.monthly').hide();
-                $('#skyweb-donation-fields-container .skyweb-input-group.monthly-field').hide();
+                $('.active-donation-frequency .skydonate-radio.monthly').hide();
+                $('#skydonate-fields-container .skydonate-input-group.monthly-field').hide();
             }
 
             if (showOnceChecked) {
-                $('.active-donation-frequency .skyweb-radio.once').show();
-                $('#skyweb-donation-fields-container .skyweb-input-group.once-field').show();
+                $('.active-donation-frequency .skydonate-radio.once').show();
+                $('#skydonate-fields-container .skydonate-input-group.once-field').show();
             } else {
-                $('.active-donation-frequency .skyweb-radio.once').hide();
-                $('#skyweb-donation-fields-container .skyweb-input-group.once-field').hide();
+                $('.active-donation-frequency .skydonate-radio.once').hide();
+                $('#skydonate-fields-container .skydonate-input-group.once-field').hide();
             }
 
             if (showWeeklyChecked) {
-                $('.active-donation-frequency .skyweb-radio.weekly').show();
-                $('#skyweb-donation-fields-container .skyweb-input-group.weekly-field').show();
+                $('.active-donation-frequency .skydonate-radio.weekly').show();
+                $('#skydonate-fields-container .skydonate-input-group.weekly-field').show();
             } else {
-                $('.active-donation-frequency .skyweb-radio.weekly').hide();
-                $('#skyweb-donation-fields-container .skyweb-input-group.weekly-field').hide();
+                $('.active-donation-frequency .skydonate-radio.weekly').hide();
+                $('#skydonate-fields-container .skydonate-input-group.weekly-field').hide();
             }
 
             if (showYearlyChecked) {
-                $('.active-donation-frequency .skyweb-radio.yearly').show();
-                $('#skyweb-donation-fields-container .skyweb-input-group.yearly-field').show();
+                $('.active-donation-frequency .skydonate-radio.yearly').show();
+                $('#skydonate-fields-container .skydonate-input-group.yearly-field').show();
             } else {
-                $('.active-donation-frequency .skyweb-radio.yearly').hide();
-                $('#skyweb-donation-fields-container .skyweb-input-group.yearly-field').hide();
+                $('.active-donation-frequency .skydonate-radio.yearly').hide();
+                $('#skydonate-fields-container .skydonate-input-group.yearly-field').hide();
             }
 
             // Ensure a visible radio button is selected
@@ -130,7 +130,7 @@
         
         // Add custom donation option
         $('.add_custom_option').on('click', function() {
-            var count = $('#skyweb-donation-fields-container .skyweb-donation-fields').length;
+            var count = $('#skydonate-fields-container .skydonate-fields').length;
 
             // ----- Default arrays -----
             const onceDefaults    = [50, 100, 200, 1000, 500, 300];
@@ -147,54 +147,54 @@
             const yearlyValue  = yearlyDefaults[count]  ?? 0;
 
             var newOption = `
-                <div class="skyweb-donation-fields">
+                <div class="skydonate-fields">
                     <div class="header">
                         <h4 class="title">${wp.i18n.__('Donation Option', 'skydonate')} ${count + 1}</h4>
                         <button type="button" class="action toggle-option"><span class="toggle-indicator"></span></button>
                     </div>
                     <div class="fields">
 
-                        <div class="skyweb-input-group">
+                        <div class="skydonate-input-group">
                             <label>${wp.i18n.__('Label', 'skydonate')}</label>
                             <input type="text" class="short" name="custom_option_label[]" placeholder="${wp.i18n.__('Option label', 'skydonate')}">
                         </div>
 
-                        <div class="skyweb-input-group once-field">
+                        <div class="skydonate-input-group once-field">
                             <label>${wp.i18n.__('One-Time', 'skydonate')}</label>
                             <input type="number" class="short" name="custom_option_price[]" value="${onceValue}" min="0">
                         </div>
 
-                        <div class="skyweb-input-group daily-field">
+                        <div class="skydonate-input-group daily-field">
                             <label>${wp.i18n.__('Daily', 'skydonate')}</label>
                             <input type="number" class="short" name="custom_option_daily[]" value="${dailyValue}" min="0">
                         </div>
 
-                        <div class="skyweb-input-group weekly-field">
+                        <div class="skydonate-input-group weekly-field">
                             <label>${wp.i18n.__('Weekly', 'skydonate')}</label>
                             <input type="number" class="short" name="custom_option_weekly[]" value="${weeklyValue}" min="0">
                         </div>
 
-                        <div class="skyweb-input-group monthly-field">
+                        <div class="skydonate-input-group monthly-field">
                             <label>${wp.i18n.__('Monthly', 'skydonate')}</label>
                             <input type="number" class="short" name="custom_option_monthly[]" value="${monthlyValue}" min="0">
                         </div>
 
-                        <div class="skyweb-input-group yearly-field">
+                        <div class="skydonate-input-group yearly-field">
                             <label>${wp.i18n.__('Yearly', 'skydonate')}</label>
                             <input type="number" class="short" name="custom_option_yearly[]" value="${yearlyValue}" min="0">
                         </div>
 
-                        <div class="skyweb-input-group">
+                        <div class="skydonate-input-group">
                             <label>${wp.i18n.__('Default', 'skydonate')}</label>
                             <input type="radio" name="default_option" value="${count + 1}">
                         </div>
 
-                        <div class="skyweb-input-group">
+                        <div class="skydonate-input-group">
                             <label>${wp.i18n.__('Hide', 'skydonate')}</label>
                             <input type="checkbox" name="publish_project_item[]" value="${count + 1}">
                         </div>
 
-                        <div class="skyweb-input-group">
+                        <div class="skydonate-input-group">
                             <button type="button" class="button remove_custom_option">${wp.i18n.__('Remove', 'skydonate')}</button>
                         </div>
 
@@ -202,7 +202,7 @@
                 </div>
             `;
 
-            $('#skyweb-donation-fields-container').append(newOption);
+            $('#skydonate-fields-container').append(newOption);
             toggleActionButtons();
         });
 
@@ -210,15 +210,15 @@
 
         function initCustomOptionToggle() {
             // Set default state
-            $('.skyweb-donation-fields:first-child .header').addClass('active');
-            $('.skyweb-donation-fields:not(:first-child) .fields').hide();
+            $('.skydonate-fields:first-child .header').addClass('active');
+            $('.skydonate-fields:not(:first-child) .fields').hide();
 
-            $(document).on('click', '.skyweb-donation-fields .header', function() {
+            $(document).on('click', '.skydonate-fields .header', function() {
                 var $fields = $(this).siblings('.fields');
 
                 // Close all
-                $('.skyweb-donation-fields .header').removeClass('active');
-                $('.skyweb-donation-fields .fields').slideUp();
+                $('.skydonate-fields .header').removeClass('active');
+                $('.skydonate-fields .fields').slideUp();
 
                 // If this one was closed, open it
                 if (!$fields.is(':visible')) {
@@ -233,7 +233,7 @@
 
         // Remove custom option
         $(document).on('click', '.remove_custom_option', function() {
-            $(this).closest('.skyweb-donation-fields').remove();
+            $(this).closest('.skydonate-fields').remove();
             toggleActionButtons();
         });
 
@@ -247,16 +247,16 @@
         // Make Donation Fields Sortable
         // ==============================
         if (typeof $.fn.sortable !== 'undefined') {
-            $('#skyweb-donation-fields-container').sortable({
-                items: '.skyweb-donation-fields',
+            $('#skydonate-fields-container').sortable({
+                items: '.skydonate-fields',
                 handle: '.header', // drag using header only
-                placeholder: 'skyweb-sortable-placeholder',
+                placeholder: 'skydonate-sortable-placeholder',
                 start: function (event, ui) {
                     ui.placeholder.height(ui.item.outerHeight());
                 },
                 stop: function (event, ui) {
                     // Reorder titles after sorting
-                    $('#skyweb-donation-fields-container .skyweb-donation-fields').each(function (index) {
+                    $('#skydonate-fields-container .skydonate-fields').each(function (index) {
                         $(this).find('.header .title').text('Donation Option ' + (index + 1));
                         // Update radio and checkbox values to match new order
                         $(this).find('input[name="default_option"]').val(index + 1);

@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_donation_button = function ($scope, $) {
+    var skydonate_button = function ($scope, $) {
         var $button = $scope.find('.modal-open-button'); // Find all slider items
 
         $button.on('click', function(){
@@ -23,6 +23,6 @@
 
     // Initialize Elementor hook
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_button.default', skyweb_donation_button);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_button.default', skydonate_button);
     });
 }(jQuery));

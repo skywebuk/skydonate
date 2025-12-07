@@ -22,7 +22,7 @@ class SkyDonate_Public_Scripts {
     /**
      * Constructor
      */
-    public function __construct( $version = SKYWEB_DONATION_SYSTEM_VERSION ) {
+    public function __construct( $version = SKYDONATE_VERSION ) {
         $this->version = $version;
     }
 
@@ -62,7 +62,7 @@ class SkyDonate_Public_Scripts {
         foreach ( $addon_scripts as $handle => $file ) {
             wp_register_script(
                 $handle,
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/' . $file,
+                SKYDONATE_ASSETS . '/addons/js/' . $file,
                 [ 'jquery' ],
                 $this->version,
                 true
@@ -79,7 +79,7 @@ class SkyDonate_Public_Scripts {
     private function localize_addon_scripts() {
         $ajax_data = [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'skyweb_donation_nonce' ),
+            'nonce'    => wp_create_nonce( 'skydonate_nonce' ),
             'cart_url' => function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : '',
         ];
 
@@ -97,20 +97,20 @@ class SkyDonate_Public_Scripts {
         ];
 
         foreach ( $scripts_with_cart as $handle ) {
-            wp_localize_script( $handle, 'skyweb_extra_donation_ajax', $ajax_data );
+            wp_localize_script( $handle, 'skydonate_extra_donation_ajax', $ajax_data );
         }
 
         $ajax_data_no_cart = [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'skyweb_donation_nonce' ),
+            'nonce'    => wp_create_nonce( 'skydonate_nonce' ),
         ];
 
         foreach ( $scripts_without_cart as $handle ) {
-            wp_localize_script( $handle, 'skyweb_extra_donation_ajax', $ajax_data_no_cart );
+            wp_localize_script( $handle, 'skydonate_extra_donation_ajax', $ajax_data_no_cart );
         }
 
         // Donation card specific localization
-        wp_localize_script( 'donation-card', 'skywebDonation', [
+        wp_localize_script( 'donation-card', 'skydonateDonation', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
         ] );
     }
@@ -121,15 +121,15 @@ class SkyDonate_Public_Scripts {
     private function register_core_scripts() {
         wp_register_script(
             'lity-lightbox',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/lity-min.js',
+            SKYDONATE_PUBLIC_ASSETS . '/js/lity-min.js',
             [ 'jquery' ],
             $this->version,
             true
         );
 
         wp_register_script(
-            'skyweb-swiper',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/js/swiper.min.js',
+            'skydonate-swiper',
+            SKYDONATE_ASSETS . '/js/swiper.min.js',
             [ 'jquery' ],
             '5.4.5',
             true
@@ -157,7 +157,7 @@ class SkyDonate_Public_Scripts {
         if ( is_account_page() || is_checkout() ) {
             wp_enqueue_script(
                 'wc-registration-script',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/wc-registration.js',
+                SKYDONATE_PUBLIC_ASSETS . '/js/wc-registration.js',
                 [ 'jquery' ],
                 $this->version,
                 true
@@ -170,7 +170,7 @@ class SkyDonate_Public_Scripts {
         // Single product script
         wp_enqueue_script(
             'wc-single-script',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/wc-single.js',
+            SKYDONATE_PUBLIC_ASSETS . '/js/wc-single.js',
             [ 'jquery' ],
             $this->version,
             true
@@ -179,7 +179,7 @@ class SkyDonate_Public_Scripts {
         // Frontend global script
         wp_enqueue_script(
             'sky-frontend-global',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/frontend-global.js',
+            SKYDONATE_PUBLIC_ASSETS . '/js/frontend-global.js',
             [ 'jquery' ],
             $this->version,
             true
@@ -197,7 +197,7 @@ class SkyDonate_Public_Scripts {
         if ( is_account_page() ) {
             wp_enqueue_script(
                 'account-page',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/js/account-page.js',
+                SKYDONATE_PUBLIC_ASSETS . '/js/account-page.js',
                 [ 'jquery' ],
                 $this->version,
                 true
@@ -214,7 +214,7 @@ class SkyDonate_Public_Scripts {
      * Enqueue donation form scripts based on layout
      */
     public function enqueue_donation_form_scripts() {
-        $layout = skyweb_donation_layout_option( 'addons_donation_form_layout' );
+        $layout = skydonate_layout_option( 'addons_donation_form_layout' );
 
         if ( ! is_array( $layout ) ) {
             $layout = [ 'layout1' ];
@@ -223,7 +223,7 @@ class SkyDonate_Public_Scripts {
         if ( in_array( 'layout3', $layout ) ) {
             wp_enqueue_script(
                 'donation-form',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-form-three.js',
+                SKYDONATE_ASSETS . '/addons/js/donation-form-three.js',
                 [ 'jquery' ],
                 $this->version,
                 true
@@ -231,16 +231,16 @@ class SkyDonate_Public_Scripts {
         } else {
             wp_enqueue_script(
                 'donation-form',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/js/donation-form.js',
+                SKYDONATE_ASSETS . '/addons/js/donation-form.js',
                 [ 'jquery' ],
                 $this->version,
                 true
             );
         }
 
-        wp_localize_script( 'donation-form', 'skyweb_extra_donation_ajax', [
+        wp_localize_script( 'donation-form', 'skydonate_extra_donation_ajax', [
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'skyweb_donation_nonce' ),
+            'nonce'    => wp_create_nonce( 'skydonate_nonce' ),
         ] );
     }
 

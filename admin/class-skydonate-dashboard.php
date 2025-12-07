@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Skyweb_Donation_Dashboard {
+class Skydonate_Dashboard {
 
     /**
      * Check if HPOS is enabled

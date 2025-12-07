@@ -15,7 +15,7 @@ class WC_Recent_Donations {
     }
 
     public function enqueue_recent_donations_styles() {
-        wp_enqueue_style('recent-donations',SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS. '/css/recent-donations.css');
+        wp_enqueue_style('recent-donations',SKYDONATE_PUBLIC_ASSETS. '/css/recent-donations.css');
         wp_enqueue_style('flag-icons', 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css');
     }
 

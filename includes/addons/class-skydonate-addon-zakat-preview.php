@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Zakat_Preview extends \Elementor\Widget_Base {
+class Skydonate_Zakat_Preview extends \Elementor\Widget_Base {
     
     public function get_name() {
-        return 'skyweb_donation_zakat_preview';
+        return 'skydonate_zakat_preview';
     }
 
     public function get_title() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Zakat_Preview extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     public function get_style_depends() {
@@ -57,7 +57,7 @@ class SkyWeb_Donation_Zakat_Preview extends \Elementor\Widget_Base {
             [
                 'label' => __('Target Donation', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'), // Ensure this returns product IDs
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'), // Ensure this returns product IDs
             ]
         );
 

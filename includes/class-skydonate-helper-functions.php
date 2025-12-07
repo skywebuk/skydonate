@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
-class Skyweb_Donation_Functions {
+class Skydonate_Functions {
 
     /**
      * Constructor to initialize hooks and filters.
@@ -40,8 +40,8 @@ class Skyweb_Donation_Functions {
         add_action( 'woocommerce_process_shop_order_meta', [ $this, 'save_custom_field' ], 45, 2 );
 
 
-        add_action('wp_ajax_skyweb_load_more_donations', [$this, 'skyweb_load_more_donations']);
-        add_action('wp_ajax_nopriv_skyweb_load_more_donations', [$this, 'skyweb_load_more_donations']);
+        add_action('wp_ajax_skydonate_load_more_donations', [$this, 'skydonate_load_more_donations']);
+        add_action('wp_ajax_nopriv_skydonate_load_more_donations', [$this, 'skydonate_load_more_donations']);
 
     }
 
@@ -169,7 +169,7 @@ class Skyweb_Donation_Functions {
 
     public function load_more_donations() {
         // Verify nonce for security
-        check_ajax_referer('skyweb_donation_nonce', 'nonce');
+        check_ajax_referer('skydonate_nonce', 'nonce');
 
         $product_ids = isset($_POST['product_ids']) ? json_decode(stripslashes($_POST['product_ids']), true) : [];
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
@@ -567,7 +567,7 @@ class Skyweb_Donation_Functions {
 
         // Display different titles based on attributes
         if ( ! empty( $attributes ) ) {
-            echo '<h2 class="wd-entities-title large"><a href="' . get_the_permalink() . '">' . __( 'My Name is', 'skywebdesign.co.uk' ) . ' ' . esc_html( $attributes ) . '</a></h2>';
+            echo '<h2 class="wd-entities-title large"><a href="' . get_the_permalink() . '">' . __( 'My Name is', 'skydonate' ) . ' ' . esc_html( $attributes ) . '</a></h2>';
             echo '<p class="text-white">' . esc_html( $product_title ) . '</p>';
         } else {
             echo '<h3 class="wd-entities-title large"><a href="' . get_the_permalink() . '">' . esc_html( $product_title ) . '</a></h3>';
@@ -797,9 +797,9 @@ class Skyweb_Donation_Functions {
         echo '</button>';
     }
 
-    public function skyweb_load_more_donations() {
+    public function skydonate_load_more_donations() {
         // Verify nonce for security
-        check_ajax_referer('skyweb_donation_nonce', 'nonce');
+        check_ajax_referer('skydonate_nonce', 'nonce');
 
         // Sanitize inputs
         $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
@@ -814,7 +814,7 @@ class Skyweb_Donation_Functions {
         }
 
         // Layout detection
-        $layout = skyweb_donation_layout_option('recent_donation_layout');
+        $layout = skydonate_layout_option('recent_donation_layout');
         if (!is_array($layout)) {
             $layout = ['layout1'];
         }
@@ -823,13 +823,13 @@ class Skyweb_Donation_Functions {
         $fetch_limit = $offset + $limit;
 
         if ($type === 'top') {
-            $order_ids = Skyweb_Donation_Functions::get_top_amount_orders_by_product_ids(
+            $order_ids = Skydonate_Functions::get_top_amount_orders_by_product_ids(
                 $product_ids,
                 ['wc-completed'],
                 $fetch_limit
             );
         } else {
-            $order_ids = Skyweb_Donation_Functions::get_orders_ids_by_product_id(
+            $order_ids = Skydonate_Functions::get_orders_ids_by_product_id(
                 $product_ids,
                 ['wc-completed'],
                 $fetch_limit
@@ -853,13 +853,13 @@ class Skyweb_Donation_Functions {
 
         if (in_array('layout2', $layout)) {
             $list_icon = isset($_POST['list_icon']) ? wp_kses_post(stripslashes($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
-            Skyweb_Donation_Functions::render_recent_donations_item_layout_two(
+            Skydonate_Functions::render_recent_donations_item_layout_two(
                 $paged_order_ids,
                 $product_ids,
                 $list_icon
             );
         } else {
-            Skyweb_Donation_Functions::render_recent_donations_item_layout_one(
+            Skydonate_Functions::render_recent_donations_item_layout_one(
                 $paged_order_ids,
                 $product_ids,
                 false
@@ -981,4 +981,4 @@ class Skyweb_Donation_Functions {
 }
 
 // Initialize the class
-new Skyweb_Donation_Functions();
+new Skydonate_Functions();

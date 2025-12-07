@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
 
-<div class="skyweb-settings-panel">
+<div class="skydonate-settings-panel">
     <form method="post" action="" class="skydonation-colors-form">
         <table class="form-table">
 

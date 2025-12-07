@@ -4,9 +4,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Zakat_Calculator_Classic extends \Elementor\Widget_Base {
+class Skydonate_Zakat_Calculator_Classic extends \Elementor\Widget_Base {
     public function get_name() {
-        return 'skyweb_donation_zakat_calculator_classic';
+        return 'skydonate_zakat_calculator_classic';
     }
     public function get_title() {
         return __('Classic Zakat Calculator', 'skydonate');
@@ -15,7 +15,7 @@ class SkyWeb_Donation_Zakat_Calculator_Classic extends \Elementor\Widget_Base {
         return 'eicon-table';
     }
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }                                                                                                                                                          
     public function get_style_depends() {                                                                                                                           
         return [                                                                                                                                                    

@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
+class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_recent_orders_2';
+        return 'skydonate_recent_orders_2';
     }
 
     public function get_title() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }        
     
     public function get_style_depends() {                                                                                                                           
@@ -60,7 +60,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Product Title', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true, // Allow multiple product selection
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'), // Make sure this returns product IDs
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'), // Make sure this returns product IDs
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -76,7 +76,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Category', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_cat'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_cat'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -92,7 +92,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Tag', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_tag'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_tag'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -102,7 +102,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
         );
 
         $this->add_control("post_limit", [
-            "label" => __("Limit", "skyweb"),
+            "label" => __("Limit", "skydonate"),
             "type" => \Elementor\Controls_Manager::NUMBER,
             "default" => 8,
             "separator" => "before",
@@ -147,7 +147,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Image', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::MEDIA,
                 'default' => [
-                    'url' => SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/img/give-hand.svg',
+                    'url' => SKYDONATE_PUBLIC_ASSETS . '/img/give-hand.svg',
                 ],
                 'condition' => [
                     'recent_icon_media_type' => 'image',
@@ -255,7 +255,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
         $this->add_control(
             'see_all_limit',
             [
-                'label'   => __( 'Limit', 'skyweb' ),
+                'label'   => __( 'Limit', 'skydonate' ),
                 'type'    => \Elementor\Controls_Manager::NUMBER,
                 'default' => 20,
             ]
@@ -454,7 +454,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
         $see_all_limit = $settings['see_all_limit'] ?: 20;
         $no_donations_message = esc_html($settings['no_donations_message']);
         $all_button_text = $settings['all_donate_button_text'] ?? __('See All', 'skydonate');
-        $all_button_icon = Skyweb_Addons_Icon_manager::render_icon($settings['all_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
+        $all_button_icon = Skydonate_Icon_Manager::render_icon($settings['all_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
         if ((!$filter_product_title && !$filter_category && !$filter_tag)) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
             return;
@@ -462,8 +462,8 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
         // Collect product IDs based on filters
         $product_ids = array_merge(
             $filter_product_title, 
-            Skyweb_Donation_Functions::get_product_ids_by_multiple_taxonomies($filter_category, 'product_cat'),
-            Skyweb_Donation_Functions::get_product_ids_by_multiple_taxonomies($filter_tag, 'product_tag')
+            Skydonate_Functions::get_product_ids_by_multiple_taxonomies($filter_category, 'product_cat'),
+            Skydonate_Functions::get_product_ids_by_multiple_taxonomies($filter_tag, 'product_tag')
         );
 
 
@@ -473,7 +473,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                 $settings['recent_icon_media_type'] === 'icon' &&
                 !empty($settings['recent_icon_icon']['value'])
             ) {
-                $list_icon = Skyweb_Addons_Icon_Manager::render_icon(
+                $list_icon = Skydonate_Icon_Manager::render_icon(
                     $settings['recent_icon_icon'],
                     ['aria-hidden' => 'true']
                 );
@@ -531,11 +531,11 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
         echo '<div '.$this->get_render_attribute_string( "wrapper_attributes" ).'>';
             if ($product_ids) {
                 echo '<div class="sky-default-donations" >';
-                    $order_ids = Skyweb_Donation_Functions::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $post_limit);
+                    $order_ids = Skydonate_Functions::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $post_limit);
                     if (!empty($order_ids)) {
                         echo '<div class="sky-recent-donations-list">';
                             echo '<ul class="sky-donations-orders">';
-                                Skyweb_Donation_Functions::render_recent_donations_item_layout_two($order_ids, $product_ids, $list_icon);
+                                Skydonate_Functions::render_recent_donations_item_layout_two($order_ids, $product_ids, $list_icon);
                             echo '</ul>';
                         echo '</div>';
                     } else {
@@ -560,7 +560,7 @@ class SkyWeb_Donation_Recent_Order_Addon_2 extends \Elementor\Widget_Base {
                                     echo '<div class="sky-recent-donations-list">';
                                         echo '<ul class="sky-donations-orders"></ul>';
                                         echo '<div class="items-loader">';
-                                            echo Skyweb_Donation_Functions::loader_icon();
+                                            echo Skydonate_Functions::loader_icon();
                                         echo '</div>';
                                     echo '</div>';
                                 echo '</div>';

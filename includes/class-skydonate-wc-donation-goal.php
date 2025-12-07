@@ -13,7 +13,7 @@ class WC_Donation_Goal {
     }
 
     public function enqueue_donation_goal_styles() {
-        wp_enqueue_style('donation-goal', SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS. '/css/donation-goal.css');
+        wp_enqueue_style('donation-goal', SKYDONATE_PUBLIC_ASSETS. '/css/donation-goal.css');
     }
 
     public function add_target_sales_meta_box() {

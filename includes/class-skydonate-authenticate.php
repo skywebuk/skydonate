@@ -23,7 +23,7 @@
  * @subpackage SkyDonate/includes
  * @author     Sky Web Design <shafiq6171@gmail.com>
  */
-include_once SKYWEB_DONATION_SYSTEM_INCLUDES_PATH . '/class-skydonate-authenticate-base.php';
+include_once SKYDONATE_INCLUDES_PATH . '/class-skydonate-authenticate-base.php';
 
 class Skydonate_Authenticate extends Skydonate_Authenticator_Base {
 

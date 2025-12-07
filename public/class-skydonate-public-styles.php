@@ -22,7 +22,7 @@ class SkyDonate_Public_Styles {
     /**
      * Constructor
      */
-    public function __construct( $version = SKYWEB_DONATION_SYSTEM_VERSION ) {
+    public function __construct( $version = SKYDONATE_VERSION ) {
         $this->version = $version;
     }
 
@@ -61,7 +61,7 @@ class SkyDonate_Public_Styles {
         foreach ( $addon_styles as $handle => $file ) {
             wp_register_style(
                 $handle,
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/' . $file,
+                SKYDONATE_ASSETS . '/addons/css/' . $file,
                 [],
                 $this->version
             );
@@ -73,22 +73,22 @@ class SkyDonate_Public_Styles {
      */
     private function register_core_styles() {
         wp_register_style(
-            'skyweb-swiper',
-            SKYWEB_DONATION_SYSTEM_ASSETS . '/css/swiper.min.css',
+            'skydonate-swiper',
+            SKYDONATE_ASSETS . '/css/swiper.min.css',
             [],
             '5.4.5'
         );
 
         wp_register_style(
             'swiper-override',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/swiper-override.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/swiper-override.css',
             [],
             $this->version
         );
 
         wp_register_style(
             'lity-lightbox',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/lity-min.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/lity-min.css',
             [],
             $this->version
         );
@@ -119,7 +119,7 @@ class SkyDonate_Public_Styles {
         // Additional fees
         wp_enqueue_style(
             'additional-fees-styles',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/additional-fees-styles.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/additional-fees-styles.css',
             [],
             $this->version
         );
@@ -128,7 +128,7 @@ class SkyDonate_Public_Styles {
         if ( skydonate_is_feature_enabled( 'checkout_custom_field_style' ) && sky_status_check( 'checkout_custom_field_style' ) ) {
             wp_enqueue_style(
                 'checkout-custom-style',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/checkout-custom-style.css',
+                SKYDONATE_PUBLIC_ASSETS . '/css/checkout-custom-style.css',
                 [],
                 $this->version
             );
@@ -137,7 +137,7 @@ class SkyDonate_Public_Styles {
         // Bootstrap
         wp_enqueue_style(
             'bootstrap',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/bootstrap-min.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/bootstrap-min.css',
             [],
             $this->version
         );
@@ -146,7 +146,7 @@ class SkyDonate_Public_Styles {
         if ( is_account_page() || is_checkout() ) {
             wp_enqueue_style(
                 'wc-registration-style',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/wc-registration.css',
+                SKYDONATE_PUBLIC_ASSETS . '/css/wc-registration.css',
                 [],
                 $this->version
             );
@@ -155,7 +155,7 @@ class SkyDonate_Public_Styles {
         // Main frontend stylesheet
         wp_enqueue_style(
             'frontend-global',
-            SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/frontend-global.css',
+            SKYDONATE_PUBLIC_ASSETS . '/css/frontend-global.css',
             [],
             $this->version
         );
@@ -172,7 +172,7 @@ class SkyDonate_Public_Styles {
         if ( sky_status_check( 'enable_donation_goal' ) ) {
             wp_enqueue_style(
                 'donation-goal',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/donation-goal.css',
+                SKYDONATE_PUBLIC_ASSETS . '/css/donation-goal.css',
                 [],
                 $this->version
             );
@@ -182,7 +182,7 @@ class SkyDonate_Public_Styles {
         if ( sky_status_check( 'recent_donation_list_with_country' ) ) {
             wp_enqueue_style(
                 'recent-donations',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/recent-donations.css',
+                SKYDONATE_PUBLIC_ASSETS . '/css/recent-donations.css',
                 [],
                 $this->version
             );
@@ -197,7 +197,7 @@ class SkyDonate_Public_Styles {
         if ( is_account_page() ) {
             wp_enqueue_style(
                 'account-page-style',
-                SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/css/account-page.css',
+                SKYDONATE_PUBLIC_ASSETS . '/css/account-page.css',
                 [],
                 $this->version
             );
@@ -208,7 +208,7 @@ class SkyDonate_Public_Styles {
      * Enqueue donation form styles based on layout
      */
     public function enqueue_donation_form_styles() {
-        $layout = skyweb_donation_layout_option( 'addons_donation_form_layout' );
+        $layout = skydonate_layout_option( 'addons_donation_form_layout' );
 
         if ( ! is_array( $layout ) ) {
             $layout = [ 'layout1' ];
@@ -217,21 +217,21 @@ class SkyDonate_Public_Styles {
         if ( in_array( 'layout3', $layout ) ) {
             wp_enqueue_style(
                 'donation-form-three',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-three.css',
+                SKYDONATE_ASSETS . '/addons/css/donation-form-three.css',
                 [],
                 $this->version
             );
         } elseif ( in_array( 'layout2', $layout ) ) {
             wp_enqueue_style(
                 'donation-form-two',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-two.css',
+                SKYDONATE_ASSETS . '/addons/css/donation-form-two.css',
                 [],
                 $this->version
             );
         } else {
             wp_enqueue_style(
                 'donation-form-one',
-                SKYWEB_DONATION_SYSTEM_ASSETS . '/addons/css/donation-form-one.css',
+                SKYDONATE_ASSETS . '/addons/css/donation-form-one.css',
                 [],
                 $this->version
             );

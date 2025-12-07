@@ -8,10 +8,10 @@ use Elementor\Repeater;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 
-class SkyWeb_Quick_Donation extends Widget_Base {
+class Skydonate_Quick_Donation extends Widget_Base {
 
     public function get_name() {
-        return 'skyweb_quick_donation';
+        return 'skydonate_quick_donation';
     }
 
     public function get_title() {
@@ -23,7 +23,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }
 
     public function get_style_depends() {
@@ -35,7 +35,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
     }
     
     public function get_keywords() {
-        return ['donation', 'quick donation', 'charity', 'fund', 'WooCommerce', 'skyweb'];
+        return ['donation', 'quick donation', 'charity', 'fund', 'WooCommerce', 'skydonate'];
     }
 
     protected function register_controls() {
@@ -168,7 +168,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
             [
                 'label'   => __( 'Donation', 'quick-donate-woo' ),
                 'type'    => Controls_Manager::SELECT,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'),
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'),
                 'default' => 0,
             ]
         );
@@ -250,7 +250,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name'     => 'fields_typography',
-                'selector' => '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control, {{WRAPPER}} .skyweb-quick-donation-widget .currency',
+                'selector' => '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control, {{WRAPPER}} .skydonate-quick-donation-widget .currency',
             ]
         );
         $this->add_control(
@@ -259,7 +259,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
                 'label'     => __( 'Text Colour', 'quick-donate-woo' ),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control, {{WRAPPER}} .skyweb-quick-donation-widget .currency' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control, {{WRAPPER}} .skydonate-quick-donation-widget .currency' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -269,7 +269,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
                 'label'     => __( 'Background Colour', 'quick-donate-woo' ),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -277,7 +277,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
             Group_Control_Border::get_type(),
             [
                 'name'     => 'fields_border',
-                'selector' => '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control',
+                'selector' => '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control',
             ]
         );
         $this->add_responsive_control(
@@ -287,7 +287,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
                 'type'       => Controls_Manager::SLIDER,
                 'size_units' => [ 'px', '%' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control' => 'border-radius: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control' => 'border-radius: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -302,7 +302,7 @@ class SkyWeb_Quick_Donation extends Widget_Base {
                     'unit' => 'px',
                 ],
                 'selectors'  => [
-                    '{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .qd-control,{{WRAPPER}} .skyweb-quick-donation-widget .qd-field .form-submit-button' => 'height: {{SIZE}}{{UNIT}};'
+                    '{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .qd-control,{{WRAPPER}} .skydonate-quick-donation-widget .qd-field .form-submit-button' => 'height: {{SIZE}}{{UNIT}};'
                 ],
             ]
         );
@@ -393,17 +393,17 @@ class SkyWeb_Quick_Donation extends Widget_Base {
         $currency_symbol = get_woocommerce_currency_symbol();
 
         $button_left_icon  = ! empty( $settings['button_left_icon'] ) 
-            ? Skyweb_Addons_Icon_manager::render_icon( $settings['button_left_icon'], ['aria-hidden' => 'true'] ) 
+            ? Skydonate_Icon_Manager::render_icon( $settings['button_left_icon'], ['aria-hidden' => 'true'] ) 
             : '';
 
         $button_text = $settings['button_text'] ?? 'Donate and Support';
 
         $button_right_icon = ! empty( $settings['button_right_icon'] ) 
-            ? Skyweb_Addons_Icon_manager::render_icon( $settings['button_right_icon'], ['aria-hidden' => 'true'] ) 
+            ? Skydonate_Icon_Manager::render_icon( $settings['button_right_icon'], ['aria-hidden' => 'true'] ) 
             : '';
             
 
-        echo '<div class="skyweb-quick-donation-widget">';
+        echo '<div class="skydonate-quick-donation-widget">';
 
         // ======================
         // FREQUENCY DROPDOWN
@@ -473,11 +473,11 @@ class SkyWeb_Quick_Donation extends Widget_Base {
         $atts["before_icon"] = $button_left_icon;
         $atts["button_text"] = $button_text;
         $atts["after_icon"] = $button_right_icon;
-        Skyweb_Donation_Functions::skydonate_submit_button($atts);
+        Skydonate_Functions::skydonate_submit_button($atts);
         echo '</div>';
 
 
-        echo '</div>'; // .skyweb-quick-donation-widget
+        echo '</div>'; // .skydonate-quick-donation-widget
     }
 
 

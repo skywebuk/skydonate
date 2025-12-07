@@ -1,5 +1,5 @@
 (function ($) {
-    var skyweb_donation_progress = function ($scope, $) {
+    var skydonate_progress = function ($scope, $) {
         var data_settings = $scope.find('.donation-progress').eq(0);
         if (data_settings.length > 0) {
             var settings = data_settings.data('settings');
@@ -98,12 +98,12 @@
     // Elementor hooks
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skyweb_donation_progress.default',
-            skyweb_donation_progress
+            'frontend/element_ready/skydonate_progress.default',
+            skydonate_progress
         );
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skyweb_donation_progress_2.default',
-            skyweb_donation_progress
+            'frontend/element_ready/skydonate_progress_2.default',
+            skydonate_progress
         );
     });
 }(jQuery));

@@ -22,7 +22,7 @@ $default_widgets = [
 $widgets = get_option('skydonation_widgets', []);
 $widgets = wp_parse_args($widgets, $default_widgets);
 ?>
-<div class="skyweb-settings-panel">
+<div class="skydonate-settings-panel">
     <form class="skydonation-widget-form" method="post" action="">
         <div class="skydonation-checkboxs skydonation-widgets">
             <?php if(sky_widget_status_check('zakat_calculator')): ?>

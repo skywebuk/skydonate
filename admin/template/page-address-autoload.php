@@ -10,8 +10,8 @@ $default_provider      = get_option('address_autoload_provider', 'legacy'); // d
 $default_address2_mode = get_option('address_autoload_address2_mode', 'normal'); // default: normal
 ?>
 
-<div class="skyweb-settings-panel">
-    <form class="skyweb-address-autoload-form" method="post" action="">
+<div class="skydonate-settings-panel">
+    <form class="skydonate-address-autoload-form" method="post" action="">
         <table class="form-table">
             <!-- Enable Address Auto Load -->
             <tr>
@@ -114,7 +114,7 @@ $default_address2_mode = get_option('address_autoload_address2_mode', 'normal');
             <button type="submit" class="skydonation-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
         </p>
 
-        <div class="skyweb-address-autoload-success-message" style="display:none;">
+        <div class="skydonate-address-autoload-success-message" style="display:none;">
             <?php esc_html_e('Address Auto Load settings saved.', 'skydonate'); ?>
         </div>
     </form>

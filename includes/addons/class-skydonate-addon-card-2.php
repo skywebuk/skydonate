@@ -4,10 +4,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
+class Skydonate_Card_2 extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skyweb_donation_card_addon_2';
+        return 'skydonate_card_2';
     }
 
     public function get_title() {
@@ -19,7 +19,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
     }
 
     public function get_categories() {
-        return ['skyweb_donation'];
+        return ['skydonate'];
     }        
     
     public function get_style_depends() {
@@ -89,7 +89,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             [
                 'label' => __('Donation Title', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'), // Ensure it returns [ID => Title]
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'), // Ensure it returns [ID => Title]
                 'default' => '',
                 'multiple' => false,
                 'label_block' => true,
@@ -118,7 +118,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Category', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_cat'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_cat'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -135,7 +135,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 'label' => __('Tag', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
-                'options' => Skyweb_Donation_Functions::Get_Taxonomies('product_tag'),
+                'options' => Skydonate_Functions::Get_Taxonomies('product_tag'),
                 'default' => [],
                 'label_block' => true,
                 'condition' => [
@@ -151,7 +151,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
             [
                 'label' => __('Exclude Donation', 'skydonate'),
                 'type' => \Elementor\Controls_Manager::SELECT2,
-                'options' => Skyweb_Donation_Functions::Get_Title('product', 'ids'), // Ensure correct format
+                'options' => Skydonate_Functions::Get_Title('product', 'ids'), // Ensure correct format
                 'default' => '',
                 'multiple' => true,
                 'label_block' => true,
@@ -1989,14 +1989,14 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                                              . sprintf(
                                                  __('Raised <span class="amount" data-number="%s" >%s<span class="number">0</span></span>', 'skydonate'),
                                                  $total_raised,
-                                                 Skyweb_Donation_Functions::Get_Currency_Symbol()
+                                                 Skydonate_Functions::Get_Currency_Symbol()
                                              )
                                              . '</span>';
                                         echo '<span class="target-amount">'
                                              . sprintf(
                                                  __('Target <span class="amount" data-number="%s">%s<span class="number">0</span></span>', 'skydonate'),
                                                  $target_sales,
-                                                 Skyweb_Donation_Functions::Get_Currency_Symbol()
+                                                 Skydonate_Functions::Get_Currency_Symbol()
                                              )
                                              . '</span>';
                                     echo '</div>';
@@ -2084,7 +2084,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 $before_icon = '';
                 if (isset($settings['icon_before_media_type'])) {
                     if ($settings['icon_before_media_type'] === 'icon' && !empty($settings['icon_before_icon']['value'])) {
-                        $before_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
+                        $before_icon = Skydonate_Icon_Manager::render_icon($settings['icon_before_icon'], ['aria-hidden' => 'true']);
                     } elseif ($settings['icon_before_media_type'] === 'image' && !empty($settings['icon_before_image']['url'])) {
                         $before_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_before_image_size', 'icon_before_image');
                     }
@@ -2094,7 +2094,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 $after_icon = '';
                 if (isset($settings['icon_after_media_type'])) {
                     if ($settings['icon_after_media_type'] === 'icon' && !empty($settings['icon_after_icon']['value'])) {
-                        $after_icon = Skyweb_Addons_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
+                        $after_icon = Skydonate_Icon_Manager::render_icon($settings['icon_after_icon'], ['aria-hidden' => 'true']);
                     } elseif ($settings['icon_after_media_type'] === 'image' && !empty($settings['icon_after_image']['url'])) {
                         $after_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'icon_after_image_size', 'icon_after_image');
                     }
@@ -2109,7 +2109,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                 ];
 
                 // Build shortcode string
-                $shortcode = '[skyweb_donation_form';
+                $shortcode = '[skydonate_form';
                 foreach ($atts as $key => $value) {
                     if ($value !== '') {
                         $shortcode .= ' ' . $key . '="' . $value . '"';

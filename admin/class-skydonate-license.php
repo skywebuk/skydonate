@@ -66,8 +66,8 @@ class SkyDonate_License_Admin {
         }
 
         // Use correct constants
-        $plugin_url = defined( 'SKYWEB_DONATION_SYSTEM_URL' ) ? SKYWEB_DONATION_SYSTEM_URL : plugin_dir_url( dirname( __FILE__ ) );
-        $version = defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ? SKYWEB_DONATION_SYSTEM_VERSION : '1.0.0';
+        $plugin_url = defined( 'SKYDONATE_URL' ) ? SKYDONATE_URL : plugin_dir_url( dirname( __FILE__ ) );
+        $version = defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0';
 
         // Styles are inline in the template, so no external CSS needed
         // Scripts are inline in the template as well
@@ -383,7 +383,7 @@ class SkyDonate_License_Admin {
         // Get update info if available
         $update_available = false;
         $latest_version = '';
-        $current_version = defined( 'SKYWEB_DONATION_SYSTEM_VERSION' ) ? SKYWEB_DONATION_SYSTEM_VERSION : '1.0.0';
+        $current_version = defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0';
         if ( function_exists( 'skydonate_updater' ) && $is_valid ) {
             $updater = skydonate_updater();
             $update_available = $updater->is_update_available();
