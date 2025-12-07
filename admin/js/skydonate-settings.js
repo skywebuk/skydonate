@@ -45,11 +45,11 @@
 
             function processBatch() {
                 $.ajax({
-                    url: skydonation_setting.ajax_url,
+                    url: skydonate_setting.ajax_url,
                     method: 'POST',
                     data: {
                         action: 'export_gift_aid_orders_ajax',
-                        nonce: skydonation_setting.nonce,
+                        nonce: skydonate_setting.nonce,
                         page: page
                     },
                     success: function (response) {
@@ -104,11 +104,11 @@
 
             function processBatch() {
                 $.ajax({
-                    url: skydonation_setting.ajax_url,
+                    url: skydonate_setting.ajax_url,
                     method: 'POST',
                     data: {
                         action: 'export_gift_aid_orders_by_date',
-                        nonce: skydonation_setting.nonce,
+                        nonce: skydonate_setting.nonce,
                         start_date: start_date,
                         end_date: end_date,
                         page: page
@@ -160,21 +160,21 @@
             });
         }
 
-        $('.skydonation-general-form').on('submit', function (e) {
+        $('.skydonate-general-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_general_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_general_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -197,23 +197,23 @@
             });
         });
         
-        $('.skydonation-advanced-form').on('submit', function (e) {
+        $('.skydonate-advanced-form').on('submit', function (e) {
             
             e.preventDefault(); // Prevent default form submission
             
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_advanced_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_advanced_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -236,21 +236,21 @@
             });
         });
 
-        $('.skydonation-currency-form').on('submit', function (e) {
+        $('.skydonate-currency-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_currency_changer_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_currency_changer_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -274,22 +274,22 @@
         });
 
         
-        $('.skydonation-donation-fees-form').on('submit', function (e) {
+        $('.skydonate-donation-fees-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_fees_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_fees_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -318,16 +318,16 @@
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
                     action: 'save_address_autoload_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -350,20 +350,20 @@
             });
         });
 
-        $('.skydonation-colors-form').on('submit', function(e) {
+        $('.skydonate-colors-form').on('submit', function(e) {
             e.preventDefault();
 
             var formData = $(this).serializeArray();
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
 
             $btn.addClass('loading').prop('disabled', true);
 
             $.ajax({
-                url: skydonation_setting.ajax_url,
+                url: skydonate_setting.ajax_url,
                 method: 'POST',
                 data: {
-                    action: 'save_skydonation_color_settings',
-                    nonce: skydonation_setting.nonce,
+                    action: 'save_skydonate_color_settings',
+                    nonce: skydonate_setting.nonce,
                     formData: formData
                 },
                 success: function(response) {
@@ -387,7 +387,7 @@
             e.preventDefault(); // Prevent default form submission
             
             const $form = $(this);
-            const $btn = $form.find('.skydonation-button');
+            const $btn = $form.find('.skydonate-button');
             const formData = $form.serializeArray();
 
             // Add loading state to button
@@ -395,11 +395,11 @@
 
             // Perform AJAX request
             $.ajax({
-                url: skydonation_setting.ajax_url,
+                url: skydonate_setting.ajax_url,
                 method: 'POST',
                 data: {
                     action: 'save_skydonate_gift_aid_settings',
-                    nonce: skydonation_setting.nonce,
+                    nonce: skydonate_setting.nonce,
                     formData: formData
                 },
                 success: function (response) {
@@ -419,22 +419,22 @@
             });
         });
 
-        $('.skydonation-api-form').on('submit', function (e) {
+        $('.skydonate-api-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_api_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_api_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -457,7 +457,7 @@
             });
         });
 
-        $('.skydonation-extra-donation-form').on('submit', function (e) {
+        $('.skydonate-extra-donation-form').on('submit', function (e) {
             e.preventDefault();
 
             var formDataArray = $(this).serializeArray();
@@ -490,18 +490,18 @@
             });
 
             var data = {
-                action: 'skydonation_extra_donation_settings', // Must match WP hook
-                nonce: skydonation_setting.nonce,
+                action: 'skydonate_extra_donation_settings', // Must match WP hook
+                nonce: skydonate_setting.nonce,
                 donation_items: donationItems
             };
 
 
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
             
             $.ajax({
-                url: skydonation_setting.ajax_url,
+                url: skydonate_setting.ajax_url,
                 method: 'POST',
                 data: data,
                 success: function (response) {
@@ -520,23 +520,23 @@
             });
         });
 
-        $('.skydonation-notification-form').on('submit', function (e) {
+        $('.skydonate-notification-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
             
             // Serialize form data into an array of objects
             var formData = $(this).serializeArray();
 
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
             // AJAX request to handle form submission
             $.ajax({
-                url: skydonation_setting.ajax_url, // Use the configured AJAX URL
+                url: skydonate_setting.ajax_url, // Use the configured AJAX URL
                 method: 'POST', // Use POST method
                 data: {
-                    action: 'skydonation_notification_settings', // Action name
-                    nonce: skydonation_setting.nonce, // Security nonce
+                    action: 'skydonate_notification_settings', // Action name
+                    nonce: skydonate_setting.nonce, // Security nonce
                     formData: formData // Form data
                 },
                 success: function (response) {
@@ -559,28 +559,28 @@
             });
         });
         
-        $('.skydonation-widget-form').on('submit', function(e) {
+        $('.skydonate-widget-form').on('submit', function(e) {
             e.preventDefault();
 
             let widgets = {};
             // Collect widgets from checkboxes
-            $('.skydonation-widgets input[type="checkbox"]').each(function() {
+            $('.skydonate-widgets input[type="checkbox"]').each(function() {
                 widgets[$(this).attr('id')] = $(this).is(':checked') ? 'on' : 'off';
             });
 
 
             // Add loading state
-            var $btn = $('.skydonation-button');
+            var $btn = $('.skydonate-button');
             $btn.addClass('loading').prop('disabled', true);
 
 
             // AJAX request to save widgets
             $.ajax({
-                url: skydonation_setting.ajax_url,
+                url: skydonate_setting.ajax_url,
                 method: 'POST',
                 data: {
-                    action: 'skydonation_widget_save_setting',
-                    nonce: skydonation_setting.nonce,
+                    action: 'skydonate_widget_save_setting',
+                    nonce: skydonate_setting.nonce,
                     widgets: widgets,
                 },
                 success: function(response) {
@@ -601,7 +601,7 @@
         // Toggle all checkboxes
         $('#toggleAll').on('change', function() {
             let isChecked = $(this).is(':checked');
-            $('.skydonation-checkboxs input[type="checkbox"]').prop('checked', isChecked);
+            $('.skydonate-checkboxs input[type="checkbox"]').prop('checked', isChecked);
         });
     });
 

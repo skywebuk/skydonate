@@ -76,7 +76,7 @@ function sky_widget_status_check( $option ) {
     );
 
     // Retrieve and merge saved options with defaults
-    $widgets = wp_parse_args( get_option( 'skydonation_widgets', array() ), $default_widgets );
+    $widgets = wp_parse_args( get_option( 'skydonate_widgets', array() ), $default_widgets );
 
     // Check widget status
     return isset( $widgets[ $option ] ) && $widgets[ $option ] === 'on';

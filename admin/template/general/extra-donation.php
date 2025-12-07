@@ -3,12 +3,12 @@
 $products = Skydonate_Functions::Get_Title('product', 'ids');
 
 
-$saved_donations = get_option('skydonation_extra_donation_items', []);
+$saved_donations = get_option('skydonate_extra_donation_items', []);
 
 ?>
 
 <div class="skydonate-settings-panel">
-    <form class="skydonation-extra-donation-form" method="post" action="">
+    <form class="skydonate-extra-donation-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         
@@ -97,7 +97,7 @@ $saved_donations = get_option('skydonation_extra_donation_items', []);
 
         <br>
         <p>
-            <button type="submit" class="skydonation-button">
+            <button type="submit" class="skydonate-button">
                 <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>

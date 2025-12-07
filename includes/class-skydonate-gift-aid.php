@@ -260,7 +260,7 @@ class Skydonate_Gift_Aid {
 
     public function export_gift_aid_orders_ajax() {
         // Verify nonce
-        if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'skydonation_settings_nonce') ) {
+        if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'skydonate_settings_nonce') ) {
             wp_send_json_error('Invalid nonce');
         }
 
@@ -338,7 +338,7 @@ class Skydonate_Gift_Aid {
 
     public function export_gift_aid_orders_by_date() {
         // Verify nonce and permissions
-        if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'skydonation_settings_nonce') ) {
+        if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'skydonate_settings_nonce') ) {
             wp_send_json_error('Invalid nonce');
         }
 

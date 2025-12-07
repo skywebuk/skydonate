@@ -17,7 +17,7 @@ $geo_default_all = get_option('skydonate_geo_default_all', 0); // New switch
 ?>
 
 <div class="skydonate-settings-panel">
-    <form class="skydonation-currency-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+    <form class="skydonate-currency-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
 
@@ -105,7 +105,7 @@ $geo_default_all = get_option('skydonate_geo_default_all', 0); // New switch
 
         <br>
         <p>
-            <button type="submit" class="skydonation-button">
+            <button type="submit" class="skydonate-button">
                 <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>

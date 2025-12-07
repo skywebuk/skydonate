@@ -1387,7 +1387,7 @@ jQuery(function($) {
 
                     if (response.data.reload) {
                         setTimeout(function() {
-                            window.location.href = site_url + '/wp-admin/admin.php?page=skydonation';
+                            window.location.href = site_url + '/wp-admin/admin.php?page=skydonate';
                         }, 1500);
                     }
 

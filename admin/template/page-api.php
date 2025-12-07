@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 ?>
 
 <div class="skydonate-settings-panel">
-    <form class="skydonation-api-form" method="post" action="">
+    <form class="skydonate-api-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         
@@ -38,7 +38,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
         <br>
         <p>
-            <button type="submit" class="skydonation-button">
+            <button type="submit" class="skydonate-button">
                 <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>

@@ -32,7 +32,7 @@ $tabs       = apply_filters( 'skydonate_general_settings_tabs', [] );
 				?>
 				<a
 					id="<?php echo esc_attr( $tab_key ); ?>"
-					href="<?php echo esc_url( admin_url( 'admin.php?page=skydonation-general&tab=' . esc_attr( $tab_key ) ) ); ?>"
+					href="<?php echo esc_url( admin_url( 'admin.php?page=skydonate-general&tab=' . esc_attr( $tab_key ) ) ); ?>"
 					class="nav-tab <?php echo esc_attr( $active_class ); ?>"
 				>
 					<?php echo esc_html( $tab['label'] ); ?>

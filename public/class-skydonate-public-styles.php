@@ -242,9 +242,9 @@ class SkyDonate_Public_Styles {
      * Add custom color CSS variables
      */
     private function add_color_variables() {
-        $accent_color       = get_option( 'skydonation_accent_color', '#3442ad' );
-        $accent_dark_color  = get_option( 'skydonation_accent_dark_color', '#282699' );
-        $accent_light_color = get_option( 'skydonation_accent_light_color', '#ebecf7' );
+        $accent_color       = get_option( 'skydonate_accent_color', '#3442ad' );
+        $accent_dark_color  = get_option( 'skydonate_accent_dark_color', '#282699' );
+        $accent_light_color = get_option( 'skydonate_accent_light_color', '#ebecf7' );
 
         $custom_css = sprintf(
             'body {

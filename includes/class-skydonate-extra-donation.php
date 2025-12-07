@@ -45,7 +45,7 @@ class Skydonate_Extra_Donation {
      * Display donation checkboxes via shortcode
      */
     public function render_donation_shortcode() {
-        $donation_items = get_option('skydonation_extra_donation_items', []);
+        $donation_items = get_option('skydonate_extra_donation_items', []);
         if (empty($donation_items)) return;
 
         // Get currently selected donations from cart

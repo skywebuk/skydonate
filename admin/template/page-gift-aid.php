@@ -19,7 +19,7 @@ $tabs = array(
 
 	<nav class="nav-tab-wrapper">
 		<?php foreach ( $tabs as $tab_key => $tab ) : ?>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=skydonation-gift-aid&tab=' . $tab_key ) ); ?>"
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=skydonate-gift-aid&tab=' . $tab_key ) ); ?>"
 			   class="nav-tab link <?php echo $active_tab === $tab_key ? 'nav-tab-active' : ''; ?>">
 				<?php echo esc_html( $tab['label'] ); ?>
 			</a>

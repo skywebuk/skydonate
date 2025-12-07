@@ -4,7 +4,7 @@
 ?>
 
 <div class="skydonate-settings-panel">
-    <form class="skydonation-general-form" method="post" action="">
+    <form class="skydonate-general-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_donation_settings">
         <?php wp_nonce_field('save_sky_donation_settings', 'sky_donation_nonce'); ?>
         <table class="form-table">
@@ -96,7 +96,7 @@
 
         <br>
         <p>
-            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
+            <button type="submit" class="skydonate-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </p>
     </form>
 </div>

@@ -79,7 +79,7 @@
 /* ============================================
    Base Styles
    ============================================ */
-.skydonation-page-wrapper {
+.skydonate-page-wrapper {
     margin: 20px 20px 20px 0;
     font-family: var(--sky-font-family);
     font-size: var(--sky-font-size-base);
@@ -87,47 +87,47 @@
     line-height: 1.6;
 }
 
-.skydonation-content-wrapper .wrap {
+.skydonate-content-wrapper .wrap {
     margin: 0px;
 }
 
-.skydonation-page-wrapper *,
-.skydonation-page-wrapper *::before,
-.skydonation-page-wrapper *::after {
+.skydonate-page-wrapper *,
+.skydonate-page-wrapper *::before,
+.skydonate-page-wrapper *::after {
     box-sizing: border-box;
 }
 
-.skydonation-page-wrapper img {
+.skydonate-page-wrapper img {
     max-width: 100%;
     height: auto;
 }
 
-.skydonation-page-wrapper a {
+.skydonate-page-wrapper a {
     color: var(--sky-gray-600);
     text-decoration: none;
     transition: var(--sky-transition-fast);
 }
 
-.skydonation-page-wrapper a:hover {
+.skydonate-page-wrapper a:hover {
     color: var(--sky-primary-hover);
 }
 
-.skydonation-page-wrapper p {
+.skydonate-page-wrapper p {
     margin: 0 0 var(--sky-space-4) 0;
 }
 
-.skydonation-page-wrapper p:last-child {
+.skydonate-page-wrapper p:last-child {
     margin-bottom: 0;
 }
 
-.skydonation-page-wrapper .notice {
+.skydonate-page-wrapper .notice {
     display: none;
 }
 
 /* ============================================
    Navigation Menu
    ============================================ */
-.skydonation-navigation-wrapper {
+.skydonate-navigation-wrapper {
     background: linear-gradient(135deg, #ffffff 0%, var(--sky-gray-50) 100%);
     border-radius: var(--sky-radius-xl);
     margin-bottom: var(--sky-space-3);
@@ -136,7 +136,7 @@
     overflow: hidden;
 }
 
-.skydonation-navigation-menu {
+.skydonate-navigation-menu {
     display: flex;
     flex-wrap: wrap;
     padding: 8px;
@@ -145,11 +145,11 @@
     list-style: none;
 }
 
-.skydonation-navigation-menu li {
+.skydonate-navigation-menu li {
     margin: 0;
 }
 
-.skydonation-navigation-menu li .nav-link {
+.skydonate-navigation-menu li .nav-link {
     display: flex;
     align-items: center;
     gap: var(--sky-space-2);
@@ -163,30 +163,30 @@
     border-radius: var(--sky-radius-lg);
 }
 
-.skydonation-navigation-menu li .nav-link:hover {
+.skydonate-navigation-menu li .nav-link:hover {
     color: var(--sky-primary);
     background-color: var(--sky-primary-light);
 }
 
-.skydonation-navigation-menu li .nav-link.active {
+.skydonate-navigation-menu li .nav-link.active {
     color: white;
     background-color: var(--sky-primary);
     font-weight: 600;
 }
 
-.skydonation-navigation-menu li .nav-link:focus {
+.skydonate-navigation-menu li .nav-link:focus {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--sky-primary-light);
 }
 
-.skydonation-navigation-menu li .nav-link:after {
+.skydonate-navigation-menu li .nav-link:after {
     display: none;
 }
 
 /* ============================================
    Settings Panel
    ============================================ */
-.skydonation-content-wrapper {
+.skydonate-content-wrapper {
     background-color: white;
     border-radius: var(--sky-radius-xl);
     box-shadow: var(--sky-shadow);
@@ -196,7 +196,7 @@
     margin-top: 0;
 }
 
-.skydonate-settings-panel .skydonation-header {
+.skydonate-settings-panel .skydonate-header {
     margin-bottom: var(--sky-space-6);
     padding-bottom: var(--sky-space-6);
     border-bottom: 1px solid var(--sky-gray-200);
@@ -212,7 +212,7 @@
     padding: 0;
 }
 
-.skydonate-settings-panel .skydonation-header-actions {
+.skydonate-settings-panel .skydonate-header-actions {
     position: static;
     margin-top: var(--sky-space-4);
 }
@@ -258,7 +258,7 @@
 }
 
 .form-table td p,
-.skydonation-page-wrapper p {
+.skydonate-page-wrapper p {
     margin: 0 0 var(--sky-space-4) 0;
 }
 
@@ -428,7 +428,7 @@ input[type="radio"]:checked::before {
 /* ============================================
    Switcher Component (Widget Toggle)
    ============================================ */
-.skydonation-switcher {
+.skydonate-switcher {
     display: inline-flex;
     align-items: center;
     gap: var(--sky-space-3);
@@ -440,24 +440,24 @@ input[type="radio"]:checked::before {
     cursor: pointer;
 }
 
-.skydonation-switcher:hover {
+.skydonate-switcher:hover {
     background-color: white;
     border-color: var(--sky-gray-300);
     box-shadow: var(--sky-shadow-sm);
 }
 
-.skydonation-switcher .switch-label {
+.skydonate-switcher .switch-label {
     font-size: var(--sky-font-size-sm);
     font-weight: 500;
     color: var(--sky-gray-700);
     margin-right: var(--sky-space-4);
 }
 
-.skydonation-switcher input[type="checkbox"] {
+.skydonate-switcher input[type="checkbox"] {
     display: none;
 }
 
-.skydonation-switcher .switch-toggle {
+.skydonate-switcher .switch-toggle {
     position: relative;
     width: 50px;
     height: 24px;
@@ -470,7 +470,7 @@ input[type="radio"]:checked::before {
     z-index: 1;
 }
 
-.skydonation-switcher .switch-toggle::before {
+.skydonate-switcher .switch-toggle::before {
     content: "";
     position: absolute;
     top: 2px;
@@ -484,23 +484,23 @@ input[type="radio"]:checked::before {
     z-index: 2;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle {
+.skydonate-switcher input:checked ~ .switch-toggle {
     background-color: var(--sky-accent-light);
     color: var(--sky-accent);
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle::before {
+.skydonate-switcher input:checked ~ .switch-toggle::before {
     left: 28px;
     background-color: var(--sky-accent);
 }
 
-.skydonation-switcher input:disabled ~ .switch-toggle {
+.skydonate-switcher input:disabled ~ .switch-toggle {
     opacity: 0.5;
     pointer-events: none;
     cursor: not-allowed;
 }
 
-.skydonation-switcher .switch-toggle .switch-text {
+.skydonate-switcher .switch-toggle .switch-text {
     position: absolute;
     right: 7px;
     top: 7px;
@@ -509,38 +509,38 @@ input[type="radio"]:checked::before {
     transition: var(--sky-transition-fast);
 }
 
-.skydonation-switcher .switch-toggle .switch-text.on {
+.skydonate-switcher .switch-toggle .switch-text.on {
     opacity: 0;
     right: auto;
     left: 8px;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle .switch-text.on {
+.skydonate-switcher input:checked ~ .switch-toggle .switch-text.on {
     opacity: 1;
 }
 
-.skydonation-switcher input:checked ~ .switch-toggle .switch-text.off {
+.skydonate-switcher input:checked ~ .switch-toggle .switch-text.off {
     opacity: 0;
 }
 
-.skydonation-switcher .switch-label.disable {
+.skydonate-switcher .switch-label.disable {
     position: absolute;
     opacity: 0;
     margin-right: 10px;
 }
 
-.skydonation-switcher input:checked ~ .switch-label.disable {
+.skydonate-switcher input:checked ~ .switch-label.disable {
     opacity: 1;
 }
 
-.skydonation-switcher input:checked ~ .switch-label.enable {
+.skydonate-switcher input:checked ~ .switch-label.enable {
     opacity: 0;
 }
 
 /* ============================================
    Buttons
    ============================================ */
-.skydonation-button {
+.skydonate-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -560,24 +560,24 @@ input[type="radio"]:checked::before {
     box-shadow: var(--sky-shadow-sm);
 }
 
-.skydonation-button:hover,
-.skydonation-button:not(:disabled):hover {
+.skydonate-button:hover,
+.skydonate-button:not(:disabled):hover {
     background: linear-gradient(135deg, var(--sky-primary-hover) 0%, var(--sky-primary-dark) 100%);
     transform: translateY(-1px);
     box-shadow: var(--sky-shadow-md);
     color: white;
 }
 
-.skydonation-button:active {
+.skydonate-button:active {
     transform: translateY(0);
 }
 
-.skydonation-button:focus {
+.skydonate-button:focus {
     outline: none;
     box-shadow: 0 0 0 3px var(--sky-primary-light), var(--sky-shadow-md);
 }
 
-.skydonation-button:disabled {
+.skydonate-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
@@ -585,7 +585,7 @@ input[type="radio"]:checked::before {
 }
 
 .button.loading,
-.skydonation-button.loading {
+.skydonate-button.loading {
     position: relative;
     display: flex !important;
     align-items: center;
@@ -595,7 +595,7 @@ input[type="radio"]:checked::before {
 }
 
 .button.loading::after,
-.skydonation-button.loading::after {
+.skydonate-button.loading::after {
     content: "";
     width: 14px;
     height: 14px;
@@ -612,14 +612,14 @@ input[type="radio"]:checked::before {
 /* ============================================
    Widget Checkboxes Grid
    ============================================ */
-.skydonation-checkboxs {
+.skydonate-checkboxs {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--sky-space-4);
     margin-bottom: var(--sky-space-6);
 }
 
-.skydonation-widgets .skydonation-switcher {
+.skydonate-widgets .skydonate-switcher {
     width: 100%;
     justify-content: space-between;
 }
@@ -627,7 +627,7 @@ input[type="radio"]:checked::before {
 /* ============================================
    Footer Actions
    ============================================ */
-.skydonation-footer {
+.skydonate-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -638,7 +638,7 @@ input[type="radio"]:checked::before {
     margin-top: var(--sky-space-6);
 }
 
-.skydonation-footer .skydonation-switcher {
+.skydonate-footer .skydonate-switcher {
     float: none;
 }
 
@@ -911,7 +911,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 /* ============================================
    Color Picker
    ============================================ */
-.skydonation-color-field {
+.skydonate-color-field {
     width: 100px !important;
     border-radius: var(--sky-radius-md) !important;
 }
@@ -919,12 +919,12 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 /* ============================================
    WordPress Admin Menu Icon
    ============================================ */
-.dashicons-skydonation::before {
+.dashicons-skydonate::before {
     content: "\f487";
     font-family: dashicons;
 }
 
-#adminmenu .toplevel_page_skydonation .wp-menu-image img {
+#adminmenu .toplevel_page_skydonate .wp-menu-image img {
     padding-top: 8px;
 }
 
@@ -1315,18 +1315,18 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
    Responsive Design
    ============================================ */
 @media screen and (max-width: 1200px) {
-    .skydonation-page-wrapper.general-template .card {
+    .skydonate-page-wrapper.general-template .card {
         width: calc(50% - 30px);
         padding: var(--sky-space-6);
     }
 
-    .skydonation-checkboxs {
+    .skydonate-checkboxs {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
 @media screen and (max-width: 782px) {
-    .skydonation-page-wrapper {
+    .skydonate-page-wrapper {
         margin: 10px 10px 10px 0;
     }
 
@@ -1371,27 +1371,27 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         max-width: 100%;
     }
 
-    .skydonation-navigation-menu {
+    .skydonate-navigation-menu {
         flex-direction: column;
     }
 
-    .skydonation-navigation-menu li .nav-link {
+    .skydonate-navigation-menu li .nav-link {
         padding: var(--sky-space-3) var(--sky-space-4);
         border-bottom: none;
         border-left: 3px solid transparent;
     }
 
-    .skydonation-navigation-menu li .nav-link.active {
+    .skydonate-navigation-menu li .nav-link.active {
         border-left-color: var(--sky-primary);
         border-bottom-color: transparent;
     }
 
-    .skydonation-footer {
+    .skydonate-footer {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .skydonation-footer .skydonation-button {
+    .skydonate-footer .skydonate-button {
         width: 100%;
     }
 
@@ -1399,11 +1399,11 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         flex-direction: column;
     }
 
-    .skydonation-checkboxs {
+    .skydonate-checkboxs {
         grid-template-columns: 1fr;
     }
 
-    .skydonation-page-wrapper.general-template .card {
+    .skydonate-page-wrapper.general-template .card {
         width: calc(100% - 30px);
     }
 

@@ -33,7 +33,7 @@ class Skydonate_Admin {
     public function enqueue_scripts() {
 
         // Color Picker (only on specific tab)
-        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonation-general' ) {
+        if ( isset($_GET['tab'], $_GET['page']) && $_GET['tab'] === 'colors' && $_GET['page'] === 'skydonate-general' ) {
             wp_enqueue_style( 'wp-color-picker' );
 
             wp_enqueue_script(
@@ -96,7 +96,7 @@ class Skydonate_Admin {
                 'manage_options',
                 'skydonate',
                 [ $this, 'license_page_content' ],
-                'dashicons-skydonation',
+                'dashicons-skydonate',
                 20
             );
         } else {
@@ -106,7 +106,7 @@ class Skydonate_Admin {
                 'manage_options',
                 'skydonate',
                 [ $this, 'analytics_page_content' ],
-                'dashicons-skydonation',
+                'dashicons-skydonate',
                 20
             );
 
@@ -121,7 +121,7 @@ class Skydonate_Admin {
         $sub_menus = apply_filters( 'skydonate_menu_array', [] );
 
         if ( ! empty( $sub_menus ) ) { ?>
-            <ul class="skydonation-navigation-menu">
+            <ul class="skydonate-navigation-menu">
 
                 <?php foreach ( $sub_menus as $sub_menu ) :
                     // Skip if validation is set and returns false
@@ -161,42 +161,42 @@ class Skydonate_Admin {
                 'page_title' => esc_html__( 'General', 'skydonate' ),
                 'menu_title' => esc_html__( 'General', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-general',
+                'page_slug'  => 'skydonate-general',
                 'callback'   => 'general_page_content',
             ],
             [
                 'page_title' => esc_html__( 'Donation Fees', 'skydonate' ),
                 'menu_title' => esc_html__( 'Donation Fees', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-donation-fees',
+                'page_slug'  => 'skydonate-donation-fees',
                 'callback'   => 'donation_fees_page_content',
             ],
             [
                 'page_title' => esc_html__( 'Gift Aid', 'skydonate' ),
                 'menu_title' => esc_html__( 'Gift Aid', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-gift-aid',
+                'page_slug'  => 'skydonate-gift-aid',
                 'callback'   => 'gift_aid_page_content',
             ],
             [
                 'page_title' => esc_html__( 'Widgets', 'skydonate' ),
                 'menu_title' => esc_html__( 'Widgets', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-widgets',
+                'page_slug'  => 'skydonate-widgets',
                 'callback'   => 'widgets_page_content',
             ],
             [
                 'page_title' => esc_html__( 'Address Autocomplete', 'skydonate' ),
                 'menu_title' => esc_html__( 'Address Autocomplete', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-address-autoload',
+                'page_slug'  => 'skydonate-address-autoload',
                 'callback'   => 'address_autoload_page_content',
             ],
             [
                 'page_title' => esc_html__( 'Notification', 'skydonate' ),
                 'menu_title' => esc_html__( 'Notification', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-notification',
+                'page_slug'  => 'skydonate-notification',
                 'callback'   => 'notification_page_content',
                 'validation'  => skydonate_is_feature_enabled('notification'),
             ],
@@ -204,14 +204,14 @@ class Skydonate_Admin {
                 'page_title' => esc_html__( 'API', 'skydonate' ),
                 'menu_title' => esc_html__( 'API', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-api',
+                'page_slug'  => 'skydonate-api',
                 'callback'   => 'api_page_content',
             ],
             [
                 'page_title' => esc_html__( 'License', 'skydonate' ),
                 'menu_title' => esc_html__( 'License', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation-license',
+                'page_slug'  => 'skydonate-license',
                 'callback'   => 'license_page_content',
             ],
         ];
@@ -303,19 +303,19 @@ class Skydonate_Admin {
 
         // If license is inactive, only show license page (no nav, no wrapper styling)
         if ( ! $is_valid && $template === 'license' ) {
-            echo '<div class="skydonation-page-wrapper license-template license-inactive">';
-                echo '<div class="skydonation-content-wrapper">';
+            echo '<div class="skydonate-page-wrapper license-template license-inactive">';
+                echo '<div class="skydonate-content-wrapper">';
                     include_once SKYDONATE_ADMIN_PATH . '/template/page-license.php';
                 echo '</div>';
             echo '</div>';
             return;
         }
 
-        echo '<div class="skydonation-page-wrapper ' . esc_attr( $template ) . '-template">';
-            echo '<div class="skydonation-navigation-wrapper">';
+        echo '<div class="skydonate-page-wrapper ' . esc_attr( $template ) . '-template">';
+            echo '<div class="skydonate-navigation-wrapper">';
                 include_once SKYDONATE_ADMIN_PATH . '/template/navigation.php';
             echo '</div>';
-            echo '<div class="skydonation-content-wrapper">';
+            echo '<div class="skydonate-content-wrapper">';
                 include_once SKYDONATE_ADMIN_PATH . "/template/page-{$template}.php";
             echo '</div>';
         echo '</div>';
