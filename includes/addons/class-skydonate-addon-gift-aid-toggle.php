@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Skydonate_Gift_Aid_Toggle extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_gift_aid_toggle';
+        return 'skyweb_gift_aid_toggle';
     }
 
     public function get_title() {

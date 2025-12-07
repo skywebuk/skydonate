@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Card extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_card';
+        return 'skyweb_donation_card_addon';
     }
 
     public function get_title() {

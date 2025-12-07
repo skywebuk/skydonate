@@ -132,7 +132,7 @@
     /* Elementor Init */
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_recent_orders_2.default',
+            'frontend/element_ready/skyweb_donation_recent_orders_2.default',
             skydonate_recent_orders
         );
     });

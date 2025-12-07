@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_recent_orders_2';
+        return 'skyweb_donation_recent_orders_2';
     }
 
     public function get_title() {

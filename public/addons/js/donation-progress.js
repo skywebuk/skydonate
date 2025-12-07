@@ -98,11 +98,11 @@
     // Elementor hooks
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_progress.default',
+            'frontend/element_ready/skyweb_donation_progress.default',
             skydonate_progress
         );
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_progress_2.default',
+            'frontend/element_ready/skyweb_donation_progress_2.default',
             skydonate_progress
         );
     });

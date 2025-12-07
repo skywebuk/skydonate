@@ -17,7 +17,7 @@ use Elementor\Icons_Manager;
 class Skydonate_Icon_List extends Widget_Base {
 
     public function get_name() {
-        return 'skydonate_icon_list';
+        return 'skyweb_donation_icon_list';
     }
 
     public function get_title() {

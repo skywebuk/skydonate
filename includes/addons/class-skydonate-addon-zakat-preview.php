@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Zakat_Preview extends \Elementor\Widget_Base {
     
     public function get_name() {
-        return 'skydonate_zakat_preview';
+        return 'skyweb_donation_zakat_preview';
     }
 
     public function get_title() {

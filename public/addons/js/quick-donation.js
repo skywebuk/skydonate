@@ -117,7 +117,7 @@
     // Elementor frontend hook
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_quick_donation.default',
+            'frontend/element_ready/skyweb_quick_donation.default',
             skyweb_quick_donation
         );
     });

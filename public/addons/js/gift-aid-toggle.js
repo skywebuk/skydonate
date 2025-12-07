@@ -27,7 +27,7 @@
 
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_gift_aid_toggle.default',
+            'frontend/element_ready/skyweb_gift_aid_toggle.default',
             skyweb_gift_aid_toggle
         );
     });

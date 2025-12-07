@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 
 class Skydonate_Zakat_Calculator_Classic extends \Elementor\Widget_Base {
     public function get_name() {
-        return 'skydonate_zakat_calculator_classic';
+        return 'skyweb_donation_zakat_calculator_classic';
     }
     public function get_title() {
         return __('Classic Zakat Calculator', 'skydonate');

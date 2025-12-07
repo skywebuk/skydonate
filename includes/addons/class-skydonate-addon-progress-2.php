@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Progress_2 extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_progress_2';
+        return 'skyweb_donation_progress_2';
     }
 
     public function get_title() {

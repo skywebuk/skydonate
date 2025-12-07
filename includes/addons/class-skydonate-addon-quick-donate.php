@@ -11,7 +11,7 @@ use Elementor\Group_Control_Border;
 class Skydonate_Quick_Donation extends Widget_Base {
 
     public function get_name() {
-        return 'skydonate_quick_donation';
+        return 'skyweb_quick_donation';
     }
 
     public function get_title() {

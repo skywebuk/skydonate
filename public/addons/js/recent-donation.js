@@ -270,7 +270,7 @@
      * ========================================================= */
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_recent_orders.default',
+            'frontend/element_ready/skyweb_donation_recent_orders.default',
             skydonate_recent_orders
         );
     });

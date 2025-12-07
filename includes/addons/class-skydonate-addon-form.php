@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Form extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_form';
+        return 'skyweb_donation_form';
     }
 
     public function get_title() {

@@ -116,7 +116,7 @@
     }
 
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_icon_list.default', skydonate_icon_list);
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_icon_list.default', modal_actions);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_icon_list.default', skydonate_icon_list);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_icon_list.default', modal_actions);
     });
 }(jQuery));

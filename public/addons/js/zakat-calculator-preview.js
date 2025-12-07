@@ -33,6 +33,6 @@
 
     // Run this code under Elementor.
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_zakat_preview.default', skydonate_zakat_preview);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_zakat_preview.default', skydonate_zakat_preview);
     });
 }(jQuery));

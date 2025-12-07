@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Metal_Values extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_metal_values';
+        return 'skyweb_donation_metal_values';
     }
 
     public function get_title() {

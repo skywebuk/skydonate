@@ -29,6 +29,6 @@
 
     // Initialize Elementor hook
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_impact_slider.default', skydonate_impact_slider);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_impact_slider.default', skydonate_impact_slider);
     });
 }(jQuery));

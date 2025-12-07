@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 class Skydonate_Impact_Slider extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_impact_slider';
+        return 'skyweb_donation_impact_slider';
     }
 
     public function get_title() {

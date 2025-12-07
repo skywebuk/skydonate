@@ -110,7 +110,7 @@
 
     // Initialize Elementor hook
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_card.default', skydonateDonationCardAddon);
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_card_2.default', skydonateDonationCardAddon);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon.default', skydonateDonationCardAddon);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon_2.default', skydonateDonationCardAddon);
     });
 }(jQuery));

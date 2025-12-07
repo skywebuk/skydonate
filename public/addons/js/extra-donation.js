@@ -51,7 +51,7 @@
 
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
-            'frontend/element_ready/skydonate_extra_donation.default',
+            'frontend/element_ready/skyweb_extra_donation.default',
             skyweb_extra_donation
         );
     });

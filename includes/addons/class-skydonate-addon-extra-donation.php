@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) exit;
 class Skydonate_Extra_Donation_Widget extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'skydonate_extra_donation';
+        return 'skyweb_extra_donation';
     }
 
     public function get_title() {

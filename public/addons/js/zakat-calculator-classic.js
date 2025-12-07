@@ -93,6 +93,6 @@
     };
 
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skydonate_zakat_calculator_classic.default', skydonate_zakat_calculator_classic);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_zakat_calculator_classic.default', skydonate_zakat_calculator_classic);
     });
 }(jQuery));
