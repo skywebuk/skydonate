@@ -187,7 +187,7 @@ class Skydonate_System {
         $this->loader->add_action( 'admin_dashboard_menu_tabs', $plugin_admin, 'admin_dashboard_menu_tabs' );
         $this->loader->add_action( 'admin_init', $plugin_admin, 'register_elementor_widgets' );
         $this->loader->add_action( 'skydonate_menus', $plugin_admin, 'skydonate_menus' );
-        $this->loader->add_action( 'skydonate_menu_array', $plugin_admin, 'skydonate_menu_array' );
+        $this->loader->add_filter( 'skydonate_menu_array', $plugin_admin, 'skydonate_menu_array' );
         $this->loader->add_filter( 'skydonate_general_settings_tabs', $plugin_admin, 'skydonate_general_settings_tabs' );
     }
 
