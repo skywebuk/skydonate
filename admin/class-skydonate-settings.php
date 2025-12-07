@@ -25,7 +25,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -45,7 +45,7 @@ class SkyDonation_Functions {
         update_option('skydonation_extra_donation_items', $clean_items);
 
         // Respond
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
 
     
@@ -55,13 +55,13 @@ class SkyDonation_Functions {
 
         // Verify nonce for security
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'skydonation_settings_nonce')) {
-            wp_send_json_error(__('Security check failed.', 'skydonation'));
+            wp_send_json_error(__('Security check failed.', 'skydonate'));
             return;
         }
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -94,7 +94,7 @@ class SkyDonation_Functions {
             update_option($key, $value);
         }
         // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
 
 
@@ -107,7 +107,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -153,7 +153,7 @@ class SkyDonation_Functions {
         }
 		do_action('general_settings_field_save',$formData);
         // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
     
     
@@ -163,7 +163,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -221,7 +221,7 @@ class SkyDonation_Functions {
         }
     
         // Respond with success
-        wp_send_json_success(__('Currency settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Currency settings saved successfully.', 'skydonate'));
     }
 
     public function skydonation_fees_settings() {
@@ -230,7 +230,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -257,7 +257,7 @@ class SkyDonation_Functions {
         }
     
         // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
     
     public function save_address_autoload_settings() {
@@ -266,7 +266,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -295,7 +295,7 @@ class SkyDonation_Functions {
         }
 
         // Respond with success
-        wp_send_json_success(__('Address Autocomplete settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Address Autocomplete settings saved successfully.', 'skydonate'));
     }
 
     public function save_skydonation_color_settings() {
@@ -303,7 +303,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -322,7 +322,7 @@ class SkyDonation_Functions {
             update_option($key, $value);
         }
 
-        wp_send_json_success(__('Accent color settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Accent color settings saved successfully.', 'skydonate'));
     }
 
 
@@ -333,7 +333,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -367,7 +367,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -390,7 +390,7 @@ class SkyDonation_Functions {
         }
     
         // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
     
     public function save_notification_settings() {
@@ -402,7 +402,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -452,7 +452,7 @@ class SkyDonation_Functions {
         }
     
         // Respond with success
-        wp_send_json_success(__('Settings saved successfully.', 'skydonation'));
+        wp_send_json_success(__('Settings saved successfully.', 'skydonate'));
     }
     
     
@@ -462,7 +462,7 @@ class SkyDonation_Functions {
 
         // Check user capability
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonation'));
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
             return;
         }
 
@@ -473,9 +473,9 @@ class SkyDonation_Functions {
             $sanitized_widgets = array_map('wp_kses_post', $widgets);
             // Update the option with sanitized data
             update_option('skydonation_widgets', $sanitized_widgets);
-            wp_send_json_success(__('Settings saved successfully!', 'skydonation'));
+            wp_send_json_success(__('Settings saved successfully!', 'skydonate'));
         } else {
-            wp_send_json_error(__('Nothing to save.', 'skydonation'));
+            wp_send_json_error(__('Nothing to save.', 'skydonate'));
         }
         exit;
     }

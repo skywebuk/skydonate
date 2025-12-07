@@ -180,7 +180,7 @@ https://example.com/about/*" ><?php echo esc_textarea(get_option('hide_element_u
         </table>
         <br>
         <p class="submit">
-            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonation' ); ?></button>
+            <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </p>
     </form>
 </div>

@@ -46,7 +46,7 @@ class Skydonate_Admin {
         }
 
         // Chart.js for Analytics Dashboard (main page)
-        if ( isset($_GET['page']) && $_GET['page'] === 'skydonation' ) {
+        if ( isset($_GET['page']) && $_GET['page'] === 'skydonate' ) {
             wp_enqueue_script(
                 'chartjs',
                 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
@@ -85,7 +85,7 @@ class Skydonate_Admin {
      * Admin Menu
      */
     public function add_admin_menu() {
-        $parent_slug = 'skydonation';
+        $parent_slug = 'skydonate';
         $is_valid = skydonate_license()->is_valid();
 
         // If license is inactive, main menu goes to License page
@@ -94,7 +94,7 @@ class Skydonate_Admin {
                 esc_html__( 'SkyDonate', 'skydonate' ),
                 esc_html__( 'SkyDonate', 'skydonate' ),
                 'manage_options',
-                'skydonation',
+                'skydonate',
                 [ $this, 'license_page_content' ],
                 'dashicons-skydonation',
                 20
@@ -104,7 +104,7 @@ class Skydonate_Admin {
                 esc_html__( 'SkyDonate', 'skydonate' ),
                 esc_html__( 'SkyDonate', 'skydonate' ),
                 'manage_options',
-                'skydonation',
+                'skydonate',
                 [ $this, 'analytics_page_content' ],
                 'dashicons-skydonation',
                 20
@@ -129,7 +129,7 @@ class Skydonate_Admin {
                         continue;
                     }
 
-                    $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonation';
+                    $page_slug = ! empty( $sub_menu['page_slug'] ) ? $sub_menu['page_slug'] : 'skydonate';
                     $class     = isset( $sub_menu['class'] ) ? esc_attr( $sub_menu['class'] ) : '';
                 ?>
                     <li <?php echo $class ? 'class="' . $class . '"' : ''; ?>>
@@ -154,7 +154,7 @@ class Skydonate_Admin {
                 'page_title' => esc_html__( 'Analytics', 'skydonate' ),
                 'menu_title' => esc_html__( 'Analytics', 'skydonate' ),
                 'capability' => 'manage_options',
-                'page_slug'  => 'skydonation',
+                'page_slug'  => 'skydonate',
                 'callback'   => 'analytics_page_content',
             ],
             [

@@ -547,7 +547,7 @@ class Skydonate_Public {
 
 	public function display_custom_order_item_meta( $item_id, $item, $product ) {
 		if ( $meta = wc_get_order_item_meta( $item_id, 'Name on Plaque/ Banner' ) ) {
-			echo '<p><strong>' . __( 'Name on Plaque/ Banner', 'vicode' ) . ':</strong><input type="text" name="custom_order_item_meta[' . $item_id . ']" value="' . esc_attr( $meta ) . '" /></p>';
+			echo '<p><strong>' . __( 'Name on Plaque/ Banner', 'skydonate' ) . ':</strong><input type="text" name="custom_order_item_meta[' . $item_id . ']" value="' . esc_attr( $meta ) . '" /></p>';
 		}
 	}
 

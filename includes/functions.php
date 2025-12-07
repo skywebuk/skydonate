@@ -278,16 +278,16 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 				<input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" placeholder="Enter email address" value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( $_POST['username'] ) : ''; ?>" /><?php //@codingStandardsIgnoreLine ?>
 			</p>
 			<p class="woocommerce-FormRow woocommerce-FormRow--wide form-row form-row-wide form-row-password">
-				<label for="password"><?php esc_html_e( 'Password', 'woodmart' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+				<label for="password"><?php esc_html_e( 'Password', 'skydonate' ); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
 				<input class="woocommerce-Input woocommerce-Input--text input-text" type="password" placeholder="Enter password" name="password" id="password" autocomplete="current-password" />
 			</p>
 
 			<?php do_action( 'woocommerce_login_form' ); ?>
 
 			<p class="login-form-footer">
-				<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" class="woocommerce-LostPassword lost_password"><?php esc_html_e( 'Forgot password?', 'woodmart' ); ?></a>
+				<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" class="woocommerce-LostPassword lost_password"><?php esc_html_e( 'Forgot password?', 'skydonate' ); ?></a>
 				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
-					<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" value="forever" title="<?php esc_attr_e( 'Remember me', 'woodmart' ); ?>" aria-label="<?php esc_attr_e( 'Remember me', 'woodmart' ); ?>" /> <span><?php esc_html_e( 'Remember me', 'woodmart' ); ?></span>
+					<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" value="forever" title="<?php esc_attr_e( 'Remember me', 'skydonate' ); ?>" aria-label="<?php esc_attr_e( 'Remember me', 'skydonate' ); ?>" /> <span><?php esc_html_e( 'Remember me', 'skydonate' ); ?></span>
 				</label>
 			</p>
 
@@ -296,7 +296,7 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 				<?php if ( $redirect ) : ?>
 					<input type="hidden" name="redirect" value="<?php echo esc_url( $redirect ); ?>" />
 				<?php endif ?>
-				<button type="submit" class="button woocommerce-button woocommerce-form-login__submit<?php echo esc_attr( function_exists( 'wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'woodmart' ); ?>"><?php esc_html_e( 'Log in', 'woodmart' ); ?></button>
+				<button type="submit" class="button woocommerce-button woocommerce-form-login__submit<?php echo esc_attr( function_exists( 'wc_wp_theme_get_element_class_name') && wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'skydonate' ); ?>"><?php esc_html_e( 'Log in', 'skydonate' ); ?></button>
 			</p>
 
 			<?php if ( class_exists( 'WOODMART_Auth' ) && ( ( ! empty( $fb_app_id ) && ! empty( $fb_app_secret ) ) || ( ! empty( $goo_app_id ) && ! empty( $goo_app_secret ) ) || ( ! empty( $vk_app_id ) && ! empty( $vk_app_secret ) ) ) ) : ?>
@@ -309,21 +309,21 @@ function woodmart_login_form( $echo = true, $action = false, $message = false, $
 
 					woodmart_enqueue_inline_style( 'woo-opt-social-login' );
 				?>
-				<p class="title wd-login-divider<?php echo woodmart_get_old_classes( ' wood-login-divider' ); ?>"><span><?php esc_html_e( 'Or login with', 'woodmart' ); ?></span></p>
+				<p class="title wd-login-divider<?php echo woodmart_get_old_classes( ' wood-login-divider' ); ?>"><span><?php esc_html_e( 'Or login with', 'skydonate' ); ?></span></p>
 				<div class="wd-social-login">
 					<?php if ( ! empty( $fb_app_id ) && ! empty( $fb_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'facebook', $social_url ) ); ?>" class="login-fb-link btn">
-							<?php esc_html_e( 'Facebook', 'woodmart' ); ?>
+							<?php esc_html_e( 'Facebook', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 					<?php if ( ! empty( $goo_app_id ) && ! empty( $goo_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'google', $social_url ) ); ?>" class="login-goo-link btn">
-							<?php esc_html_e( 'Google', 'woodmart' ); ?>
+							<?php esc_html_e( 'Google', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 					<?php if ( ! empty( $vk_app_id ) && ! empty( $vk_app_secret ) ) : ?>
 						<a href="<?php echo esc_url( str_replace( '{{SOCIAL}}', 'vkontakte', $social_url ) ); ?>" class="login-vk-link btn">
-							<?php esc_html_e( 'VKontakte', 'woodmart' ); ?>
+							<?php esc_html_e( 'VKontakte', 'skydonate' ); ?>
 						</a>
 					<?php endif ?>
 				</div>
