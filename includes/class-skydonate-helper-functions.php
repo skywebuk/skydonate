@@ -716,10 +716,6 @@ class Skydonate_Functions {
         return $wpdb->get_col($prepared_sql);
     }
 
-
-    
-
-    
     public static function get_product_ids_by_multiple_taxonomies( $slugs, $taxonomy = 'product_cat' ) {
         // Ensure $slugs is an array before proceeding
         if ( ! is_array( $slugs ) ) {
@@ -761,9 +757,6 @@ class Skydonate_Functions {
         $all_product_ids = array_unique( $all_product_ids );
         return $all_product_ids;
     }
-    
-    
-    
     
     public static function Get_Currency_Symbol() {
         // Get the current WooCommerce currency

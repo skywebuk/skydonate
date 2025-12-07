@@ -39,7 +39,6 @@ function sky_status_check($option) {
 	return get_option($option) == 1;
 }
 
-
 function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     foreach ( $array as $key => $value ) {
         if ( $key === $key_to_find ) {
