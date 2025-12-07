@@ -97,11 +97,11 @@ class Skydonate_Elementor_Addons {
 
          if (skydonate_is_widget_enabled('donation_card')) {
             if(skydonate_get_layout('addons_card') == 'layout-2'){
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-donation-form-2.php');
-                $widgets_manager->register(new \Skydonate_Donation_Form_2());
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card-2.php');
+                $widgets_manager->register(new \Skydonate_Card_2());
             } else {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-donation-form.php');
-                $widgets_manager->register(new \Skydonate_Donation_Form());
+                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-card.php');
+                $widgets_manager->register(new \Skydonate_Card());
             }
         }
 

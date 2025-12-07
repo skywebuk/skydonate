@@ -547,7 +547,8 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                             echo '</div>';
                         echo '</div>';
                         echo '<div class="sky-modal_footer">';
-                            echo '<a href="' . esc_url($modal_button_link['url']) . '" class="button btn-full">';
+                            $button_url = !empty($modal_button_link['url']) ? $modal_button_link['url'] : '#';
+                            echo '<a href="' . esc_url($button_url) . '" class="button btn-full">';
                                 echo esc_html($modal_button_text);
                                 echo $modal_button_icon;
                             echo '</a>';
