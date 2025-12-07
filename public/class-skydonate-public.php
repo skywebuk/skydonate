@@ -1,6 +1,16 @@
 <?php
+/**
+ * SkyDonate Public Class
+ *
+ * @package    SkyDonate
+ * @subpackage SkyDonate/public
+ */
 
-class Skyweb_Donation_System_Public {
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+class Skydonate_Public {
 
 	private $plugin_name;
 	private $version;
@@ -98,7 +108,7 @@ class Skyweb_Donation_System_Public {
         );
         
         
-            $addons_form_layout = skyweb_donation_layout_option('addons_donation_form_layout');
+            $addons_form_layout = skydonate_layout_option('addons_donation_form_layout');
 
             if (!is_array($addons_form_layout)) {
                 $addons_form_layout = ['layout1'];
@@ -467,7 +477,7 @@ class Skyweb_Donation_System_Public {
 			$classes[] = 'checkout-custom-style';
 		}
 
-		$layout_option_style = skyweb_donation_layout_option('addons_donation_form_layout');
+		$layout_option_style = skydonate_layout_option('addons_donation_form_layout');
 		$layout_option = $layout_option_style?$layout_option_style:['layout1'];
 
 		if (!is_array($layout_option)) {
@@ -553,3 +563,6 @@ class Skyweb_Donation_System_Public {
 		remove_action('woocommerce_widget_shopping_cart_total', 'woocommerce_widget_shopping_cart_subtotal', 10);
 	}
 }
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_Public', 'Skyweb_Donation_System_Public' );

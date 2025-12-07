@@ -1,13 +1,12 @@
 <?php
-
 /**
  * Register all actions and filters for the plugin
  *
- * @link       https://https://skywebdesign.co.uk/
+ * @link       https://skywebdesign.co.uk/
  * @since      1.0.0
  *
- * @package    Skyweb_Donation_System
- * @subpackage Skyweb_Donation_System/includes
+ * @package    SkyDonate
+ * @subpackage SkyDonate/includes
  */
 
 /**
@@ -17,11 +16,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Skyweb_Donation_System
- * @subpackage Skyweb_Donation_System/includes
+ * @package    SkyDonate
+ * @subpackage SkyDonate/includes
  * @author     Sky Web Design <shafiq6171@gmail.com>
  */
-class Skyweb_Donation_System_Loader {
+class Skydonate_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.
@@ -47,10 +46,8 @@ class Skyweb_Donation_System_Loader {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
 		$this->actions = array();
 		$this->filters = array();
-
 	}
 
 	/**
@@ -96,7 +93,6 @@ class Skyweb_Donation_System_Loader {
 	 * @return   array                                  The collection of actions and filters registered with WordPress.
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
-
 		$hooks[] = array(
 			'hook'          => $hook,
 			'component'     => $component,
@@ -106,7 +102,6 @@ class Skyweb_Donation_System_Loader {
 		);
 
 		return $hooks;
-
 	}
 
 	/**
@@ -115,7 +110,6 @@ class Skyweb_Donation_System_Loader {
 	 * @since    1.0.0
 	 */
 	public function run() {
-
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
@@ -123,7 +117,8 @@ class Skyweb_Donation_System_Loader {
 		foreach ( $this->actions as $hook ) {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
-
 	}
-
 }
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_Loader', 'Skyweb_Donation_System_Loader' );

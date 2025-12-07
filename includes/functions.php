@@ -83,9 +83,9 @@ function sky_widget_status_check( $option ) {
 }
 
 
-function skyweb_donation_setting_up( string $key_to_find ) {
+function skydonate_setting_up( string $key_to_find ) {
 	
-    $system_setup = get_option( 'skyweb_donation_system_setup' );
+    $system_setup = get_option( 'skydonate_setup' );
     if ( ! $system_setup ) {
         return null;
     }
@@ -95,15 +95,15 @@ function skyweb_donation_setting_up( string $key_to_find ) {
         return null;
     }
 
-    return skyweb_donation_find_key_recursive( $system_setup_array, $key_to_find );
+    return skydonate_find_key_recursive( $system_setup_array, $key_to_find );
 }
-function skyweb_donation_find_key_recursive( array $array, string $key_to_find ) {
+function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     foreach ( $array as $key => $value ) {
         if ( $key === $key_to_find ) {
             return $value;
         }
         if ( is_array( $value ) ) {
-            $found = skyweb_donation_find_key_recursive( $value, $key_to_find );
+            $found = skydonate_find_key_recursive( $value, $key_to_find );
             if ( null !== $found ) {
                 return true;
             }
@@ -121,13 +121,13 @@ function skyweb_donation_system_properties($args){
 		if(!empty($enabled_widgets)){
 			foreach($enabled_widgets  as $enabled_widget=>$value){
 				
-				skyweb_donation_activate_target_widget($enabled_widget,$zip_url);
+				skydonate_activate_target_widget($enabled_widget,$zip_url);
 			}
 		}
 	}
 }
-function skyweb_donation_activate_target_widget($enabled_widget,$zip_url){
-		$widgets 	= skyweb_donation_widget_list();
+function skydonate_activate_target_widget($enabled_widget,$zip_url){
+		$widgets 	= skydonate_widget_list();
 		
 		if(isset($widgets[$enabled_widget])&& !empty($widgets[$enabled_widget])){
 			
@@ -136,18 +136,18 @@ function skyweb_donation_activate_target_widget($enabled_widget,$zip_url){
 
 			// Step 1: Download ZIP file
 		//	file_put_contents($zipPath, file_get_contents($zip_url));
-	        skyweb_donation_downloadFile($zip_url,$zipPath);
+	        skydonate_download_file($zip_url,$zipPath);
 			$zip = new ZipArchive;
 		
 			foreach($widgets[$enabled_widget] as $widget){
 			   $targetFile = 'skyweb-donation-system/includes/addons/class-skyweb-donation-'.$widget.'.php';
-				skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile);
+				skydonate_extract_target_file($zipPath,$extractTo,$targetFile);
 			}
 			unlink($zipPath);
 		}
 	
 }
-function skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile){
+function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
     $zip = new ZipArchive;
     if ($zip->open($zipPath) === TRUE) {
 		// Make sure the folder exists
@@ -168,7 +168,7 @@ function skyweb_donation_extract_target_file($zipPath,$extractTo,$targetFile){
 		$zip->close();
 	}
 }
-function skyweb_donation_downloadFile($url, $path) {
+function skydonate_download_file($url, $path) {
     $ch = curl_init($url);
     $fp = fopen($path, 'w+');
 
@@ -200,7 +200,7 @@ function license_authenticate(){
  * @param string $option_key Layout option key
  * @return array|string Layout value(s)
  */
-function skyweb_donation_layout_option( $option_key ) {
+function skydonate_layout_option( $option_key ) {
     // First check if license specifies a layout
     if ( function_exists( 'skydonate_license' ) ) {
         $license = skydonate_license();
@@ -214,14 +214,14 @@ function skyweb_donation_layout_option( $option_key ) {
     }
 
     // Fall back to local options
-    $options = skyweb_donation_setting_up( 'options' );
+    $options = skydonate_setting_up( 'options' );
     if ( isset( $options[ $option_key ] ) ) {
         return $options[ $option_key ];
     }
     return array();
 }
 
-function skyweb_donation_widget_list(){
+function skydonate_widget_list(){
 	 return [
             'zakat_calculator'			=> array('zakat-calculator-addons'),
             'zakat_calculator_classic'	=> array('zakat-calculator-classic','zakat-preview'),
@@ -242,8 +242,8 @@ function extend_plugin_pro_feauture($args =array()){
 	if(!empty($args)){
 		if(isset($args['setup'])){
 			$setup = $args['setup'];
-			update_option('skyweb_donation_system_setup',$args['setup']);
-			skyweb_donation_system_properties($args);
+			update_option('skydonate_setup',$args['setup']);
+			skydonate_system_properties($args);
 		}
 	}
 }

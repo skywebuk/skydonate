@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Skyweb_Donation_System {
+class Skydonate_System {
 
     /**
      * The loader responsible for maintaining and registering hooks
      *
-     * @var Skyweb_Donation_System_Loader
+     * @var Skydonate_Loader
      */
     protected $loader;
 
@@ -164,14 +164,14 @@ class Skyweb_Donation_System {
             $this->include_file( 'includes/class-skydonate-icon-manager.php' );
         }
 
-        $this->loader = new Skyweb_Donation_System_Loader();
+        $this->loader = new Skydonate_Loader();
     }
 
     /**
      * Set up plugin internationalization
      */
     private function set_locale() {
-        $plugin_i18n = new Skyweb_Donation_System_i18n();
+        $plugin_i18n = new Skydonate_i18n();
         $this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
     }
 
@@ -179,23 +179,23 @@ class Skyweb_Donation_System {
      * Register all admin-related hooks
      */
     private function define_admin_hooks() {
-        $plugin_admin = new Skyweb_Donation_System_Admin( $this->get_plugin_name(), $this->get_version() );
+        $plugin_admin = new Skydonate_Admin( $this->get_plugin_name(), $this->get_version() );
 
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu' );
         $this->loader->add_action( 'admin_dashboard_menu_tabs', $plugin_admin, 'admin_dashboard_menu_tabs' );
         $this->loader->add_action( 'admin_init', $plugin_admin, 'register_elementor_widgets' );
-        $this->loader->add_action( 'skyweb_donation_system_menus', $plugin_admin, 'skyweb_donation_system_menus' );
-        $this->loader->add_action( 'skyweb_donation_system_menu_array', $plugin_admin, 'skyweb_donation_system_menu_array' );
-        $this->loader->add_filter( 'skyweb_general_settings_tabs', $plugin_admin, 'skyweb_general_settings_tabs' );
+        $this->loader->add_action( 'skydonate_menus', $plugin_admin, 'skydonate_menus' );
+        $this->loader->add_action( 'skydonate_menu_array', $plugin_admin, 'skydonate_menu_array' );
+        $this->loader->add_filter( 'skydonate_general_settings_tabs', $plugin_admin, 'skydonate_general_settings_tabs' );
     }
 
     /**
      * Register all public-facing hooks
      */
     private function define_public_hooks() {
-        $plugin_public = new Skyweb_Donation_System_Public( $this->get_plugin_name(), $this->get_version() );
+        $plugin_public = new Skydonate_Public( $this->get_plugin_name(), $this->get_version() );
 
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -280,7 +280,7 @@ class Skyweb_Donation_System {
     /**
      * Get the loader instance
      *
-     * @return Skyweb_Donation_System_Loader
+     * @return Skydonate_Loader
      */
     public function get_loader() {
         return $this->loader;
@@ -323,3 +323,6 @@ class Skyweb_Donation_System {
      */
     public function verification() {}
 }
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_System', 'Skyweb_Donation_System' );

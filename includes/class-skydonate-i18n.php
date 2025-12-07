@@ -1,16 +1,15 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://https://skywebdesign.co.uk/
+ * @link       https://skywebdesign.co.uk/
  * @since      1.0.0
  *
- * @package    Skyweb_Donation_System
- * @subpackage Skyweb_Donation_System/includes
+ * @package    SkyDonate
+ * @subpackage SkyDonate/includes
  */
 
 /**
@@ -20,12 +19,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Skyweb_Donation_System
- * @subpackage Skyweb_Donation_System/includes
+ * @package    SkyDonate
+ * @subpackage SkyDonate/includes
  * @author     Sky Web Design <shafiq6171@gmail.com>
  */
-class Skyweb_Donation_System_i18n {
-
+class Skydonate_i18n {
 
 	/**
 	 * Load the plugin text domain for translation.
@@ -33,15 +31,13 @@ class Skyweb_Donation_System_i18n {
 	 * @since    1.0.0
 	 */
 	public function load_plugin_textdomain() {
-
 		load_plugin_textdomain(
-			'skyweb-donation-system',
+			'skydonate',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }
+
+// Backwards compatibility alias
+class_alias( 'Skydonate_i18n', 'Skyweb_Donation_System_i18n' );

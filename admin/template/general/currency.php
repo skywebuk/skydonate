@@ -27,14 +27,14 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
             <tr>
                 <th scope="row">
                     <label for="skyweb_currency_changer_enabled">
-                        <?php _e('Enable Currency Feature', 'skyweb-donation-system'); ?>
+                        <?php _e('Enable Currency Feature', 'skydonate'); ?>
                     </label>
                 </th>
                 <td>
                     <label class="checkbox-switch">
                         <input type="checkbox" name="skyweb_currency_changer_enabled" id="skyweb_currency_changer_enabled" value="1" <?php checked($is_enabled, 1); ?>>
                         <span class="switch"></span>
-                        <small><?php _e('Turn this on to activate the currency feature.', 'skyweb-donation-system'); ?></small>
+                        <small><?php _e('Turn this on to activate the currency feature.', 'skydonate'); ?></small>
                     </label>
                 </td>
             </tr>
@@ -43,14 +43,14 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
             <tr>
                 <th scope="row">
                     <label for="skyweb_geo_default_all">
-                        <?php _e('Show All Currencies', 'skyweb-donation-system'); ?>
+                        <?php _e('Show All Currencies', 'skydonate'); ?>
                     </label>
                 </th>
                 <td>
                     <label class="checkbox-switch">
                         <input type="checkbox" name="skyweb_geo_default_all" id="skyweb_geo_default_all" value="1" <?php checked($geo_default_all, 1); ?>>
                         <span class="switch"></span>
-                        <small><?php _e('If enabled, all currencies will be shown by default and the selection box will be hidden.', 'skyweb-donation-system'); ?></small>
+                        <small><?php _e('If enabled, all currencies will be shown by default and the selection box will be hidden.', 'skydonate'); ?></small>
                     </label>
                 </td>
             </tr>
@@ -59,7 +59,7 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
             <tr class="currency-selector-row">
                 <th scope="row">
                     <label for="skyweb_selected_currency">
-                        <?php _e('Select Currencies', 'skyweb-donation-system'); ?>
+                        <?php _e('Select Currencies', 'skydonate'); ?>
                     </label>
                 </th>
                 <td>
@@ -70,7 +70,7 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <small><?php _e('Select one or more currencies to be available in your store.', 'skyweb-donation-system'); ?></small>
+                    <small><?php _e('Select one or more currencies to be available in your store.', 'skydonate'); ?></small>
                 </td>
             </tr>
 
@@ -78,24 +78,24 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
             <tr>
                 <th scope="row">
                     <label for="skyweb_geo_currency_enabled">
-                        <?php _e('Auto-detect Currency', 'skyweb-donation-system'); ?>
+                        <?php _e('Auto-detect Currency', 'skydonate'); ?>
                     </label>
                 </th>
                 <td>
                     <label class="checkbox-switch">
                         <input type="checkbox" name="skyweb_geo_currency_enabled" id="skyweb_geo_currency_enabled" value="1" <?php checked($geo_enabled, 1); ?>>
                         <span class="switch"></span>
-                        <small><?php _e('Automatically detect each supporter\'s default currency based on their geolocation.', 'skyweb-donation-system'); ?></small>
+                        <small><?php _e('Automatically detect each supporter\'s default currency based on their geolocation.', 'skydonate'); ?></small>
                     </label>
 
                     <div class="geo-sub-options" style="margin-top:12px; <?php echo $geo_enabled ? '' : 'display:none;'; ?>">
                         <label style="display:block; margin-bottom:5px;">
                             <input type="radio" name="skyweb_geo_currency_mode" value="all" <?php checked($geo_mode, 'all'); ?>>
-                            <?php _e('Enable for all currency types', 'skyweb-donation-system'); ?>
+                            <?php _e('Enable for all currency types', 'skydonate'); ?>
                         </label>
                         <label style="display:block;">
                             <input type="radio" name="skyweb_geo_currency_mode" value="selected" <?php checked($geo_mode, 'selected'); ?>>
-                            <?php _e('Enable only for selected currencies', 'skyweb-donation-system'); ?>
+                            <?php _e('Enable only for selected currencies', 'skydonate'); ?>
                         </label>
                     </div>
                 </td>
@@ -106,7 +106,7 @@ $geo_default_all = get_option('skyweb_geo_default_all', 0); // New switch
         <br>
         <p>
             <button type="submit" class="skydonation-button">
-                <?php _e('Save Settings', 'skyweb-donation-system'); ?>
+                <?php _e('Save Settings', 'skydonate'); ?>
             </button>
         </p>
     </form>
