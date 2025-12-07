@@ -21,29 +21,11 @@ $default_widgets = [
 // Get saved options or use defaults
 $widgets = get_option('skydonation_widgets', []);
 $widgets = wp_parse_args($widgets, $default_widgets);
-
-$zakat_calculator 			=  skyweb_donation_setting_up('zakat_calculator');
-$zakat_calculator_classic 	=  skyweb_donation_setting_up('zakat_calculator_classic');
-$metal_values 				=  skyweb_donation_setting_up('metal_values');
-$recent_order 				=  skyweb_donation_setting_up('recent_order');
-$donation_progress 			=  skyweb_donation_setting_up('donation_progress');
-$donation_form 				=  skyweb_donation_setting_up('donation_form');
-$donation_card 				=  skyweb_donation_setting_up('donation_card');
-$impact_slider 				=  skyweb_donation_setting_up('impact_slider');
-$qurbani_status 			=  true;
-$extra_donation 			=  true;
-$quick_donation 			=  true;
-$gift_aid_toggle 			=  true;
-$donation_button 			=  skyweb_donation_setting_up('donation_button');
-$icon_slider 				=  skyweb_donation_setting_up('icon_slider');
-
-sky_widget_status_check('qurbani_status')
-
 ?>
 <div class="skyweb-settings-panel">
     <form class="skydonation-widget-form" method="post" action="">
         <div class="skydonation-checkboxs skydonation-widgets">
-            <?php if($zakat_calculator == 1): ?>
+            <?php if(sky_widget_status_check('zakat_calculator')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Zakat Calculator', 'skydonation' ); ?></span>
                 <input id="zakat_calculator" name="widgets[zakat_calculator]" type="checkbox" 
@@ -54,7 +36,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($zakat_calculator_classic == 1): ?>
+            <?php if(sky_widget_status_check('zakat_calculator_classic')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Zakat Calculator Classic', 'skydonation' ); ?></span>
                 <input id="zakat_calculator_classic" name="widgets[zakat_calculator_classic]" type="checkbox" 
@@ -65,7 +47,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($metal_values == 1): ?>
+            <?php if(sky_widget_status_check('metal_values')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Metal Values', 'skydonation' ); ?></span>
                 <input id="metal_values" name="widgets[metal_values]" type="checkbox" 
@@ -76,7 +58,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($recent_order == 1): ?>
+            <?php if(sky_widget_status_check('recent_order')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Recent Donation', 'skydonation' ); ?></span>
                 <input id="recent_order" name="widgets[recent_order]" type="checkbox" 
@@ -87,7 +69,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($donation_progress == 1): ?>
+            <?php if(sky_widget_status_check('donation_progress')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Donation Progress', 'skydonation' ); ?></span>
                 <input id="donation_progress" name="widgets[donation_progress]" type="checkbox" 
@@ -98,7 +80,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($donation_form == 1): ?>
+            <?php if(sky_widget_status_check('donation_form')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Donation Form', 'skydonation' ); ?></span>
                 <input id="donation_form" name="widgets[donation_form]" type="checkbox" 
@@ -109,7 +91,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($donation_card == 1): ?>
+            <?php if(sky_widget_status_check('donation_card')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Donation Card', 'skydonation' ); ?></span>
                 <input id="donation_card" name="widgets[donation_card]" type="checkbox" 
@@ -120,7 +102,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($impact_slider == 1): ?>
+            <?php if(sky_widget_status_check('impact_slider')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Impact Slider', 'skydonation' ); ?></span>
                 <input id="impact_slider" name="widgets[impact_slider]" type="checkbox" 
@@ -131,7 +113,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($qurbani_status == 1): ?>
+            <?php if(sky_widget_status_check('qurbani_status')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Qurbani Status', 'skydonation' ); ?></span>
                 <input id="qurbani_status" name="widgets[qurbani_status]" type="checkbox" 
@@ -142,7 +124,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($extra_donation == 1): ?>
+            <?php if(sky_widget_status_check('extra_donation')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Extra Donation', 'skydonation' ); ?></span>
                 <input id="extra_donation" name="widgets[extra_donation]" type="checkbox" 
@@ -153,7 +135,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($quick_donation == 1): ?>
+            <?php if(sky_widget_status_check('quick_donation')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Quick Donation', 'skydonation' ); ?></span>
                 <input id="quick_donation" name="widgets[quick_donation]" type="checkbox" 
@@ -164,7 +146,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($gift_aid_toggle == 1): ?>
+            <?php if(sky_widget_status_check('gift_aid_toggle')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Gift Aid Toggle', 'skydonation' ); ?></span>
                 <input id="gift_aid_toggle" name="widgets[gift_aid_toggle]" type="checkbox" 
@@ -175,7 +157,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($donation_button == 1): ?>
+            <?php if(sky_widget_status_check('donation_button')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Donation Button', 'skydonation' ); ?></span>
                 <input id="donation_button" name="widgets[donation_button]" type="checkbox" 
@@ -186,7 +168,7 @@ sky_widget_status_check('qurbani_status')
                 </span>
             </label>
             <?php endif; ?>
-            <?php if($icon_slider == 1): ?>
+            <?php if(sky_widget_status_check('icon_slider')): ?>
             <label class="skydonation-switcher">
                 <span class="switch-label"><?php _e( 'Icon Slider', 'skydonation' ); ?></span>
                 <input id="icon_slider" name="widgets[icon_slider]" type="checkbox" 

@@ -11,6 +11,10 @@ $info = SkyDonate_License_Admin::get_info();
 $is_valid = $info['is_valid'];
 $nonce = wp_create_nonce( 'skydonate_license_nonce' );
 
+echo '<pre>';
+print_r($info);
+echo '</pre>';
+
 // Count enabled items
 $enabled_features = ! empty( $info['features'] ) ? count( array_filter( $info['features'] ) ) : 0;
 $total_features = ! empty( $info['features'] ) ? count( $info['features'] ) : 0;
