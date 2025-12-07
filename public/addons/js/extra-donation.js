@@ -1,5 +1,5 @@
 (function ($) {
-    var skydonate_extra_donation = function ($scope, $) {
+    var skyweb_extra_donation = function ($scope, $) {
 
         $scope.find('.extra-donation-checkbox').on('change', function () {
 
@@ -52,7 +52,7 @@
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/skydonate_extra_donation.default',
-            skydonate_extra_donation
+            skyweb_extra_donation
         );
     });
 
