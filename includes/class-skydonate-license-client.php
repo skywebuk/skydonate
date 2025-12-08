@@ -968,17 +968,20 @@ class SkyDonate_License_Client {
     public function load_remote_functions() {
         // Check if license is active (valid or in grace period)
         if ( ! $this->is_active() ) {
+            $this->log( 'Remote functions skipped: License is not active' );
             return;
         }
 
         // Check if remote functions capability is allowed
         if ( ! $this->has_capability( 'allow_remote_functions' ) ) {
+            $this->log( 'Remote functions skipped: Missing allow_remote_functions capability' );
             return;
         }
 
         // Ensure we have a license key
         $license_key = $this->get_key();
         if ( empty( $license_key ) ) {
+            $this->log( 'Remote functions skipped: No license key found' );
             return;
         }
 
