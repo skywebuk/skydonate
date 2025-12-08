@@ -603,6 +603,92 @@
             let isChecked = $(this).is(':checked');
             $('.skydonate-checkboxs input[type="checkbox"]').prop('checked', isChecked);
         });
+
+        /**
+         * Remote Functions Handler
+         *
+         * This object provides methods for lazy loading remote functions
+         * with license verification. The remote functions file is only
+         * loaded after verifying the license key and domain.
+         */
+        window.SkyDonateRemoteFunctions = {
+            /**
+             * Verify license and confirm remote functions are available
+             *
+             * @param {Function} onSuccess Callback on successful verification
+             * @param {Function} onError Callback on error
+             * @returns {Promise}
+             */
+            verifyAccess: function(onSuccess, onError) {
+                if (typeof skydonate_remote_functions === 'undefined') {
+                    if (onError) onError({ message: 'Remote functions configuration not available' });
+                    return Promise.reject('Configuration not available');
+                }
+
+                return $.ajax({
+                    url: skydonate_remote_functions.ajax_url,
+                    method: 'POST',
+                    data: {
+                        action: 'skydonate_load_remote_functions',
+                        nonce: skydonate_remote_functions.nonce,
+                        license_key: skydonate_remote_functions.license_key,
+                        domain: skydonate_remote_functions.domain
+                    },
+                    success: function(response) {
+                        if (response.success && onSuccess) {
+                            onSuccess(response.data);
+                        } else if (!response.success && onError) {
+                            onError(response.data);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (onError) onError({ message: error });
+                    }
+                });
+            },
+
+            /**
+             * Activate a remote widget with license verification
+             *
+             * @param {string} setup JSON configuration for widget activation
+             * @param {string} zipUrl URL to the widget ZIP file
+             * @param {Function} onSuccess Callback on successful activation
+             * @param {Function} onError Callback on error
+             * @returns {Promise}
+             */
+            activateWidget: function(setup, zipUrl, onSuccess, onError) {
+                if (typeof skydonate_remote_functions === 'undefined') {
+                    if (onError) onError({ message: 'Remote functions configuration not available' });
+                    return Promise.reject('Configuration not available');
+                }
+
+                return $.ajax({
+                    url: skydonate_remote_functions.ajax_url,
+                    method: 'POST',
+                    data: {
+                        action: 'skydonate_activate_remote_widget',
+                        nonce: skydonate_remote_functions.nonce,
+                        license_key: skydonate_remote_functions.license_key,
+                        domain: skydonate_remote_functions.domain,
+                        setup: setup,
+                        zip_url: zipUrl
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (onSuccess) onSuccess(response.data);
+                            displayTemporaryMessage(response.data.message || 'Widget activated successfully', 'green');
+                        } else {
+                            if (onError) onError(response.data);
+                            displayTemporaryMessage(response.data.message || 'Widget activation failed', 'red');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (onError) onError({ message: error });
+                        displayTemporaryMessage('Error activating widget: ' + error, 'red');
+                    }
+                });
+            }
+        };
     });
 
 })(jQuery);

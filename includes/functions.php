@@ -53,104 +53,37 @@ function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     }
     return null;
 }
-function skydonate_system_properties($args){
-	
-	$setup				= $args['setup'];
-	$zip_url			= $args['zip_url'];
-	$active_widgets 	= json_decode($setup,true);
-	if(isset($active_widgets['setup_widgets'])){
-		$enabled_widgets = $active_widgets['setup_widgets'];
-		if(!empty($enabled_widgets)){
-			foreach($enabled_widgets  as $enabled_widget=>$value){
-				
-				skydonate_activate_target_widget($enabled_widget,$zip_url);
-			}
-		}
-	}
-}
-function skydonate_activate_target_widget($enabled_widget,$zip_url){
-		$widgets 	= skydonate_widget_list();
-		
-		if(isset($widgets[$enabled_widget])&& !empty($widgets[$enabled_widget])){
-			
-			$zipPath = __DIR__ . '/temp.zip';
-			$extractTo = SKYDONATE_INCLUDES_PATH.'/addons/';
 
-			// Step 1: Download ZIP file
-		//	file_put_contents($zipPath, file_get_contents($zip_url));
-	        skydonate_download_file($zip_url,$zipPath);
-			$zip = new ZipArchive;
-		
-			foreach($widgets[$enabled_widget] as $widget){
-			   $targetFile = 'skydonate/includes/addons/class-skydonate-addon-'.$widget.'.php';
-				skydonate_extract_target_file($zipPath,$extractTo,$targetFile);
-			}
-			unlink($zipPath);
-		}
-	
-}
-function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
-    $zip = new ZipArchive;
-    if ($zip->open($zipPath) === TRUE) {
-		// Make sure the folder exists
-		if (!file_exists($extractTo)) {
-			mkdir($extractTo, 0755, true);
-		}
-	
-		
-		if ($zip->locateName($targetFile) !== false) {
-			$content = $zip->getFromName($targetFile);
-			if (!file_exists($extractTo)) {
-				mkdir($extractTo, 0755, true);
-			}
-			$fileNameOnly = basename($targetFile);
-		
-			file_put_contents($extractTo . $fileNameOnly, $content);
-		}
-		$zip->close();
-	}
-}
-function skydonate_download_file($url, $path) {
-    $ch = curl_init($url);
-    $fp = fopen($path, 'w+');
-
-    curl_setopt($ch, CURLOPT_FILE, $fp);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60); // timeout in seconds
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // follow redirects
-    curl_setopt($ch, CURLOPT_FAILONERROR, true); // report errors
-
-    $success = curl_exec($ch);
-
-    if (!$success) {
-       return  curl_error($ch);
+/**
+ * License authentication check
+ *
+ * @return bool True if license is active
+ */
+function license_authenticate() {
+    $activate = esc_attr( get_option( 'license_key_status' ) );
+    if ( $activate ) {
+        return true;
     }
-
-    curl_close($ch);
-    fclose($fp);
+    return false;
 }
 
-function license_authenticate(){
-	$activate = esc_attr(get_option('license_key_status'));
-	if($activate){
-		return true;
-	}
-}
-
-function skydonate_widget_list(){
-	 return [
-            'zakat_calculator'			=> array('zakat-calculator-addons'),
-            'zakat_calculator_classic'	=> array('zakat-calculator-classic','zakat-preview'),
-            'metal_values'				=> array('metal-values-addons'),
-            'recent_order'				=> array('recent-order-addon','recent-order-addon-2'),
-            'donation_progress'			=> array('progress-addon','progress-addon-2'),
-            'donation_form'				=> array('form-addon','form-addon-2','form-addon-3'),
-            'donation_card'				=> array('card-addon','card-addon-2'),
-            'impact_slider'				=> array('impact-slider'),
-            'qurbani_status'			=> array('qurbani-status'),
-            'donation_button'			=> array('button'),
-            'icon_slider'				=> array('icon-list'),
-        ];
-}
+/**
+ * Remote functions are now lazy-loaded through the Remote Functions Handler.
+ * They are only loaded after verifying the license key and domain.
+ *
+ * The following functions have been moved to includes/remote-functions.php:
+ * - skydonate_system_properties()
+ * - skydonate_activate_target_widget()
+ * - skydonate_extract_target_file()
+ * - skydonate_download_file()
+ * - skydonate_widget_list()
+ *
+ * To access these functions, use the AJAX endpoints:
+ * - skydonate_load_remote_functions - Verify license and confirm access
+ * - skydonate_activate_remote_widget - Activate widgets with license verification
+ *
+ * @see SkyDonate_Remote_Functions_Handler
+ */
 
 function woodmart_login_form( $echo = true, $action = false, $message = false, $hidden = false, $redirect = false ) {
 	$vk_app_id      = woodmart_get_opt( 'vk_app_id' );

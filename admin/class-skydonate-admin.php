@@ -72,6 +72,13 @@ class Skydonate_Admin {
             'nonce'    => wp_create_nonce( 'skydonate_settings_nonce' ),
         ]);
 
+        // Localize remote functions data for lazy loading with license verification
+        if ( function_exists( 'skydonate_remote_functions_handler' ) ) {
+            wp_localize_script( 'skydonate-settings', 'skydonate_remote_functions',
+                SkyDonate_Remote_Functions_Handler::get_localized_data()
+            );
+        }
+
         wp_enqueue_script(
             'skydonate-admin',
             plugin_dir_url( __FILE__ ) . 'js/skydonate-admin.js',
