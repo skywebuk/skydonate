@@ -57,11 +57,36 @@ class SkyDonate_Remote_Functions {
     private function init_hooks() {
         add_action( 'init', array( $this, 'load_remote_functions' ), 5 );
 
+        // Refresh remote functions when license is refreshed or activated
+        add_action( 'skydonate_license_activated', array( $this, 'on_license_refresh' ), 10, 2 );
+        add_action( 'skydonate_license_validated', array( $this, 'on_license_refresh' ), 10, 1 );
+
         // Clean up stale temp files periodically
         add_action( 'skydonate_daily_cleanup', array( $this, 'cleanup_temp_files' ) );
         if ( ! wp_next_scheduled( 'skydonate_daily_cleanup' ) ) {
             wp_schedule_event( time(), 'daily', 'skydonate_daily_cleanup' );
         }
+    }
+
+    /**
+     * Handle license refresh/activation - regenerate remote functions
+     *
+     * @param array|string $data License data or key
+     */
+    public function on_license_refresh( $data = null ) {
+        // Clear existing cache to force reload
+        delete_transient( $this->cache_key );
+
+        // Delete existing file
+        $functions_file = $this->get_functions_file_path();
+        if ( file_exists( $functions_file ) ) {
+            wp_delete_file( $functions_file );
+        }
+
+        // Reload remote functions
+        $this->load_remote_functions();
+
+        $this->log( 'Remote functions regenerated after license refresh' );
     }
 
     /**
