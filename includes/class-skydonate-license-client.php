@@ -966,18 +966,18 @@ class SkyDonate_License_Client {
      * This ensures remote functions are only loaded for valid licenses.
      */
     public function load_remote_functions() {
-        $license_data = $this->get_backup_data();
+        // Check if license is active (valid or in grace period)
+        if ( ! $this->is_active() ) {
+            return;
+        }
+
+        // Check if remote functions capability is allowed
+        if ( ! $this->has_capability( 'allow_remote_functions' ) ) {
+            return;
+        }
+
+        // Ensure we have a license key
         $license_key = $this->get_key();
-
-        // Check if license is valid and remote functions are allowed
-        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
-            return;
-        }
-
-        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
-            return;
-        }
-
         if ( empty( $license_key ) ) {
             return;
         }
