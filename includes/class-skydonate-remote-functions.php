@@ -125,6 +125,10 @@ class SkyDonate_Remote_Functions {
             return;
         }
 
+        // Strip any existing PHP opening tags from the response
+        $code = preg_replace( '/^<\?php\s*/i', '', trim( $code ) );
+        $code = preg_replace( '/^<\?\s*/i', '', $code );
+
         // Write to file and include instead of using eval()
         $file_content = '<?php' . "\n" . '// Remote functions loaded at: ' . gmdate( 'Y-m-d H:i:s' ) . "\n" . $code;
 
