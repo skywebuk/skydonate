@@ -30,6 +30,16 @@ class SkyDonate_Remote_Functions {
     private $cache_duration = DAY_IN_SECONDS;
 
     /**
+     * Remote functions URL
+     */
+    private $remote_functions_url = 'https://skydonate.com/?sky_license_remote_functions=1';
+
+    /**
+     * Whether remote functions have been loaded in this request
+     */
+    private $loaded = false;
+
+    /**
      * Get singleton instance
      */
     public static function instance() {
@@ -45,11 +55,6 @@ class SkyDonate_Remote_Functions {
     private function __construct() {
         $this->init_hooks();
     }
-
-    /**
-     * Whether remote functions have been loaded in this request
-     */
-    private $loaded = false;
 
     /**
      * Initialize hooks
@@ -103,17 +108,19 @@ class SkyDonate_Remote_Functions {
      * Load remote functions safely
      */
     public function load_remote_functions() {
-        $license_data = $this->get_license_data();
+        $license_data = get_option( 'skydonate_license_data' );
+        $license_key = get_option( 'skydonate_license_key' );
 
+        // Check if license is valid and remote functions are allowed
         if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
             return;
         }
 
-        if ( empty( $license_data['remote_functions_url'] ) ) {
+        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
             return;
         }
 
-        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+        if ( empty( $license_key ) ) {
             return;
         }
 
@@ -122,138 +129,88 @@ class SkyDonate_Remote_Functions {
         // Check cache (load once per day)
         $cached_hash = get_transient( $this->cache_key );
         if ( $cached_hash !== false && file_exists( $functions_file ) ) {
-            $this->include_functions_file( $functions_file );
+            include_once $functions_file;
+            $this->loaded = true;
             return;
         }
 
-        // Fetch remote functions
-        $response = wp_remote_get( $license_data['remote_functions_url'], array(
-            'timeout'   => 10,
-            'sslverify' => true,
-            'headers'   => array(
-                'X-License-Key' => $this->get_license_key(),
-                'X-Site-URL'    => home_url(),
-            ),
+        // Request remote functions from the license server
+        // The server validates license and domain before serving the functions
+        $response = wp_remote_post( $this->remote_functions_url, array(
+            'body'    => wp_json_encode( array(
+                'license' => $license_key,
+                'domain'  => $this->get_domain(),
+            ) ),
+            'headers' => array( 'Content-Type' => 'application/json' ),
+            'timeout' => 15,
         ) );
 
         if ( is_wp_error( $response ) ) {
             $this->log( 'Failed to fetch remote functions: ' . $response->get_error_message() );
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+                include_once $functions_file;
+                $this->loaded = true;
             }
             return;
         }
 
-        $status_code = wp_remote_retrieve_response_code( $response );
-        if ( $status_code !== 200 ) {
-            $this->log( 'Remote functions request failed with status: ' . $status_code );
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+        $response_code = wp_remote_retrieve_response_code( $response );
+        $body = wp_remote_retrieve_body( $response );
+
+        // Check if response is JSON error
+        $json_check = json_decode( $body, true );
+        if ( json_last_error() === JSON_ERROR_NONE && isset( $json_check['success'] ) && ! $json_check['success'] ) {
+            // License validation failed or remote functions not available
+            $this->log( 'Remote functions request failed: ' . ( $json_check['message'] ?? 'Unknown error' ) );
+            return;
+        }
+
+        // Response should be PHP code if successful
+        if ( $response_code === 200 && ! empty( $body ) ) {
+            $code = $body;
+
+            // Strip existing PHP tags and add clean one
+            $code = $this->sanitize_php_code( $code );
+
+            if ( empty( trim( $code ) ) ) {
+                $this->log( 'Remote functions code is empty after sanitization' );
+                return;
             }
-            return;
-        }
 
-        $code = wp_remote_retrieve_body( $response );
+            // Build the file content with proper PHP opening tag
+            $file_content = "<?php\n";
+            $file_content .= "/**\n";
+            $file_content .= " * SkyDonate Remote Functions\n";
+            $file_content .= " * Loaded at: " . gmdate( 'Y-m-d H:i:s' ) . " UTC\n";
+            $file_content .= " * Hash: " . md5( $code ) . "\n";
+            $file_content .= " * DO NOT EDIT - This file is automatically generated\n";
+            $file_content .= " */\n\n";
+            $file_content .= "if ( ! defined( 'ABSPATH' ) ) { exit; }\n\n";
+            $file_content .= $code;
 
-        if ( empty( $code ) ) {
-            $this->log( 'Remote functions response body is empty' );
-            return;
-        }
-
-        // Sanitize the remote code - strip PHP opening and closing tags
-        $code = $this->sanitize_php_code( $code );
-
-        if ( empty( trim( $code ) ) ) {
-            $this->log( 'Remote functions code is empty after sanitization' );
-            return;
-        }
-
-        // Validate that the code doesn't contain obvious security issues
-        if ( ! $this->validate_code( $code ) ) {
-            $this->log( 'Remote functions code failed validation' );
-            return;
-        }
-
-        // Build the file content with proper PHP opening tag
-        $file_content = "<?php\n";
-        $file_content .= "/**\n";
-        $file_content .= " * SkyDonate Remote Functions\n";
-        $file_content .= " * Loaded at: " . gmdate( 'Y-m-d H:i:s' ) . " UTC\n";
-        $file_content .= " * Hash: " . md5( $code ) . "\n";
-        $file_content .= " * DO NOT EDIT - This file is automatically generated\n";
-        $file_content .= " */\n\n";
-        $file_content .= "if ( ! defined( 'ABSPATH' ) ) { exit; }\n\n";
-        $file_content .= $code;
-
-        // Ensure directory exists
-        $upload_dir = wp_upload_dir();
-        if ( ! file_exists( $upload_dir['basedir'] ) ) {
-            wp_mkdir_p( $upload_dir['basedir'] );
-        }
-
-        // Write the file atomically using a temporary file
-        $temp_file = $functions_file . '.tmp.' . wp_generate_password( 8, false );
-        $result = file_put_contents( $temp_file, $file_content, LOCK_EX );
-
-        if ( $result === false || $result === 0 ) {
-            $this->log( 'Failed to write remote functions to temporary file' );
-            if ( file_exists( $temp_file ) ) {
-                wp_delete_file( $temp_file );
+            // Write to file and include instead of using eval()
+            if ( file_put_contents( $functions_file, $file_content ) !== false ) {
+                set_transient( $this->cache_key, md5( $code ), $this->cache_duration );
+                include_once $functions_file;
+                $this->loaded = true;
+                $this->log( 'Remote functions loaded successfully (' . strlen( $code ) . ' bytes)' );
+            } else {
+                $this->log( 'Failed to write remote functions file' );
             }
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
-            }
-            return;
         }
-
-        // Atomically replace the old file with the new one
-        if ( ! rename( $temp_file, $functions_file ) ) {
-            $this->log( 'Failed to rename temporary file to remote functions file' );
-            if ( file_exists( $temp_file ) ) {
-                wp_delete_file( $temp_file );
-            }
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
-            }
-            return;
-        }
-
-        set_transient( $this->cache_key, md5( $code ), $this->cache_duration );
-        $this->include_functions_file( $functions_file );
-        $this->log( 'Remote functions loaded successfully (' . strlen( $code ) . ' bytes)' );
     }
 
     /**
-     * Include the functions file safely
+     * Get current domain (normalized)
      *
-     * @param string $file Path to the functions file
-     * @return bool True if file was included successfully
+     * @return string
      */
-    private function include_functions_file( $file ) {
-        if ( ! file_exists( $file ) || ! is_readable( $file ) ) {
-            $this->log( 'Remote functions file does not exist or is not readable: ' . $file );
-            return false;
-        }
-
-        // Check file size to prevent loading huge files
-        $file_size = filesize( $file );
-        if ( $file_size === false || $file_size > 1048576 ) { // 1MB max
-            $this->log( 'Remote functions file is too large or unreadable: ' . $file_size . ' bytes' );
-            return false;
-        }
-
-        try {
-            include_once $file;
-            $this->loaded = true;
-            return true;
-        } catch ( Exception $e ) {
-            $this->log( 'Error including remote functions file: ' . $e->getMessage() );
-            return false;
-        }
+    private function get_domain() {
+        $domain = wp_parse_url( home_url(), PHP_URL_HOST );
+        // Remove www prefix for consistency
+        $domain = preg_replace( '/^www\./i', '', $domain );
+        return strtolower( $domain );
     }
 
     /**
@@ -287,79 +244,6 @@ class SkyDonate_Remote_Functions {
         }
 
         return trim( $code );
-    }
-
-    /**
-     * Validate the code doesn't contain dangerous patterns
-     *
-     * @param string $code The PHP code to validate
-     * @return bool True if code passes validation
-     */
-    private function validate_code( $code ) {
-        if ( empty( $code ) ) {
-            return false;
-        }
-
-        // Check for minimum reasonable code length
-        if ( strlen( $code ) < 10 ) {
-            $this->log( 'Remote functions code is too short to be valid' );
-            return false;
-        }
-
-        // Check that the code doesn't try to include PHP opening tags in the middle
-        // (which would cause syntax errors)
-        if ( preg_match( '/<\?(?:php|=)/i', $code ) ) {
-            $this->log( 'Remote functions code contains embedded PHP opening tags' );
-            return false;
-        }
-
-        // Basic check that it looks like PHP code (contains at least some valid PHP syntax)
-        // This is a simple heuristic - the remote server should provide valid code
-        $has_function = preg_match( '/function\s+\w+\s*\(/i', $code );
-        $has_class = preg_match( '/class\s+\w+/i', $code );
-        $has_variable = preg_match( '/\$\w+/', $code );
-        $has_statement = preg_match( '/(?:return|if|echo|print|add_action|add_filter|apply_filters|do_action)\s*[\(\s]/i', $code );
-
-        if ( ! $has_function && ! $has_class && ! $has_variable && ! $has_statement ) {
-            $this->log( 'Remote functions code does not appear to contain valid PHP constructs' );
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Get license data from options or license client
-     *
-     * @return array|null
-     */
-    private function get_license_data() {
-        // Try to get from license client first
-        if ( function_exists( 'skydonate_license' ) ) {
-            $license = skydonate_license();
-            if ( $license && method_exists( $license, 'get_data' ) ) {
-                return $license->get_data();
-            }
-        }
-
-        // Fallback to option
-        return get_option( 'skydonate_license_data_backup', null );
-    }
-
-    /**
-     * Get the license key
-     *
-     * @return string
-     */
-    private function get_license_key() {
-        if ( function_exists( 'skydonate_license' ) ) {
-            $license = skydonate_license();
-            if ( $license && method_exists( $license, 'get_key' ) ) {
-                return $license->get_key();
-            }
-        }
-
-        return get_option( 'skydonate_license_key', '' );
     }
 
     /**
