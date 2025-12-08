@@ -171,7 +171,7 @@ class Skydonate_Functions {
         // Verify nonce for security
         check_ajax_referer('skydonate_nonce', 'nonce');
 
-        $product_ids = isset($_POST['product_ids']) ? json_decode(stripslashes($_POST['product_ids']), true) : [];
+        $product_ids = isset($_POST['product_ids']) ? json_decode(sanitize_text_field(wp_unslash($_POST['product_ids'])), true) : [];
         $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $tab_order_ids = self::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $offset, '');
         $name_display_option = isset($_POST['namestate']) ? sanitize_text_field($_POST['namestate']) : 'first_last_initial';
@@ -841,7 +841,7 @@ class Skydonate_Functions {
         ob_start();
 
         if (skydonate_get_layout('recent_donation') == 'layout-2') {
-            $list_icon = isset($_POST['list_icon']) ? wp_kses_post(stripslashes($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
+            $list_icon = isset($_POST['list_icon']) ? wp_kses_post(wp_unslash($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
             Skydonate_Functions::render_recent_donations_item_layout_two(
                 $paged_order_ids,
                 $product_ids,

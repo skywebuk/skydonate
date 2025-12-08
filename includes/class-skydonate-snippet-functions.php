@@ -830,11 +830,19 @@ if($init_guest_checkout_data_saver == 1){
     add_action('woocommerce_before_checkout_form','skydonate_show_guest_data_notice');
     function skydonate_show_guest_data_notice(){
         if(!is_user_logged_in() && isset($_COOKIE['guest_data_saved']) && $_COOKIE['guest_data_saved']==='yes'){
-            if(isset($_GET['clear_guest_data']) && $_GET['clear_guest_data']==='1'){skydonate_clear_guest_checkout_cookies();wp_redirect(wc_get_checkout_url());exit;}
+            // Handle clear guest data request with nonce verification
+            if(isset($_GET['clear_guest_data']) && $_GET['clear_guest_data']==='1'){
+                if(isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'skydonate_clear_guest_data')){
+                    skydonate_clear_guest_checkout_cookies();
+                    wp_safe_redirect(wc_get_checkout_url());
+                    exit;
+                }
+            }
+            $clear_url = wp_nonce_url(add_query_arg('clear_guest_data', '1', wc_get_checkout_url()), 'skydonate_clear_guest_data');
             ?>
             <div class="woocommerce-info">
                 <span><?php esc_html_e('Welcome back! We\'ve filled in your details from your last order.','woocommerce'); ?></span>
-                <a href="?clear_guest_data=1" class="clear-saved-data" style="float: right;"><?php esc_html_e('Clear my information','woocommerce'); ?></a>
+                <a href="<?php echo esc_url($clear_url); ?>" class="clear-saved-data" style="float: right;"><?php esc_html_e('Clear my information','woocommerce'); ?></a>
             </div>
             <?php
         }

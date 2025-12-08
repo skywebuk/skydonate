@@ -36,10 +36,21 @@ class Skydonate_Elementor_Addons {
     }
 
     public function add_zakat_fund_to_cart() {
-        $product_id = intval($_POST['product_id']);
-        $zakat_due = floatval($_POST['zakat_amount']);
-        $zakat_fund_name = sanitize_text_field($_POST['zakat_fund_name']);
-        $zakat_fund_type = sanitize_text_field($_POST['zakat_fund_type']);
+        // Verify nonce for security
+        if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'skydonate_zakat_nonce' ) ) {
+            wp_send_json_error( array( 'message' => 'Security check failed' ) );
+            return;
+        }
+
+        $product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
+        $zakat_due = isset( $_POST['zakat_amount'] ) ? floatval( $_POST['zakat_amount'] ) : 0;
+        $zakat_fund_name = isset( $_POST['zakat_fund_name'] ) ? sanitize_text_field( wp_unslash( $_POST['zakat_fund_name'] ) ) : '';
+        $zakat_fund_type = isset( $_POST['zakat_fund_type'] ) ? sanitize_text_field( wp_unslash( $_POST['zakat_fund_type'] ) ) : '';
+
+        if ( ! $product_id || $zakat_due <= 0 ) {
+            wp_send_json_error( array( 'message' => 'Invalid product or amount' ) );
+            return;
+        }
 
         $cart_items = array(
             'zakat_due' => $zakat_due,
@@ -49,9 +60,7 @@ class Skydonate_Elementor_Addons {
 
         WC()->cart->add_to_cart( $product_id, 1, 0, array(), $cart_items );
 
-        wp_send_json(array(
-            'success' => true
-        ));
+        wp_send_json_success( array( 'message' => 'Added to cart' ) );
     }
 
     public function register_widgets($widgets_manager) {

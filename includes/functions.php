@@ -82,15 +82,31 @@ function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
 		if (!file_exists($extractTo)) {
 			mkdir($extractTo, 0755, true);
 		}
-	
-		
+
 		if ($zip->locateName($targetFile) !== false) {
 			$content = $zip->getFromName($targetFile);
 			if (!file_exists($extractTo)) {
 				mkdir($extractTo, 0755, true);
 			}
+			// Get only the base filename to prevent path traversal attacks
 			$fileNameOnly = basename($targetFile);
-		
+
+			// Validate filename - only allow PHP files with safe characters
+			if (!preg_match('/^class-skydonate-addon-[a-z0-9\-]+\.php$/i', $fileNameOnly)) {
+				$zip->close();
+				return false;
+			}
+
+			// Build the full path and verify it's within the expected directory
+			$fullPath = realpath($extractTo) . DIRECTORY_SEPARATOR . $fileNameOnly;
+			$expectedDir = realpath($extractTo);
+
+			// Ensure the final path is within the expected directory
+			if ($expectedDir === false || strpos($fullPath, $expectedDir) !== 0) {
+				$zip->close();
+				return false;
+			}
+
 			file_put_contents($extractTo . $fileNameOnly, $content);
 		}
 		$zip->close();
