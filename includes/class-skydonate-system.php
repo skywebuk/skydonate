@@ -66,18 +66,24 @@ class Skydonate_System {
         $this->include_file( 'includes/class-skydonate-license-client.php' );
         $this->include_file( 'includes/class-skydonate-updater.php' );
 
+        // Remote functions loader
+        $this->include_file( 'includes/class-skydonate-remote-functions.php' );
+
         // Admin functionality
         $this->include_file( 'admin/class-skydonate-admin.php' );
         $this->include_file( 'admin/class-skydonate-settings.php' );
         $this->include_file( 'admin/class-skydonate-dashboard.php' );
         $this->include_file( 'admin/class-skydonate-license.php' );
 
-        // Initialize license and updater
+        // Initialize license, updater, and remote functions
         if ( function_exists( 'skydonate_license' ) ) {
             skydonate_license();
         }
         if ( function_exists( 'skydonate_updater' ) ) {
             skydonate_updater();
+        }
+        if ( function_exists( 'skydonate_remote_functions' ) ) {
+            skydonate_remote_functions();
         }
 
         // Public functionality

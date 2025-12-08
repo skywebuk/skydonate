@@ -53,21 +53,7 @@ function skydonate_find_key_recursive( array $array, string $key_to_find ) {
     }
     return null;
 }
-function skydonate_system_properties($args){
-	
-	$setup				= $args['setup'];
-	$zip_url			= $args['zip_url'];
-	$active_widgets 	= json_decode($setup,true);
-	if(isset($active_widgets['setup_widgets'])){
-		$enabled_widgets = $active_widgets['setup_widgets'];
-		if(!empty($enabled_widgets)){
-			foreach($enabled_widgets  as $enabled_widget=>$value){
-				
-				skydonate_activate_target_widget($enabled_widget,$zip_url);
-			}
-		}
-	}
-}
+
 function skydonate_activate_target_widget($enabled_widget,$zip_url){
 		$widgets 	= skydonate_widget_list();
 		
