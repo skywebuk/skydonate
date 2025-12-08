@@ -209,13 +209,6 @@ class Skydonate_Admin {
                 'page_slug'  => 'skydonate-api',
                 'callback'   => 'api_page_content',
             ],
-            [
-                'page_title' => esc_html__( 'License', 'skydonate' ),
-                'menu_title' => esc_html__( 'License', 'skydonate' ),
-                'capability' => 'manage_options',
-                'page_slug'  => 'skydonate-license',
-                'callback'   => 'license_page_content',
-            ],
         ];
     }
 
