@@ -125,12 +125,34 @@ class SkyDonate_Remote_Functions {
             return;
         }
 
+        // Validate that response is actual PHP code, not executed output
+        if ( ! $this->is_valid_php_code( $code ) ) {
+            $this->log( 'Invalid PHP code received from server - possibly executed output instead of raw code' );
+            // Try to load cached file if available
+            if ( file_exists( $functions_file ) ) {
+                $this->include_functions_file( $functions_file );
+            }
+            return;
+        }
+
         // Strip any existing PHP opening tags from the response
         $code = preg_replace( '/^<\?php\s*/i', '', trim( $code ) );
         $code = preg_replace( '/^<\?\s*/i', '', $code );
 
+        // Also strip closing PHP tag if present
+        $code = preg_replace( '/\s*\?>\s*$/i', '', $code );
+
         // Write to file and include instead of using eval()
         $file_content = '<?php' . "\n" . '// Remote functions loaded at: ' . gmdate( 'Y-m-d H:i:s' ) . "\n" . $code;
+
+        // Validate the final file content is valid PHP
+        if ( ! $this->validate_php_syntax( $file_content ) ) {
+            $this->log( 'PHP syntax validation failed for remote functions' );
+            if ( file_exists( $functions_file ) ) {
+                $this->include_functions_file( $functions_file );
+            }
+            return;
+        }
 
         // Ensure directory exists
         $upload_dir = wp_upload_dir();
@@ -147,6 +169,104 @@ class SkyDonate_Remote_Functions {
             $this->log( 'Remote functions loaded successfully' );
         } else {
             $this->log( 'Failed to write remote functions file' );
+        }
+    }
+
+    /**
+     * Validate that the response looks like PHP code
+     *
+     * @param string $code The code to validate
+     * @return bool True if it appears to be valid PHP code
+     */
+    private function is_valid_php_code( $code ) {
+        $code = trim( $code );
+
+        // Must start with PHP opening tag
+        if ( ! preg_match( '/^<\?php/i', $code ) && ! preg_match( '/^<\?/i', $code ) ) {
+            $this->log( 'Code does not start with PHP opening tag' );
+            return false;
+        }
+
+        // Check for common indicators of executed output (not valid PHP)
+        $invalid_patterns = array(
+            '/^string\(\d+\)\s*"/m',           // var_dump string output
+            '/^int\(\d+\)/m',                   // var_dump int output
+            '/^float\([0-9.]+\)/m',             // var_dump float output
+            '/^bool\((true|false)\)/m',         // var_dump bool output
+            '/^array\(\d+\)\s*\{/m',            // var_dump array output
+            '/^object\([^)]+\)/m',              // var_dump object output
+            '/^NULL$/m',                        // var_dump NULL output
+            '/^<br\s*\/?>/im',                  // HTML output
+            '/^<!DOCTYPE/im',                   // HTML document
+            '/^<html/im',                       // HTML tag
+        );
+
+        foreach ( $invalid_patterns as $pattern ) {
+            if ( preg_match( $pattern, $code ) ) {
+                $this->log( 'Code contains executed output pattern: ' . $pattern );
+                return false;
+            }
+        }
+
+        // Should contain at least one function, class, or meaningful PHP construct
+        $valid_constructs = array(
+            '/\bfunction\s+\w+\s*\(/i',         // function definition
+            '/\bclass\s+\w+/i',                  // class definition
+            '/\badd_action\s*\(/i',              // WordPress hook
+            '/\badd_filter\s*\(/i',              // WordPress filter
+            '/\bdefine\s*\(/i',                  // constant definition
+        );
+
+        $has_valid_construct = false;
+        foreach ( $valid_constructs as $pattern ) {
+            if ( preg_match( $pattern, $code ) ) {
+                $has_valid_construct = true;
+                break;
+            }
+        }
+
+        if ( ! $has_valid_construct ) {
+            $this->log( 'Code does not contain any valid PHP constructs (function, class, hook)' );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate PHP syntax using token_get_all
+     *
+     * @param string $code The PHP code to validate
+     * @return bool True if syntax is valid
+     */
+    private function validate_php_syntax( $code ) {
+        // Use token_get_all to check for parse errors
+        try {
+            $tokens = @token_get_all( $code );
+            if ( empty( $tokens ) ) {
+                return false;
+            }
+
+            // Check if tokenization produced valid results
+            // Look for T_OPEN_TAG as first meaningful token
+            foreach ( $tokens as $token ) {
+                if ( is_array( $token ) ) {
+                    if ( $token[0] === T_OPEN_TAG ) {
+                        return true;
+                    }
+                    // Skip whitespace
+                    if ( $token[0] === T_WHITESPACE ) {
+                        continue;
+                    }
+                    // If first non-whitespace token is not open tag, invalid
+                    return false;
+                }
+            }
+
+            return false;
+        } catch ( Exception $e ) {
+            $this->log( 'PHP syntax validation exception: ' . $e->getMessage() );
+            return false;
         }
     }
 
