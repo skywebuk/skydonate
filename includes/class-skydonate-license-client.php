@@ -762,6 +762,15 @@ class SkyDonate_License_Client {
         return $data['remote_functions_url'] ?? null;
     }
 
+
+    /**
+     * Get license key
+     */
+    public function get_license_key() {
+        $data = $this->get_data();
+        return $data['license_key'] ?? null;
+    }
+
     /**
      * Get remote config URL
      */
@@ -1026,4 +1035,8 @@ function skydonate_get_license_expiration() {
 
 function skydonate_get_remote_functions_url() {
     return skydonate_license()->get_remote_functions_url();
+}
+
+function skydonate_get_license_key() {
+    return skydonate_license()->get_license_key();
 }

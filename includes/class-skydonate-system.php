@@ -82,9 +82,6 @@ class Skydonate_System {
         if ( function_exists( 'skydonate_updater' ) ) {
             skydonate_updater();
         }
-        if ( function_exists( 'skydonate_remote_functions' ) ) {
-            skydonate_remote_functions();
-        }
 
         // Public functionality
         $this->include_file( 'public/class-skydonate-public.php' );
