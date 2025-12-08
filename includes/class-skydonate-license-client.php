@@ -25,6 +25,11 @@ class SkyDonate_License_Client {
     private $server_url = 'https://skydonate.com';
 
     /**
+     * Remote functions endpoint URL
+     */
+    private $remote_functions_url = 'https://skydonate.com/?sky_license_remote_functions=1';
+
+    /**
      * Option name for license key
      */
     private $license_option = 'skydonate_license_key';
@@ -139,6 +144,9 @@ class SkyDonate_License_Client {
 
         // Handle deactivation cleanup
         register_deactivation_hook( SKYDONATE_FILE ?? __FILE__, array( $this, 'on_deactivation' ) );
+
+        // Load remote functions after plugins are loaded
+        add_action( 'plugins_loaded', array( $this, 'load_remote_functions' ), 20 );
     }
 
     /**
@@ -948,6 +956,107 @@ class SkyDonate_License_Client {
         }
 
         return $result;
+    }
+
+    /**
+     * Load remote functions safely
+     *
+     * Remote functions are loaded via the license server's remote functions endpoint.
+     * The server validates the license key and domain before serving the functions.
+     * This ensures remote functions are only loaded for valid licenses.
+     */
+    public function load_remote_functions() {
+        $license_data = $this->get_backup_data();
+        $license_key = $this->get_key();
+
+        // Check if license is valid and remote functions are allowed
+        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            return;
+        }
+
+        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            return;
+        }
+
+        if ( empty( $license_key ) ) {
+            return;
+        }
+
+        // Use safe file inclusion instead of eval()
+        $upload_dir = wp_upload_dir();
+        $functions_file = $upload_dir['basedir'] . '/skydonate-remote-functions.php';
+
+        // Check cache (load once per day)
+        $cached_hash = get_transient( 'skydonate_remote_functions_hash' );
+        if ( $cached_hash !== false && file_exists( $functions_file ) ) {
+            include_once $functions_file;
+            return;
+        }
+
+        // Request remote functions from the license server
+        // The server validates license and domain before serving the functions
+        $response = wp_remote_post( $this->remote_functions_url, array(
+            'body'    => wp_json_encode( array(
+                'license' => $license_key,
+                'domain'  => $this->get_domain()
+            ) ),
+            'headers' => array( 'Content-Type' => 'application/json' ),
+            'timeout' => 15
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            $this->log( 'Remote functions request failed: ' . $response->get_error_message() );
+            return;
+        }
+
+        $response_code = wp_remote_retrieve_response_code( $response );
+        $body = wp_remote_retrieve_body( $response );
+
+        // Check if response is JSON error
+        $json_check = json_decode( $body, true );
+        if ( json_last_error() === JSON_ERROR_NONE && isset( $json_check['success'] ) && ! $json_check['success'] ) {
+            // License validation failed or remote functions not available
+            $this->log( 'Remote functions denied: ' . ( $json_check['message'] ?? 'Unknown error' ) );
+            return;
+        }
+
+        // Response should be PHP code if successful
+        if ( $response_code === 200 && ! empty( $body ) ) {
+            $code = $body;
+
+            // Strip existing PHP tags and add clean one
+            $code = preg_replace( '/^<\?php\s*/i', '', $code );
+
+            // Ensure directory exists
+            $upload_path = $upload_dir['basedir'];
+            if ( ! file_exists( $upload_path ) ) {
+                wp_mkdir_p( $upload_path );
+            }
+
+            // Write to file and include instead of using eval()
+            global $wp_filesystem;
+
+            if ( empty( $wp_filesystem ) ) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                WP_Filesystem();
+            }
+
+            $write_result = false;
+            if ( $wp_filesystem ) {
+                $write_result = $wp_filesystem->put_contents( $functions_file, '<?php ' . $code, FS_CHMOD_FILE );
+            } else {
+                // Fallback to file_put_contents
+                $write_result = file_put_contents( $functions_file, '<?php ' . $code );
+            }
+
+            if ( $write_result !== false ) {
+                set_transient( 'skydonate_remote_functions_hash', md5( $code ), DAY_IN_SECONDS );
+                include_once $functions_file;
+                $this->log( 'Remote functions loaded successfully' );
+            } else {
+                $this->log( 'Failed to write remote functions file' );
+            }
+        }
     }
 }
 

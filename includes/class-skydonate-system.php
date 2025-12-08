@@ -66,9 +66,6 @@ class Skydonate_System {
         $this->include_file( 'includes/class-skydonate-license-client.php' );
         $this->include_file( 'includes/class-skydonate-updater.php' );
 
-        // Remote functions handler (lazy loading with license verification)
-        $this->include_file( 'includes/class-skydonate-remote-functions-handler.php' );
-
         // Admin functionality
         $this->include_file( 'admin/class-skydonate-admin.php' );
         $this->include_file( 'admin/class-skydonate-settings.php' );
@@ -81,10 +78,6 @@ class Skydonate_System {
         }
         if ( function_exists( 'skydonate_updater' ) ) {
             skydonate_updater();
-        }
-        // Initialize remote functions handler (for lazy loading with license verification)
-        if ( function_exists( 'skydonate_remote_functions_handler' ) ) {
-            skydonate_remote_functions_handler();
         }
 
         // Public functionality

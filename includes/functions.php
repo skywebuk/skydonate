@@ -68,21 +68,22 @@ function license_authenticate() {
 }
 
 /**
- * Remote functions are now lazy-loaded through the Remote Functions Handler.
- * They are only loaded after verifying the license key and domain.
+ * Remote functions are now lazy-loaded from the license server.
  *
- * The following functions have been moved to includes/remote-functions.php:
+ * How it works:
+ * 1. Client sends license key + domain to ?sky_license_remote_functions=1
+ * 2. Server validates license status, domain, and capabilities
+ * 3. Only if valid, server returns the remote functions PHP code
+ * 4. Functions are saved to uploads/skydonate-remote-functions.php and included
+ *
+ * The following functions are loaded remotely:
  * - skydonate_system_properties()
  * - skydonate_activate_target_widget()
  * - skydonate_extract_target_file()
  * - skydonate_download_file()
  * - skydonate_widget_list()
  *
- * To access these functions, use the AJAX endpoints:
- * - skydonate_load_remote_functions - Verify license and confirm access
- * - skydonate_activate_remote_widget - Activate widgets with license verification
- *
- * @see SkyDonate_Remote_Functions_Handler
+ * @see SkyDonate_License_Client::load_remote_functions()
  */
 
 function woodmart_login_form( $echo = true, $action = false, $message = false, $hidden = false, $redirect = false ) {
