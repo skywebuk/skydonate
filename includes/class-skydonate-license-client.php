@@ -1023,3 +1023,7 @@ function skydonate_is_license_expiring_soon( $days = 30 ) {
 function skydonate_get_license_expiration() {
     return skydonate_license()->get_expiration();
 }
+
+function skydonate_get_remote_functions_url() {
+    return skydonate_license()->get_remote_functions_url();
+}
