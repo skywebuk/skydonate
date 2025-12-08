@@ -1040,3 +1040,4 @@ function skydonate_get_remote_functions_url() {
 function skydonate_get_license_key() {
     return skydonate_license()->get_license_key();
 }
+
