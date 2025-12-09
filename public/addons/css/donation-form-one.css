@@ -155,10 +155,8 @@
 }
 
 .donation-form-wrapper button.form-submit-button {
-    margin-top: 5px;
+    margin-top: 16px;
 }
-
-
 
 /* Gradient animation */
 @keyframes textGradientFlow {
@@ -312,7 +310,6 @@
 .donation-amount-groups .donation-custom {
     position: relative;
     z-index: 1;
-    margin-bottom: 10px;
     border-radius: 8px;
     border: 1px solid #c7cdd6;
     display: flex;

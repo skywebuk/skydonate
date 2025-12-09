@@ -550,7 +550,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             $field_label_visibility    = get_post_meta($id, '_field_label_visibility', true);
 
             if ($field_visibility_enabled === 'yes') {
-                echo '<div class="name-on-plaque" data-visible="' . esc_attr($field_visibility_value) . '" style="display:none;">';
+                echo '<div class="name-on-plaque" data-visible="' . esc_attr($field_visibility_value) . '">';
                 if ($field_label_visibility === 'yes' && !empty($field_label)) {
                     echo '<label for="custom_text">' . esc_html($field_label) . '</label>';
                 }

@@ -439,13 +439,13 @@ class WC_Custom_Donation_Options {
                         <?php _e('One-Time Donation', 'skydonate'); ?>
                     </label>
 
-                    <!-- Daily Donation -->
+                    <!-- Monthly Donation -->
                     <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
-                            value="show_daily"
-                            <?php checked(is_array($button_visibility) && in_array('show_daily', $button_visibility)); ?>>
-                        <?php _e('Daily Donation', 'skydonate'); ?>
+                            value="show_monthly"
+                            <?php checked(is_array($button_visibility) && in_array('show_monthly', $button_visibility)); ?>>
+                        <?php _e('Monthly Donation', 'skydonate'); ?>
                     </label>
 
                     <!-- Weekly Donation -->
@@ -457,13 +457,13 @@ class WC_Custom_Donation_Options {
                         <?php _e('Weekly Donation', 'skydonate'); ?>
                     </label>
 
-                    <!-- Monthly Donation -->
+                    <!-- Daily Donation -->
                     <label class="skydonate-checkbox">
                         <input type="checkbox" 
                             name="button_visibility[]" 
-                            value="show_monthly"
-                            <?php checked(is_array($button_visibility) && in_array('show_monthly', $button_visibility)); ?>>
-                        <?php _e('Monthly Donation', 'skydonate'); ?>
+                            value="show_daily"
+                            <?php checked(is_array($button_visibility) && in_array('show_daily', $button_visibility)); ?>>
+                        <?php _e('Daily Donation', 'skydonate'); ?>
                     </label>
 
                     <!-- Yearly Donation -->
