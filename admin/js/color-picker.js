@@ -1,5 +1,5 @@
 ;(function($){
     $(function(){ // shorthand for $(document).ready()
-        $('.skydonate-color-field').wpColorPicker();
+        $('.skydonation-color-field').wpColorPicker();
     });
 })(jQuery);

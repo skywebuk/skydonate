@@ -1,6 +1,6 @@
 (function ($) {
     var skyweb_gift_aid_toggle = function ($scope, $) {
-        var $giftAid = $scope.find('.skydonate-gift-aid-toggle');
+        var $giftAid = $scope.find('.skyweb-gift-aid-toggle');
         var $checkbox = $giftAid.find('#gift_aid_it');
         var defaultState = $checkbox.data('value'); // "checked" or ""
 

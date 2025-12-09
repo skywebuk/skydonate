@@ -5,11 +5,11 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 $default_description = 'Boost your donation by 25p of Gift Aid for every £1 you donate, at no extra cost to you.';
 $default_checkbox_label = 'Yes, I would like to claim Gift Aid';
 $default_note = 'I understand that if I pay less Income Tax and/or Capital Gains Tax than the amount of Gift Aid claimed on all my donations in that tax year it is my responsibility to pay any difference. Please remember to notify Global Helping Hands: if you want to cancel this declaration, change your name or home address or no longer pay sufficient tax on your income and/or capital gains.';
-$default_logo = SKYDONATE_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
+$default_logo = SKYWEB_DONATION_SYSTEM_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
 ?>
 
-<div class="skydonate-settings-panel">
-    <form class="skydonate-gift-aid-form" method="post" action="">
+<div class="skyweb-settings-panel">
+    <form class="skyweb-gift-aid-form" method="post" action="">
         <input type="hidden" name="action" value="save_sky_gift_aid_settings">
         <?php wp_nonce_field('save_sky_gift_aid_settings', 'sky_gift_aid_nonce'); ?>
         
@@ -94,7 +94,7 @@ $default_logo = SKYDONATE_PUBLIC_ASSETS . '/img/gift-aid-uk-logo.svg';
             <button type="submit" class="skydonation-button"><?php esc_html_e('Save Settings', 'skydonate'); ?></button>
         </p>
 
-        <div class="skydonate-gift-aid-success-message" style="display:none;">
+        <div class="skyweb-gift-aid-success-message" style="display:none;">
             <?php esc_html_e('Gift Aid settings saved.', 'skydonate'); ?>
         </div>
     </form>

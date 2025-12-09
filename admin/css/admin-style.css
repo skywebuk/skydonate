@@ -1,587 +1,395 @@
-/**
- * SkyDonate Admin Styles
- * Modern, Clean & User-Friendly Interface
- * Version: 2.0
- */
-
-/* ============================================
-   CSS Variables - Design Tokens
-   ============================================ */
-:root {
-    /* Primary Colors */
-    --sky-primary: #4f46e5;
-    --sky-primary-hover: #4338ca;
-    --sky-primary-light: #eef2ff;
-    --sky-primary-dark: #3730a3;
-
-    /* Accent Colors */
-    --sky-accent: #ec4899;
-    --sky-accent-light: #fce7f3;
-    --sky-accent-dark: #db2777;
-
-    /* Success, Warning, Error */
-    --sky-success: #10b981;
-    --sky-success-light: #d1fae5;
-    --sky-warning: #f59e0b;
-    --sky-warning-light: #fef3c7;
-    --sky-error: #ef4444;
-    --sky-error-light: #fee2e2;
-
-    /* Neutral Colors */
-    --sky-gray-50: #f9fafb;
-    --sky-gray-100: #f3f4f6;
-    --sky-gray-200: #e5e7eb;
-    --sky-gray-300: #d1d5db;
-    --sky-gray-400: #9ca3af;
-    --sky-gray-500: #6b7280;
-    --sky-gray-600: #4b5563;
-    --sky-gray-700: #374151;
-    --sky-gray-800: #1f2937;
-    --sky-gray-900: #111827;
-
-    /* Typography */
-    --sky-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --sky-font-size-xs: 0.75rem;
-    --sky-font-size-sm: 0.875rem;
-    --sky-font-size-base: 1rem;
-    --sky-font-size-lg: 1.125rem;
-    --sky-font-size-xl: 1.25rem;
-    --sky-font-size-2xl: 1.5rem;
-
-    /* Spacing */
-    --sky-space-1: 0.25rem;
-    --sky-space-2: 0.5rem;
-    --sky-space-3: 0.75rem;
-    --sky-space-4: 1rem;
-    --sky-space-5: 1.25rem;
-    --sky-space-6: 1.5rem;
-    --sky-space-8: 2rem;
-
-    /* Border Radius */
-    --sky-radius-sm: 0.25rem;
-    --sky-radius-md: 0.375rem;
-    --sky-radius-lg: 0.5rem;
-    --sky-radius-xl: 0.75rem;
-    --sky-radius-2xl: 1rem;
-    --sky-radius-full: 9999px;
-
-    /* Shadows */
-    --sky-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --sky-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-    --sky-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --sky-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-
-    /* Transitions */
-    --sky-transition: all 0.2s ease-in-out;
-    --sky-transition-fast: all 0.15s ease-in-out;
+img {
+    max-width: 100%;
 }
 
-/* ============================================
-   Base Styles
-   ============================================ */
-.skydonate-page-wrapper {
-    margin: 20px 20px 20px 0;
-    font-family: var(--sky-font-family);
-    font-size: var(--sky-font-size-base);
-    color: var(--sky-gray-700);
-    line-height: 1.6;
+p {
+    margin: 0 0 15px 0;
 }
 
-.skydonate-content-wrapper .wrap {
+p:last-child {
     margin: 0px;
 }
 
-.skydonate-page-wrapper *,
-.skydonate-page-wrapper *::before,
-.skydonate-page-wrapper *::after {
-    box-sizing: border-box;
+
+.skydonation-page-wrapper {
+    margin-right: 16px;
+    margin-top: 16px;
 }
 
-.skydonate-page-wrapper img {
-    max-width: 100%;
-    height: auto;
+.skydonation-page-wrapper .form-table th {
+    width: 220px;
 }
 
-.skydonate-page-wrapper a {
-    color: var(--sky-gray-600);
-    text-decoration: none;
-    transition: var(--sky-transition-fast);
-}
-
-.skydonate-page-wrapper a:hover {
-    color: var(--sky-primary-hover);
-}
-
-.skydonate-page-wrapper p {
-    margin: 0 0 var(--sky-space-4) 0;
-}
-
-.skydonate-page-wrapper p:last-child {
-    margin-bottom: 0;
-}
-
-.skydonate-page-wrapper .notice {
+.skydonation-page-wrapper .notice {
     display: none;
 }
 
-/* ============================================
-   Navigation Menu
-   ============================================ */
-.skydonate-navigation-wrapper {
-    background: linear-gradient(135deg, #ffffff 0%, var(--sky-gray-50) 100%);
-    border-radius: var(--sky-radius-xl);
-    margin-bottom: var(--sky-space-3);
-    box-shadow: var(--sky-shadow);
-    border: 1px solid var(--sky-gray-200);
-    overflow: hidden;
+.skydonation-page-wrapper p,
+.skydonation-page-wrapper {
+    font-size: 16px;
 }
 
-.skydonate-navigation-menu {
+.skydonation-navigation-wrapper {
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu {
+    padding: 0px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    padding: 8px;
-    margin: 0;
-    gap: var(--sky-space-3);
-    list-style: none;
 }
 
-.skydonate-navigation-menu li {
-    margin: 0;
-}
-
-.skydonate-navigation-menu li .nav-link {
-    display: flex;
-    align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link {
+    display: block;
+    font-size: 16px;
     font-weight: 500;
-    padding: var(--sky-space-3) var(--sky-space-5);
-    color: var(--sky-gray-600);
+    padding: 20px 24px;
+    color: #333;
+    text-align: center;
     text-decoration: none;
     position: relative;
-    transition: var(--sky-transition);
-    border-radius: var(--sky-radius-lg);
-}
-
-.skydonate-navigation-menu li .nav-link:hover {
-    color: var(--sky-primary);
-    background-color: var(--sky-primary-light);
-}
-
-.skydonate-navigation-menu li .nav-link.active {
-    color: white;
-    background-color: var(--sky-primary);
-    font-weight: 600;
-}
-
-.skydonate-navigation-menu li .nav-link:focus {
     outline: none;
-    box-shadow: inset 0 0 0 2px var(--sky-primary-light);
-}
-
-.skydonate-navigation-menu li .nav-link:after {
-    display: none;
-}
-
-/* ============================================
-   Settings Panel
-   ============================================ */
-.skydonate-content-wrapper {
-    background-color: white;
-    border-radius: var(--sky-radius-xl);
-    box-shadow: var(--sky-shadow);
-    border: 1px solid var(--sky-gray-200);
-    padding: var(--sky-space-8);
-    margin-bottom: var(--sky-space-6);
-    margin-top: 0;
-}
-
-.skydonate-settings-panel .skydonate-header {
-    margin-bottom: var(--sky-space-6);
-    padding-bottom: var(--sky-space-6);
-    border-bottom: 1px solid var(--sky-gray-200);
-    padding-right: 0;
-    position: static;
-}
-
-.skydonate-settings-panel .header-title {
-    font-size: var(--sky-font-size-xl);
-    font-weight: 600;
-    color: var(--sky-gray-900);
-    margin: 0 0 var(--sky-space-2) 0;
-    padding: 0;
-}
-
-.skydonate-settings-panel .skydonate-header-actions {
-    position: static;
-    margin-top: var(--sky-space-4);
-}
-
-/* ============================================
-   Form Tables
-   ============================================ */
-.skydonate-settings-panel .form-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-}
-
-.skydonate-settings-panel .form-table th {
-    width: 280px;
-    font-weight: 600;
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-700);
-    padding: var(--sky-space-5) var(--sky-space-4) var(--sky-space-5) 0;
-    vertical-align: top;
-    text-align: left;
-}
-
-.skydonate-settings-panel .form-table td {
-    padding: var(--sky-space-5) 0;
-    vertical-align: top;
-}
-
-.skydonate-settings-panel .form-table tr {
-    border-bottom: 1px solid var(--sky-gray-100);
-}
-
-.skydonate-settings-panel .form-table tr:last-child {
-    border-bottom: none;
-}
-
-.skydonate-settings-panel .form-table tr:first-child > * {
-    padding-top: 0;
-}
-
-.skydonate-settings-panel .form-table tr:last-child > * {
-    padding-bottom: 0;
-}
-
-.form-table td p,
-.skydonate-page-wrapper p {
-    margin: 0 0 var(--sky-space-4) 0;
-}
-
-/* ============================================
-   Form Controls
-   ============================================ */
-.skydonate-settings-panel input[type="text"],
-.skydonate-settings-panel input[type="email"],
-.skydonate-settings-panel input[type="url"],
-.skydonate-settings-panel input[type="number"],
-.skydonate-settings-panel input[type="password"],
-.skydonate-settings-panel textarea,
-.skydonate-settings-panel select {
-    width: 100%;
-    max-width: 400px;
-    padding: var(--sky-space-3) var(--sky-space-4);
-    font-size: var(--sky-font-size-sm);
-    font-family: var(--sky-font-family);
-    color: var(--sky-gray-700);
-    background-color: white;
-    border: 1px solid var(--sky-gray-300);
-    border-radius: var(--sky-radius-lg);
-    transition: var(--sky-transition-fast);
-    line-height: 1.5;
-}
-
-.skydonate-settings-panel input:focus,
-.skydonate-settings-panel textarea:focus,
-.skydonate-settings-panel select:focus {
-    outline: none;
-    border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
-}
-
-.skydonate-settings-panel input::placeholder,
-.skydonate-settings-panel textarea::placeholder {
-    color: var(--sky-gray-400);
-}
-
-.skydonate-settings-panel textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.skydonate-settings-panel select {
+    -webkit-box-shadow: none;
+    box-shadow: none;
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.75rem center;
-    background-repeat: no-repeat;
-    background-size: 1.25rem;
-    padding-right: 2.5rem;
-    appearance: none;
 }
 
-.skydonate-settings-panel small,
-.skydonate-settings-panel .description {
-    margin-left: var(--sky-space-2);
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-500);
-    line-height: 1.5;
-}
-
-/* ============================================
-   Checkbox & Radio Styles
-   ============================================ */
-input[type="checkbox"],
-input[type="radio"] {
-    width: 24px;
-    height: 24px;
-    margin: 0;
-    margin-top: -3px;
-    cursor: pointer;
-    accent-color: var(--sky-primary);
-    overflow: hidden;
-    position: relative;
-    border-radius: 6px;
-}
-
-input[type="checkbox"]:focus,
-input[type="radio"]:focus {
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
-}
-
-input[type="checkbox"]:checked {
-    border-color: var(--sky-accent);
-    background-color: var(--sky-accent);
+    -webkit-box-shadow: none;
     box-shadow: none;
 }
 
-input[type="checkbox"]:checked::before {
-    content: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E);
-    margin: 1px 0 0 0;
-    height: 20px;
-    width: 20px;
-}
-
-input[type="radio"]:checked {
-    border-color: var(--sky-accent);
-    box-shadow: 0 0 0 1px var(--sky-accent) inset;
-}
-
-input[type="radio"]:checked::before {
-    background-color: var(--sky-accent);
-}
-
-/* Modern Toggle Switch */
-.checkbox-switch {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sky-space-3);
-    cursor: pointer;
-    user-select: none;
-    padding-left: 50px;
-    font-weight: 600;
-}
-
-.checkbox-switch input[type="checkbox"] {
-    display: none;
-}
-
-.checkbox-switch .switch {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 24px;
-    background-color: var(--sky-gray-300);
-    border-radius: var(--sky-radius-full);
-    transition: var(--sky-transition);
-}
-
-.checkbox-switch .switch::after {
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link:after {
+    width: 100%;
+    height: 4px;
     content: "";
+    right: 0;
+    bottom: 0;
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: var(--sky-radius-full);
-    box-shadow: var(--sky-shadow-sm);
-    transition: var(--sky-transition);
-}
-
-.checkbox-switch input:checked + .switch {
-    background-color: var(--sky-accent-light);
-}
-
-.checkbox-switch input:checked + .switch::after {
-    transform: translateX(20px);
-    background-color: var(--sky-accent);
-}
-
-.checkbox-switch.loading .switch::after {
-    animation: zoom 0.8s ease-in-out infinite;
-    transform-origin: center;
-}
-
-@keyframes zoom {
-    0%, 100% { transform: scale(0.1); }
-    50% { transform: scale(1); }
-}
-
-/* ============================================
-   Switcher Component (Widget Toggle)
-   ============================================ */
-.skydonate-switcher {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sky-space-3);
-    padding: var(--sky-space-3) var(--sky-space-4);
-    background-color: var(--sky-gray-50);
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
-    transition: var(--sky-transition);
-    cursor: pointer;
-}
-
-.skydonate-switcher:hover {
-    background-color: white;
-    border-color: var(--sky-gray-300);
-    box-shadow: var(--sky-shadow-sm);
-}
-
-.skydonate-switcher .switch-label {
-    font-size: var(--sky-font-size-sm);
-    font-weight: 500;
-    color: var(--sky-gray-700);
-    margin-right: var(--sky-space-4);
-}
-
-.skydonate-switcher input[type="checkbox"] {
-    display: none;
-}
-
-.skydonate-switcher .switch-toggle {
-    position: relative;
-    width: 50px;
-    height: 24px;
-    background-color: var(--sky-gray-300);
-    border-radius: var(--sky-radius-full);
-    transition: var(--sky-transition);
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    z-index: 1;
-}
-
-.skydonate-switcher .switch-toggle::before {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background-color: var(--sky-gray-500);
-    border-radius: var(--sky-radius-full);
-    box-shadow: var(--sky-shadow-sm);
-    transition: var(--sky-transition);
-    z-index: 2;
-}
-
-.skydonate-switcher input:checked ~ .switch-toggle {
-    background-color: var(--sky-accent-light);
-    color: var(--sky-accent);
-}
-
-.skydonate-switcher input:checked ~ .switch-toggle::before {
-    left: 28px;
-    background-color: var(--sky-accent);
-}
-
-.skydonate-switcher input:disabled ~ .switch-toggle {
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
-.skydonate-switcher .switch-toggle .switch-text {
-    position: absolute;
-    right: 7px;
-    top: 7px;
-    line-height: 1em;
-    z-index: -1;
-    transition: var(--sky-transition-fast);
-}
-
-.skydonate-switcher .switch-toggle .switch-text.on {
+    background-color: #3442ad;
     opacity: 0;
-    right: auto;
-    left: 8px;
 }
 
-.skydonate-switcher input:checked ~ .switch-toggle .switch-text.on {
+.skydonation-navigation-wrapper .skydonation-navigation-menu li {
+    margin: 0;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link.active {
+    color: #3442ad;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link:after,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li .nav-link.active:after {
     opacity: 1;
 }
 
-.skydonate-switcher input:checked ~ .switch-toggle .switch-text.off {
+.skydonation-navigation-wrapper .skydonation-navigation-menu li:hover .nav-link:not(.active):after {
+    opacity: .3;
+}
+
+#adminmenu .toplevel_page_skydonation .wp-menu-image img {
+    padding-top: 8px;
+}
+
+.skydonation-page-wrapper img {
+    max-width: 100%;
+}
+
+.skydonation-page-wrapper a,
+.skydonation-page-wrapper button {
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skyweb-settings-panel .skydonation-header-actions {
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    display: flex;
+    align-items: center;
+}
+
+.skyweb-settings-panel .skydonation-header {
+    padding-right: 340px;
+    position: relative;
+}
+
+.skydonation-footer .skydonation-switcher {
+    float: right;
+}
+
+.skyweb-settings-panel .skydonation-checkboxs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.skydonation-switcher {
+    background-color: white;
+    padding: 12px 12px 12px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.skydonation-switcher .switch-label {
+    font-weight: 600;
+    margin-right: 16px;
+    font-size: 14px;
+}
+
+.skydonation-switcher input {
+    display: none;
+}
+
+.skydonation-switcher .switch-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50px;
+    height: 22px;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+    border-radius: 99px;
+    padding: 0px;
+    text-transform: uppercase;
+    background-color: #e8e8e8;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1em;
+    z-index: 1;
+}
+
+.skydonation-switcher input:checked~.switch-toggle {
+    background-color: #fcd1e6;
+    color: #e42281;
+}
+
+.skydonation-switcher .switch-toggle::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 99px;
+    background-color: #929292;
+    z-index: 2;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skydonation-switcher input:checked~.switch-toggle::before {
+    left: 30px;
+    background-color: #e42281;
+}
+
+.skydonation-switcher input:disabled~.switch-toggle {
+    opacity: 0.5;
+    /* Makes the toggle appear less prominent */
+    pointer-events: none;
+    /* Disables interaction with the toggle */
+    cursor: not-allowed;
+    /* Changes the cursor to indicate it's disabled */
+}
+
+.skydonation-switcher .switch-toggle .switch-text {
+    position: absolute;
+    right: 7px;
+    top: 6px;
+    line-height: 1em;
+    z-index: -1;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.skydonation-switcher .switch-toggle .switch-text.on {
+    opacity: 0;
+    right: auto;
+    left: 9px;
+}
+
+.skydonation-switcher input:checked~.switch-toggle .switch-text.on {
+    opacity: 1;
+}
+
+.skydonation-switcher input:checked~.switch-toggle .switch-text.off {
     opacity: 0;
 }
 
-.skydonate-switcher .switch-label.disable {
+.skyweb-settings-panel .skydonation-header .header-title {
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+.form-table td p,
+.skydonation-page-wrapper p {
+    margin: 0 0 15px 0;
+}
+
+.skydonation-switcher .switch-label.disable {
     position: absolute;
     opacity: 0;
     margin-right: 10px;
 }
 
-.skydonate-switcher input:checked ~ .switch-label.disable {
+.skydonation-switcher input:checked~.switch-label.disable {
     opacity: 1;
 }
 
-.skydonate-switcher input:checked ~ .switch-label.enable {
+.skydonation-switcher input:checked~.switch-label.enable {
     opacity: 0;
 }
 
-/* ============================================
-   Buttons
-   ============================================ */
 .skydonation-button {
+    border: none;
+    background-color: #3442ad;
+    padding: 14px 20px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--sky-space-2);
-    padding: var(--sky-space-4) var(--sky-space-6);
-    font-size: var(--sky-font-size-sm);
-    font-weight: 600;
-    font-family: var(--sky-font-family);
+    gap: 10px;
     color: white;
-    background: linear-gradient(135deg, var(--sky-primary) 0%, var(--sky-primary-dark) 100%);
-    border: none;
-    border-radius: var(--sky-radius-lg);
-    cursor: pointer;
-    transition: var(--sky-transition);
-    text-decoration: none;
     text-transform: capitalize;
-    box-shadow: var(--sky-shadow-sm);
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.skydonation-button:hover,
 .skydonation-button:not(:disabled):hover {
-    background: linear-gradient(135deg, var(--sky-primary-hover) 0%, var(--sky-primary-dark) 100%);
-    transform: translateY(-1px);
-    box-shadow: var(--sky-shadow-md);
+    background-color: #202e86;
     color: white;
-}
-
-.skydonation-button:active {
-    transform: translateY(0);
-}
-
-.skydonation-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--sky-primary-light), var(--sky-shadow-md);
 }
 
 .skydonation-button:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+    /* Makes the toggle appear less prominent */
     pointer-events: none;
+    /* Disables interaction with the toggle */
+    cursor: not-allowed;
+    /* Changes the cursor to indicate it's disabled */
+}
+
+
+.dashicons-skydonation:before {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    content: "";
+
+    background: url("https://ghh.org.uk/wp-content/uploads/2024/09/logo-02.svg") no-repeat center center;
+    background-size: contain;
+    height: 20px;
+    width: 15px;
+    background-position: center left;
+
+    display: inline-block;
+    font-family: 'skydonation' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.general-links {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+}
+
+.general-links li {
+    margin-right: 16px;
+    display: flex;
+}
+
+.general-links li:not(:last-child):after {
+    content: "|";
+    color: #acacac;
+}
+
+.general-links li a {
+    display: block;
+    text-decoration: none;
+    margin-right: 12px;
+    font-weight: 500;
+}
+
+.general-links li a.active {
+    color: black;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button {
+    margin-left: auto;
+    padding: 9px 10px 0 0;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    width: 150px;
+    background-color: white;
+    border: 1px solid #3442ad;
+    color: #3442ad;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a svg {
+    width: 15px;
+    line-height: 0em;
+    margin-left: 8px;
+}
+
+
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a.active,
+.skydonation-navigation-wrapper .skydonation-navigation-menu li.setup-button a:hover {
+    background-color: #3442ad;
+    color: white;
+}
+
+.skyweb-settings-panel {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #e1e1e1;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+
+.skyweb-settings-panel .form-table tr:first-child>* {
+    padding-top: 0px;
+}
+
+.skyweb-settings-panel .form-table tr:last-child>* {
+    padding-bottom: 0px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .skydonation-page-wrapper.general-template .card {
+        width: calc(50% - 30px);
+        padding: 24px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .skydonation-page-wrapper.general-template .card {
+        width: calc(100% - 30px);
+    }
 }
 
 .button.loading,
@@ -591,373 +399,206 @@ input[type="radio"]:checked::before {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    pointer-events: none;
 }
 
-.button.loading::after,
-.skydonation-button.loading::after {
+.button.loading:after,
+.skydonation-button.loading:after {
     content: "";
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
-    border-radius: var(--sky-radius-full);
-    animation: spin 0.8s linear infinite;
+    z-index: 2;
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid currentColor;
+    /* Light background color */
+    border-top: 2px solid transparent;
+    /* Spinner color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
-}
+    0% {
+        transform: rotate(0deg);
+    }
 
-/* ============================================
-   Widget Checkboxes Grid
-   ============================================ */
-.skydonate-checkboxs {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-6);
-}
-
-.skydonate-widgets .skydonate-switcher {
-    width: 100%;
-    justify-content: space-between;
-}
-
-/* ============================================
-   Footer Actions
-   ============================================ */
-.skydonate-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sky-space-4);
-    padding-top: var(--sky-space-6);
-    border-top: 1px solid var(--sky-gray-200);
-    margin-top: var(--sky-space-6);
-}
-
-.skydonate-footer .skydonate-switcher {
-    float: none;
-}
-
-/* ============================================
-   Tab Navigation (Sub-tabs)
-   ============================================ */
-.nav-tab-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
-    margin: 0 0 var(--sky-space-8) 0;
-    padding-bottom: var(--sky-space-3);
-    border-bottom: 1px solid var(--sky-gray-200);
-    gap: var(--sky-space-3);
-}
-
-.nav-tab-wrapper .nav-tab {
-    display: flex;
-    align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-sm);
-    font-weight: 500;
-    padding: var(--sky-space-2) var(--sky-space-5);
-    color: var(--sky-gray-600);
-    text-decoration: none;
-    position: relative;
-    transition: var(--sky-transition);
-    border-radius: var(--sky-radius-lg);
-    background-color: transparent;
-    border: 1px solid transparent;
-    margin: 0px;
-}
-
-.nav-tab-wrapper .nav-tab.nav-tab-active,
-.nav-tab-wrapper .nav-tab:focus,
-.nav-tab-wrapper .nav-tab:hover {
-    color: var(--sky-primary);
-    background-color: var(--sky-primary-light);
-    box-shadow: none;
-    outline: none;
-}
-
-.nav-tab-wrapper .nav-tab.nav-tab-active {
-    border-color: var(--sky-primary);
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 
-/* ============================================
-   Accordion Component
-   ============================================ */
 .donation-accordion {
-    background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
-    margin-bottom: var(--sky-space-4);
-    overflow: hidden;
-    transition: var(--sky-transition);
+    background-color: white;
+    border: 1px solid #ededed;
+    margin-bottom: 15px;
 }
 
-.donation-accordion:hover {
-    border-color: var(--sky-gray-300);
+
+.donation-accordion select,
+.donation-accordion input[type="text"],
+.donation-accordion input[type="number"] {
+    width: 100%;
+    padding: 5px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
 }
 
 .donation-accordion .donation-header {
+    padding: 10px 12px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--sky-space-4) var(--sky-space-5);
     cursor: pointer;
-    transition: var(--sky-transition-fast);
 }
 
 .donation-accordion .donation-header button.toggle-fields {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
     margin-left: auto;
     border: none;
-    background: white;
-    border-radius: var(--sky-radius-md);
-    color: var(--sky-gray-500);
-    cursor: pointer;
-    transition: var(--sky-transition-fast);
-}
-
-.donation-accordion .donation-header button.toggle-fields:hover {
-    background: var(--sky-primary-light);
-    color: var(--sky-primary);
+    background: none;
+    color: #000000;
 }
 
 .donation-accordion .donation-fields {
-    padding: var(--sky-space-4);
-    border-top: 1px solid var(--sky-gray-200);
+    padding: 15px 12px;
+    border-top: 1px solid #ededed;
 }
 
 .donation-accordion .donation-fields button.remove-option {
     float: right;
     border: none;
     background: none;
-    color: var(--sky-error);
+    color: red;
     font-size: 20px;
     cursor: pointer;
 }
 
 .donation-accordion .donation-fields p {
-    margin: 0 0 var(--sky-space-3) 0;
+    margin: 0px 0px 12px 0px;
 }
 
 .donation-accordion .donation-fields p:last-child {
-    margin: 0;
+    margin: 0px;
 }
 
-.donation-accordion input,
-.donation-accordion select,
-.donation-accordion input[type="text"],
-.donation-accordion input[type="number"] {
-    width: 100%;
-    padding: var(--sky-space-2) var(--sky-space-4);
-    border: 1px solid var(--sky-gray-300);
-    border-radius: var(--sky-radius-md);
-    font-size: var(--sky-font-size-sm);
-    transition: var(--sky-transition-fast);
-    margin-top: var(--sky-space-1);
-    box-sizing: border-box;
-}
-
-.donation-accordion input:focus,
-.donation-accordion select:focus {
-    outline: none;
-    border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
-}
-
-/* ============================================
-   General Links
-   ============================================ */
-.general-links {
-    display: flex;
-    flex-wrap: wrap;
-    text-decoration: none;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.general-links li {
-    margin-right: var(--sky-space-4);
-    display: flex;
-}
-
-.general-links li:not(:last-child)::after {
-    content: "|";
-    color: var(--sky-gray-300);
-}
-
-.general-links li a {
-    display: block;
-    text-decoration: none;
-    margin-right: var(--sky-space-3);
-    font-weight: 500;
-}
-
-.general-links li a.active {
-    color: var(--sky-gray-900);
-}
-
-/* ============================================
-   Select2 Overrides
-   ============================================ */
-.select2-container--default .select2-selection--multiple {
-    background-color: white !important;
-    border: 1px solid var(--sky-gray-300) !important;
-    border-radius: var(--sky-radius-lg) !important;
-    min-height: 42px !important;
-    padding: var(--sky-space-1) !important;
-}
-
-.select2-container--default .select2-selection--multiple:focus-within {
-    border-color: var(--sky-primary) !important;
-    box-shadow: 0 0 0 3px var(--sky-primary-light) !important;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: var(--sky-primary-light) !important;
-    border: none !important;
-    border-radius: var(--sky-radius-md) !important;
-    padding: var(--sky-space-1) var(--sky-space-2) !important;
-    margin: var(--sky-space-1) !important;
-    color: var(--sky-primary-dark) !important;
-    font-size: var(--sky-font-size-xs) !important;
-    font-weight: 500 !important;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-    color: var(--sky-primary) !important;
-    margin-right: var(--sky-space-1) !important;
-    font-weight: bold !important;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-    color: var(--sky-error) !important;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__clear {
-    margin-top: 11px !important;
-    margin-right: 0 !important;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
-    display: flex !important;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding: 5px !important;
+.checkbox-switch {
     position: relative;
-}
-
-li.select2-results__option[aria-selected="true"] {
-    color: currentColor;
-}
-
-span.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
-    margin: 0 !important;
-    float: none;
-    display: flex;
+    padding-left: 50px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 0px;
-    height: auto;
-    min-height: inherit;
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__rendered span.select2-selection__clear {
+/* Switch background */
+.checkbox-switch .switch {
     position: absolute;
-    right: 8px;
-    top: 8px;
-    line-height: 1em;
-    margin: 0 !important;
-    padding: 0;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 22px;
+    background-color: #e8e8e8;
+    border-radius: 99px;
+    transition: background-color 0.3s;
 }
 
-.select2-container .select2-search--inline .select2-search__field {
-    margin: 0;
-    padding-left: 6px !important;
+/* Circle inside switch */
+.checkbox-switch .switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background-color: #929292;
+    border-radius: 50%;
+    transition: 0.3s;
 }
 
-.select2-dropdown {
-    border: 1px solid var(--sky-gray-200) !important;
-    border-radius: var(--sky-radius-lg) !important;
-    box-shadow: var(--sky-shadow-lg) !important;
+/* Checked state */
+.checkbox-switch input:checked+.switch {
+    background-color: #fcd1e6;
+}
+
+.checkbox-switch input:checked+.switch::after {
+    left: 21px;
+    background-color: #e42281;
+}
+
+/* Hide default checkbox */
+.checkbox-switch input[type="checkbox"] {
+    display: none;
+}
+
+/* Loading state */
+.checkbox-switch.loading .switch::after {
+    animation: zoom 0.8s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Zoom / pulse animation */
+@keyframes zoom {
+
+    0%,
+    100% {
+        transform: scale(0.1);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+}
+
+.skyweb-settings-panel textarea,
+.skyweb-settings-panel select,
+.skyweb-settings-panel input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="file"]):not([type="color"]) {
+    width: 404px;
+    max-width: 100%;
+}
+
+.skydonation-color-field {
+    width: 100px !important;
 }
 
 .select2-results__option {
-    padding: var(--sky-space-3) var(--sky-space-4) !important;
-    font-size: var(--sky-font-size-sm) !important;
-    margin: 0;
+    margin: 0px;
 }
 
 .select2-results__options {
-    border: 1px solid var(--sky-gray-200);
+    border: 1px solid #ededed;
     background-color: white;
-    border-radius: var(--sky-radius-sm);
+    border-radius: 4px;
 }
 
-.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: var(--sky-primary) !important;
+#skyweb-donation-fields-container {
+    margin-bottom: 16px;
 }
 
-/* ============================================
-   Color Picker
-   ============================================ */
-.skydonate-color-field {
-    width: 100px !important;
-    border-radius: var(--sky-radius-md) !important;
-}
-
-/* ============================================
-   WordPress Admin Menu Icon
-   ============================================ */
-.dashicons-skydonate::before {
-    content: "\f487";
-    font-family: dashicons;
-}
-
-#adminmenu .toplevel_page_skydonate .wp-menu-image img {
-    padding-top: 8px;
-}
-
-/* ============================================
-   Donation Fields Container
-   ============================================ */
-#skydonate-fields-container {
-    margin-bottom: var(--sky-space-4);
-}
-
-.skydonate-fields {
+.skyweb-donation-fields {
     position: relative;
     min-width: 255px;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
+    border: 1px solid #ededed;
+    border-radius: 6px;
     overflow: hidden;
     background-color: white;
 }
 
-.skydonate-fields .header {
+.skyweb-donation-fields .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--sky-gray-100);
-    padding: var(--sky-space-2) var(--sky-space-3);
+    background-color: #ededed;
+    padding: 6px 5px 6px 12px;
     cursor: pointer;
 }
 
-.skydonate-fields .header .title {
-    margin: 0;
+.skyweb-donation-fields .header .title {
+    margin: 0px;
 }
 
-.skydonate-fields .header .action {
+.skyweb-donation-fields .header .action {
     width: 1.62rem;
     height: 1.62rem;
     margin: 0;
@@ -968,7 +609,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     display: inline-block;
 }
 
-.skydonate-fields .header .action .toggle-indicator {
+.skyweb-donation-fields .header .action .toggle-indicator {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -976,171 +617,30 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     transition: 0.3s;
 }
 
-.skydonate-fields .header.active .action .toggle-indicator {
+.skyweb-donation-fields .header.active .action .toggle-indicator {
     transform: rotate(0deg);
 }
 
-.skydonate-fields .fields {
-    border-top: 1px solid var(--sky-gray-200);
-    padding: var(--sky-space-4);
+.skyweb-donation-fields .fields {
+    border-top: 1px solid #ededed;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: var(--sky-space-3);
+    gap: 12px;
 }
 
-.skydonate-fields .form-field input[type="radio"] {
+.skyweb-donation-fields .form-field input[type="radio"] {
     width: 10px;
     margin-left: 10px;
     transform: scale(1.2);
 }
 
-/* ============================================
-   Option Cards (Product Settings)
-   ============================================ */
-#field_visibility_options,
-#skydonate_options_data {
-    padding: var(--sky-space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sky-space-6);
+.woocommerce_options_panel .options_group:not(:last-child) {
+    margin-bottom: 16px;
 }
 
-.skydonate-option-card {
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
-    padding: var(--sky-space-4);
-}
-
-.skydonate-option-card label {
-    float: none;
-    margin: 0;
-    display: block;
-}
-
-.skydonate-option-card .skydonate-option-title {
-    margin: 0 0 var(--sky-space-2) 0;
-    font-size: var(--sky-font-size-sm);
-    line-height: 1.2em;
-    font-weight: 600;
-}
-
-.skydonate-option-card .skydonate-option-description {
-    margin: -6px 0 var(--sky-space-2) 0;
-    padding: 0;
-    color: var(--sky-gray-500);
-    font-size: var(--sky-font-size-xs);
-}
-
-.skydonate-block-options,
-.skydonate-inline-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sky-space-2);
-}
-
-.skydonate-block-options:not(:last-child) {
-    margin-bottom: var(--sky-space-3);
-}
-
-.skydonate-block-options {
-    flex-direction: column;
-}
-
-.skydonate-option-card .skydonate-image-checkbox {
-    border: 1px solid var(--sky-gray-200);
-    padding: var(--sky-space-2) !important;
-    border-radius: var(--sky-radius-lg);
-    display: flex;
-    flex-wrap: wrap;
-    width: 150px;
-    min-height: 132px;
-    transition: var(--sky-transition-fast);
-}
-
-.skydonate-option-card .skydonate-image-checkbox:hover {
-    border-color: var(--sky-gray-300);
-}
-
-.skydonate-option-card .skydonate-image-checkbox:has(input[type="radio"]:checked) {
-    border-color: var(--sky-primary);
-    background-color: var(--sky-primary-light);
-}
-
-.skydonate-option-card .skydonate-image-checkbox img {
-    margin-bottom: var(--sky-space-2);
-}
-
-.skydonate-option-card .skydonate-image-checkbox input[type="radio"] {
-    order: 1;
-    margin-right: var(--sky-space-2);
-    display: none;
-}
-
-.skydonate-option-card .skydonate-image-checkbox .checkbox-label {
-    order: 2;
-    font-size: var(--sky-font-size-xs);
-    margin-top: auto;
-}
-
-.skydonate-option-card input.short,
-.skydonate-option-card input.short-controll {
-    max-width: 250px;
-}
-
-.skydonate-option-card.donation-currency-option .skydonate-checkbox {
-    width: auto;
-}
-
-.skydonate-option-card.donation-currency-option select.short-controll {
-    max-width: 300px;
-}
-
-.skydonate-input-group {
-    display: flex;
-    align-items: center;
-}
-
-.skydonate-input-group .woocommerce-help-tip {
-    order: 1;
-}
-
-.skydonate-input-group small {
-    margin-left: var(--sky-space-2);
-    margin-bottom: 2px;
-}
-
-.skydonate-option-card .button {
-    background-color: var(--sky-primary);
-    color: white;
-    border: 1px solid var(--sky-primary-dark);
-    border-radius: var(--sky-radius-md);
-    font-size: var(--sky-font-size-xs);
-    transition: var(--sky-transition);
-}
-
-.skydonate-option-card .button:focus,
-.skydonate-option-card .button:hover {
-    background-color: var(--sky-primary-hover);
-    color: white;
-    box-shadow: none;
-}
-
-.skydonate-option-card .remove_custom_option {
-    background: var(--sky-error);
-    border-color: var(--sky-error);
-}
-
-.skydonate-option-card .remove_custom_option:focus,
-.skydonate-option-card .remove_custom_option:hover {
-    background: #dc2626;
-    border-color: #dc2626;
-}
-
-/* ============================================
-   Radio Button Groups
-   ============================================ */
 .radio_buttons_group {
-    margin-bottom: var(--sky-space-6);
+    margin-bottom: 24px;
 }
 
 .radio_buttons_group label {
@@ -1150,7 +650,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 }
 
 .radio_buttons_group h3 {
-    margin: 0 0 var(--sky-space-2) 0;
+    margin: 0 0 6px 0;
 }
 
 .radio_buttons_group .radio_buttons {
@@ -1167,788 +667,313 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     float: none !important;
 }
 
-/* ============================================
-   WooCommerce Overrides
-   ============================================ */
-.woocommerce_options_panel .options_group:not(:last-child) {
-    margin-bottom: var(--sky-space-4);
+/* Single Donation Options */
+
+#field_visibility_options,
+#skyweb_donation_options_data {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-#woocommerce-product-data ul.wc-tabs li.skydonate_fields_tab a::before {
+.skyweb-option-card label {
+    float: none;
+    margin: 0;
+    display: block;
+}
+
+.skyweb-option-card.donation-currency-option .skyweb-checkbox {
+    width: auto;
+}
+
+.skyweb-option-card.donation-currency-option select.short-controll {
+    max-width: 300px;
+}
+
+.skyweb-option-card {
+    border: 1px solid #ededed;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.skyweb-option-card .skyweb-option-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    line-height: 1.2em;
+    margin-bottom: 8px;
+}
+
+.skyweb-block-options,
+.skyweb-inline-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skyweb-block-options:not(:last-child) {
+    margin-bottom: 12px;
+}
+
+.skyweb-block-options {
+    flex-direction: column;
+}
+
+.skyweb-option-card .skyweb-image-checkbox {
+    border: 1px solid #ededed;
+    padding: 10px !important;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 150px;
+    min-height: 132px;
+}
+
+.skyweb-option-card .skyweb-image-checkbox:has(input[type="radio"]:checked) {
+    border-color: #3442ad;
+}
+
+.skyweb-option-card .skyweb-image-checkbox img {
+    margin-bottom: 10px;
+}
+
+.skyweb-option-card .skyweb-image-checkbox input[type="radio"] {
+    order: 1;
+    margin-right: 6px;
+    display: none;
+}
+
+.skyweb-option-card .skyweb-image-checkbox .checkbox-label {
+    order: 2;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+input[type=radio],
+input[type=checkbox] {
+    overflow: hidden;
+    position: relative;
+    margin-top: -3px;
+}
+
+input[type=checkbox]:focus {
+    box-shadow: none;
+}
+
+input[type=checkbox]:checked {
+    border-color: #e42281;
+    background-color: #e42281;
+    box-shadow: none;
+}
+
+input[type=checkbox]:checked::before {
+    content: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%23ffffff%27%2F%3E%3C%2Fsvg%3E);
+    margin: -2px 0 0 -2.4px;
+    height: 18px;
+    width: 18px;
+}
+
+input[type=radio]:checked {
+    border-color: #e42281;
+    box-shadow: 0 0 0 1px #e42281 inset;
+}
+
+input[type=radio]:checked::before {
+    background-color: #e42281;
+}
+
+.skyweb-option-card .skyweb-option-description {
+    margin: -6px 0px 8px 0px;
+    padding: 0px;
+}
+
+
+.skyweb-option-card input.short,
+.skyweb-option-card input.short-controll {
+    max-width: 250px;
+}
+
+.skyweb-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.skyweb-input-group .woocommerce-help-tip {
+    order: 1;
+}
+
+.skyweb-input-group small {
+    margin-left: 8px;
+    margin-bottom: 2px;
+}
+
+.skyweb-option-card .button {
+    background-color: #3442ad;
+    color: white;
+    border: 1px solid #202e86;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.skyweb-option-card .button:focus,
+.skyweb-option-card .button:hover {
+    background-color: #202e86;
+    color: white;
+    box-shadow: none;
+}
+
+.skyweb-option-card .remove_custom_option {
+    background: #d63343;
+    border-color: #d63343;
+}
+
+.skyweb-option-card .remove_custom_option:focus,
+.skyweb-option-card .remove_custom_option:hover {
+    background: #a32430;
+    border-color: #a32430;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+    margin: 0px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    padding: 5px !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin: 0px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px !important;
+    position: relative;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered span.select2-selection__clear {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    line-height: 1em;
+    margin: 0px !important;
+    padding: 0px;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    padding-left: 6px !important;
+}
+
+/* Add Heart Icon to Donation Options tab */
+#woocommerce-product-data ul.wc-tabs li.skyweb_donation_fields_tab a::before {
     content: "\f487";
+    /* Dashicons heart */
 }
 
+/* Add an icon to the Field Visibility tab */
 #woocommerce-product-data ul.wc-tabs li.field_visibility_tab a::before {
     content: "\f177";
+    /* dashicons-visibility */
+}
+
+.nav-tab-wrapper {
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.nav-tab-wrapper .nav-tab {
+    margin: 0px !important;
+    padding: 0px !important;
 }
 
 .wc-orders-list-table .column-gift_aid {
     text-align: center !important;
 }
 
-#order_data .order_data_column .edit_address {
-    overflow: hidden;
-    margin-bottom: 15px;
-}
 
-/* ============================================
-   Gift Aid Styles
-   ============================================ */
+/* Gift Aid - Minimal */
+
 .gift-aid-date-group {
     display: flex;
-    gap: var(--sky-space-6);
-    margin-bottom: var(--sky-space-4);
+    gap: 24px;
+    margin-bottom: 16px;
 }
 
 .gift-aid-date-group .gift-aid-date-field {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--sky-space-2);
+    gap: 8px;
 }
 
 .gift-aid-date-group .gift-aid-date-field label {
     font-weight: 600;
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-700);
 }
 
 .gift-aid-date-field input[type="date"] {
-    height: 42px;
-}
-
-/* ============================================
-   Form Controls (skydonate-admin3.css merge)
-   ============================================ */
-.form-control {
-    display: block;
-    width: 100% !important;
-    padding: var(--sky-space-2) var(--sky-space-3) !important;
-    font-size: var(--sky-font-size-base) !important;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--sky-gray-800);
-    appearance: none;
-    background-color: white;
-    background-clip: padding-box;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-md);
-    transition: var(--sky-transition-fast);
-    margin: 0;
     height: 40px;
 }
 
-.form-control:focus {
-    border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
-    outline: none;
-}
-
-.form-group-label {
-    padding: 0;
-}
-
-.form-group-label .form-label {
-    font-size: var(--sky-font-size-sm) !important;
-    font-weight: 600 !important;
-}
-
-/* Responsive Tables */
-.responsive-table {
-    width: 100%;
-    overflow-x: auto;
-    margin: var(--sky-space-4) 0;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-lg);
-    box-shadow: var(--sky-shadow-sm);
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-700);
-    table-layout: fixed;
-}
-
-.table thead th {
-    background-color: var(--sky-gray-50);
-    color: var(--sky-gray-600);
-    padding: var(--sky-space-3);
-    text-align: left;
-    border-bottom: 2px solid var(--sky-gray-200);
-    font-weight: 600;
-}
-
-.table tbody td {
-    padding: var(--sky-space-3);
-    border-bottom: 1px solid var(--sky-gray-100);
-    vertical-align: middle;
-}
-
-.table tbody tr:nth-child(even) {
-    background-color: var(--sky-gray-50);
-}
-
-.table tbody tr:hover {
-    background-color: var(--sky-gray-100);
-}
-
-.table tbody label {
-    display: inline-block;
-    margin-bottom: var(--sky-space-1);
-    font-weight: 600;
-}
-
-.table tbody input[type="number"],
-.table tbody input[type="date"],
-.table tbody select {
-    margin-right: var(--sky-space-2);
-    padding: var(--sky-space-1);
-    border: 1px solid var(--sky-gray-300);
-    border-radius: var(--sky-radius-sm);
-    font-size: var(--sky-font-size-sm);
-    width: auto;
-}
-
-/* ============================================
-   Responsive Design
-   ============================================ */
-@media screen and (max-width: 1200px) {
-    .skydonate-page-wrapper.general-template .card {
-        width: calc(50% - 30px);
-        padding: var(--sky-space-6);
-    }
-
-    .skydonate-checkboxs {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-}
+#order_data .order_data_column .edit_address {
+    overflow: hidden;
+    margin-bottom: 15px;
+} 
 
 @media screen and (max-width: 782px) {
-    .skydonate-page-wrapper {
-        margin: 10px 10px 10px 0;
-    }
-
-    .skydonate-settings-panel {
-        padding: var(--sky-space-4);
-    }
-
-    .skydonate-settings-panel .form-table th,
-    .skydonate-settings-panel .form-table td {
-        display: block;
-        width: 100%;
-        padding: var(--sky-space-2) 0;
-    }
-
-    .skydonate-settings-panel .form-table th {
-        padding-bottom: var(--sky-space-1);
-    }
-
-    .skydonate-settings-panel table.form-table,
-    .skydonate-settings-panel table.form-table tbody,
-    .skydonate-settings-panel table.form-table thead,
-    .skydonate-settings-panel table.form-table tr,
-    .skydonate-settings-panel table.form-table th {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .skydonate-settings-panel .form-table td > label:first-child {
-        margin-top: 0;
-    }
-
-    .skydonate-settings-panel table.form-table tr {
-        gap: 5px;
-    }
-
-    .skydonate-settings-panel input[type="text"],
-    .skydonate-settings-panel input[type="email"],
-    .skydonate-settings-panel input[type="url"],
-    .skydonate-settings-panel input[type="number"],
-    .skydonate-settings-panel textarea,
-    .skydonate-settings-panel select {
-        max-width: 100%;
-    }
-
-    .skydonate-navigation-menu {
-        flex-direction: column;
-    }
-
-    .skydonate-navigation-menu li .nav-link {
-        padding: var(--sky-space-3) var(--sky-space-4);
-        border-bottom: none;
-        border-left: 3px solid transparent;
-    }
-
-    .skydonate-navigation-menu li .nav-link.active {
-        border-left-color: var(--sky-primary);
-        border-bottom-color: transparent;
-    }
-
-    .skydonate-footer {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .skydonate-footer .skydonation-button {
-        width: 100%;
-    }
 
     .gift-aid-date-group {
         flex-direction: column;
     }
 
-    .skydonate-checkboxs {
-        grid-template-columns: 1fr;
-    }
-
-    .skydonate-page-wrapper.general-template .card {
-        width: calc(100% - 30px);
-    }
-
-    input[type="checkbox"]:checked::before {
+    input[type=checkbox]:checked::before {
         width: 26px;
         height: 26px;
+    }
+
+    .skyweb-settings-panel table.form-table,
+    .skyweb-settings-panel table.form-table tbody,
+    .skyweb-settings-panel table.form-table thead,
+    .skyweb-settings-panel table.form-table tr,
+    .skyweb-settings-panel table.form-table th {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .skyweb-settings-panel .form-table td>label:first-child {
+        margin-top: 0px;
+    }
+
+    .skyweb-settings-panel table.form-table tr {
+        gap: 5px
     }
 
     .donation-accordion .donation-fields button.remove-option {
         margin-top: -10px;
     }
-
-    .responsive-table {
-        margin: 10px 0;
-    }
-
-    .table thead th {
-        font-size: var(--sky-font-size-xs);
-        padding: 10px;
-    }
-
-    .table tbody td {
-        font-size: var(--sky-font-size-xs);
-        padding: 8px;
-    }
 }
 
 @media screen and (max-width: 576px) {
-    .skydonate-input-group {
+    .skyweb-input-group {
         flex-wrap: wrap;
-        gap: var(--sky-space-2);
+        gap: 6px;
     }
 
-    .skydonate-input-group > label {
+    .skyweb-input-group>label {
         width: 100%;
     }
 
-    .skydonate-option-card input.short,
-    .skydonate-option-card input.short-controll {
+    .skyweb-option-card input.short,
+    .skyweb-option-card input.short-controll {
         max-width: 100%;
         width: calc(100% - 35px);
     }
 
-    .skydonate-inline-options .layout-option {
+    .skyweb-inline-options .layout-option {
         width: calc(50% - 5px);
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .nav-tab-wrapper {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .nav-tab {
-        width: 100%;
-        border-bottom: 1px solid var(--sky-gray-200) !important;
-        margin-bottom: 0;
-        padding: var(--sky-space-4) !important;
-    }
-}
-
-/* ============================================
-   Analytics Dashboard Styles
-   ============================================ */
-.sky-dashboard-wrap {
-    max-width: 1600px;
-}
-
-/* Dashboard Header */
-.sky-dashboard-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-6);
-}
-
-.sky-dashboard-title h1 {
-    font-size: var(--sky-font-size-2xl);
-    font-weight: 700;
-    color: var(--sky-gray-900);
-    margin: 0 0 var(--sky-space-1) 0;
-}
-
-.sky-dashboard-title p {
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-500);
-    margin: 0;
-}
-
-.sky-dashboard-actions {
-    display: flex;
-    gap: var(--sky-space-3);
-}
-
-.sky-select {
-    padding: var(--sky-space-2) var(--sky-space-4);
-    padding-right: 2.5rem;
-    font-size: var(--sky-font-size-sm);
-    font-weight: 500;
-    color: var(--sky-gray-700);
-    background-color: white;
-    border: 1px solid var(--sky-gray-300);
-    border-radius: var(--sky-radius-lg);
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.25rem;
-    transition: var(--sky-transition-fast);
-}
-
-.sky-select:focus {
-    outline: none;
-    border-color: var(--sky-primary);
-    box-shadow: 0 0 0 3px var(--sky-primary-light);
-}
-
-/* Stats Grid */
-.sky-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-6);
-}
-
-.sky-stat-card {
-    background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    padding: var(--sky-space-5);
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sky-space-4);
-    transition: var(--sky-transition);
-}
-
-.sky-stat-card:hover {
-    box-shadow: var(--sky-shadow-md);
-    border-color: var(--sky-gray-300);
-}
-
-.sky-stat-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--sky-radius-lg);
-    flex-shrink: 0;
-}
-
-.sky-stat-icon.total {
-    background-color: var(--sky-primary-light);
-    color: var(--sky-primary);
-}
-
-.sky-stat-icon.count {
-    background-color: var(--sky-accent-light);
-    color: var(--sky-accent);
-}
-
-.sky-stat-icon.donors {
-    background-color: var(--sky-success-light);
-    color: var(--sky-success);
-}
-
-.sky-stat-icon.average {
-    background-color: var(--sky-warning-light);
-    color: var(--sky-warning);
-}
-
-.sky-stat-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sky-space-1);
-}
-
-.sky-stat-label {
-    font-size: var(--sky-font-size-xs);
-    font-weight: 500;
-    color: var(--sky-gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.sky-stat-value {
-    font-size: var(--sky-font-size-2xl);
-    font-weight: 700;
-    color: var(--sky-gray-900);
-    line-height: 1.2;
-}
-
-.sky-stat-change {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sky-space-1);
-    font-size: var(--sky-font-size-xs);
-    font-weight: 600;
-}
-
-.sky-stat-change.positive {
-    color: var(--sky-success);
-}
-
-.sky-stat-change.negative {
-    color: var(--sky-error);
-}
-
-.sky-stat-sub {
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-400);
-}
-
-/* Charts Row */
-.sky-charts-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-4);
-}
-
-.sky-charts-row:nth-child(even) {
-    grid-template-columns: 1fr 1fr;
-}
-
-.sky-chart-card {
-    background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    overflow: hidden;
-}
-
-.sky-chart-card.sky-chart-large {
-    grid-column: span 1;
-}
-
-.sky-chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--sky-space-5);
-    border-bottom: 1px solid var(--sky-gray-100);
-}
-
-.sky-chart-header h3 {
-    font-size: var(--sky-font-size-base);
-    font-weight: 600;
-    color: var(--sky-gray-800);
-    margin: 0;
-}
-
-.sky-chart-legend {
-    display: flex;
-    gap: var(--sky-space-4);
-}
-
-.sky-legend-item {
-    display: flex;
-    align-items: center;
-    gap: var(--sky-space-2);
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-500);
-}
-
-.sky-legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: var(--sky-radius-full);
-}
-
-.sky-legend-item.amount .sky-legend-dot {
-    background-color: var(--sky-primary);
-}
-
-.sky-legend-item.count .sky-legend-dot {
-    background-color: var(--sky-accent);
-}
-
-.sky-chart-body {
-    padding: var(--sky-space-5);
-    height: 300px;
-    position: relative;
-}
-
-/* Tables Row */
-.sky-tables-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sky-space-4);
-    margin-bottom: var(--sky-space-4);
-}
-
-.sky-table-card,
-.sky-full-table-card {
-    background: white;
-    border: 1px solid var(--sky-gray-200);
-    border-radius: var(--sky-radius-xl);
-    overflow: hidden;
-}
-
-.sky-full-table-card {
-    grid-column: span 2;
-}
-
-.sky-table-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--sky-space-5);
-    border-bottom: 1px solid var(--sky-gray-100);
-}
-
-.sky-table-header h3 {
-    font-size: var(--sky-font-size-base);
-    font-weight: 600;
-    color: var(--sky-gray-800);
-    margin: 0;
-}
-
-.sky-view-all {
-    font-size: var(--sky-font-size-sm);
-    font-weight: 500;
-    color: var(--sky-primary);
-    text-decoration: none;
-    transition: var(--sky-transition-fast);
-}
-
-.sky-view-all:hover {
-    color: var(--sky-primary-hover);
-    text-decoration: underline;
-}
-
-.sky-table-body {
-    padding: 0;
-}
-
-.sky-data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.sky-data-table thead th {
-    font-size: var(--sky-font-size-xs);
-    font-weight: 600;
-    color: var(--sky-gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: var(--sky-space-3) var(--sky-space-5);
-    text-align: left;
-    background-color: var(--sky-gray-50);
-    border-bottom: 1px solid var(--sky-gray-200);
-}
-
-.sky-data-table tbody td {
-    padding: var(--sky-space-4) var(--sky-space-5);
-    font-size: var(--sky-font-size-sm);
-    color: var(--sky-gray-700);
-    border-bottom: 1px solid var(--sky-gray-100);
-    vertical-align: middle;
-}
-
-.sky-data-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.sky-data-table tbody tr:hover {
-    background-color: var(--sky-gray-50);
-}
-
-.sky-donor-info {
-    display: flex;
-    align-items: center;
-    gap: var(--sky-space-3);
-}
-
-.sky-donor-avatar {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--sky-primary-light) 0%, var(--sky-accent-light) 100%);
-    color: var(--sky-primary);
-    font-weight: 600;
-    font-size: var(--sky-font-size-sm);
-    border-radius: var(--sky-radius-full);
-    flex-shrink: 0;
-}
-
-.sky-donor-details {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.sky-donor-name {
-    font-weight: 500;
-    color: var(--sky-gray-800);
-}
-
-.sky-donor-email {
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-500);
-}
-
-.sky-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 var(--sky-space-2);
-    background-color: var(--sky-gray-100);
-    color: var(--sky-gray-600);
-    font-size: var(--sky-font-size-xs);
-    font-weight: 600;
-    border-radius: var(--sky-radius-full);
-}
-
-.sky-time-ago {
-    font-size: var(--sky-font-size-xs);
-    color: var(--sky-gray-500);
-}
-
-.sky-empty-state {
-    text-align: center;
-    color: var(--sky-gray-400);
-    padding: var(--sky-space-8) !important;
-}
-
-/* Campaign Table */
-.sky-campaign-table thead th:last-child {
-    width: 200px;
-}
-
-.sky-campaign-link {
-    font-weight: 500;
-    color: var(--sky-gray-800);
-}
-
-.sky-campaign-link:hover {
-    color: var(--sky-primary);
-}
-
-.sky-progress-bar {
-    width: 100%;
-    height: 8px;
-    background-color: var(--sky-gray-200);
-    border-radius: var(--sky-radius-full);
-    overflow: hidden;
-}
-
-.sky-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--sky-primary) 0%, var(--sky-accent) 100%);
-    border-radius: var(--sky-radius-full);
-    transition: width 0.5s ease-out;
-}
-
-/* Dashboard Responsive */
-@media screen and (max-width: 1200px) {
-    .sky-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .sky-charts-row {
-        grid-template-columns: 1fr;
-    }
-
-    .sky-charts-row:nth-child(even) {
-        grid-template-columns: 1fr;
-    }
-
-    .sky-chart-card.sky-chart-large {
-        grid-column: span 1;
-    }
-
-    .sky-tables-row {
-        grid-template-columns: 1fr;
-    }
-
-    .sky-full-table-card {
-        grid-column: span 1;
-    }
-}
-
-@media screen and (max-width: 782px) {
-    .sky-dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .sky-stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .sky-stat-card {
-        padding: var(--sky-space-4);
-    }
-
-    .sky-stat-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .sky-stat-value {
-        font-size: var(--sky-font-size-xl);
-    }
-
-    .sky-chart-body {
-        height: 250px;
-    }
-
-    .sky-data-table thead th,
-    .sky-data-table tbody td {
-        padding: var(--sky-space-3);
-    }
-
-    .sky-donor-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--sky-space-2);
-    }
-
-    .sky-campaign-table thead th:last-child {
-        width: 100px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .sky-dashboard-title h1 {
-        font-size: var(--sky-font-size-xl);
-    }
-
-    .sky-chart-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--sky-space-2);
-    }
-
-    .sky-data-table {
-        font-size: var(--sky-font-size-xs);
     }
 }

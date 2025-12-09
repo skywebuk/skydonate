@@ -1,100 +1,114 @@
-=== SkyDonate ===
-Contributors: skywebdesign
-Donate link: https://skywebdesign.co.uk/
-Tags: donation, woocommerce, charity, fundraising, gift aid
-Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.2.0
-Requires PHP: 7.4
+=== Plugin Name ===
+Contributors: (this should be a list of wordpress.org userid's)
+Donate link: https://https://skywebdesign.co.uk//
+Tags: comments, spam
+Requires at least: 3.0.1
+Tested up to: 3.4
+Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A secure, user-friendly donation system built to simplify and manage charitable contributions with WooCommerce.
+Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
 
 == Description ==
 
-SkyDonate is a powerful donation management plugin for WordPress that integrates seamlessly with WooCommerce. It provides everything you need to accept and manage charitable contributions on your website.
+This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
 
-= Key Features =
+For backwards compatibility, if this section is missing, the full length of the short description will be used, and
+Markdown parsed.
 
-* **Analytics Dashboard** - Visual charts and statistics for donation trends, campaigns, countries, and distribution
-* **Donation Fees** - Configure and manage processing fees for donations
-* **Gift Aid Support** - UK Gift Aid declaration and export functionality
-* **Multiple Widgets** - Elementor widgets for donation forms, progress bars, zakat calculators, and more
-* **Address Autocomplete** - Google Places integration for faster checkout
-* **Email Notifications** - Customizable donation notification emails
-* **API Integration** - Connect with external services
-* **Currency Support** - Multi-currency donation support
-* **Extra Donations** - Allow donors to add extra contributions at checkout
+A few notes about the sections above:
 
-= Elementor Widgets =
+*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
+*   "Tags" is a comma separated list of tags that apply to the plugin
+*   "Requires at least" is the lowest version that the plugin will work on
+*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
+higher versions... this is just the highest one you've verified.
+*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
+stable.
 
-* Donation Form
-* Donation Card
-* Progress Bar
-* Recent Donations
-* Zakat Calculator
-* Impact Slider
-* Quick Donate Button
-* Gift Aid Toggle
+    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
+if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
+for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
+is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
+your in-development version, without having that information incorrectly disclosed about the current stable version
+that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
 
-= Requirements =
-
-* WordPress 5.0 or higher
-* WooCommerce 5.0 or higher
-* PHP 7.4 or higher
+    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
+you put the stable version, in order to eliminate any doubt.
 
 == Installation ==
 
-1. Upload the `skydonate` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Ensure WooCommerce is installed and activated
-4. Navigate to SkyDonate in the admin menu to configure settings
+This section describes how to install the plugin and get it working.
+
+e.g.
+
+1. Upload `skyweb-donation-system.php` to the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Frequently Asked Questions ==
 
-= Does this plugin require WooCommerce? =
+= A question that someone might have =
 
-Yes, SkyDonate requires WooCommerce to be installed and activated. The plugin will automatically deactivate if WooCommerce is not present.
+An answer to that question.
 
-= Can I customize the donation form? =
+= What about foo bar? =
 
-Yes, SkyDonate provides multiple Elementor widgets that can be customized to match your site's design.
-
-= Does it support Gift Aid? =
-
-Yes, SkyDonate includes full Gift Aid support with declaration forms and export functionality for UK charities.
-
-= Can I track donation analytics? =
-
-Yes, the Analytics dashboard provides visual charts showing donation trends, top campaigns, donor locations, and fund distribution.
+Answer to foo bar dilemma.
 
 == Screenshots ==
 
-1. Analytics Dashboard with donation charts and statistics
-2. General Settings page
-3. Donation Fees configuration
-4. Gift Aid settings and export
-5. Elementor widgets for donation forms
+1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
+the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
+directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
+(or jpg, jpeg, gif).
+2. This is the second screen shot
 
 == Changelog ==
 
-= 1.2.0 =
-* Added Analytics Dashboard with visual charts
-* Improved admin interface with modern CSS
-* Added currency symbol HTML entity decoding
-* Renamed admin files with cleaner naming convention
-* Made Analytics the main menu item
+= 1.0 =
+* A change since the previous version.
+* Another change.
 
-= 1.1.0 =
-* Added Gift Aid support
-* Added Address Autocomplete feature
-* Improved Elementor widgets
-
-= 1.0.0 =
-* Initial release
+= 0.5 =
+* List versions from most recent at top to oldest at bottom.
 
 == Upgrade Notice ==
 
-= 1.2.0 =
-New Analytics Dashboard with visual charts and improved admin interface.
+= 1.0 =
+Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
+
+= 0.5 =
+This version fixes a security related bug.  Upgrade immediately.
+
+== Arbitrary section ==
+
+You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
+plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
+"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
+
+== A brief Markdown Example ==
+
+Ordered list:
+
+1. Some feature
+1. Another feature
+1. Something else about the plugin
+
+Unordered list:
+
+* something
+* something else
+* third thing
+
+Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
+Titles are optional, naturally.
+
+[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
+            "Markdown is what the parser uses to process much of the readme file"
+
+Markdown uses email style notation for blockquotes and I've been told:
+> Asterisks for *emphasis*. Double it up  for **strong**.
+
+`<?php code(); // goes in backticks ?>`

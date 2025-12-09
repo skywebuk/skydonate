@@ -1,5 +1,5 @@
 (function ($) {
-    var skydonateDonationCardAddon = function ($scope, $) {
+    var skywebDonationCardAddon = function ($scope, $) {
         var $dataSettings = $scope.find('.donation-cards-wrapper').first();
 
         function formatNumber(number) {
@@ -110,7 +110,7 @@
 
     // Initialize Elementor hook
     $(window).on('elementor/frontend/init', function () {
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon.default', skydonateDonationCardAddon);
-        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon_2.default', skydonateDonationCardAddon);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon.default', skywebDonationCardAddon);
+        elementorFrontend.hooks.addAction('frontend/element_ready/skyweb_donation_card_addon_2.default', skywebDonationCardAddon);
     });
 }(jQuery));

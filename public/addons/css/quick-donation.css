@@ -1,4 +1,4 @@
-.skydonate-quick-donation-widget {
+.skyweb-quick-donation-widget {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
@@ -6,19 +6,19 @@
     width: 100%;
 }
 
-.skydonate-quick-donation-widget .qd-field {
+.skyweb-quick-donation-widget .qd-field {
     width: calc(25% - 10px);
 }
 
-.skydonate-quick-donation-widget .qd-field .form-submit-button {
+.skyweb-quick-donation-widget .qd-field .form-submit-button {
     width: 100%;
 }
 
-.skydonate-quick-donation-widget .qd-amount-wrap {
+.skyweb-quick-donation-widget .qd-amount-wrap {
     position: relative;
 }
 
-.skydonate-quick-donation-widget .currency {
+.skyweb-quick-donation-widget .currency {
     position: absolute;
     left: 15px;
     top: 50%;
@@ -26,25 +26,25 @@
     z-index: 2;
 }
 
-.skydonate-quick-donation-widget .qd-amount-wrap input[type="number"] {
+.skyweb-quick-donation-widget .qd-amount-wrap input[type="number"] {
     text-align: left;
     padding-left: 30px;
     padding-right: 10px;
 }
 
-.skydonate-quick-donation-widget .qd-field .qd-control {
+.skyweb-quick-donation-widget .qd-field .qd-control {
     height: 60px;
     border-radius: 8px;
 }
 
 @media screen and (max-width: 992px) {
-    .skydonate-quick-donation-widget .qd-field {
+    .skyweb-quick-donation-widget .qd-field {
         width: calc(50% - 6px);
     }
 }
 
 @media screen and (max-width: 576px) {
-    .skydonate-quick-donation-widget .qd-field {
+    .skyweb-quick-donation-widget .qd-field {
         width: 100%;
     }
 }

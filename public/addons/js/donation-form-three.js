@@ -178,11 +178,11 @@
           start_date: start_date,
           end_date: end_date,
           name_on_plaque: name_on_plaque,
-          nonce: skydonate_extra_donation_ajax.nonce,
+          nonce: skyweb_extra_donation_ajax.nonce,
         };
 
         $.ajax({
-          url: skydonate_extra_donation_ajax.ajax_url,
+          url: skyweb_extra_donation_ajax.ajax_url,
           type: 'POST',
           data: data,
           success: function (response) {

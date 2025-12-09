@@ -16,14 +16,14 @@
             $scope.find('.extra-donation-checkbox').prop('disabled', true);
 
             $.ajax({
-                url: skydonate_extra_donation_ajax.ajax_url,
+                url: skyweb_extra_donation_ajax.ajax_url,
                 type: 'POST',
                 data: {
                     action: action,
                     product_id: product_id,
                     amount: amount,
                     extra: true,
-                    nonce: skydonate_extra_donation_ajax.nonce
+                    nonce: skyweb_extra_donation_ajax.nonce
                 },
                 success: function (response) {
                     label.removeClass('load');

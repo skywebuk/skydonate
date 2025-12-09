@@ -1,6 +1,6 @@
 (function ($) {
 
-    var skydonate_recent_orders = function ($scope, $) {
+    var skyweb_donation_recent_orders = function ($scope, $) {
 
         const $wrapper = $scope.find('.recent-donation-wrapper');
         if (!$wrapper.length) return;
@@ -26,10 +26,10 @@
             const offset = $list.find('.sky-order').length;
 
             $.ajax({
-                url: skydonate_ajax.ajax_url,
+                url: skyweb_donation_ajax.ajax_url,
                 type: "POST",
                 data: {
-                    action: "skydonate_load_more_donations",
+                    action: "skyweb_load_more_donations",
                     type: type,
                     product_ids: settings.product_ids || [],
                     offset: offset,
@@ -133,7 +133,7 @@
     $(window).on('elementor/frontend/init', function () {
         elementorFrontend.hooks.addAction(
             'frontend/element_ready/skyweb_donation_recent_orders_2.default',
-            skydonate_recent_orders
+            skyweb_donation_recent_orders
         );
     });
 

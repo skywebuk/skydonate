@@ -1,13 +1,13 @@
-.skydonate-icon-list {
+.skyweb-donation-icon-list {
     text-align: center;
     overflow: hidden;
 }
 
-.skydonate-icon-list .icon-action {
+.skyweb-donation-icon-list .icon-action {
     cursor: pointer;
 }
 
-.skydonate-icon-list .donation-icon {
+.skyweb-donation-icon-list .donation-icon {
     width: 90px;
     height: 90px;
     background-color: #f2f2f2;
@@ -22,16 +22,16 @@
     transition: .3s;
 }
 
-.skydonate-icon-list .skydonate-icon-item:hover .donation-icon {
+.skyweb-donation-icon-list .skyweb-donation-icon-item:hover .donation-icon {
     background-color: #e2e2e2;
 }
 
-.skydonate-icon-list .donation-icon svg {
+.skyweb-donation-icon-list .donation-icon svg {
     width: 50px;
     height: 50px;
 }
 
-.skydonate-icon-list .donation-title {
+.skyweb-donation-icon-list .donation-title {
     font-family: "IBM Plex Sans", Arial, Helvetica, sans-serif;
     font-size: 14px;
     color: #242424;
