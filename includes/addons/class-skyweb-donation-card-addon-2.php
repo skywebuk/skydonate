@@ -175,6 +175,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
                     'menu_order' => __( 'Menu Order', 'skydonate' ),
                     'author' => __( 'Author', 'skydonate' ),
                     'post__in' => __( 'Post In', 'skydonate' ),
+                    'amount_raised' => __( 'Amount', 'skydonate' ),
                 ],
             ]
         );
@@ -1889,16 +1890,17 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         }
     
         // Build WP_Query args
+        $order_by_amount = ($settings['order_by'] === 'amount_raised');
         $args = [
             'post_type'      => 'product',
-            'orderby'        => $settings['order_by'],
+            'orderby'        => $order_by_amount ? 'date' : $settings['order_by'],
             'order'          => $settings['order'],
             'meta_query'     => [],
-            'posts_per_page' => $post_limit,
-            'limit'          => $post_limit,
+            'posts_per_page' => $order_by_amount ? -1 : $post_limit,
+            'limit'          => $order_by_amount ? -1 : $post_limit,
             'tax_query'      => ['relation' => 'AND']
         ];
-    
+
         // If user selected product IDs via the Repeater
         if ($enable_title_filter && !empty($filter_items) && is_array($filter_items) && count(array_filter($filter_items)) > 0) {
             $args['post__in'] = $filter_items;
@@ -1907,7 +1909,7 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
         if (!$enable_title_filter && !empty($exclude_products) && is_array($exclude_products) && count(array_filter($exclude_products)) > 0) {
             $args['post__not_in'] = $exclude_products;
         }
-        
+
         // Filter by category
         if (!empty($filter_category)) {
             $args['tax_query'][] = [
@@ -1927,6 +1929,39 @@ class SkyWeb_Donation_Card_Addon_2 extends \Elementor\Widget_Base {
 
         $products = new \WP_Query($args);
         $count = 0; // Track index for repeater icons
+
+        // If ordering by amount raised, sort the posts manually
+        if ($order_by_amount && $products->have_posts()) {
+            $posts_with_amounts = [];
+            while ($products->have_posts()) {
+                $products->the_post();
+                $pid = get_the_ID();
+                $offline_donation = floatval(get_post_meta($pid, '_offline_donation', true));
+                $total_raised = $this->total_donation_sales($pid) + $offline_donation;
+                $posts_with_amounts[] = [
+                    'post' => get_post($pid),
+                    'amount' => $total_raised
+                ];
+            }
+
+            // Sort by amount raised
+            usort($posts_with_amounts, function($a, $b) use ($settings) {
+                if ($settings['order'] === 'DESC') {
+                    return $b['amount'] <=> $a['amount'];
+                } else {
+                    return $a['amount'] <=> $b['amount'];
+                }
+            });
+
+            // Limit the results
+            $posts_with_amounts = array_slice($posts_with_amounts, 0, $post_limit);
+
+            // Reset and override the query posts
+            $sorted_posts = array_column($posts_with_amounts, 'post');
+            $products->posts = $sorted_posts;
+            $products->post_count = count($sorted_posts);
+            $products->rewind_posts();
+        }
 
         if ($products->have_posts()) {
             echo '<div '.$this->get_render_attribute_string("wrapper_attributes").'>';
