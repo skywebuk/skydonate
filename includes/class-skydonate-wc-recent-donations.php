@@ -11,6 +11,31 @@ class WC_Recent_Donations {
             add_action('wp_enqueue_scripts', [$this, 'enqueue_recent_donations_styles']);
             add_filter('woocommerce_checkout_fields', [$this, 'add_anonymous_donation_checkbox']);
             add_action('woocommerce_checkout_update_order_meta', [$this, 'save_anonymous_donation_field']);
+
+            // Copy anonymous donation setting to subscription renewal orders
+            add_action('woocommerce_subscriptions_renewal_order_created', [$this, 'copy_anonymous_donation_to_renewal'], 10, 2);
+        }
+    }
+
+    /**
+     * Copy anonymous donation setting from parent subscription to renewal order
+     *
+     * @param WC_Order $renewal_order The renewal order
+     * @param WC_Subscription $subscription The parent subscription
+     */
+    public function copy_anonymous_donation_to_renewal($renewal_order, $subscription) {
+        // Get the parent order (original order that created the subscription)
+        $parent_order_id = $subscription->get_parent_id();
+
+        if ($parent_order_id) {
+            $parent_order = wc_get_order($parent_order_id);
+            if ($parent_order) {
+                $is_anonymous = $parent_order->get_meta('_anonymous_donation', true);
+                if ($is_anonymous === '1') {
+                    $renewal_order->update_meta_data('_anonymous_donation', '1');
+                    $renewal_order->save();
+                }
+            }
         }
     }
 
