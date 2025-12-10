@@ -175,6 +175,7 @@ class Skydonate_Card_2 extends \Elementor\Widget_Base {
                     'menu_order' => __( 'Menu Order', 'skydonate' ),
                     'author' => __( 'Author', 'skydonate' ),
                     'post__in' => __( 'Post In', 'skydonate' ),
+                    'raised_amount' => __( 'Raised Amount', 'skydonate' ),
                 ],
             ]
         );
@@ -1884,7 +1885,13 @@ class Skydonate_Card_2 extends \Elementor\Widget_Base {
             'limit'          => $post_limit,
             'tax_query'      => ['relation' => 'AND']
         ];
-    
+
+        // Handle raised_amount ordering
+        if ($settings['order_by'] === 'raised_amount') {
+            $args['meta_key'] = '_total_sales_amount';
+            $args['orderby'] = 'meta_value_num';
+        }
+
         // If user selected product IDs via the Repeater
         if ($enable_title_filter && !empty($filter_items) && is_array($filter_items) && count(array_filter($filter_items)) > 0) {
             $args['post__in'] = $filter_items;
@@ -1893,7 +1900,7 @@ class Skydonate_Card_2 extends \Elementor\Widget_Base {
         if (!$enable_title_filter && !empty($exclude_products) && is_array($exclude_products) && count(array_filter($exclude_products)) > 0) {
             $args['post__not_in'] = $exclude_products;
         }
-        
+
         // Filter by category
         if (!empty($filter_category)) {
             $args['tax_query'][] = [
