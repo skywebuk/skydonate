@@ -1738,7 +1738,6 @@ class Skydonate_Card extends \Elementor\Widget_Base {
 
                     // Get custom donation fields
                     $target_sales = floatval(get_post_meta($product_id, '_target_sales_goal', true));
-                    $offline_donation = floatval(get_post_meta($product_id, '_offline_donation', true));
                     
                     // Use improved method below
                     $total_raised = $this->total_donation_sales($product_id);
