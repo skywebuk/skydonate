@@ -43,6 +43,10 @@ class Skydonate_Functions {
         add_action('wp_ajax_skydonate_load_more_donations', [$this, 'skydonate_load_more_donations']);
         add_action('wp_ajax_nopriv_skydonate_load_more_donations', [$this, 'skydonate_load_more_donations']);
 
+        // Update raised amount when order status changes
+        add_action('woocommerce_order_status_completed', [$this, 'update_product_raised_amount_on_order'], 10, 1);
+        add_action('woocommerce_order_status_changed', [$this, 'update_product_raised_amount_on_status_change'], 10, 4);
+
     }
 
     public static function get_user_country_name( $format = 'name' ) {
@@ -526,10 +530,63 @@ class Skydonate_Functions {
     
         // Cache the order count
         update_post_meta($product_id, '_order_count', $order_count);
-    
+
         return $order_count;
     }
-    
+
+    /**
+     * Update raised amount for all products in an order when order is completed.
+     *
+     * @param int $order_id The order ID.
+     */
+    public function update_product_raised_amount_on_order($order_id) {
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            return;
+        }
+
+        $updated_products = [];
+        foreach ($order->get_items() as $item) {
+            $product_id = $item->get_product_id();
+            if ($product_id && !in_array($product_id, $updated_products)) {
+                $this->get_total_donation_sales($product_id);
+                $this->get_donation_order_count($product_id);
+                $updated_products[] = $product_id;
+            }
+        }
+    }
+
+    /**
+     * Update raised amount when order status changes (handles refunds, cancellations).
+     *
+     * @param int    $order_id   The order ID.
+     * @param string $old_status Old order status.
+     * @param string $new_status New order status.
+     * @param object $order      The order object.
+     */
+    public function update_product_raised_amount_on_status_change($order_id, $old_status, $new_status, $order) {
+        // Only update if transitioning from/to completed status
+        $relevant_statuses = ['completed', 'refunded', 'cancelled'];
+        if (!in_array($old_status, $relevant_statuses) && !in_array($new_status, $relevant_statuses)) {
+            return;
+        }
+
+        // Skip if this is a new completion (already handled by woocommerce_order_status_completed)
+        if ($new_status === 'completed' && $old_status !== 'completed') {
+            return;
+        }
+
+        $updated_products = [];
+        foreach ($order->get_items() as $item) {
+            $product_id = $item->get_product_id();
+            if ($product_id && !in_array($product_id, $updated_products)) {
+                $this->get_total_donation_sales($product_id);
+                $this->get_donation_order_count($product_id);
+                $updated_products[] = $product_id;
+            }
+        }
+    }
+
 
     /**
      * Initialize all the hooks and filters.
