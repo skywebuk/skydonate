@@ -363,6 +363,9 @@ input[type="radio"]:checked {
 
 input[type="radio"]:checked::before {
     background-color: var(--sky-accent);
+    border-radius: 4px;
+    width: 1rem;
+    height: 1rem;
 }
 
 /* Modern Toggle Switch */
@@ -1068,6 +1071,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
 
 .skydonate-option-card .skydonate-image-checkbox img {
     margin-bottom: var(--sky-space-2);
+    max-width: 100%;
 }
 
 .skydonate-option-card .skydonate-image-checkbox input[type="radio"] {
