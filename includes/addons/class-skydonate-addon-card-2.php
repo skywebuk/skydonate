@@ -1934,7 +1934,7 @@ class Skydonate_Card_2 extends \Elementor\Widget_Base {
                         $offline_donation = floatval(get_post_meta($product_id, '_offline_donation', true));
                         
                         // Use improved method for total_donation_sales
-                        $total_raised = $this->total_donation_sales($product_id);
+                        $total_raised = $this->total_donation_sales($product_id) + $offline_donation;
                         
                         $progress_percentage = ($target_sales > 0) ? ($total_raised / $target_sales) * 100 : 0;
                         $video_url           = get_post_meta($product_id, '_woodmart_product_video', true);
