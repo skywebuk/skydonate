@@ -251,194 +251,161 @@ class Skydonate_Notification {
         
     }
 
+    /**
+     * Get customizer settings configuration
+     * Centralized config makes it easy to add/modify settings
+     */
+    private function get_customizer_config() {
+        return [
+            // Color settings
+            'accent_color' => [
+                'type'     => 'color',
+                'label'    => __('Accent Color', 'skydonate'),
+                'default'  => '#2797ff',
+            ],
+            'title_color' => [
+                'type'     => 'color',
+                'label'    => __('Title Color', 'skydonate'),
+                'default'  => '#2797ff',
+            ],
+            'text_color' => [
+                'type'     => 'color',
+                'label'    => __('Text Color', 'skydonate'),
+                'default'  => '#212830',
+            ],
+            'bg_color' => [
+                'type'     => 'color',
+                'label'    => __('Background Color', 'skydonate'),
+                'default'  => '#ffffff',
+            ],
+            'border_color' => [
+                'type'     => 'color',
+                'label'    => __('Border Color', 'skydonate'),
+                'default'  => '#ffffff',
+            ],
+            // Number settings
+            'border_size' => [
+                'type'        => 'number',
+                'label'       => __('Border Size (px)', 'skydonate'),
+                'default'     => 1,
+                'input_attrs' => [ 'min' => 0, 'max' => 20, 'step' => 1 ],
+            ],
+            'border_radius' => [
+                'type'        => 'number',
+                'label'       => __('Border Radius (px)', 'skydonate'),
+                'default'     => 5,
+                'input_attrs' => [ 'min' => 0, 'max' => 50, 'step' => 1 ],
+            ],
+            'box_width' => [
+                'type'        => 'number',
+                'label'       => __('Box Width (px)', 'skydonate'),
+                'default'     => 360,
+                'input_attrs' => [ 'min' => 100, 'max' => 1920, 'step' => 10 ],
+                'description' => __('Enter the width of the notification box in pixels (default: 360px).', 'skydonate'),
+            ],
+            'title_font_size' => [
+                'type'        => 'number',
+                'label'       => __('Title Font Size (px)', 'skydonate'),
+                'default'     => 16,
+                'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
+            ],
+            'text_font_size' => [
+                'type'        => 'number',
+                'label'       => __('Text Font Size (px)', 'skydonate'),
+                'default'     => 13,
+                'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
+            ],
+            'button_font_size' => [
+                'type'        => 'number',
+                'label'       => __('Button Font Size (px)', 'skydonate'),
+                'default'     => 16,
+                'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
+            ],
+            // Checkbox
+            'show_shadow' => [
+                'type'    => 'checkbox',
+                'label'   => __('Show Shadow', 'skydonate'),
+                'default' => false,
+            ],
+            // Text
+            'button_text' => [
+                'type'    => 'text',
+                'label'   => __('Button Text', 'skydonate'),
+                'default' => __('Donate', 'skydonate'),
+            ],
+            // Select
+            'position' => [
+                'type'    => 'select',
+                'label'   => __('Mobile Position', 'skydonate'),
+                'default' => 'top',
+                'choices' => [
+                    'top'    => __('Top', 'skydonate'),
+                    'bottom' => __('Bottom', 'skydonate'),
+                ],
+            ],
+        ];
+    }
+
     public function register_customizer_settings($wp_customize) {
+        $section_id = 'skydonate_notification_section';
+        $prefix = 'skydonate_notification_';
+
         // Add Section
-        $wp_customize->add_section('skydonate_notification_section', [
+        $wp_customize->add_section($section_id, [
             'title'       => __('Skydonate Notification', 'skydonate'),
             'description' => __('Customize the Skydonate Notifications style.', 'skydonate'),
             'priority'    => 30,
         ]);
 
-        // Accent Color
-        $wp_customize->add_setting('skydonate_notification_accent_color', [
-            'default'           => '#2797ff',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_accent_color', [
-            'label'    => __('Accent Color', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'settings' => 'skydonate_notification_accent_color',
-        ]));
+        // Register all settings from config
+        foreach ( $this->get_customizer_config() as $key => $config ) {
+            $setting_id = $prefix . $key;
+            $type = $config['type'];
 
+            // Determine sanitize callback based on type
+            $sanitize = match($type) {
+                'color'    => 'sanitize_hex_color',
+                'number'   => 'absint',
+                'checkbox' => 'wp_validate_boolean',
+                'text'     => 'sanitize_text_field',
+                'select'   => [ $this, 'sanitize_position_option' ],
+                default    => 'sanitize_text_field',
+            };
 
-        $wp_customize->add_setting('skydonate_notification_title_color', [
-            'default'           => '#2797ff',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_title_color', [
-            'label'    => __('Title Color', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'settings' => 'skydonate_notification_title_color',
-        ]));
+            // Register setting
+            $wp_customize->add_setting($setting_id, [
+                'default'           => $config['default'],
+                'sanitize_callback' => $sanitize,
+            ]);
 
-        // Text Color
-        $wp_customize->add_setting('skydonate_notification_text_color', [
-            'default'           => '#212830',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_text_color', [
-            'label'    => __('Text Color', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'settings' => 'skydonate_notification_text_color',
-        ]));
+            // Build control args
+            $control_args = [
+                'label'    => $config['label'],
+                'section'  => $section_id,
+                'settings' => $setting_id,
+            ];
 
-        // Background Color
-        $wp_customize->add_setting('skydonate_notification_bg_color', [
-            'default'           => '#ffffff',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_bg_color', [
-            'label'    => __('Background Color', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'settings' => 'skydonate_notification_bg_color',
-        ]));
+            // Add type-specific args
+            if ( isset($config['input_attrs']) ) {
+                $control_args['input_attrs'] = $config['input_attrs'];
+            }
+            if ( isset($config['description']) ) {
+                $control_args['description'] = $config['description'];
+            }
+            if ( isset($config['choices']) ) {
+                $control_args['choices'] = $config['choices'];
+            }
+            if ( $type !== 'color' ) {
+                $control_args['type'] = $type;
+            }
 
-        // Border Size
-        $wp_customize->add_setting('skydonate_notification_border_size', [
-            'default'           => 1,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_border_size', [
-            'label'       => __('Border Size (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'settings'    => 'skydonate_notification_border_size',
-            'input_attrs' => [ 'min' => 0, 'max' => 20, 'step' => 1 ],
-        ]);
-
-        // Border Radius
-        $wp_customize->add_setting('skydonate_notification_border_radius', [
-            'default'           => 5,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_border_radius', [
-            'label'       => __('Border Radius (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'settings'    => 'skydonate_notification_border_radius',
-            'input_attrs' => [ 'min' => 0, 'max' => 50, 'step' => 1 ],
-        ]);
-
-        // Border Color
-        $wp_customize->add_setting('skydonate_notification_border_color', [
-            'default'           => '#ffffff',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'skydonate_notification_border_color', [
-            'label'    => __('Border Color', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'settings' => 'skydonate_notification_border_color',
-        ]));
-
-        // Show Shadow Checkbox
-        $wp_customize->add_setting('skydonate_notification_show_shadow', [
-            'default'           => false,
-            'sanitize_callback' => 'wp_validate_boolean',
-        ]);
-        $wp_customize->add_control('skydonate_notification_show_shadow', [
-            'label'    => __('Show Shadow', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'checkbox',
-            'settings' => 'skydonate_notification_show_shadow',
-        ]);
-
-        // Button Text
-        $wp_customize->add_setting('skydonate_notification_button_text', [
-            'default'           => __('Donate', 'skydonate'),
-            'sanitize_callback' => 'sanitize_text_field',
-        ]);
-        $wp_customize->add_control('skydonate_notification_button_text', [
-            'label'    => __('Button Text', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'text',
-            'settings' => 'skydonate_notification_button_text',
-        ]);
-
-
-        // Position Option (Select)
-        $wp_customize->add_setting('skydonate_notification_position', [
-            'default'           => 'top',
-            'sanitize_callback' => [$this, 'sanitize_position_option'],
-        ]);
-        $wp_customize->add_control('skydonate_notification_position', [
-            'label'    => __('Mobile Position', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'select',
-            'choices'  => [
-                'top'    => __('Top', 'skydonate'),
-                'bottom' => __('Bottom', 'skydonate'),
-            ],
-            'settings' => 'skydonate_notification_position',
-        ]);
-
-        // Box Width Setting
-        $wp_customize->add_setting('skydonate_notification_box_width', [
-            'default'           => 360,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_box_width', [
-            'label'       => __('Box Width (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'input_attrs' => [
-                'min' => 100, // Minimum value
-                'max' => 1920, // Maximum value
-                'step' => 10, // Step value
-            ],
-            'description' => __('Enter the width of the notification box in pixels (default: 360px).', 'skydonate'),
-        ]);
-
-        // Title Font Size
-        $wp_customize->add_setting('skydonate_notification_title_font_size', [
-            'default'           => 16,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_title_font_size', [
-            'label'       => __('Title Font Size (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'settings'    => 'skydonate_notification_title_font_size',
-            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
-        ]);
-
-        // Text Font Size
-        $wp_customize->add_setting('skydonate_notification_text_font_size', [
-            'default'           => 13,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_text_font_size', [
-            'label'       => __('Text Font Size (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'settings'    => 'skydonate_notification_text_font_size',
-            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
-        ]);
-
-        // Button Font Size
-        $wp_customize->add_setting('skydonate_notification_button_font_size', [
-            'default'           => 16,
-            'sanitize_callback' => 'absint',
-        ]);
-        $wp_customize->add_control('skydonate_notification_button_font_size', [
-            'label'       => __('Button Font Size (px)', 'skydonate'),
-            'section'     => 'skydonate_notification_section',
-            'type'        => 'number',
-            'settings'    => 'skydonate_notification_button_font_size',
-            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
-        ]);
-
-
-
+            // Register control (color uses special class)
+            if ( $type === 'color' ) {
+                $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $setting_id, $control_args));
+            } else {
+                $wp_customize->add_control($setting_id, $control_args);
+            }
+        }
     }
 
     // Sanitize position option
@@ -448,24 +415,30 @@ class Skydonate_Notification {
     }
 
 
+    /**
+     * Get a customizer value with default from config
+     */
+    private function get_setting($key) {
+        $config = $this->get_customizer_config();
+        $default = isset($config[$key]['default']) ? $config[$key]['default'] : '';
+        return get_theme_mod('skydonate_notification_' . $key, $default);
+    }
+
     public function customizer_style() {
-        // Retrieve theme mod values with default fallback
-
-        $title_color = esc_attr(get_theme_mod('skydonate_notification_title_color', '#2797ff'));
-        $accent_color = esc_attr(get_theme_mod('skydonate_notification_accent_color', '#2797ff'));
-        $text_color = esc_attr(get_theme_mod('skydonate_notification_text_color', '#212830'));
-        $bg_color = esc_attr(get_theme_mod('skydonate_notification_bg_color', '#ffffff'));
-        $border_color = esc_attr(get_theme_mod('skydonate_notification_border_color', '#ffffff'));
-        $border_radius = absint(get_theme_mod('skydonate_notification_border_radius', 5));
-        $border_size = absint(get_theme_mod('skydonate_notification_border_size', 1));
-        $title_size = absint(get_theme_mod('skydonate_notification_title_font_size', 16));
-        $button_size = absint(get_theme_mod('skydonate_notification_button_font_size', 16));
-        $text_size = absint(get_theme_mod('skydonate_notification_text_font_size', 13));
-        $box_width = absint(get_theme_mod('skydonate_notification_box_width', 360));
-        $shadow_raw = get_theme_mod('skydonate_notification_show_shadow', false);
-        $shadow = filter_var( $shadow_raw, FILTER_VALIDATE_BOOLEAN );
-
-        $position = get_theme_mod('skydonate_notification_position', 'top');
+        // Retrieve theme mod values using centralized config defaults
+        $title_color   = esc_attr($this->get_setting('title_color'));
+        $accent_color  = esc_attr($this->get_setting('accent_color'));
+        $text_color    = esc_attr($this->get_setting('text_color'));
+        $bg_color      = esc_attr($this->get_setting('bg_color'));
+        $border_color  = esc_attr($this->get_setting('border_color'));
+        $border_radius = absint($this->get_setting('border_radius'));
+        $border_size   = absint($this->get_setting('border_size'));
+        $title_size    = absint($this->get_setting('title_font_size'));
+        $button_size   = absint($this->get_setting('button_font_size'));
+        $text_size     = absint($this->get_setting('text_font_size'));
+        $box_width     = absint($this->get_setting('box_width'));
+        $shadow        = filter_var($this->get_setting('show_shadow'), FILTER_VALIDATE_BOOLEAN);
+        $position      = $this->get_setting('position');
     
         // Inline styles
         ?>
