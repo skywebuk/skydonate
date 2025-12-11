@@ -45,9 +45,9 @@ class SkyDonate_License_Client {
     private $rate_limit_key = 'skydonate_license_rate_limit';
 
     /**
-     * Cache duration (12 hours)
+     * Cache duration (6 hours)
      */
-    private $cache_duration = 43200;
+    private $cache_duration = 21600;
 
     /**
      * Offline grace period (7 days)
@@ -124,8 +124,10 @@ class SkyDonate_License_Client {
      * Initialize WordPress hooks
      */
     private function init_hooks() {
-        // Schedule daily license check
+        // Schedule automatic license check (every 6 hours)
         add_action( 'init', array( $this, 'schedule_license_check' ) );
+        add_action( 'skydonate_license_auto_check', array( $this, 'daily_license_check' ) );
+        // Keep old hook for backwards compatibility
         add_action( 'skydonate_daily_license_check', array( $this, 'daily_license_check' ) );
 
         // Admin notices
@@ -142,20 +144,49 @@ class SkyDonate_License_Client {
     }
 
     /**
-     * Schedule daily license check
+     * Schedule automatic license check (every 6 hours)
      */
     public function schedule_license_check() {
-        if ( ! wp_next_scheduled( 'skydonate_daily_license_check' ) ) {
-            wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'skydonate_daily_license_check' );
+        // Register custom cron interval
+        add_filter( 'cron_schedules', array( $this, 'add_cron_interval' ) );
+
+        // Clear old daily schedule if exists
+        if ( wp_next_scheduled( 'skydonate_daily_license_check' ) ) {
+            wp_clear_scheduled_hook( 'skydonate_daily_license_check' );
+        }
+
+        // Schedule new 6-hour check
+        if ( ! wp_next_scheduled( 'skydonate_license_auto_check' ) ) {
+            wp_schedule_event( time() + HOUR_IN_SECONDS, 'skydonate_six_hours', 'skydonate_license_auto_check' );
         }
     }
 
     /**
-     * Daily license check callback
+     * Add custom cron interval
+     */
+    public function add_cron_interval( $schedules ) {
+        if ( ! isset( $schedules['skydonate_six_hours'] ) ) {
+            $schedules['skydonate_six_hours'] = array(
+                'interval' => 6 * HOUR_IN_SECONDS,
+                'display'  => __( 'Every 6 Hours', 'skydonate' ),
+            );
+        }
+        return $schedules;
+    }
+
+    /**
+     * Auto license check callback - runs in background
      */
     public function daily_license_check() {
         if ( $this->get_key() ) {
-            $this->validate( null, true );
+            $this->log( 'Auto license check: Validating license...' );
+            $result = $this->validate( null, true );
+
+            if ( $result && ! empty( $result['success'] ) ) {
+                $this->log( 'Auto license check: License valid' );
+            } else {
+                $this->log( 'Auto license check: Validation failed' );
+            }
         }
     }
 
@@ -164,6 +195,7 @@ class SkyDonate_License_Client {
      */
     public function on_deactivation() {
         wp_clear_scheduled_hook( 'skydonate_daily_license_check' );
+        wp_clear_scheduled_hook( 'skydonate_license_auto_check' );
     }
 
     /**
