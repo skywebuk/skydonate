@@ -990,6 +990,210 @@ class SkyDonate_License_Client {
 
         return $result;
     }
+
+    // ===========================================
+    // Localhost Detection
+    // ===========================================
+
+    /**
+     * Check if current domain is localhost/development
+     */
+    public function is_localhost() {
+        $domain = $this->get_domain();
+
+        $localhost_patterns = [
+            'localhost',
+            '127.0.0.1',
+            '::1',
+            '.local',
+            '.test',
+            '.dev',
+            '.localhost',
+            'dev.',
+            'local.',
+            'staging.',
+        ];
+
+        foreach ( $localhost_patterns as $pattern ) {
+            if ( $domain === $pattern ||
+                 strpos( $domain, $pattern ) !== false ||
+                 fnmatch( '*' . $pattern, $domain ) ) {
+                return true;
+            }
+        }
+
+        // Check for private IP ranges
+        $ip = gethostbyname( $domain );
+        if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) === false ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ===========================================
+    // Specific Feature Getters (Match Server Schema)
+    // ===========================================
+
+    /**
+     * Check if donations module is enabled
+     */
+    public function has_donations_module() {
+        return $this->has_feature( 'donations_module' );
+    }
+
+    /**
+     * Check if gift aid is enabled
+     */
+    public function has_gift_aid() {
+        return $this->has_feature( 'gift_aid' );
+    }
+
+    /**
+     * Check if notifications are enabled
+     */
+    public function has_notifications() {
+        return $this->has_feature( 'notifications' );
+    }
+
+    /**
+     * Check if analytics are enabled
+     */
+    public function has_analytics() {
+        return $this->has_feature( 'analytics' );
+    }
+
+    /**
+     * Check if recurring donations are enabled
+     */
+    public function has_recurring() {
+        return $this->has_feature( 'recurring' );
+    }
+
+    /**
+     * Check if goal tracking is enabled
+     */
+    public function has_goal_tracking() {
+        return $this->has_feature( 'goal_tracking' );
+    }
+
+    /**
+     * Check if email receipts are enabled
+     */
+    public function has_email_receipts() {
+        return $this->has_feature( 'email_receipts' );
+    }
+
+    // ===========================================
+    // Specific Capability Getters
+    // ===========================================
+
+    /**
+     * Check if auto updates are allowed
+     */
+    public function can_auto_update() {
+        return $this->has_capability( 'auto_update' );
+    }
+
+    /**
+     * Check if remote functions are allowed
+     */
+    public function can_remote_functions() {
+        return $this->has_capability( 'allow_remote_functions' );
+    }
+
+    /**
+     * Check if localhost is allowed
+     */
+    public function can_localhost() {
+        return $this->has_capability( 'allow_localhost' );
+    }
+
+    /**
+     * Check if beta access is allowed
+     */
+    public function can_beta_access() {
+        return $this->has_capability( 'beta_access' );
+    }
+
+    // ===========================================
+    // Status Info for Admin
+    // ===========================================
+
+    /**
+     * Get comprehensive license status info for admin display
+     */
+    public function get_status_info() {
+        $data = $this->get_data();
+        $key = $this->get_key();
+
+        $info = [
+            'has_key'          => ! empty( $key ),
+            'key_masked'       => $this->get_masked_key(),
+            'status'           => $data['status'] ?? 'inactive',
+            'is_valid'         => $this->is_valid(),
+            'is_active'        => $this->is_active(),
+            'is_localhost'     => $this->is_localhost(),
+            'domain'           => $this->get_domain(),
+            'server_url'       => $this->server_url,
+            'from_backup'      => ! empty( $data['from_backup'] ),
+            'backup_reason'    => $data['backup_reason'] ?? null,
+        ];
+
+        // Expiration info
+        $info['expires'] = $this->get_expiration();
+        $info['is_lifetime'] = $this->is_lifetime();
+        $info['days_remaining'] = $this->get_days_until_expiration();
+        $info['is_expired'] = $this->is_expired();
+        $info['is_expiring_soon'] = $this->is_expiring_soon();
+
+        // Cache info
+        $info['cached_at'] = $data['cached_at'] ?? null;
+        if ( $info['cached_at'] ) {
+            $info['cached_at_formatted'] = gmdate( 'Y-m-d H:i:s', $info['cached_at'] ) . ' UTC';
+            $info['cache_age'] = human_time_diff( $info['cached_at'], time() );
+        }
+
+        // Next auto check
+        $next_check = wp_next_scheduled( 'skydonate_license_auto_check' );
+        if ( $next_check ) {
+            $info['next_check'] = gmdate( 'Y-m-d H:i:s', $next_check ) . ' UTC';
+            $info['next_check_in'] = human_time_diff( time(), $next_check );
+        }
+
+        // Feature counts
+        $info['features_count'] = count( array_filter( $data['features'] ?? [] ) );
+        $info['widgets_count'] = count( array_filter( $data['widgets'] ?? [] ) );
+        $info['capabilities_count'] = count( array_filter( $data['capabilities'] ?? [] ) );
+
+        // Server message
+        $info['message'] = $data['message'] ?? null;
+
+        return $info;
+    }
+
+    /**
+     * Get status badge HTML for admin display
+     */
+    public function get_status_badge() {
+        $status = $this->get_status();
+
+        $badges = [
+            'valid'    => [ 'label' => __( 'Active', 'skydonate' ), 'class' => 'sky-badge-success' ],
+            'expired'  => [ 'label' => __( 'Expired', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'inactive' => [ 'label' => __( 'Inactive', 'skydonate' ), 'class' => 'sky-badge-warning' ],
+            'disabled' => [ 'label' => __( 'Disabled', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'invalid'  => [ 'label' => __( 'Invalid', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+        ];
+
+        $badge = $badges[ $status ] ?? [ 'label' => ucfirst( $status ), 'class' => 'sky-badge-secondary' ];
+
+        return sprintf(
+            '<span class="sky-badge %s">%s</span>',
+            esc_attr( $badge['class'] ),
+            esc_html( $badge['label'] )
+        );
+    }
 }
 
 // ===========================================
@@ -1035,6 +1239,43 @@ function skydonate_get_layout( $component ) {
 
 function skydonate_has_capability( $capability ) {
     return skydonate_license()->has_capability( $capability );
+}
+
+function skydonate_is_localhost() {
+    return skydonate_license()->is_localhost();
+}
+
+function skydonate_license_status_info() {
+    return skydonate_license()->get_status_info();
+}
+
+function skydonate_license_status_badge() {
+    return skydonate_license()->get_status_badge();
+}
+
+// Specific feature checks
+function skydonate_has_gift_aid() {
+    return skydonate_license()->has_gift_aid();
+}
+
+function skydonate_has_notifications() {
+    return skydonate_license()->has_notifications();
+}
+
+function skydonate_has_analytics() {
+    return skydonate_license()->has_analytics();
+}
+
+function skydonate_has_recurring() {
+    return skydonate_license()->has_recurring();
+}
+
+function skydonate_can_auto_update() {
+    return skydonate_license()->can_auto_update();
+}
+
+function skydonate_can_remote_functions() {
+    return skydonate_license()->can_remote_functions();
 }
 
 function skydonate_get_license_status() {
