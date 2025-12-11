@@ -152,6 +152,7 @@ class Skydonate_Dashboard {
             'status' => 'completed',
             'limit'  => -1,
             'return' => 'ids',
+            'type'   => 'shop_order',
         ];
 
         if ( $days > 0 ) {
@@ -169,6 +170,7 @@ class Skydonate_Dashboard {
         $args = [
             'status' => 'completed',
             'limit'  => -1,
+            'type'   => 'shop_order',
         ];
 
         if ( $days > 0 ) {
@@ -451,6 +453,7 @@ class Skydonate_Dashboard {
             'limit'   => $limit,
             'orderby' => 'date',
             'order'   => 'DESC',
+            'type'    => 'shop_order',
         ];
 
         if ( $days > 0 ) {
@@ -543,6 +546,7 @@ class Skydonate_Dashboard {
             'status'       => 'completed',
             'date_created' => $start_previous . '...' . $end_previous,
             'limit'        => -1,
+            'type'         => 'shop_order',
         ] );
 
         $previous_total = 0;
