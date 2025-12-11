@@ -296,30 +296,29 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // 1. Clear ALL license caches (transient, backup option, and object cache)
-        delete_transient( 'skydonate_license_data' );
-        delete_transient( 'skydonate_license_rate_limit' );
-        delete_option( 'skydonate_license_data_backup' );
-        wp_cache_delete( 'skydonate_license_data', 'transient' );
-        wp_cache_delete( 'skydonate_license_data_backup', 'options' );
-
-        // 2. Refresh license data with force flag
+        // 1. Refresh license data (clears all caches and fetches fresh)
         $license = skydonate_license();
-        $result = $license->validate( null, true );
+        $result = $license->refresh( true ); // true = clear backup option too
 
-        // 3. Refresh plugin update info
+        // Handle case where no license key is set
+        if ( $result === null ) {
+            wp_send_json_error( array(
+                'message' => __( 'No license key found. Please activate a license first.', 'skydonate' ),
+            ) );
+            return;
+        }
+
+        // 2. Refresh plugin update info
         if ( function_exists( 'skydonate_updater' ) ) {
-            $updater = skydonate_updater();
-            $updater->force_check();
+            skydonate_updater()->force_check();
         }
 
-        // 4. Refresh remote functions
+        // 3. Refresh remote functions
         if ( function_exists( 'skydonate_remote_functions' ) ) {
-            $remote_functions = skydonate_remote_functions();
-            $remote_functions->force_refresh();
+            skydonate_remote_functions()->force_refresh();
         }
 
-        // 5. Clear WordPress plugin update transients to force re-check
+        // 4. Clear WordPress plugin update transients
         delete_site_transient( 'update_plugins' );
 
         if ( ! empty( $result['success'] ) ) {
@@ -333,7 +332,7 @@ class SkyDonate_License_Admin {
             ) );
         } else {
             wp_send_json_error( array(
-                'message' => $result['message'] ?? __( 'Failed to refresh data', 'skydonate' ),
+                'message' => $result['message'] ?? __( 'Failed to refresh data. Please try again.', 'skydonate' ),
             ) );
         }
     }

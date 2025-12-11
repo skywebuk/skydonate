@@ -666,23 +666,41 @@ class SkyDonate_License_Client {
 
     /**
      * Get fresh license data (bypass cache)
+     *
+     * @param bool $clear_all Whether to clear all caches including backup
      */
-    public function refresh() {
+    public function refresh( $clear_all = true ) {
         $key = $this->get_key();
 
         if ( empty( $key ) ) {
             return null;
         }
 
+        // Clear all caches first
+        $this->clear_cache( $clear_all );
+
         return $this->validate( $key, true );
     }
 
     /**
      * Clear cache
+     *
+     * @param bool $include_backup Whether to also clear backup option
      */
-    public function clear_cache() {
+    public function clear_cache( $include_backup = false ) {
         delete_transient( $this->cache_key );
         delete_transient( $this->rate_limit_key );
+
+        // Clear object cache
+        wp_cache_delete( $this->cache_key, 'transient' );
+        wp_cache_delete( '_transient_' . $this->cache_key, 'options' );
+        wp_cache_delete( '_transient_timeout_' . $this->cache_key, 'options' );
+
+        if ( $include_backup ) {
+            delete_option( $this->license_data_option );
+            wp_cache_delete( $this->license_data_option, 'options' );
+            wp_cache_delete( 'alloptions', 'options' );
+        }
     }
 
     /**
