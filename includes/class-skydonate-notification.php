@@ -451,13 +451,14 @@ class Skydonate_Notification {
         $text_color = esc_attr(get_theme_mod('skydonate_notification_text_color', '#212830'));
         $bg_color = esc_attr(get_theme_mod('skydonate_notification_bg_color', '#ffffff'));
         $border_color = esc_attr(get_theme_mod('skydonate_notification_border_color', '#ffffff'));
-        $border_radius = absint(get_theme_mod('skydonate_notification_border_radius', 6));
+        $border_radius = absint(get_theme_mod('skydonate_notification_border_radius', 5));
         $border_size = absint(get_theme_mod('skydonate_notification_border_size', 1));
-        $title_size = absint(get_theme_mod('skydonate_notification_title_font_size', 1));
-        $button_size = absint(get_theme_mod('skydonate_notification_button_font_size', 1));
-        $text_size = absint(get_theme_mod('skydonate_notification_text_font_size', 1));
+        $title_size = absint(get_theme_mod('skydonate_notification_title_font_size', 16));
+        $button_size = absint(get_theme_mod('skydonate_notification_button_font_size', 16));
+        $text_size = absint(get_theme_mod('skydonate_notification_text_font_size', 13));
         $box_width = absint(get_theme_mod('skydonate_notification_box_width', 360));
-        $shadow = get_theme_mod('skydonate_notification_show_shadow', false);
+        $shadow_raw = get_theme_mod('skydonate_notification_show_shadow', false);
+        $shadow = filter_var( $shadow_raw, FILTER_VALIDATE_BOOLEAN );
 
         $position = get_theme_mod('skydonate_notification_position', 'top');
     
@@ -481,10 +482,10 @@ class Skydonate_Notification {
                     border: <?php echo $border_size; ?>px solid <?php echo $border_color; ?>;
                 <?php endif; ?>
 
-                <?php if (isset($shadow) && !$shadow): ?>
-                    box-shadow: none;
-                <?php else: ?>
+                <?php if ($shadow): ?>
                     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px;
+                <?php else: ?>
+                    box-shadow: none;
                 <?php endif; ?>
 
                 <?php if (!empty($box_width)): ?>
