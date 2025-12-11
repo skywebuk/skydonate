@@ -46,7 +46,7 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 </span>
             </label>
             <?php endif; ?>
-            <?php if(skydonate_is_widget_enabled('recent_order')): ?>
+            <?php if(skydonate_is_widget_enabled('recent_donation')): ?>
             <label class="skydonate-switcher">
                 <span class="switch-label"><?php _e( 'Recent Donation', 'skydonate' ); ?></span>
                 <input id="recent_order" name="widgets[recent_order]" type="checkbox" 
