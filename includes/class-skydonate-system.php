@@ -51,6 +51,25 @@ class Skydonate_System {
         $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->verification();
+
+        // Initialize WooCommerce integration classes on init to avoid early translation loading
+        add_action( 'init', [ $this, 'init_woocommerce_integrations' ], 0 );
+    }
+
+    /**
+     * Initialize WooCommerce integration classes after translations are loaded
+     */
+    public function init_woocommerce_integrations() {
+        // Initialize classes that interact with WooCommerce
+        if ( class_exists( 'Skydonate_Shortcode' ) ) {
+            new Skydonate_Shortcode();
+        }
+        if ( class_exists( 'Skydonate_Extra_Donation' ) ) {
+            new Skydonate_Extra_Donation();
+        }
+        if ( class_exists( 'Skydonate_Metabox' ) ) {
+            new Skydonate_Metabox();
+        }
     }
 
     /**
@@ -170,10 +189,13 @@ class Skydonate_System {
 
     /**
      * Set up plugin internationalization
+     *
+     * Load textdomain on init action to comply with WordPress 6.7+ timing requirements
      */
     private function set_locale() {
         $plugin_i18n = new Skydonate_i18n();
-        $this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+        // Load textdomain on init instead of plugins_loaded to avoid early translation loading warnings
+        $this->loader->add_action( 'init', $plugin_i18n, 'load_plugin_textdomain', 0 );
     }
 
     /**

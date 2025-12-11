@@ -562,6 +562,6 @@ if (!class_exists('Skydonate_Shortcode')) {
 
     }
 
-    // Initialize the class
-    new Skydonate_Shortcode();
+    // Class is initialized in Skydonate_System::init_woocommerce_integrations() on the 'init' hook
+    // to comply with WordPress 6.7+ translation timing requirements
 }

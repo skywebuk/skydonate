@@ -233,4 +233,5 @@ class Skydonate_Extra_Donation {
     }
 }
 
-new Skydonate_Extra_Donation();
+// Class is initialized in Skydonate_System::init_woocommerce_integrations() on the 'init' hook
+// to comply with WordPress 6.7+ translation timing requirements

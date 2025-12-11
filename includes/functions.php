@@ -1,31 +1,38 @@
-<?php 
+<?php
 if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action( 'woocommerce_checkout_update_user_meta', function( $customer_id, $posted ) {
-    if ( isset( $_POST['billing_name_title'] ) ) {
-        update_user_meta( $customer_id, 'billing_name_title', sanitize_text_field( $_POST['billing_name_title'] ) );
-    }
-}, 10, 2 );
+/**
+ * Initialize WooCommerce-related hooks on init to avoid early translation loading
+ * This fixes WordPress 6.7+ translation timing requirements
+ */
+function skydonate_init_woocommerce_hooks() {
+    add_action( 'woocommerce_checkout_update_user_meta', function( $customer_id, $posted ) {
+        if ( isset( $_POST['billing_name_title'] ) ) {
+            update_user_meta( $customer_id, 'billing_name_title', sanitize_text_field( $_POST['billing_name_title'] ) );
+        }
+    }, 10, 2 );
 
-add_action( 'woocommerce_checkout_create_order', function( $order, $data ) {
-    if ( isset( $_POST['billing_name_title'] ) ) {
-        $order->update_meta_data( '_billing_name_title', sanitize_text_field( $_POST['billing_name_title'] ) );
-    }
-}, 10, 2 );
+    add_action( 'woocommerce_checkout_create_order', function( $order, $data ) {
+        if ( isset( $_POST['billing_name_title'] ) ) {
+            $order->update_meta_data( '_billing_name_title', sanitize_text_field( $_POST['billing_name_title'] ) );
+        }
+    }, 10, 2 );
 
-add_action( 'wp_enqueue_scripts', function() {
-    if ( is_checkout() ) {
-        $custom_css = '
-            #billing_email,
-            .checkout-custom-style form.woocommerce-checkout .form-row input[type="email"] {
-                text-transform: lowercase !important;
-            }
-        ';
-        wp_add_inline_style( 'woocommerce-inline', $custom_css );
-    }
-});
+    add_action( 'wp_enqueue_scripts', function() {
+        if ( is_checkout() ) {
+            $custom_css = '
+                #billing_email,
+                .checkout-custom-style form.woocommerce-checkout .form-row input[type="email"] {
+                    text-transform: lowercase !important;
+                }
+            ';
+            wp_add_inline_style( 'woocommerce-inline', $custom_css );
+        }
+    });
+}
+add_action( 'init', 'skydonate_init_woocommerce_hooks', 0 );
 
 
 /**

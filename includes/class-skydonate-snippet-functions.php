@@ -34,13 +34,21 @@ function modify_stripe_order_meta_data($meta_data, $order) {
 
     return $meta_data;
 }
-add_filter('wc_stripe_order_meta_data', 'modify_stripe_order_meta_data', 10, 2);
 
-add_filter('wc_ppcp_get_order_item', function($item, $order_item){
-    // Set the item name to 'Donation to Global Helping Hands'
-    $item->setName('Donation to Global Helping Hands');
-    return $item;
-}, 10, 2);
+/**
+ * Initialize payment gateway hooks on init to avoid early translation loading
+ * This fixes WordPress 6.7+ translation timing requirements
+ */
+function skydonate_init_payment_gateway_hooks() {
+    add_filter('wc_stripe_order_meta_data', 'modify_stripe_order_meta_data', 10, 2);
+
+    add_filter('wc_ppcp_get_order_item', function($item, $order_item){
+        // Set the item name to 'Donation to Global Helping Hands'
+        $item->setName('Donation to Global Helping Hands');
+        return $item;
+    }, 10, 2);
+}
+add_action( 'init', 'skydonate_init_payment_gateway_hooks', 0 );
 
 if ($register_text_replacements == 1) {
     function skydonate_start_buffer() {

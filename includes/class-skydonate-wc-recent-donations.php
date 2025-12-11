@@ -120,16 +120,13 @@ class WC_Recent_Donations {
     }
 }
 
-// Add the anonymous checkbox to the order meta page
-add_action('woocommerce_admin_order_data_after_billing_address', 'display_admin_order_meta_anonymous_checkbox', 10, 1);
+// Anonymous checkbox functions - hooks registered via skydonate_init_recent_donations_hooks()
 function display_admin_order_meta_anonymous_checkbox($order) {
     $is_anonymous = get_post_meta($order->get_id(), '_anonymous_donation', true);
     $checked = $is_anonymous ? 'checked="checked"' : '';
     echo '<p><strong>' . __('Anonymous Donation', 'your-text-domain') . ':</strong> <br/><label><input type="checkbox" name="anonymous_donation" ' . $checked . ' /> Make this donation anonymous</label></p>';
 }
 
-
-add_action('woocommerce_process_shop_order_meta', 'save_admin_order_meta_anonymous_checkbox', 45, 2);
 function save_admin_order_meta_anonymous_checkbox($post_id, $post) {
     if (isset($_POST['anonymous_donation'])) {
         update_post_meta($post_id, '_anonymous_donation', '1');
@@ -275,10 +272,18 @@ function remove_fee_from_thankyou_page($total_rows, $order, $tax_display) {
     return $total_rows;
 }
 
-add_filter('woocommerce_get_order_item_totals', 'remove_fee_from_thankyou_page', 10, 3);
+/**
+ * Initialize WooCommerce recent donations hooks on init to avoid early translation loading
+ * This fixes WordPress 6.7+ translation timing requirements
+ */
+function skydonate_init_recent_donations_hooks() {
+    add_action('woocommerce_admin_order_data_after_billing_address', 'display_admin_order_meta_anonymous_checkbox', 10, 1);
+    add_action('woocommerce_process_shop_order_meta', 'save_admin_order_meta_anonymous_checkbox', 45, 2);
+    add_filter('woocommerce_get_order_item_totals', 'remove_fee_from_thankyou_page', 10, 3);
+    add_action('woocommerce_order_details_before_order_table', 'add_anonymous_donation_option_on_account_page', 10, 1);
+    add_action('template_redirect', 'handle_anonymous_donation_submission');
+}
+add_action( 'init', 'skydonate_init_recent_donations_hooks', 0 );
 
-add_action('woocommerce_order_details_before_order_table', 'add_anonymous_donation_option_on_account_page', 10, 1);
-add_action('template_redirect', 'handle_anonymous_donation_submission');
-
-
-new WC_Recent_Donations();
+// Class is initialized in Skydonate_System via conditionally_initialize_class()
+// to comply with WordPress 6.7+ translation timing requirements
