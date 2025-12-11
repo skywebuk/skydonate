@@ -61,7 +61,7 @@ class SkyDonate_License_Admin {
             'i18n'    => array(
                 'activating'   => __( 'Activating...', 'skydonate' ),
                 'deactivating' => __( 'Deactivating...', 'skydonate' ),
-                'refreshing'   => __( 'Refreshing...', 'skydonate' ),
+                'refreshing'   => __( 'Refreshing all data...', 'skydonate' ),
                 'confirm_deactivate' => __( 'Are you sure you want to deactivate this license?', 'skydonate' ),
             ),
         ) );
@@ -283,7 +283,7 @@ class SkyDonate_License_Admin {
     }
 
     /**
-     * AJAX: Refresh license
+     * AJAX: Refresh all data (license, updates, remote functions)
      */
     public function ajax_refresh() {
         // Verify nonce
@@ -296,14 +296,29 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // Clear cache and re-validate
+        // 1. Refresh license data
         $license = skydonate_license();
         $license->clear_cache();
         $result = $license->validate( null, true );
 
+        // 2. Refresh plugin update info
+        if ( function_exists( 'skydonate_updater' ) ) {
+            $updater = skydonate_updater();
+            $updater->force_check();
+        }
+
+        // 3. Refresh remote functions
+        if ( function_exists( 'skydonate_remote_functions' ) ) {
+            $remote_functions = skydonate_remote_functions();
+            $remote_functions->force_refresh();
+        }
+
+        // 4. Clear WordPress plugin update transients to force re-check
+        delete_site_transient( 'update_plugins' );
+
         if ( ! empty( $result['success'] ) ) {
             wp_send_json_success( array(
-                'message' => __( 'License data refreshed successfully', 'skydonate' ),
+                'message' => __( 'All data refreshed successfully', 'skydonate' ),
                 'reload'  => true,
                 'data'    => array(
                     'status'  => $result['status'] ?? 'valid',
@@ -312,7 +327,7 @@ class SkyDonate_License_Admin {
             ) );
         } else {
             wp_send_json_error( array(
-                'message' => $result['message'] ?? __( 'Failed to refresh license data', 'skydonate' ),
+                'message' => $result['message'] ?? __( 'Failed to refresh data', 'skydonate' ),
             ) );
         }
     }

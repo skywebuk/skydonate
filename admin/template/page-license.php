@@ -168,9 +168,9 @@ $update_available = $info['update_available'] ?? false;
                     <?php endif; ?>
                 </div>
                 <div class="license-status-actions">
-                    <button type="button" class="button button-secondary" id="refresh-btn" title="<?php esc_attr_e( 'Refresh license data', 'skydonate' ); ?>">
+                    <button type="button" class="button button-secondary" id="refresh-btn" title="<?php esc_attr_e( 'Refresh all data (license, updates, remote functions)', 'skydonate' ); ?>">
                         <span class="dashicons dashicons-update"></span>
-                        <span class="btn-text"><?php esc_html_e( 'Refresh', 'skydonate' ); ?></span>
+                        <span class="btn-text"><?php esc_html_e( 'Refresh All', 'skydonate' ); ?></span>
                     </button>
                     <button type="button" class="button button-link-delete" id="deactivate-btn" title="<?php esc_attr_e( 'Deactivate license', 'skydonate' ); ?>">
                         <span class="dashicons dashicons-no"></span>
