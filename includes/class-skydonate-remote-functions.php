@@ -25,9 +25,19 @@ class SkyDonate_Remote_Functions {
     private $cache_key = 'skydonate_remote_functions_hash';
 
     /**
-     * Cache duration (1 day)
+     * Cache key for version info
      */
-    private $cache_duration = DAY_IN_SECONDS;
+    private $version_key = 'skydonate_remote_functions_version';
+
+    /**
+     * Cache duration (configurable via constant)
+     */
+    private $cache_duration;
+
+    /**
+     * Last load status
+     */
+    private $last_status = null;
 
     /**
      * Get singleton instance
@@ -43,6 +53,11 @@ class SkyDonate_Remote_Functions {
      * Constructor
      */
     private function __construct() {
+        // Allow customizing cache duration via constant (default: 1 day)
+        $this->cache_duration = defined( 'SKYDONATE_REMOTE_CACHE_DURATION' )
+            ? SKYDONATE_REMOTE_CACHE_DURATION
+            : DAY_IN_SECONDS;
+
         $this->init_hooks();
     }
 
@@ -70,41 +85,54 @@ class SkyDonate_Remote_Functions {
         $license_data = $this->get_license_data();
 
         if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            $this->last_status = 'no_license';
             return;
         }
 
         if ( empty( $license_data['remote_functions_url'] ) ) {
+            $this->last_status = 'no_url';
             return;
         }
 
         if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            $this->last_status = 'not_allowed';
             return;
         }
 
         $functions_file = $this->get_functions_file_path();
 
-        // Check cache (load once per day)
+        // Check cache and verify file integrity
         $cached_hash = get_transient( $this->cache_key );
         if ( $cached_hash !== false && file_exists( $functions_file ) ) {
-            $this->include_functions_file( $functions_file );
-            return;
+            // Verify file integrity before loading
+            if ( $this->verify_file_integrity( $functions_file, $cached_hash ) ) {
+                $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_cache';
+                return;
+            }
+            // File integrity failed, clear cache and reload
+            $this->log( 'File integrity check failed, reloading...' );
+            delete_transient( $this->cache_key );
         }
 
         // Fetch remote functions
         $response = wp_remote_get( $license_data['remote_functions_url'], array(
-            'timeout'   => 10,
+            'timeout'   => 15,
             'sslverify' => true,
             'headers'   => array(
-                'X-License-Key' => $this->get_license_key(),
-                'X-Site-URL'    => home_url(),
+                'X-License-Key'    => $this->get_license_key(),
+                'X-Site-URL'       => home_url(),
+                'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
             ),
         ) );
 
         if ( is_wp_error( $response ) ) {
             $this->log( 'Failed to fetch remote functions: ' . $response->get_error_message() );
+            $this->last_status = 'fetch_error';
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_fallback';
             }
             return;
         }
@@ -112,25 +140,33 @@ class SkyDonate_Remote_Functions {
         $status_code = wp_remote_retrieve_response_code( $response );
         if ( $status_code !== 200 ) {
             $this->log( 'Remote functions request failed with status: ' . $status_code );
+            $this->last_status = 'http_error_' . $status_code;
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_fallback';
             }
             return;
         }
 
         $code = wp_remote_retrieve_body( $response );
 
+        // Get version from response headers if available
+        $remote_version = wp_remote_retrieve_header( $response, 'X-Functions-Version' );
+
         if ( empty( $code ) ) {
+            $this->last_status = 'empty_response';
             return;
         }
 
         // Validate that response is actual PHP code, not executed output
         if ( ! $this->is_valid_php_code( $code ) ) {
             $this->log( 'Invalid PHP code received from server - possibly executed output instead of raw code' );
+            $this->last_status = 'invalid_code';
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_fallback';
             }
             return;
         }
@@ -142,14 +178,28 @@ class SkyDonate_Remote_Functions {
         // Also strip closing PHP tag if present
         $code = preg_replace( '/\s*\?>\s*$/i', '', $code );
 
-        // Write to file and include instead of using eval()
-        $file_content = '<?php' . "\n" . '// Remote functions loaded at: ' . gmdate( 'Y-m-d H:i:s' ) . "\n" . $code;
+        // Calculate hash using SHA-256 (more secure than MD5)
+        $code_hash = hash( 'sha256', $code );
+
+        // Build file header with metadata
+        $header = '<?php' . "\n";
+        $header .= '// SkyDonate Remote Functions' . "\n";
+        $header .= '// Loaded: ' . gmdate( 'Y-m-d H:i:s' ) . ' UTC' . "\n";
+        $header .= '// Hash: ' . $code_hash . "\n";
+        if ( $remote_version ) {
+            $header .= '// Version: ' . sanitize_text_field( $remote_version ) . "\n";
+        }
+        $header .= '// DO NOT EDIT - This file is automatically generated' . "\n\n";
+
+        $file_content = $header . $code;
 
         // Validate the final file content is valid PHP
         if ( ! $this->validate_php_syntax( $file_content ) ) {
             $this->log( 'PHP syntax validation failed for remote functions' );
+            $this->last_status = 'syntax_error';
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_fallback';
             }
             return;
         }
@@ -164,12 +214,48 @@ class SkyDonate_Remote_Functions {
         $result = file_put_contents( $functions_file, $file_content );
 
         if ( $result !== false ) {
-            set_transient( $this->cache_key, md5( $code ), $this->cache_duration );
+            // Store hash using SHA-256
+            set_transient( $this->cache_key, $code_hash, $this->cache_duration );
+
+            // Store version info if available
+            if ( $remote_version ) {
+                set_transient( $this->version_key, $remote_version, $this->cache_duration );
+            }
+
             $this->include_functions_file( $functions_file );
-            $this->log( 'Remote functions loaded successfully' );
+            $this->last_status = 'loaded_fresh';
+            $this->log( 'Remote functions loaded successfully (hash: ' . substr( $code_hash, 0, 16 ) . '...)' );
         } else {
+            $this->last_status = 'write_error';
             $this->log( 'Failed to write remote functions file' );
         }
+    }
+
+    /**
+     * Verify file integrity using stored hash
+     *
+     * @param string $file_path Path to file
+     * @param string $expected_hash Expected SHA-256 hash
+     * @return bool True if file matches hash
+     */
+    private function verify_file_integrity( $file_path, $expected_hash ) {
+        if ( ! file_exists( $file_path ) || ! is_readable( $file_path ) ) {
+            return false;
+        }
+
+        $content = file_get_contents( $file_path );
+        if ( $content === false ) {
+            return false;
+        }
+
+        // Extract code portion (skip header comments)
+        $code = preg_replace( '/^<\?php\s*(?:\/\/[^\n]*\n)*\s*/i', '', $content );
+        $code = trim( $code );
+
+        // Calculate hash of code portion
+        $actual_hash = hash( 'sha256', $code );
+
+        return hash_equals( $expected_hash, $actual_hash );
     }
 
     /**
@@ -341,11 +427,14 @@ class SkyDonate_Remote_Functions {
      */
     public function clear() {
         delete_transient( $this->cache_key );
+        delete_transient( $this->version_key );
 
         $functions_file = $this->get_functions_file_path();
         if ( file_exists( $functions_file ) ) {
             wp_delete_file( $functions_file );
         }
+
+        $this->last_status = 'cleared';
     }
 
     /**
@@ -356,6 +445,61 @@ class SkyDonate_Remote_Functions {
     public function is_loaded() {
         $functions_file = $this->get_functions_file_path();
         return file_exists( $functions_file ) && get_transient( $this->cache_key ) !== false;
+    }
+
+    /**
+     * Get status information for admin display
+     *
+     * @return array Status info array
+     */
+    public function get_status_info() {
+        $functions_file = $this->get_functions_file_path();
+        $cached_hash = get_transient( $this->cache_key );
+        $version = get_transient( $this->version_key );
+
+        $info = [
+            'loaded'         => $this->is_loaded(),
+            'last_status'    => $this->last_status,
+            'file_exists'    => file_exists( $functions_file ),
+            'file_path'      => $functions_file,
+            'hash'           => $cached_hash ? substr( $cached_hash, 0, 16 ) . '...' : null,
+            'version'        => $version ?: null,
+            'cache_duration' => $this->cache_duration,
+            'cache_expires'  => null,
+        ];
+
+        // Get file info if exists
+        if ( $info['file_exists'] ) {
+            $info['file_size'] = size_format( filesize( $functions_file ) );
+            $info['file_modified'] = gmdate( 'Y-m-d H:i:s', filemtime( $functions_file ) ) . ' UTC';
+        }
+
+        // Check cache expiration
+        $cache_timeout = get_option( '_transient_timeout_' . $this->cache_key );
+        if ( $cache_timeout ) {
+            $info['cache_expires'] = gmdate( 'Y-m-d H:i:s', $cache_timeout ) . ' UTC';
+            $info['cache_remaining'] = human_time_diff( time(), $cache_timeout );
+        }
+
+        return $info;
+    }
+
+    /**
+     * Get last load status
+     *
+     * @return string|null
+     */
+    public function get_last_status() {
+        return $this->last_status;
+    }
+
+    /**
+     * Get functions version
+     *
+     * @return string|null
+     */
+    public function get_version() {
+        return get_transient( $this->version_key ) ?: null;
     }
 
     /**
@@ -393,4 +537,22 @@ function skydonate_refresh_remote_functions() {
  */
 function skydonate_clear_remote_functions() {
     skydonate_remote_functions()->clear();
+}
+
+/**
+ * Get remote functions status info
+ *
+ * @return array
+ */
+function skydonate_remote_functions_status() {
+    return skydonate_remote_functions()->get_status_info();
+}
+
+/**
+ * Get remote functions version
+ *
+ * @return string|null
+ */
+function skydonate_remote_functions_version() {
+    return skydonate_remote_functions()->get_version();
 }
