@@ -305,26 +305,28 @@ class Skydonate_Notification {
 
         // Border Size
         $wp_customize->add_setting('skydonate_notification_border_size', [
-            'default'           => '1',
+            'default'           => 1,
             'sanitize_callback' => 'absint',
         ]);
         $wp_customize->add_control('skydonate_notification_border_size', [
-            'label'    => __('Border Size (px)', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'number',
-            'settings' => 'skydonate_notification_border_size',
+            'label'       => __('Border Size (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
+            'type'        => 'number',
+            'settings'    => 'skydonate_notification_border_size',
+            'input_attrs' => [ 'min' => 0, 'max' => 20, 'step' => 1 ],
         ]);
 
         // Border Radius
         $wp_customize->add_setting('skydonate_notification_border_radius', [
-            'default'           => '5',
+            'default'           => 5,
             'sanitize_callback' => 'absint',
         ]);
         $wp_customize->add_control('skydonate_notification_border_radius', [
-            'label'    => __('Border Radius (px)', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'number',
-            'settings' => 'skydonate_notification_border_radius',
+            'label'       => __('Border Radius (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
+            'type'        => 'number',
+            'settings'    => 'skydonate_notification_border_radius',
+            'input_attrs' => [ 'min' => 0, 'max' => 50, 'step' => 1 ],
         ]);
 
         // Border Color
@@ -398,38 +400,41 @@ class Skydonate_Notification {
 
         // Title Font Size
         $wp_customize->add_setting('skydonate_notification_title_font_size', [
-            'default'           => '16',
+            'default'           => 16,
             'sanitize_callback' => 'absint',
         ]);
         $wp_customize->add_control('skydonate_notification_title_font_size', [
-            'label'    => __('Title Font Size (px)', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'number',
-            'settings' => 'skydonate_notification_title_font_size',
+            'label'       => __('Title Font Size (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
+            'type'        => 'number',
+            'settings'    => 'skydonate_notification_title_font_size',
+            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
         ]);
 
         // Text Font Size
         $wp_customize->add_setting('skydonate_notification_text_font_size', [
-            'default'           => '13',
+            'default'           => 13,
             'sanitize_callback' => 'absint',
         ]);
         $wp_customize->add_control('skydonate_notification_text_font_size', [
-            'label'    => __('Text Font Size (px)', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'number',
-            'settings' => 'skydonate_notification_text_font_size',
+            'label'       => __('Text Font Size (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
+            'type'        => 'number',
+            'settings'    => 'skydonate_notification_text_font_size',
+            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
         ]);
 
         // Button Font Size
         $wp_customize->add_setting('skydonate_notification_button_font_size', [
-            'default'           => '16',
+            'default'           => 16,
             'sanitize_callback' => 'absint',
         ]);
         $wp_customize->add_control('skydonate_notification_button_font_size', [
-            'label'    => __('Button Font Size (px)', 'skydonate'),
-            'section'  => 'skydonate_notification_section',
-            'type'     => 'number',
-            'settings' => 'skydonate_notification_button_font_size',
+            'label'       => __('Button Font Size (px)', 'skydonate'),
+            'section'     => 'skydonate_notification_section',
+            'type'        => 'number',
+            'settings'    => 'skydonate_notification_button_font_size',
+            'input_attrs' => [ 'min' => 8, 'max' => 72, 'step' => 1 ],
         ]);
 
 
@@ -498,7 +503,7 @@ class Skydonate_Notification {
                     color: <?php echo $accent_color; ?>;
                 <?php endif; ?>
 
-                <?php if (!empty($title_size)): ?>
+                <?php if ($title_size > 0): ?>
                     font-size: <?php echo $title_size; ?>px;
                 <?php endif; ?>
 
@@ -517,7 +522,7 @@ class Skydonate_Notification {
                     color: <?php echo $accent_color; ?>;
                 <?php endif; ?>
 
-                <?php if (!empty($button_size)): ?>
+                <?php if ($button_size > 0): ?>
                     font-size: <?php echo $button_size; ?>px;
                 <?php endif; ?>
             }
@@ -537,7 +542,7 @@ class Skydonate_Notification {
 
             .skydonate-notification .time,
             .skydonate-notification .location {
-                <?php if (!empty($text_size)): ?>
+                <?php if ($text_size > 0): ?>
                     font-size: <?php echo $text_size; ?>px;
                 <?php endif; ?>
             }
