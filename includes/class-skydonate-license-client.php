@@ -105,7 +105,8 @@ class SkyDonate_License_Client {
         $this->server_url = apply_filters( 'skydonate_license_server_url', $this->server_url );
 
         // Defer hook initialization to 'init' action to comply with WordPress 6.7+ translation timing requirements
-        add_action( 'init', array( $this, 'init_hooks' ), 0 );
+        // Use priority 1 to ensure textdomain is loaded first (at priority 0)
+        add_action( 'init', array( $this, 'init_hooks' ), 1 );
     }
 
     /**

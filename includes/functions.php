@@ -32,7 +32,7 @@ function skydonate_init_woocommerce_hooks() {
         }
     });
 }
-add_action( 'init', 'skydonate_init_woocommerce_hooks', 0 );
+add_action( 'init', 'skydonate_init_woocommerce_hooks', 1 );
 
 
 /**

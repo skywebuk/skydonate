@@ -48,7 +48,7 @@ function skydonate_init_payment_gateway_hooks() {
         return $item;
     }, 10, 2);
 }
-add_action( 'init', 'skydonate_init_payment_gateway_hooks', 0 );
+add_action( 'init', 'skydonate_init_payment_gateway_hooks', 1 );
 
 if ($register_text_replacements == 1) {
     function skydonate_start_buffer() {

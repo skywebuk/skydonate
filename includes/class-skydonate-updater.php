@@ -68,7 +68,8 @@ class SkyDonate_Updater {
         $this->plugin_version = defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0';
 
         // Defer hook initialization to 'init' action to comply with WordPress 6.7+ translation timing requirements
-        add_action( 'init', array( $this, 'init_hooks' ), 0 );
+        // Use priority 1 to ensure textdomain is loaded first (at priority 0)
+        add_action( 'init', array( $this, 'init_hooks' ), 1 );
     }
 
     /**

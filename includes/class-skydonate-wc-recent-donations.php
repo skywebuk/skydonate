@@ -283,7 +283,7 @@ function skydonate_init_recent_donations_hooks() {
     add_action('woocommerce_order_details_before_order_table', 'add_anonymous_donation_option_on_account_page', 10, 1);
     add_action('template_redirect', 'handle_anonymous_donation_submission');
 }
-add_action( 'init', 'skydonate_init_recent_donations_hooks', 0 );
+add_action( 'init', 'skydonate_init_recent_donations_hooks', 1 );
 
 // Class is initialized in Skydonate_System via conditionally_initialize_class()
 // to comply with WordPress 6.7+ translation timing requirements

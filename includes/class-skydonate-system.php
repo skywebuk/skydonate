@@ -53,7 +53,8 @@ class Skydonate_System {
         $this->verification();
 
         // Initialize WooCommerce integration classes on init to avoid early translation loading
-        add_action( 'init', [ $this, 'init_woocommerce_integrations' ], 0 );
+        // Use priority 1 to ensure textdomain is loaded first (at priority 0)
+        add_action( 'init', [ $this, 'init_woocommerce_integrations' ], 1 );
     }
 
     /**
