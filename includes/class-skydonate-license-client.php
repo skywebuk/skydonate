@@ -688,18 +688,24 @@ class SkyDonate_License_Client {
      * @param bool $include_backup Whether to also clear backup option
      */
     public function clear_cache( $include_backup = false ) {
+        // Delete transients from database
         delete_transient( $this->cache_key );
         delete_transient( $this->rate_limit_key );
 
-        // Clear object cache
-        wp_cache_delete( $this->cache_key, 'transient' );
-        wp_cache_delete( '_transient_' . $this->cache_key, 'options' );
-        wp_cache_delete( '_transient_timeout_' . $this->cache_key, 'options' );
+        // Clear object cache for transients (if object caching is enabled)
+        if ( function_exists( 'wp_cache_delete' ) ) {
+            wp_cache_delete( $this->cache_key, 'transient' );
+            wp_cache_delete( '_transient_' . $this->cache_key, 'options' );
+            wp_cache_delete( '_transient_timeout_' . $this->cache_key, 'options' );
+        }
 
         if ( $include_backup ) {
             delete_option( $this->license_data_option );
-            wp_cache_delete( $this->license_data_option, 'options' );
-            wp_cache_delete( 'alloptions', 'options' );
+            if ( function_exists( 'wp_cache_delete' ) ) {
+                wp_cache_delete( $this->license_data_option, 'options' );
+            }
+            // Force WordPress to reload options from database
+            wp_cache_flush();
         }
     }
 

@@ -296,43 +296,67 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // 1. Refresh license data (clears all caches and fetches fresh)
-        $license = skydonate_license();
-        $result = $license->refresh( true ); // true = clear backup option too
+        try {
+            // Check if license function exists
+            if ( ! function_exists( 'skydonate_license' ) ) {
+                wp_send_json_error( array( 'message' => __( 'License system not available.', 'skydonate' ) ) );
+                return;
+            }
 
-        // Handle case where no license key is set
-        if ( $result === null ) {
+            // 1. Refresh license data (clears all caches and fetches fresh)
+            $license = skydonate_license();
+
+            if ( ! $license ) {
+                wp_send_json_error( array( 'message' => __( 'License client not initialized.', 'skydonate' ) ) );
+                return;
+            }
+
+            $result = $license->refresh( true ); // true = clear backup option too
+
+            // Handle case where no license key is set
+            if ( $result === null ) {
+                wp_send_json_error( array(
+                    'message' => __( 'No license key found. Please activate a license first.', 'skydonate' ),
+                ) );
+                return;
+            }
+
+            // 2. Refresh plugin update info
+            if ( function_exists( 'skydonate_updater' ) ) {
+                $updater = skydonate_updater();
+                if ( $updater ) {
+                    $updater->force_check();
+                }
+            }
+
+            // 3. Refresh remote functions
+            if ( function_exists( 'skydonate_remote_functions' ) ) {
+                $remote_functions = skydonate_remote_functions();
+                if ( $remote_functions ) {
+                    $remote_functions->force_refresh();
+                }
+            }
+
+            // 4. Clear WordPress plugin update transients
+            delete_site_transient( 'update_plugins' );
+
+            if ( ! empty( $result['success'] ) ) {
+                wp_send_json_success( array(
+                    'message' => __( 'All data refreshed successfully', 'skydonate' ),
+                    'reload'  => true,
+                    'data'    => array(
+                        'status'  => $result['status'] ?? 'valid',
+                        'expires' => $result['expires'] ?? '',
+                    ),
+                ) );
+            } else {
+                wp_send_json_error( array(
+                    'message' => $result['message'] ?? __( 'Failed to refresh data. Please try again.', 'skydonate' ),
+                ) );
+            }
+        } catch ( Exception $e ) {
             wp_send_json_error( array(
-                'message' => __( 'No license key found. Please activate a license first.', 'skydonate' ),
-            ) );
-            return;
-        }
-
-        // 2. Refresh plugin update info
-        if ( function_exists( 'skydonate_updater' ) ) {
-            skydonate_updater()->force_check();
-        }
-
-        // 3. Refresh remote functions
-        if ( function_exists( 'skydonate_remote_functions' ) ) {
-            skydonate_remote_functions()->force_refresh();
-        }
-
-        // 4. Clear WordPress plugin update transients
-        delete_site_transient( 'update_plugins' );
-
-        if ( ! empty( $result['success'] ) ) {
-            wp_send_json_success( array(
-                'message' => __( 'All data refreshed successfully', 'skydonate' ),
-                'reload'  => true,
-                'data'    => array(
-                    'status'  => $result['status'] ?? 'valid',
-                    'expires' => $result['expires'] ?? '',
-                ),
-            ) );
-        } else {
-            wp_send_json_error( array(
-                'message' => $result['message'] ?? __( 'Failed to refresh data. Please try again.', 'skydonate' ),
+                'message' => __( 'An error occurred: ', 'skydonate' ) . $e->getMessage(),
             ) );
         }
     }
