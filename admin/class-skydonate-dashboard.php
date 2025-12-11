@@ -179,6 +179,10 @@ class Skydonate_Dashboard {
         $emails = [];
 
         foreach ( $orders as $order ) {
+            // Skip refunds - they don't have billing email method
+            if ( $order->get_type() === 'shop_order_refund' ) {
+                continue;
+            }
             $email = $order->get_billing_email();
             if ( ! empty( $email ) ) {
                 $emails[ $email ] = true;
@@ -461,6 +465,10 @@ class Skydonate_Dashboard {
 
         $data = [];
         foreach ( $orders as $order ) {
+            // Skip refunds - they don't have billing name methods
+            if ( $order->get_type() === 'shop_order_refund' ) {
+                continue;
+            }
             $is_anonymous = $order->get_meta( '_anonymous_donation', true );
 
             $data[] = [
