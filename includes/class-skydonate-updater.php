@@ -67,14 +67,24 @@ class SkyDonate_Updater {
         $this->plugin_basename = defined( 'SKYDONATE_PLUGIN_BASE' ) ? SKYDONATE_PLUGIN_BASE : 'skydonate/skydonate.php';
         $this->plugin_version = defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0';
 
-        // Initialize hooks
-        $this->init_hooks();
+        // Defer hook initialization to 'init' action to comply with WordPress 6.7+ translation timing requirements
+        add_action( 'init', array( $this, 'init_hooks' ), 0 );
     }
 
     /**
      * Initialize WordPress hooks
+     *
+     * Called on 'init' action to comply with WordPress 6.7+ translation timing requirements.
+     * This ensures translations are loaded before any translation-dependent hooks fire.
      */
-    private function init_hooks() {
+    public function init_hooks() {
+        // Prevent double initialization
+        static $initialized = false;
+        if ( $initialized ) {
+            return;
+        }
+        $initialized = true;
+
         // Check for updates
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_update' ) );
 

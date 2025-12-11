@@ -95,7 +95,7 @@ class SkyDonate_License_Client {
     private function __construct() {
         // Set debug mode based on WP_DEBUG
         $this->debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
-        
+
         // Set plugin version if defined
         if ( defined( 'SKYDONATE_VERSION' ) ) {
             $this->plugin_version = SKYDONATE_VERSION;
@@ -104,8 +104,8 @@ class SkyDonate_License_Client {
         // Allow filtering server URL
         $this->server_url = apply_filters( 'skydonate_license_server_url', $this->server_url );
 
-        // Initialize hooks
-        $this->init_hooks();
+        // Defer hook initialization to 'init' action to comply with WordPress 6.7+ translation timing requirements
+        add_action( 'init', array( $this, 'init_hooks' ), 0 );
     }
 
     /**
@@ -122,10 +122,20 @@ class SkyDonate_License_Client {
 
     /**
      * Initialize WordPress hooks
+     *
+     * Called on 'init' action to comply with WordPress 6.7+ translation timing requirements.
+     * This ensures translations are loaded before any translation-dependent hooks fire.
      */
-    private function init_hooks() {
+    public function init_hooks() {
+        // Prevent double initialization
+        static $initialized = false;
+        if ( $initialized ) {
+            return;
+        }
+        $initialized = true;
+
         // Schedule daily license check
-        add_action( 'init', array( $this, 'schedule_license_check' ) );
+        $this->schedule_license_check();
         add_action( 'skydonate_daily_license_check', array( $this, 'daily_license_check' ) );
 
         // Admin notices
@@ -137,7 +147,7 @@ class SkyDonate_License_Client {
         // Site health integration
         add_filter( 'site_status_tests', array( $this, 'add_site_health_test' ) );
 
-        // Handle deactivation cleanup
+        // Handle deactivation cleanup (must be registered early, not translation-dependent)
         register_deactivation_hook( SKYDONATE_FILE ?? __FILE__, array( $this, 'on_deactivation' ) );
     }
 
