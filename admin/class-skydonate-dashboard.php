@@ -20,7 +20,7 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * AJAX handler for analytics date range
+     * AJAX handler for analytics date range - returns all data for charts
      */
     public static function ajax_get_analytics() {
         // Verify nonce
@@ -41,12 +41,40 @@ class Skydonate_Dashboard {
         }
 
         $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( get_option( 'woocommerce_currency' ) ) );
+
+        // Get all data based on date range
         $comparison = self::get_comparison_stats( $days );
+        $trends_data = self::get_donations_by_date( $days );
+        $campaigns = self::get_donations_by_campaign( 6, $days );
+        $countries = self::get_donations_by_country( 8, $days );
+        $distribution = self::get_donation_distribution( $days );
+        $top_donors = self::get_top_donors( 5, $days );
+        $recent_donations = self::get_recent_donations( 5, $days );
 
         wp_send_json_success( array(
-            'comparison'      => $comparison,
-            'currency_symbol' => $currency_symbol,
-            'days'            => $days,
+            'comparison'       => $comparison,
+            'currency_symbol'  => $currency_symbol,
+            'days'             => $days,
+            'trends'           => array(
+                'labels'  => array_column( $trends_data, 'label' ),
+                'amounts' => array_column( $trends_data, 'amount' ),
+                'counts'  => array_column( $trends_data, 'count' ),
+            ),
+            'campaigns'        => array(
+                'labels'  => array_column( $campaigns, 'name' ),
+                'amounts' => array_column( $campaigns, 'amount' ),
+                'data'    => $campaigns,
+            ),
+            'countries'        => array(
+                'labels'  => array_column( $countries, 'name' ),
+                'amounts' => array_column( $countries, 'amount' ),
+            ),
+            'distribution'     => array(
+                'labels' => array_column( $distribution, 'label' ),
+                'counts' => array_column( $distribution, 'count' ),
+            ),
+            'top_donors'       => $top_donors,
+            'recent_donations' => $recent_donations,
         ) );
     }
 
@@ -236,8 +264,13 @@ class Skydonate_Dashboard {
     /**
      * Get donations by campaign/product
      */
-    public static function get_donations_by_campaign( $limit = 10 ) {
+    public static function get_donations_by_campaign( $limit = 10, $days = 0 ) {
         global $wpdb;
+
+        $date_filter = '';
+        if ( $days > 0 ) {
+            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+        }
 
         $results = $wpdb->get_results( $wpdb->prepare( "
             SELECT
@@ -253,6 +286,7 @@ class Skydonate_Dashboard {
             WHERE oi.order_item_type = 'line_item'
             AND p.post_type = 'shop_order'
             AND p.post_status = 'wc-completed'
+            {$date_filter}
             GROUP BY om_product.meta_value
             ORDER BY total_amount DESC
             LIMIT %d
@@ -275,8 +309,13 @@ class Skydonate_Dashboard {
     /**
      * Get donations by country
      */
-    public static function get_donations_by_country( $limit = 10 ) {
+    public static function get_donations_by_country( $limit = 10, $days = 0 ) {
         global $wpdb;
+
+        $date_filter = '';
+        if ( $days > 0 ) {
+            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+        }
 
         $results = $wpdb->get_results( $wpdb->prepare( "
             SELECT
@@ -289,6 +328,7 @@ class Skydonate_Dashboard {
             WHERE p.post_type = 'shop_order'
             AND p.post_status = 'wc-completed'
             AND pm_country.meta_value != ''
+            {$date_filter}
             GROUP BY pm_country.meta_value
             ORDER BY total_amount DESC
             LIMIT %d
@@ -313,11 +353,16 @@ class Skydonate_Dashboard {
     /**
      * Get donation amount distribution
      */
-    public static function get_donation_distribution() {
+    public static function get_donation_distribution( $days = 0 ) {
         global $wpdb;
 
         $currency_code = get_option('woocommerce_currency');
         $currency = html_entity_decode( get_woocommerce_currency_symbol( $currency_code ) );
+
+        $date_filter = '';
+        if ( $days > 0 ) {
+            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+        }
 
         $ranges = [
             [ 'min' => 0, 'max' => 10, 'label' => $currency . '0-10' ],
@@ -340,6 +385,7 @@ class Skydonate_Dashboard {
                 AND pm.meta_key = '_order_total'
                 AND CAST(pm.meta_value AS DECIMAL(10,2)) >= %f
                 AND CAST(pm.meta_value AS DECIMAL(10,2)) < %f
+                {$date_filter}
             ", $range['min'], $range['max'] ) );
 
             $data[] = [
@@ -354,8 +400,13 @@ class Skydonate_Dashboard {
     /**
      * Get top donors
      */
-    public static function get_top_donors( $limit = 10 ) {
+    public static function get_top_donors( $limit = 10, $days = 0 ) {
         global $wpdb;
+
+        $date_filter = '';
+        if ( $days > 0 ) {
+            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+        }
 
         $results = $wpdb->get_results( $wpdb->prepare( "
             SELECT
@@ -372,6 +423,7 @@ class Skydonate_Dashboard {
             WHERE p.post_type = 'shop_order'
             AND p.post_status = 'wc-completed'
             AND pm_email.meta_value != ''
+            {$date_filter}
             GROUP BY pm_email.meta_value
             ORDER BY total_amount DESC
             LIMIT %d
@@ -393,13 +445,19 @@ class Skydonate_Dashboard {
     /**
      * Get recent donations
      */
-    public static function get_recent_donations( $limit = 10 ) {
-        $orders = wc_get_orders( [
-            'status' => 'completed',
-            'limit'  => $limit,
+    public static function get_recent_donations( $limit = 10, $days = 0 ) {
+        $args = [
+            'status'  => 'completed',
+            'limit'   => $limit,
             'orderby' => 'date',
             'order'   => 'DESC',
-        ] );
+        ];
+
+        if ( $days > 0 ) {
+            $args['date_created'] = '>=' . date( 'Y-m-d', strtotime( "-{$days} days" ) );
+        }
+
+        $orders = wc_get_orders( $args );
 
         $data = [];
         foreach ( $orders as $order ) {

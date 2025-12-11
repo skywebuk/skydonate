@@ -310,377 +310,209 @@ document.addEventListener('DOMContentLoaded', function() {
         currencySymbol: '<?php echo esc_js( $currency_symbol ); ?>'
     };
 
-    // Date range change handler
-    var dateRangeSelect = document.getElementById('sky-date-range');
-    if (dateRangeSelect) {
-        dateRangeSelect.addEventListener('change', function() {
-            var days = this.value;
-            var statsGrid = document.querySelector('.sky-stats-grid');
-
-            // Add loading state
-            if (statsGrid) {
-                statsGrid.style.opacity = '0.5';
-                statsGrid.style.pointerEvents = 'none';
-            }
-
-            // Make AJAX request
-            var formData = new FormData();
-            formData.append('action', 'skydonate_get_analytics');
-            formData.append('nonce', skydonateAnalytics.nonce);
-            formData.append('days', days);
-
-            fetch(skydonateAnalytics.ajaxUrl, {
-                method: 'POST',
-                body: formData
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(result) {
-                if (result.success && result.data) {
-                    var data = result.data;
-                    var comp = data.comparison;
-                    var symbol = data.currency_symbol;
-
-                    // Update Total Raised
-                    var totalValue = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-value');
-                    var totalChange = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-change');
-                    if (totalValue) {
-                        totalValue.textContent = symbol + Number(comp.total.current).toLocaleString(undefined, {maximumFractionDigits: 0});
-                    }
-                    if (totalChange) {
-                        var changeVal = Math.abs(comp.total.change);
-                        totalChange.className = 'sky-stat-change ' + (comp.total.change >= 0 ? 'positive' : 'negative');
-                        totalChange.innerHTML = (comp.total.change >= 0
-                            ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
-                            : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>')
-                            + changeVal + '%';
-                    }
-
-                    // Update Total Donations
-                    var countValue = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-value');
-                    var countChange = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-change');
-                    if (countValue) {
-                        countValue.textContent = Number(comp.count.current).toLocaleString();
-                    }
-                    if (countChange) {
-                        var countChangeVal = Math.abs(comp.count.change);
-                        countChange.className = 'sky-stat-change ' + (comp.count.change >= 0 ? 'positive' : 'negative');
-                        countChange.innerHTML = (comp.count.change >= 0
-                            ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
-                            : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>')
-                            + countChangeVal + '%';
-                    }
-
-                    // Update Unique Donors
-                    var donorsValue = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-value');
-                    var donorsSub = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-sub');
-                    if (donorsValue) {
-                        donorsValue.textContent = Number(comp.donors.current).toLocaleString();
-                    }
-                    if (donorsSub) {
-                        donorsSub.textContent = 'Last ' + data.days + ' days';
-                    }
-
-                    // Update Average Donation
-                    var avgValue = document.querySelector('.sky-stat-card:nth-child(4) .sky-stat-value');
-                    if (avgValue) {
-                        avgValue.textContent = symbol + Number(comp.average.current).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    }
-                }
-            })
-            .catch(function(error) {
-                console.error('Analytics update failed:', error);
-            })
-            .finally(function() {
-                // Remove loading state
-                if (statsGrid) {
-                    statsGrid.style.opacity = '1';
-                    statsGrid.style.pointerEvents = 'auto';
-                }
-            });
-        });
-    }
-
     // Chart.js default configuration
     Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif';
     Chart.defaults.color = '#64748b';
 
     // Color palette
-    const colors = {
+    var colors = {
         primary: '#4f46e5',
         primaryLight: 'rgba(79, 70, 229, 0.1)',
         secondary: '#ec4899',
         secondaryLight: 'rgba(236, 72, 153, 0.1)',
-        success: '#10b981',
-        warning: '#f59e0b',
-        danger: '#ef4444',
-        chartColors: [
-            '#4f46e5', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6',
-            '#06b6d4', '#f97316', '#84cc16', '#6366f1', '#14b8a6'
-        ]
+        chartColors: ['#4f46e5', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16', '#6366f1', '#14b8a6']
     };
 
-    // Donation Trends Chart (Line + Bar combo)
-    const trendsCtx = document.getElementById('donationTrendsChart');
+    // Store chart instances for updates
+    var charts = {};
+
+    // Initialize Trends Chart
+    var trendsCtx = document.getElementById('donationTrendsChart');
     if (trendsCtx) {
-        new Chart(trendsCtx, {
+        charts.trends = new Chart(trendsCtx, {
             type: 'bar',
             data: {
                 labels: <?php echo $monthly_labels; ?>,
                 datasets: [
-                    {
-                        type: 'line',
-                        label: 'Amount (<?php echo esc_js( $currency_symbol ); ?>)',
-                        data: <?php echo $monthly_amounts; ?>,
-                        borderColor: colors.primary,
-                        backgroundColor: colors.primaryLight,
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        yAxisID: 'y',
-                        pointBackgroundColor: colors.primary,
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Donations',
-                        data: <?php echo $monthly_counts; ?>,
-                        backgroundColor: colors.secondaryLight,
-                        borderColor: colors.secondary,
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        yAxisID: 'y1'
-                    }
+                    { type: 'line', label: 'Amount', data: <?php echo $monthly_amounts; ?>, borderColor: colors.primary, backgroundColor: colors.primaryLight, borderWidth: 3, fill: true, tension: 0.4, yAxisID: 'y', pointBackgroundColor: colors.primary, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 6 },
+                    { type: 'bar', label: 'Donations', data: <?php echo $monthly_counts; ?>, backgroundColor: colors.secondaryLight, borderColor: colors.secondary, borderWidth: 1, borderRadius: 4, yAxisID: 'y1' }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#fff',
-                        bodyColor: '#e2e8f0',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: true
-                    }
-                },
+                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#e2e8f0', padding: 12, cornerRadius: 8, displayColors: true } },
                 scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        border: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        border: {
-                            display: false
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return '<?php echo esc_js( $currency_symbol ); ?>' + value.toLocaleString();
-                            }
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        border: {
-                            display: false
-                        }
-                    }
+                    x: { grid: { display: false }, border: { display: false } },
+                    y: { type: 'linear', display: true, position: 'left', grid: { color: 'rgba(0, 0, 0, 0.05)' }, border: { display: false }, ticks: { callback: function(value) { return skydonateAnalytics.currencySymbol + value.toLocaleString(); } } },
+                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, border: { display: false } }
                 }
             }
         });
     }
 
-    // Campaign Doughnut Chart
-    const campaignCtx = document.getElementById('campaignChart');
+    // Initialize Campaign Chart
+    var campaignCtx = document.getElementById('campaignChart');
     if (campaignCtx) {
-        new Chart(campaignCtx, {
+        charts.campaign = new Chart(campaignCtx, {
             type: 'doughnut',
-            data: {
-                labels: <?php echo $campaign_labels; ?>,
-                datasets: [{
-                    data: <?php echo $campaign_amounts; ?>,
-                    backgroundColor: colors.chartColors,
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
+            data: { labels: <?php echo $campaign_labels; ?>, datasets: [{ data: <?php echo $campaign_amounts; ?>, backgroundColor: colors.chartColors, borderWidth: 0, hoverOffset: 4 }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
+                responsive: true, maintainAspectRatio: false, cutout: '65%',
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 16,
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#fff',
-                        bodyColor: '#e2e8f0',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return context.label + ': <?php echo esc_js( $currency_symbol ); ?>' + context.raw.toLocaleString();
-                            }
-                        }
-                    }
+                    legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' } },
+                    tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#e2e8f0', padding: 12, cornerRadius: 8, callbacks: { label: function(context) { return context.label + ': ' + skydonateAnalytics.currencySymbol + context.raw.toLocaleString(); } } }
                 }
             }
         });
     }
 
-    // Country Horizontal Bar Chart
-    const countryCtx = document.getElementById('countryChart');
+    // Initialize Country Chart
+    var countryCtx = document.getElementById('countryChart');
     if (countryCtx) {
-        new Chart(countryCtx, {
+        charts.country = new Chart(countryCtx, {
             type: 'bar',
-            data: {
-                labels: <?php echo $country_labels; ?>,
-                datasets: [{
-                    data: <?php echo $country_amounts; ?>,
-                    backgroundColor: colors.chartColors,
-                    borderWidth: 0,
-                    borderRadius: 4
-                }]
-            },
+            data: { labels: <?php echo $country_labels; ?>, datasets: [{ data: <?php echo $country_amounts; ?>, backgroundColor: colors.chartColors, borderWidth: 0, borderRadius: 4 }] },
             options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#fff',
-                        bodyColor: '#e2e8f0',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return '<?php echo esc_js( $currency_symbol ); ?>' + context.raw.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        border: {
-                            display: false
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return '<?php echo esc_js( $currency_symbol ); ?>' + value.toLocaleString();
-                            }
-                        }
-                    },
-                    y: {
-                        grid: {
-                            display: false
-                        },
-                        border: {
-                            display: false
-                        }
-                    }
-                }
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#e2e8f0', padding: 12, cornerRadius: 8, callbacks: { label: function(context) { return skydonateAnalytics.currencySymbol + context.raw.toLocaleString(); } } } },
+                scales: { x: { grid: { color: 'rgba(0, 0, 0, 0.05)' }, border: { display: false }, ticks: { callback: function(value) { return skydonateAnalytics.currencySymbol + value.toLocaleString(); } } }, y: { grid: { display: false }, border: { display: false } } }
             }
         });
     }
 
-    // Distribution Bar Chart
-    const distributionCtx = document.getElementById('distributionChart');
+    // Initialize Distribution Chart
+    var distributionCtx = document.getElementById('distributionChart');
     if (distributionCtx) {
-        new Chart(distributionCtx, {
+        charts.distribution = new Chart(distributionCtx, {
             type: 'bar',
-            data: {
-                labels: <?php echo $distribution_labels; ?>,
-                datasets: [{
-                    data: <?php echo $distribution_counts; ?>,
-                    backgroundColor: colors.primary,
-                    borderWidth: 0,
-                    borderRadius: 4
-                }]
-            },
+            data: { labels: <?php echo $distribution_labels; ?>, datasets: [{ data: <?php echo $distribution_counts; ?>, backgroundColor: colors.primary, borderWidth: 0, borderRadius: 4 }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1e293b',
-                        titleColor: '#fff',
-                        bodyColor: '#e2e8f0',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return context.raw + ' donations';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        border: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        border: {
-                            display: false
-                        },
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#e2e8f0', padding: 12, cornerRadius: 8, callbacks: { label: function(context) { return context.raw + ' donations'; } } } },
+                scales: { x: { grid: { display: false }, border: { display: false } }, y: { grid: { color: 'rgba(0, 0, 0, 0.05)' }, border: { display: false }, ticks: { stepSize: 1 } } }
             }
         });
     }
+
+    // Date range change handler
+    var dateRangeSelect = document.getElementById('sky-date-range');
+    if (dateRangeSelect) {
+        dateRangeSelect.addEventListener('change', function() {
+            var days = this.value;
+            var wrap = document.querySelector('.sky-dashboard-wrap');
+            if (wrap) { wrap.style.opacity = '0.6'; wrap.style.pointerEvents = 'none'; }
+
+            var formData = new FormData();
+            formData.append('action', 'skydonate_get_analytics');
+            formData.append('nonce', skydonateAnalytics.nonce);
+            formData.append('days', days);
+
+            fetch(skydonateAnalytics.ajaxUrl, { method: 'POST', body: formData })
+            .then(function(response) { return response.json(); })
+            .then(function(result) {
+                if (result.success && result.data) {
+                    var data = result.data;
+                    var symbol = data.currency_symbol;
+                    skydonateAnalytics.currencySymbol = symbol;
+
+                    // Update stat cards
+                    updateStatCards(data.comparison, symbol, data.days);
+
+                    // Update all charts
+                    if (charts.trends && data.trends) {
+                        charts.trends.data.labels = data.trends.labels;
+                        charts.trends.data.datasets[0].data = data.trends.amounts;
+                        charts.trends.data.datasets[1].data = data.trends.counts;
+                        charts.trends.update();
+                    }
+                    if (charts.campaign && data.campaigns) {
+                        charts.campaign.data.labels = data.campaigns.labels;
+                        charts.campaign.data.datasets[0].data = data.campaigns.amounts;
+                        charts.campaign.update();
+                    }
+                    if (charts.country && data.countries) {
+                        charts.country.data.labels = data.countries.labels;
+                        charts.country.data.datasets[0].data = data.countries.amounts;
+                        charts.country.update();
+                    }
+                    if (charts.distribution && data.distribution) {
+                        charts.distribution.data.labels = data.distribution.labels;
+                        charts.distribution.data.datasets[0].data = data.distribution.counts;
+                        charts.distribution.update();
+                    }
+
+                    // Update tables
+                    updateTopDonorsTable(data.top_donors, symbol);
+                    updateRecentDonationsTable(data.recent_donations);
+                    updateCampaignTable(data.campaigns.data, symbol);
+                }
+            })
+            .catch(function(error) { console.error('Analytics update failed:', error); })
+            .finally(function() { if (wrap) { wrap.style.opacity = '1'; wrap.style.pointerEvents = 'auto'; } });
+        });
+    }
+
+    function updateStatCards(comp, symbol, days) {
+        var totalValue = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-value');
+        var totalChange = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-change');
+        if (totalValue) totalValue.textContent = symbol + Number(comp.total.current).toLocaleString(undefined, {maximumFractionDigits: 0});
+        if (totalChange) { totalChange.className = 'sky-stat-change ' + (comp.total.change >= 0 ? 'positive' : 'negative'); totalChange.innerHTML = getChangeIcon(comp.total.change >= 0) + Math.abs(comp.total.change) + '%'; }
+
+        var countValue = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-value');
+        var countChange = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-change');
+        if (countValue) countValue.textContent = Number(comp.count.current).toLocaleString();
+        if (countChange) { countChange.className = 'sky-stat-change ' + (comp.count.change >= 0 ? 'positive' : 'negative'); countChange.innerHTML = getChangeIcon(comp.count.change >= 0) + Math.abs(comp.count.change) + '%'; }
+
+        var donorsValue = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-value');
+        var donorsSub = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-sub');
+        if (donorsValue) donorsValue.textContent = Number(comp.donors.current).toLocaleString();
+        if (donorsSub) donorsSub.textContent = 'Last ' + days + ' days';
+
+        var avgValue = document.querySelector('.sky-stat-card:nth-child(4) .sky-stat-value');
+        if (avgValue) avgValue.textContent = symbol + Number(comp.average.current).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    function getChangeIcon(positive) {
+        return positive
+            ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>';
+    }
+
+    function updateTopDonorsTable(donors, symbol) {
+        var tbody = document.querySelector('.sky-tables-row .sky-table-card:first-child tbody');
+        if (!tbody) return;
+        if (!donors || donors.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="sky-empty-state"><?php echo esc_js( __( 'No donations yet', 'skydonate' ) ); ?></td></tr>'; return; }
+        var html = '';
+        donors.forEach(function(donor) {
+            html += '<tr><td><div class="sky-donor-info"><span class="sky-donor-avatar">' + donor.name.charAt(0).toUpperCase() + '</span><div class="sky-donor-details"><span class="sky-donor-name">' + escapeHtml(donor.name) + '</span><span class="sky-donor-email">' + escapeHtml(donor.email) + '</span></div></div></td><td><span class="sky-badge">' + donor.count + '</span></td><td><strong>' + symbol + Number(donor.amount).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</strong></td></tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    function updateRecentDonationsTable(donations) {
+        var tbody = document.querySelector('.sky-tables-row .sky-table-card:last-child tbody');
+        if (!tbody) return;
+        if (!donations || donations.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="sky-empty-state"><?php echo esc_js( __( 'No donations yet', 'skydonate' ) ); ?></td></tr>'; return; }
+        var html = '';
+        donations.forEach(function(donation) {
+            html += '<tr><td><div class="sky-donor-info"><span class="sky-donor-avatar">' + donation.name.charAt(0).toUpperCase() + '</span><span class="sky-donor-name">' + escapeHtml(donation.name) + '</span></div></td><td><strong>' + donation.currency + Number(donation.amount).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</strong></td><td><span class="sky-time-ago">' + donation.time_ago + ' <?php echo esc_js( __( 'ago', 'skydonate' ) ); ?></span></td></tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    function updateCampaignTable(campaigns, symbol) {
+        var tbody = document.querySelector('.sky-full-table-card tbody');
+        if (!tbody) return;
+        if (!campaigns || campaigns.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="sky-empty-state"><?php echo esc_js( __( 'No campaigns yet', 'skydonate' ) ); ?></td></tr>'; return; }
+        var maxAmount = Math.max.apply(Math, campaigns.map(function(c) { return c.amount; })) || 1;
+        var html = '';
+        campaigns.forEach(function(campaign) {
+            var progress = (campaign.amount / maxAmount) * 100;
+            html += '<tr><td><a href="<?php echo esc_url( admin_url( 'post.php?post=' ) ); ?>' + campaign.id + '&action=edit" class="sky-campaign-link">' + escapeHtml(campaign.name) + '</a></td><td><span class="sky-badge">' + Number(campaign.count).toLocaleString() + '</span></td><td><strong>' + symbol + Number(campaign.amount).toLocaleString(undefined, {maximumFractionDigits: 0}) + '</strong></td><td><div class="sky-progress-bar"><div class="sky-progress-fill" style="width: ' + progress + '%"></div></div></td></tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    function escapeHtml(text) { var div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 });
 </script>
