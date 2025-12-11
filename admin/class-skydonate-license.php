@@ -369,8 +369,13 @@ class SkyDonate_License_Admin {
         $current_version = defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0';
         if ( function_exists( 'skydonate_updater' ) && $is_valid ) {
             $updater = skydonate_updater();
-            $update_available = $updater->is_update_available();
             $latest_version = $updater->get_available_version();
+
+            // Show update notification based on version comparison, regardless of allow_auto_updates capability
+            // The capability only affects whether they can auto-update, not whether they see the notification
+            if ( ! empty( $latest_version ) && version_compare( $current_version, $latest_version, '<' ) ) {
+                $update_available = true;
+            }
         }
 
         // Get plugin info from license data
