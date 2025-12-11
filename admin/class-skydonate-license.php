@@ -36,25 +36,8 @@ class SkyDonate_License_Admin {
         add_action( 'wp_ajax_skydonate_refresh_license', array( $this, 'ajax_refresh' ) );
         add_action( 'wp_ajax_skydonate_check_update', array( $this, 'ajax_check_update' ) );
         
-        // Admin menu
-        add_action( 'admin_menu', array( $this, 'add_menu' ) );
-        
         // Enqueue scripts
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-    }
-
-    /**
-     * Add admin menu
-     */
-    public function add_menu() {
-        add_submenu_page(
-            'skydonate', // Parent slug - adjust to your plugin's main menu
-            __( 'License', 'skydonate' ),
-            __( 'License', 'skydonate' ),
-            'manage_options',
-            'skydonate-license',
-            array( $this, 'render_page' )
-        );
     }
 
     /**
