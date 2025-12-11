@@ -296,9 +296,12 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // Clear cache and re-validate
+        // Clear all cached license data (transients AND backup option) for a complete refresh
         $license = skydonate_license();
         $license->clear_cache();
+        delete_option( 'skydonate_license_data_backup' );
+
+        // Force re-validate from server
         $result = $license->validate( null, true );
 
         if ( ! empty( $result['success'] ) ) {
