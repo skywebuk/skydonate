@@ -4,7 +4,7 @@ Donate link: https://skywebdesign.co.uk/
 Tags: donation, woocommerce, charity, fundraising, gift aid
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.2.0
+Stable tag: 2.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -78,6 +78,9 @@ Yes, the Analytics dashboard provides visual charts showing donation trends, top
 5. Elementor widgets for donation forms
 
 == Changelog ==
+
+= 2.0.2 =
+* Fixed fatal error when OrderRefund objects returned by wc_get_orders in dashboard analytics
 
 = 1.2.0 =
 * Added Analytics Dashboard with visual charts
