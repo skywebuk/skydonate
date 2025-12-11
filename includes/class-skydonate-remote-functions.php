@@ -66,6 +66,108 @@ class SkyDonate_Remote_Functions {
      */
     private function init_hooks() {
         add_action( 'init', array( $this, 'load_remote_functions' ), 5 );
+
+        // Schedule automatic updates
+        add_action( 'init', array( $this, 'schedule_auto_update' ) );
+        add_action( 'skydonate_remote_functions_update', array( $this, 'auto_update_check' ) );
+
+        // Clear scheduled event on plugin deactivation
+        register_deactivation_hook( SKYDONATE_FILE ?? __FILE__, array( $this, 'clear_scheduled_event' ) );
+    }
+
+    /**
+     * Schedule automatic update check
+     */
+    public function schedule_auto_update() {
+        if ( ! wp_next_scheduled( 'skydonate_remote_functions_update' ) ) {
+            // Check every 6 hours for updates
+            wp_schedule_event( time() + HOUR_IN_SECONDS, 'skydonate_six_hours', 'skydonate_remote_functions_update' );
+        }
+
+        // Register custom cron interval
+        add_filter( 'cron_schedules', array( $this, 'add_cron_interval' ) );
+    }
+
+    /**
+     * Add custom cron interval
+     */
+    public function add_cron_interval( $schedules ) {
+        $schedules['skydonate_six_hours'] = array(
+            'interval' => 6 * HOUR_IN_SECONDS,
+            'display'  => __( 'Every 6 Hours', 'skydonate' ),
+        );
+        return $schedules;
+    }
+
+    /**
+     * Clear scheduled event
+     */
+    public function clear_scheduled_event() {
+        wp_clear_scheduled_hook( 'skydonate_remote_functions_update' );
+    }
+
+    /**
+     * Auto update check - runs in background via cron
+     * Compares version/hash with server before downloading
+     */
+    public function auto_update_check() {
+        $license_data = $this->get_license_data();
+
+        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            return;
+        }
+
+        if ( empty( $license_data['remote_functions_url'] ) ) {
+            return;
+        }
+
+        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            return;
+        }
+
+        // Make HEAD request to check version without downloading full content
+        $check_url = add_query_arg( 'check_version', '1', $license_data['remote_functions_url'] );
+
+        $response = wp_remote_head( $check_url, array(
+            'timeout'   => 10,
+            'sslverify' => true,
+            'headers'   => array(
+                'X-License-Key'    => $this->get_license_key(),
+                'X-Site-URL'       => home_url(),
+                'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
+                'X-Current-Hash'   => get_transient( $this->cache_key ) ?: '',
+            ),
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            $this->log( 'Auto-update check failed: ' . $response->get_error_message() );
+            return;
+        }
+
+        $status_code = wp_remote_retrieve_response_code( $response );
+
+        // 304 = Not Modified (no update needed)
+        if ( $status_code === 304 ) {
+            $this->log( 'Auto-update check: No updates available' );
+            return;
+        }
+
+        // 200 = Update available, fetch new version
+        if ( $status_code === 200 ) {
+            $remote_hash = wp_remote_retrieve_header( $response, 'X-Functions-Hash' );
+            $current_hash = get_transient( $this->cache_key );
+
+            // Compare hashes
+            if ( $remote_hash && $current_hash && hash_equals( $current_hash, $remote_hash ) ) {
+                $this->log( 'Auto-update check: Hash unchanged, skipping' );
+                return;
+            }
+
+            // Clear cache and reload
+            $this->log( 'Auto-update check: New version detected, updating...' );
+            delete_transient( $this->cache_key );
+            $this->load_remote_functions();
+        }
     }
 
     /**
@@ -458,14 +560,16 @@ class SkyDonate_Remote_Functions {
         $version = get_transient( $this->version_key );
 
         $info = [
-            'loaded'         => $this->is_loaded(),
-            'last_status'    => $this->last_status,
-            'file_exists'    => file_exists( $functions_file ),
-            'file_path'      => $functions_file,
-            'hash'           => $cached_hash ? substr( $cached_hash, 0, 16 ) . '...' : null,
-            'version'        => $version ?: null,
-            'cache_duration' => $this->cache_duration,
-            'cache_expires'  => null,
+            'loaded'          => $this->is_loaded(),
+            'last_status'     => $this->last_status,
+            'file_exists'     => file_exists( $functions_file ),
+            'file_path'       => $functions_file,
+            'hash'            => $cached_hash ? substr( $cached_hash, 0, 16 ) . '...' : null,
+            'version'         => $version ?: null,
+            'cache_duration'  => $this->cache_duration,
+            'cache_expires'   => null,
+            'auto_update'     => true,
+            'next_check'      => null,
         ];
 
         // Get file info if exists
@@ -479,6 +583,13 @@ class SkyDonate_Remote_Functions {
         if ( $cache_timeout ) {
             $info['cache_expires'] = gmdate( 'Y-m-d H:i:s', $cache_timeout ) . ' UTC';
             $info['cache_remaining'] = human_time_diff( time(), $cache_timeout );
+        }
+
+        // Get next scheduled auto-update check
+        $next_scheduled = wp_next_scheduled( 'skydonate_remote_functions_update' );
+        if ( $next_scheduled ) {
+            $info['next_check'] = gmdate( 'Y-m-d H:i:s', $next_scheduled ) . ' UTC';
+            $info['next_check_in'] = human_time_diff( time(), $next_scheduled );
         }
 
         return $info;
