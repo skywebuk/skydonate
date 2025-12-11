@@ -150,6 +150,7 @@ class Skydonate_Dashboard {
     public static function get_donation_count( $days = 0 ) {
         $args = [
             'status' => 'completed',
+            'type'   => 'shop_order',
             'limit'  => -1,
             'return' => 'ids',
         ];
@@ -168,6 +169,7 @@ class Skydonate_Dashboard {
     public static function get_donors_count( $days = 0 ) {
         $args = [
             'status' => 'completed',
+            'type'   => 'shop_order',
             'limit'  => -1,
         ];
 
@@ -448,6 +450,7 @@ class Skydonate_Dashboard {
     public static function get_recent_donations( $limit = 10, $days = 0 ) {
         $args = [
             'status'  => 'completed',
+            'type'    => 'shop_order',
             'limit'   => $limit,
             'orderby' => 'date',
             'order'   => 'DESC',
@@ -541,6 +544,7 @@ class Skydonate_Dashboard {
 
         $previous_orders = wc_get_orders( [
             'status'       => 'completed',
+            'type'         => 'shop_order',
             'date_created' => $start_previous . '...' . $end_previous,
             'limit'        => -1,
         ] );
