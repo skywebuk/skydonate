@@ -296,24 +296,30 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // 1. Refresh license data
+        // 1. Clear ALL license caches (transient, backup option, and object cache)
+        delete_transient( 'skydonate_license_data' );
+        delete_transient( 'skydonate_license_rate_limit' );
+        delete_option( 'skydonate_license_data_backup' );
+        wp_cache_delete( 'skydonate_license_data', 'transient' );
+        wp_cache_delete( 'skydonate_license_data_backup', 'options' );
+
+        // 2. Refresh license data with force flag
         $license = skydonate_license();
-        $license->clear_cache();
         $result = $license->validate( null, true );
 
-        // 2. Refresh plugin update info
+        // 3. Refresh plugin update info
         if ( function_exists( 'skydonate_updater' ) ) {
             $updater = skydonate_updater();
             $updater->force_check();
         }
 
-        // 3. Refresh remote functions
+        // 4. Refresh remote functions
         if ( function_exists( 'skydonate_remote_functions' ) ) {
             $remote_functions = skydonate_remote_functions();
             $remote_functions->force_refresh();
         }
 
-        // 4. Clear WordPress plugin update transients to force re-check
+        // 5. Clear WordPress plugin update transients to force re-check
         delete_site_transient( 'update_plugins' );
 
         if ( ! empty( $result['success'] ) ) {
