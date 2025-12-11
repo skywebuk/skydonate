@@ -469,7 +469,7 @@ class Skydonate_Dashboard {
                     ? __( 'Anonymous', 'skydonate' )
                     : $order->get_billing_first_name() . ' ' . substr( $order->get_billing_last_name(), 0, 1 ) . '.',
                 'amount'    => $order->get_total(),
-                'currency'  => $order->get_currency(),
+                'currency'  => html_entity_decode( get_woocommerce_currency_symbol( $order->get_currency() ) ),
                 'date'      => $order->get_date_created()->format( 'M j, Y' ),
                 'time_ago'  => human_time_diff( strtotime( $order->get_date_created() ), time() ),
             ];
