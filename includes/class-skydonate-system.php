@@ -5,7 +5,7 @@
  * The core plugin class that handles dependencies, hooks, and plugin initialization.
  *
  * @package SkyDonate
- * @since 1.2.3
+ * @since 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,7 +42,7 @@ class Skydonate_System {
         if ( defined( 'SKYDONATE_VERSION' ) ) {
             $this->version = SKYDONATE_VERSION;
         } else {
-            $this->version = '1.2.3';
+            $this->version = '2.0.0';
         }
         $this->plugin_name = 'skydonate';
 
