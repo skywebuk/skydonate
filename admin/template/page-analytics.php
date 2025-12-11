@@ -303,6 +303,105 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Analytics AJAX configuration
+    var skydonateAnalytics = {
+        ajaxUrl: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+        nonce: '<?php echo esc_js( wp_create_nonce( 'skydonate_analytics_nonce' ) ); ?>',
+        currencySymbol: '<?php echo esc_js( $currency_symbol ); ?>'
+    };
+
+    // Date range change handler
+    var dateRangeSelect = document.getElementById('sky-date-range');
+    if (dateRangeSelect) {
+        dateRangeSelect.addEventListener('change', function() {
+            var days = this.value;
+            var statsGrid = document.querySelector('.sky-stats-grid');
+
+            // Add loading state
+            if (statsGrid) {
+                statsGrid.style.opacity = '0.5';
+                statsGrid.style.pointerEvents = 'none';
+            }
+
+            // Make AJAX request
+            var formData = new FormData();
+            formData.append('action', 'skydonate_get_analytics');
+            formData.append('nonce', skydonateAnalytics.nonce);
+            formData.append('days', days);
+
+            fetch(skydonateAnalytics.ajaxUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(result) {
+                if (result.success && result.data) {
+                    var data = result.data;
+                    var comp = data.comparison;
+                    var symbol = data.currency_symbol;
+
+                    // Update Total Raised
+                    var totalValue = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-value');
+                    var totalChange = document.querySelector('.sky-stat-card:nth-child(1) .sky-stat-change');
+                    if (totalValue) {
+                        totalValue.textContent = symbol + Number(comp.total.current).toLocaleString(undefined, {maximumFractionDigits: 0});
+                    }
+                    if (totalChange) {
+                        var changeVal = Math.abs(comp.total.change);
+                        totalChange.className = 'sky-stat-change ' + (comp.total.change >= 0 ? 'positive' : 'negative');
+                        totalChange.innerHTML = (comp.total.change >= 0
+                            ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
+                            : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>')
+                            + changeVal + '%';
+                    }
+
+                    // Update Total Donations
+                    var countValue = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-value');
+                    var countChange = document.querySelector('.sky-stat-card:nth-child(2) .sky-stat-change');
+                    if (countValue) {
+                        countValue.textContent = Number(comp.count.current).toLocaleString();
+                    }
+                    if (countChange) {
+                        var countChangeVal = Math.abs(comp.count.change);
+                        countChange.className = 'sky-stat-change ' + (comp.count.change >= 0 ? 'positive' : 'negative');
+                        countChange.innerHTML = (comp.count.change >= 0
+                            ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
+                            : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>')
+                            + countChangeVal + '%';
+                    }
+
+                    // Update Unique Donors
+                    var donorsValue = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-value');
+                    var donorsSub = document.querySelector('.sky-stat-card:nth-child(3) .sky-stat-sub');
+                    if (donorsValue) {
+                        donorsValue.textContent = Number(comp.donors.current).toLocaleString();
+                    }
+                    if (donorsSub) {
+                        donorsSub.textContent = 'Last ' + data.days + ' days';
+                    }
+
+                    // Update Average Donation
+                    var avgValue = document.querySelector('.sky-stat-card:nth-child(4) .sky-stat-value');
+                    if (avgValue) {
+                        avgValue.textContent = symbol + Number(comp.average.current).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.error('Analytics update failed:', error);
+            })
+            .finally(function() {
+                // Remove loading state
+                if (statsGrid) {
+                    statsGrid.style.opacity = '1';
+                    statsGrid.style.pointerEvents = 'auto';
+                }
+            });
+        });
+    }
+
     // Chart.js default configuration
     Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif';
     Chart.defaults.color = '#64748b';

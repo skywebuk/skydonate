@@ -13,6 +13,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Skydonate_Dashboard {
 
     /**
+     * Initialize AJAX handlers
+     */
+    public static function init() {
+        add_action( 'wp_ajax_skydonate_get_analytics', array( __CLASS__, 'ajax_get_analytics' ) );
+    }
+
+    /**
+     * AJAX handler for analytics date range
+     */
+    public static function ajax_get_analytics() {
+        // Verify nonce
+        if ( ! check_ajax_referer( 'skydonate_analytics_nonce', 'nonce', false ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed', 'skydonate' ) ) );
+        }
+
+        // Check capability
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
+        }
+
+        $days = isset( $_POST['days'] ) ? absint( $_POST['days'] ) : 30;
+
+        // Limit to allowed values
+        if ( ! in_array( $days, array( 30, 60, 90, 365 ), true ) ) {
+            $days = 30;
+        }
+
+        $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol( get_option( 'woocommerce_currency' ) ) );
+        $comparison = self::get_comparison_stats( $days );
+
+        wp_send_json_success( array(
+            'comparison'      => $comparison,
+            'currency_symbol' => $currency_symbol,
+            'days'            => $days,
+        ) );
+    }
+
+    /**
      * Check if HPOS is enabled
      */
     private static function is_hpos_enabled() {
@@ -476,3 +514,6 @@ class Skydonate_Dashboard {
         ];
     }
 }
+
+// Initialize AJAX handlers
+Skydonate_Dashboard::init();
