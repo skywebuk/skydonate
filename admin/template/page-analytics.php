@@ -39,12 +39,14 @@ $distribution_counts = wp_json_encode( array_column( $distribution, 'count' ) );
             <p><?php esc_html_e( 'Track your donation performance and donor engagement', 'skydonate' ); ?></p>
         </div>
         <div class="sky-dashboard-actions">
-            <select id="sky-date-range" class="sky-select">
-                <option value="30"><?php esc_html_e( 'Last 30 Days', 'skydonate' ); ?></option>
-                <option value="60"><?php esc_html_e( 'Last 60 Days', 'skydonate' ); ?></option>
-                <option value="90"><?php esc_html_e( 'Last 90 Days', 'skydonate' ); ?></option>
-                <option value="365"><?php esc_html_e( 'Last 12 Months', 'skydonate' ); ?></option>
-            </select>
+            <div class="sky-select-wrapper">
+                <select id="sky-date-range" class="sky-select">
+                    <option value="30"><?php esc_html_e( 'Last 30 Days', 'skydonate' ); ?></option>
+                    <option value="60"><?php esc_html_e( 'Last 60 Days', 'skydonate' ); ?></option>
+                    <option value="90"><?php esc_html_e( 'Last 90 Days', 'skydonate' ); ?></option>
+                    <option value="365"><?php esc_html_e( 'Last 12 Months', 'skydonate' ); ?></option>
+                </select>
+            </div>
         </div>
     </div>
 
