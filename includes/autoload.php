@@ -35,6 +35,9 @@ function skydonate_load_core_includes() {
     skydonate_load_file( 'includes/class-skydonate-loader.php' );
     skydonate_load_file( 'includes/class-skydonate-i18n.php' );
 
+    // Security (load before license for HMAC signing)
+    skydonate_load_file( 'includes/class-skydonate-security.php' );
+
     // License and updater
     skydonate_load_file( 'includes/class-skydonate-license-client.php' );
     skydonate_load_file( 'includes/class-skydonate-updater.php' );

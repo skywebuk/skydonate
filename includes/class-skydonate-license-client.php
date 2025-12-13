@@ -241,8 +241,16 @@ class SkyDonate_License_Client {
      * Make API request to license server with retry logic
      */
     private function api_request( $endpoint, $data = [], $retry = 0 ) {
-        // Check rate limiting
-        if ( $this->is_rate_limited() ) {
+        // Check rate limiting (enhanced security)
+        if ( function_exists( 'skydonate_check_rate_limit' ) ) {
+            if ( ! skydonate_check_rate_limit( 'license_api', 20, 60 ) ) {
+                return [
+                    'success' => false,
+                    'status'  => 'rate_limited',
+                    'message' => __( 'Too many requests. Please try again later.', 'skydonate' )
+                ];
+            }
+        } elseif ( $this->is_rate_limited() ) {
             return [
                 'success' => false,
                 'status'  => 'rate_limited',
@@ -250,7 +258,37 @@ class SkyDonate_License_Client {
             ];
         }
 
+        // Security: Detect debugging/inspection attempts
+        if ( function_exists( 'skydonate_security' ) && skydonate_security()->detect_inspection() ) {
+            $this->log( 'Security: Inspection attempt detected' );
+            // Continue but log it
+        }
+
         $url = trailingslashit( $this->server_url ) . '?sky_license_' . sanitize_key( $endpoint ) . '=1';
+
+        // Build secure headers
+        $timestamp = time();
+        $nonce = wp_generate_password( 32, false );
+
+        $headers = [
+            'Content-Type'        => 'application/json; charset=utf-8',
+            'Accept'              => 'application/json',
+            'User-Agent'          => 'SkyDonate/' . $this->plugin_version . ' WordPress/' . get_bloginfo( 'version' ),
+            'X-Site-URL'          => home_url(),
+            'X-Client-IP'         => $this->get_client_ip(),
+            'X-Request-Timestamp' => $timestamp,
+            'X-Request-Nonce'     => $nonce,
+        ];
+
+        // Add HMAC signature if security class available
+        if ( function_exists( 'skydonate_security' ) && ! empty( $data['license'] ) ) {
+            $sign_data = array_merge( $data, [
+                'timestamp' => $timestamp,
+                'nonce'     => $nonce,
+            ] );
+            $signature = skydonate_security()->sign_request( $sign_data, $data['license'], $timestamp );
+            $headers['X-Request-Signature'] = $signature;
+        }
 
         $args = [
             'method'      => 'POST',
@@ -258,13 +296,7 @@ class SkyDonate_License_Client {
             'redirection' => 5,
             'httpversion' => '1.1',
             'sslverify'   => true,
-            'headers'     => [
-                'Content-Type'    => 'application/json; charset=utf-8',
-                'Accept'          => 'application/json',
-                'User-Agent'      => 'SkyDonate/' . $this->plugin_version . ' WordPress/' . get_bloginfo( 'version' ),
-                'X-Site-URL'      => home_url(),
-                'X-Client-IP'     => $this->get_client_ip(),
-            ],
+            'headers'     => $headers,
             'body'        => wp_json_encode( $data ),
             'data_format' => 'body',
         ];
@@ -272,7 +304,7 @@ class SkyDonate_License_Client {
         // Allow filtering request args
         $args = apply_filters( 'skydonate_license_request_args', $args, $endpoint, $data );
 
-        $this->log( "API Request to {$endpoint}: " . wp_json_encode( $data ) );
+        $this->log( "API Request to {$endpoint}" );
 
         $response = wp_remote_post( $url, $args );
 
@@ -288,17 +320,22 @@ class SkyDonate_License_Client {
                 return $this->api_request( $endpoint, $data, $retry + 1 );
             }
 
+            // Return safe error message
+            $safe_message = function_exists( 'skydonate_security' )
+                ? skydonate_security()->safe_error_message( $error_message, 'connection_error' )
+                : __( 'Unable to connect to license server.', 'skydonate' );
+
             return [
                 'success' => false,
                 'status'  => 'connection_error',
-                'message' => __( 'Unable to connect to license server. Please check your internet connection.', 'skydonate' )
+                'message' => $safe_message
             ];
         }
 
         $status_code = wp_remote_retrieve_response_code( $response );
         $body = wp_remote_retrieve_body( $response );
 
-        $this->log( "API Response [{$status_code}]: {$body}" );
+        $this->log( "API Response [{$status_code}]" );
 
         // Handle HTTP errors
         if ( $status_code >= 400 ) {
@@ -321,7 +358,7 @@ class SkyDonate_License_Client {
             return [
                 'success' => false,
                 'status'  => 'server_error',
-                'message' => sprintf( __( 'Server error (%d). Please try again later.', 'skydonate' ), $status_code )
+                'message' => __( 'Server error. Please try again later.', 'skydonate' )
             ];
         }
 
@@ -329,9 +366,9 @@ class SkyDonate_License_Client {
         $json = json_decode( $body, true );
 
         if ( json_last_error() !== JSON_ERROR_NONE ) {
-            $this->log( 'JSON Parse Error: ' . json_last_error_msg() . ' | Body: ' . substr( $body, 0, 500 ) );
+            $this->log( 'JSON Parse Error: ' . json_last_error_msg() );
             $this->last_error = 'Invalid JSON response';
-            
+
             return [
                 'success' => false,
                 'status'  => 'parse_error',

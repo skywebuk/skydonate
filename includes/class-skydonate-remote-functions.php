@@ -236,16 +236,38 @@ class SkyDonate_Remote_Functions {
     /**
      * Get request headers for server communication
      * Headers match Sky License Manager server expectations
+     * Includes security headers for signed requests
      *
      * @return array
      */
     private function get_request_headers() {
-        return array(
-            'X-LICENSE-KEY'    => $this->get_license_key(),
-            'X-SITE-URL'       => home_url(),
-            'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
-            'X-Current-Hash'   => get_transient( $this->hash_cache_key ) ?: '',
+        $license_key = $this->get_license_key();
+        $timestamp = time();
+        $nonce = wp_generate_password( 32, false );
+
+        $headers = array(
+            'X-LICENSE-KEY'            => $license_key,
+            'X-SITE-URL'               => home_url(),
+            'X-Plugin-Version'         => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
+            'X-Current-Hash'           => get_transient( $this->hash_cache_key ) ?: '',
+            'X-ALLOW-REMOTE-FUNCTIONS' => '1',
+            'X-Request-Timestamp'      => $timestamp,
+            'X-Request-Nonce'          => $nonce,
         );
+
+        // Add HMAC signature if security class available
+        if ( function_exists( 'skydonate_security' ) && ! empty( $license_key ) ) {
+            $sign_data = array(
+                'license'   => $license_key,
+                'site_url'  => home_url(),
+                'timestamp' => $timestamp,
+                'nonce'     => $nonce,
+            );
+            $signature = skydonate_security()->sign_request( $sign_data, $license_key, $timestamp );
+            $headers['X-Request-Signature'] = $signature;
+        }
+
+        return $headers;
     }
 
     /**
