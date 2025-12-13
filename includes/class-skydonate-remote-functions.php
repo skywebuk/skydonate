@@ -3,9 +3,10 @@
  * SkyDonate Remote Functions Loader
  *
  * Handles loading and executing remote functions from the license server
+ * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.5
+ * @version 2.0.6
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,6 +31,11 @@ class SkyDonate_Remote_Functions {
     private $version_key = 'skydonate_remote_functions_version';
 
     /**
+     * Cache key for tier info
+     */
+    private $tier_key = 'skydonate_remote_functions_tier';
+
+    /**
      * Cache duration (configurable via constant)
      */
     private $cache_duration;
@@ -38,6 +44,11 @@ class SkyDonate_Remote_Functions {
      * Last load status
      */
     private $last_status = null;
+
+    /**
+     * Last error message
+     */
+    private $last_error = null;
 
     /**
      * Get singleton instance
@@ -73,6 +84,9 @@ class SkyDonate_Remote_Functions {
 
         // Clear scheduled event on plugin deactivation
         register_deactivation_hook( SKYDONATE_FILE ?? __FILE__, array( $this, 'clear_scheduled_event' ) );
+
+        // AJAX handler for manual refresh
+        add_action( 'wp_ajax_skydonate_refresh_remote_functions', array( $this, 'ajax_refresh' ) );
     }
 
     /**
@@ -107,6 +121,31 @@ class SkyDonate_Remote_Functions {
     }
 
     /**
+     * AJAX handler for manual refresh
+     */
+    public function ajax_refresh() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied', 'skydonate' ) ) );
+        }
+
+        check_ajax_referer( 'skydonate_remote_functions_refresh', 'nonce' );
+
+        $result = $this->force_refresh();
+
+        if ( $result ) {
+            wp_send_json_success( array(
+                'message' => __( 'Remote functions refreshed successfully', 'skydonate' ),
+                'status'  => $this->get_status_info(),
+            ) );
+        } else {
+            wp_send_json_error( array(
+                'message' => $this->last_error ?: __( 'Failed to refresh remote functions', 'skydonate' ),
+                'status'  => $this->get_status_info(),
+            ) );
+        }
+    }
+
+    /**
      * Auto update check - runs in background via cron
      * Compares version/hash with server before downloading
      */
@@ -114,14 +153,18 @@ class SkyDonate_Remote_Functions {
         $license_data = $this->get_license_data();
 
         if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            $this->log( 'Auto-update check: No valid license data' );
             return;
         }
 
         if ( empty( $license_data['remote_functions_url'] ) ) {
+            $this->log( 'Auto-update check: No remote functions URL configured' );
             return;
         }
 
+        // Check capability - server uses 'allow_remote_functions'
         if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            $this->log( 'Auto-update check: Remote functions not allowed by license' );
             return;
         }
 
@@ -131,12 +174,7 @@ class SkyDonate_Remote_Functions {
         $response = wp_remote_head( $check_url, array(
             'timeout'   => 10,
             'sslverify' => true,
-            'headers'   => array(
-                'X-LICENSE-KEY'    => $this->get_license_key(),
-                'X-SITE-URL'       => home_url(),
-                'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
-                'X-Current-Hash'   => get_transient( $this->cache_key ) ?: '',
-            ),
+            'headers'   => $this->get_request_headers(),
         ) );
 
         if ( is_wp_error( $response ) ) {
@@ -148,13 +186,21 @@ class SkyDonate_Remote_Functions {
 
         // 304 = Not Modified (no update needed)
         if ( $status_code === 304 ) {
-            $this->log( 'Auto-update check: No updates available' );
+            $this->log( 'Auto-update check: No updates available (304)' );
+            return;
+        }
+
+        // 403 = License invalid or remote functions not allowed
+        if ( $status_code === 403 ) {
+            $this->log( 'Auto-update check: License validation failed (403)' );
             return;
         }
 
         // 200 = Update available, fetch new version
         if ( $status_code === 200 ) {
             $remote_hash = wp_remote_retrieve_header( $response, 'X-Functions-Hash' );
+            $remote_version = wp_remote_retrieve_header( $response, 'X-Functions-Version' );
+            $remote_tier = wp_remote_retrieve_header( $response, 'X-License-Tier' );
             $current_hash = get_transient( $this->cache_key );
 
             // Compare hashes
@@ -164,10 +210,27 @@ class SkyDonate_Remote_Functions {
             }
 
             // Clear cache and reload
-            $this->log( 'Auto-update check: New version detected, updating...' );
+            $this->log( 'Auto-update check: New version detected (v' . $remote_version . ', tier: ' . $remote_tier . '), updating...' );
             delete_transient( $this->cache_key );
+            delete_transient( $this->version_key );
+            delete_transient( $this->tier_key );
             $this->load_remote_functions();
         }
+    }
+
+    /**
+     * Get request headers for server communication
+     * Headers match Sky License Manager server expectations
+     *
+     * @return array
+     */
+    private function get_request_headers() {
+        return array(
+            'X-LICENSE-KEY'    => $this->get_license_key(),
+            'X-SITE-URL'       => home_url(),
+            'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
+            'X-Current-Hash'   => get_transient( $this->cache_key ) ?: '',
+        );
     }
 
     /**
@@ -182,22 +245,27 @@ class SkyDonate_Remote_Functions {
 
     /**
      * Load remote functions safely
+     * Compatible with Sky License Manager remote functions server
      */
     public function load_remote_functions() {
         $license_data = $this->get_license_data();
 
         if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
             $this->last_status = 'no_license';
+            $this->last_error = __( 'No valid license data available', 'skydonate' );
             return;
         }
 
         if ( empty( $license_data['remote_functions_url'] ) ) {
             $this->last_status = 'no_url';
+            $this->last_error = __( 'Remote functions URL not configured', 'skydonate' );
             return;
         }
 
+        // Check capability - server uses 'allow_remote_functions'
         if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
             $this->last_status = 'not_allowed';
+            $this->last_error = __( 'Remote functions not allowed by license', 'skydonate' );
             return;
         }
 
@@ -217,19 +285,16 @@ class SkyDonate_Remote_Functions {
             delete_transient( $this->cache_key );
         }
 
-        // Fetch remote functions
+        // Fetch remote functions from server
         $response = wp_remote_get( $license_data['remote_functions_url'], array(
             'timeout'   => 15,
             'sslverify' => true,
-            'headers'   => array(
-                'X-LICENSE-KEY'    => $this->get_license_key(),
-                'X-SITE-URL'       => home_url(),
-                'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
-            ),
+            'headers'   => $this->get_request_headers(),
         ) );
 
         if ( is_wp_error( $response ) ) {
-            $this->log( 'Failed to fetch remote functions: ' . $response->get_error_message() );
+            $this->last_error = $response->get_error_message();
+            $this->log( 'Failed to fetch remote functions: ' . $this->last_error );
             $this->last_status = 'fetch_error';
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
@@ -240,9 +305,19 @@ class SkyDonate_Remote_Functions {
         }
 
         $status_code = wp_remote_retrieve_response_code( $response );
+
+        // Handle error status codes
+        if ( $status_code === 403 ) {
+            $this->last_status = 'license_invalid';
+            $this->last_error = __( 'License validation failed - remote functions access denied', 'skydonate' );
+            $this->log( 'Remote functions access denied (403)' );
+            return;
+        }
+
         if ( $status_code !== 200 ) {
             $this->log( 'Remote functions request failed with status: ' . $status_code );
             $this->last_status = 'http_error_' . $status_code;
+            $this->last_error = sprintf( __( 'Server returned error code: %d', 'skydonate' ), $status_code );
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
@@ -253,11 +328,14 @@ class SkyDonate_Remote_Functions {
 
         $code = wp_remote_retrieve_body( $response );
 
-        // Get version from response headers if available
+        // Get metadata from response headers
         $remote_version = wp_remote_retrieve_header( $response, 'X-Functions-Version' );
+        $remote_hash = wp_remote_retrieve_header( $response, 'X-Functions-Hash' );
+        $remote_tier = wp_remote_retrieve_header( $response, 'X-License-Tier' );
 
         if ( empty( $code ) ) {
             $this->last_status = 'empty_response';
+            $this->last_error = __( 'Server returned empty response', 'skydonate' );
             return;
         }
 
@@ -291,6 +369,9 @@ class SkyDonate_Remote_Functions {
         if ( $remote_version ) {
             $header .= '// Version: ' . sanitize_text_field( $remote_version ) . "\n";
         }
+        if ( $remote_tier ) {
+            $header .= '// Tier: ' . sanitize_text_field( $remote_tier ) . "\n";
+        }
         $header .= '// DO NOT EDIT - This file is automatically generated' . "\n\n";
 
         $file_content = $header . $code;
@@ -299,6 +380,7 @@ class SkyDonate_Remote_Functions {
         if ( ! $this->validate_php_syntax( $file_content ) ) {
             $this->log( 'PHP syntax validation failed for remote functions' );
             $this->last_status = 'syntax_error';
+            $this->last_error = __( 'PHP syntax validation failed', 'skydonate' );
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
                 $this->last_status = 'loaded_from_fallback';
@@ -324,11 +406,18 @@ class SkyDonate_Remote_Functions {
                 set_transient( $this->version_key, $remote_version, $this->cache_duration );
             }
 
+            // Store tier info if available
+            if ( $remote_tier ) {
+                set_transient( $this->tier_key, $remote_tier, $this->cache_duration );
+            }
+
             $this->include_functions_file( $functions_file );
             $this->last_status = 'loaded_fresh';
-            $this->log( 'Remote functions loaded successfully (hash: ' . substr( $code_hash, 0, 16 ) . '...)' );
+            $this->last_error = null;
+            $this->log( 'Remote functions loaded successfully (hash: ' . substr( $code_hash, 0, 16 ) . '..., tier: ' . $remote_tier . ')' );
         } else {
             $this->last_status = 'write_error';
+            $this->last_error = __( 'Failed to write remote functions file', 'skydonate' );
             $this->log( 'Failed to write remote functions file' );
         }
     }
@@ -530,6 +619,7 @@ class SkyDonate_Remote_Functions {
     public function clear() {
         delete_transient( $this->cache_key );
         delete_transient( $this->version_key );
+        delete_transient( $this->tier_key );
 
         $functions_file = $this->get_functions_file_path();
         if ( file_exists( $functions_file ) ) {
@@ -537,6 +627,7 @@ class SkyDonate_Remote_Functions {
         }
 
         $this->last_status = 'cleared';
+        $this->last_error = null;
     }
 
     /**
@@ -558,14 +649,18 @@ class SkyDonate_Remote_Functions {
         $functions_file = $this->get_functions_file_path();
         $cached_hash = get_transient( $this->cache_key );
         $version = get_transient( $this->version_key );
+        $tier = get_transient( $this->tier_key );
 
         $info = [
             'loaded'          => $this->is_loaded(),
             'last_status'     => $this->last_status,
+            'last_error'      => $this->last_error,
             'file_exists'     => file_exists( $functions_file ),
             'file_path'       => $functions_file,
             'hash'            => $cached_hash ? substr( $cached_hash, 0, 16 ) . '...' : null,
+            'full_hash'       => $cached_hash ?: null,
             'version'         => $version ?: null,
+            'tier'            => $tier ?: null,
             'cache_duration'  => $this->cache_duration,
             'cache_expires'   => null,
             'auto_update'     => true,
@@ -592,6 +687,11 @@ class SkyDonate_Remote_Functions {
             $info['next_check_in'] = human_time_diff( time(), $next_scheduled );
         }
 
+        // Get license capability status
+        $license_data = $this->get_license_data();
+        $info['capability_enabled'] = ! empty( $license_data['capabilities']['allow_remote_functions'] );
+        $info['remote_url_configured'] = ! empty( $license_data['remote_functions_url'] );
+
         return $info;
     }
 
@@ -611,6 +711,34 @@ class SkyDonate_Remote_Functions {
      */
     public function get_version() {
         return get_transient( $this->version_key ) ?: null;
+    }
+
+    /**
+     * Get functions tier
+     *
+     * @return string|null
+     */
+    public function get_tier() {
+        return get_transient( $this->tier_key ) ?: null;
+    }
+
+    /**
+     * Get last error message
+     *
+     * @return string|null
+     */
+    public function get_last_error() {
+        return $this->last_error;
+    }
+
+    /**
+     * Check if remote functions capability is enabled
+     *
+     * @return bool
+     */
+    public function is_capability_enabled() {
+        $license_data = $this->get_license_data();
+        return ! empty( $license_data['capabilities']['allow_remote_functions'] );
     }
 
     /**
@@ -666,4 +794,40 @@ function skydonate_remote_functions_status() {
  */
 function skydonate_remote_functions_version() {
     return skydonate_remote_functions()->get_version();
+}
+
+/**
+ * Get remote functions tier
+ *
+ * @return string|null
+ */
+function skydonate_remote_functions_tier() {
+    return skydonate_remote_functions()->get_tier();
+}
+
+/**
+ * Check if remote functions are loaded
+ *
+ * @return bool
+ */
+function skydonate_remote_functions_loaded() {
+    return skydonate_remote_functions()->is_loaded();
+}
+
+/**
+ * Get remote functions last error
+ *
+ * @return string|null
+ */
+function skydonate_remote_functions_error() {
+    return skydonate_remote_functions()->get_last_error();
+}
+
+/**
+ * Check if remote functions capability is enabled
+ *
+ * @return bool
+ */
+function skydonate_remote_functions_enabled() {
+    return skydonate_remote_functions()->is_capability_enabled();
 }
