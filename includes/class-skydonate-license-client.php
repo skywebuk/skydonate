@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.7
+ * @version 2.0.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -811,6 +811,51 @@ class SkyDonate_License_Client {
         return $data['remote_config_url'] ?? null;
     }
 
+    /**
+     * Get license tier (basic, pro, agency, enterprise, lifetime)
+     */
+    public function get_tier() {
+        $data = $this->get_data();
+        return $data['tier'] ?? null;
+    }
+
+    /**
+     * Get plugin info from server
+     */
+    public function get_plugin_info() {
+        $data = $this->get_data();
+        return $data['plugin_info'] ?? array();
+    }
+
+    /**
+     * Check if license has specific tier
+     */
+    public function is_tier( $tier ) {
+        return strtolower( $this->get_tier() ?? '' ) === strtolower( $tier );
+    }
+
+    /**
+     * Check if tier is at least a specific level
+     * Order: basic < pro < agency < enterprise < lifetime
+     */
+    public function is_tier_at_least( $minimum_tier ) {
+        $tier_order = array(
+            'basic'      => 1,
+            'pro'        => 2,
+            'agency'     => 3,
+            'enterprise' => 4,
+            'lifetime'   => 5,
+        );
+
+        $current_tier = strtolower( $this->get_tier() ?? 'basic' );
+        $minimum_tier = strtolower( $minimum_tier );
+
+        $current_level = $tier_order[ $current_tier ] ?? 0;
+        $minimum_level = $tier_order[ $minimum_tier ] ?? 0;
+
+        return $current_level >= $minimum_level;
+    }
+
     // ===========================================
     // Expiration Helpers
     // ===========================================
@@ -1327,6 +1372,7 @@ class SkyDonate_License_Client {
             'has_key'          => ! empty( $key ),
             'key_masked'       => $this->get_masked_key(),
             'status'           => $data['status'] ?? 'inactive',
+            'tier'             => $data['tier'] ?? null,
             'is_valid'         => $this->is_valid(),
             'is_active'        => $this->is_active(),
             'is_localhost'     => $this->is_localhost(),
@@ -1375,14 +1421,45 @@ class SkyDonate_License_Client {
         $status = $this->get_status();
 
         $badges = [
-            'valid'    => [ 'label' => __( 'Active', 'skydonate' ), 'class' => 'sky-badge-success' ],
-            'expired'  => [ 'label' => __( 'Expired', 'skydonate' ), 'class' => 'sky-badge-danger' ],
-            'inactive' => [ 'label' => __( 'Inactive', 'skydonate' ), 'class' => 'sky-badge-warning' ],
-            'disabled' => [ 'label' => __( 'Disabled', 'skydonate' ), 'class' => 'sky-badge-danger' ],
-            'invalid'  => [ 'label' => __( 'Invalid', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'valid'             => [ 'label' => __( 'Active', 'skydonate' ), 'class' => 'sky-badge-success' ],
+            'expired'           => [ 'label' => __( 'Expired', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'inactive'          => [ 'label' => __( 'Inactive', 'skydonate' ), 'class' => 'sky-badge-warning' ],
+            'disabled'          => [ 'label' => __( 'Disabled', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'invalid'           => [ 'label' => __( 'Invalid', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'domain_mismatch'   => [ 'label' => __( 'Domain Mismatch', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'domain_blocked'    => [ 'label' => __( 'Domain Blocked', 'skydonate' ), 'class' => 'sky-badge-danger' ],
+            'localhost_blocked' => [ 'label' => __( 'Localhost Blocked', 'skydonate' ), 'class' => 'sky-badge-warning' ],
         ];
 
         $badge = $badges[ $status ] ?? [ 'label' => ucfirst( $status ), 'class' => 'sky-badge-secondary' ];
+
+        return sprintf(
+            '<span class="sky-badge %s">%s</span>',
+            esc_attr( $badge['class'] ),
+            esc_html( $badge['label'] )
+        );
+    }
+
+    /**
+     * Get tier badge HTML for admin display
+     */
+    public function get_tier_badge() {
+        $tier = $this->get_tier();
+
+        if ( empty( $tier ) ) {
+            return '';
+        }
+
+        $badges = [
+            'basic'      => [ 'label' => __( 'Basic', 'skydonate' ), 'class' => 'sky-badge-tier-basic' ],
+            'pro'        => [ 'label' => __( 'Pro', 'skydonate' ), 'class' => 'sky-badge-tier-pro' ],
+            'agency'     => [ 'label' => __( 'Agency', 'skydonate' ), 'class' => 'sky-badge-tier-agency' ],
+            'enterprise' => [ 'label' => __( 'Enterprise', 'skydonate' ), 'class' => 'sky-badge-tier-enterprise' ],
+            'lifetime'   => [ 'label' => __( 'Lifetime', 'skydonate' ), 'class' => 'sky-badge-tier-lifetime' ],
+        ];
+
+        $tier_key = strtolower( $tier );
+        $badge = $badges[ $tier_key ] ?? [ 'label' => ucfirst( $tier ), 'class' => 'sky-badge-tier-basic' ];
 
         return sprintf(
             '<span class="sky-badge %s">%s</span>',
@@ -1570,5 +1647,26 @@ function skydonate_get_remote_functions_url() {
 
 function skydonate_get_license_key() {
     return skydonate_license()->get_license_key();
+}
+
+// Tier functions (Match Server Schema)
+function skydonate_get_license_tier() {
+    return skydonate_license()->get_tier();
+}
+
+function skydonate_is_tier( $tier ) {
+    return skydonate_license()->is_tier( $tier );
+}
+
+function skydonate_is_tier_at_least( $minimum_tier ) {
+    return skydonate_license()->is_tier_at_least( $minimum_tier );
+}
+
+function skydonate_get_tier_badge() {
+    return skydonate_license()->get_tier_badge();
+}
+
+function skydonate_get_plugin_info() {
+    return skydonate_license()->get_plugin_info();
 }
 

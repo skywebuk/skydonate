@@ -80,12 +80,17 @@ class SkyDonate_License_Admin {
                 <!-- License Status -->
                 <div class="skydonate-license-status">
                     <h2><?php esc_html_e( 'License Status', 'skydonate' ); ?></h2>
-                    <?php echo self::get_badge( $info['status'] ); ?>
-                    
+                    <div class="skydonate-badge-group">
+                        <?php echo self::get_badge( $info['status'] ); ?>
+                        <?php if ( ! empty( $info['tier'] ) ) : ?>
+                            <?php echo self::get_tier_badge( $info['tier'] ); ?>
+                        <?php endif; ?>
+                    </div>
+
                     <?php if ( $info['is_valid'] && $info['expires'] ) : ?>
                         <p class="skydonate-expires">
-                            <?php printf( 
-                                esc_html__( 'Expires: %s', 'skydonate' ), 
+                            <?php printf(
+                                esc_html__( 'Expires: %s', 'skydonate' ),
                                 esc_html( date_i18n( get_option( 'date_format' ), strtotime( $info['expires'] ) ) )
                             ); ?>
                         </p>
@@ -381,10 +386,14 @@ class SkyDonate_License_Admin {
         // Get plugin info from license data
         $plugin_info = $data['plugin_info'] ?? array();
 
+        // Get tier information
+        $tier = $data['tier'] ?? null;
+
         return array(
             'key'              => $key,
             'masked_key'       => $masked,
             'status'           => $status,
+            'tier'             => $tier,
             'is_valid'         => $is_valid,
             'data'             => $data,
             'features'         => $data['features'] ?? array(),
@@ -415,8 +424,28 @@ class SkyDonate_License_Admin {
             'rate_limited'     => '<span class="skydonate-badge skydonate-badge--warning">' . esc_html__( 'Rate Limited', 'skydonate' ) . '</span>',
             'error'            => '<span class="skydonate-badge skydonate-badge--error">' . esc_html__( 'Error', 'skydonate' ) . '</span>',
         );
-        
+
         return $badges[ $status ] ?? $badges['inactive'];
+    }
+
+    /**
+     * Get tier badge HTML
+     */
+    public static function get_tier_badge( $tier ) {
+        if ( empty( $tier ) ) {
+            return '';
+        }
+
+        $tier_key = strtolower( $tier );
+        $badges = array(
+            'basic'      => '<span class="skydonate-badge skydonate-badge--tier-basic">' . esc_html__( 'Basic', 'skydonate' ) . '</span>',
+            'pro'        => '<span class="skydonate-badge skydonate-badge--tier-pro">' . esc_html__( 'Pro', 'skydonate' ) . '</span>',
+            'agency'     => '<span class="skydonate-badge skydonate-badge--tier-agency">' . esc_html__( 'Agency', 'skydonate' ) . '</span>',
+            'enterprise' => '<span class="skydonate-badge skydonate-badge--tier-enterprise">' . esc_html__( 'Enterprise', 'skydonate' ) . '</span>',
+            'lifetime'   => '<span class="skydonate-badge skydonate-badge--tier-lifetime">' . esc_html__( 'Lifetime', 'skydonate' ) . '</span>',
+        );
+
+        return $badges[ $tier_key ] ?? '<span class="skydonate-badge skydonate-badge--tier-basic">' . esc_html( ucfirst( $tier ) ) . '</span>';
     }
 
     /**

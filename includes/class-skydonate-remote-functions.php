@@ -6,7 +6,7 @@
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.7
+ * @version 2.0.8
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
