@@ -5,7 +5,7 @@
  * Handles loading and executing remote functions from the license server
  *
  * @package SkyDonate
- * @version 1.0.0
+ * @version 2.0.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -132,8 +132,8 @@ class SkyDonate_Remote_Functions {
             'timeout'   => 10,
             'sslverify' => true,
             'headers'   => array(
-                'X-License-Key'    => $this->get_license_key(),
-                'X-Site-URL'       => home_url(),
+                'X-LICENSE-KEY'    => $this->get_license_key(),
+                'X-SITE-URL'       => home_url(),
                 'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
                 'X-Current-Hash'   => get_transient( $this->cache_key ) ?: '',
             ),
@@ -222,8 +222,8 @@ class SkyDonate_Remote_Functions {
             'timeout'   => 15,
             'sslverify' => true,
             'headers'   => array(
-                'X-License-Key'    => $this->get_license_key(),
-                'X-Site-URL'       => home_url(),
+                'X-LICENSE-KEY'    => $this->get_license_key(),
+                'X-SITE-URL'       => home_url(),
                 'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
             ),
         ) );

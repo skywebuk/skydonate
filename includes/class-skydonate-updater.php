@@ -5,7 +5,7 @@
  * Handles plugin updates via the license server
  *
  * @package SkyDonate
- * @version 1.0.0
+ * @version 2.0.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

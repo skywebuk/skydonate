@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.4
+ * @version 2.0.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -1033,66 +1033,119 @@ class SkyDonate_License_Client {
 
     // ===========================================
     // Specific Feature Getters (Match Server Schema)
+    // Server returns features without 'feature_' prefix
     // ===========================================
 
     /**
-     * Check if donations module is enabled
+     * Check if Sky donations module is enabled
      */
+    public function has_sky_donations_module() {
+        return $this->has_feature( 'sky_donations_module' );
+    }
+
+    /**
+     * Check if custom login form is enabled
+     */
+    public function has_custom_login_form() {
+        return $this->has_feature( 'custom_login_form' );
+    }
+
+    /**
+     * Check if checkout custom field style is enabled
+     */
+    public function has_checkout_custom_field_style() {
+        return $this->has_feature( 'checkout_custom_field_style' );
+    }
+
+    /**
+     * Check if enhanced gift aid is enabled
+     */
+    public function has_enhanced_gift_aid() {
+        return $this->has_feature( 'enhanced_gift_aid' );
+    }
+
+    /**
+     * Check if recent donation country is enabled
+     */
+    public function has_recent_donation_country() {
+        return $this->has_feature( 'recent_donation_country' );
+    }
+
+    /**
+     * Check if auto complete processing is enabled
+     */
+    public function has_auto_complete_processing() {
+        return $this->has_feature( 'auto_complete_processing' );
+    }
+
+    /**
+     * Check if donation goal is enabled
+     */
+    public function has_donation_goal() {
+        return $this->has_feature( 'donation_goal' );
+    }
+
+    /**
+     * Check if title prefix is enabled
+     */
+    public function has_title_prefix() {
+        return $this->has_feature( 'title_prefix' );
+    }
+
+    /**
+     * Check if donation fees is enabled
+     */
+    public function has_donation_fees() {
+        return $this->has_feature( 'donation_fees' );
+    }
+
+    /**
+     * Check if notification is enabled
+     */
+    public function has_notification() {
+        return $this->has_feature( 'notification' );
+    }
+
+    /**
+     * Check if address autocomplete is enabled
+     */
+    public function has_address_autocomplete() {
+        return $this->has_feature( 'address_autocomplete' );
+    }
+
+    /**
+     * Check if currency changer is enabled
+     */
+    public function has_currency_changer() {
+        return $this->has_feature( 'currency_changer' );
+    }
+
+    // Legacy aliases for backward compatibility
     public function has_donations_module() {
-        return $this->has_feature( 'donations_module' );
+        return $this->has_sky_donations_module();
     }
 
-    /**
-     * Check if gift aid is enabled
-     */
     public function has_gift_aid() {
-        return $this->has_feature( 'gift_aid' );
+        return $this->has_enhanced_gift_aid();
     }
 
-    /**
-     * Check if notifications are enabled
-     */
     public function has_notifications() {
-        return $this->has_feature( 'notifications' );
+        return $this->has_notification();
     }
 
-    /**
-     * Check if analytics are enabled
-     */
-    public function has_analytics() {
-        return $this->has_feature( 'analytics' );
-    }
-
-    /**
-     * Check if recurring donations are enabled
-     */
-    public function has_recurring() {
-        return $this->has_feature( 'recurring' );
-    }
-
-    /**
-     * Check if goal tracking is enabled
-     */
     public function has_goal_tracking() {
-        return $this->has_feature( 'goal_tracking' );
-    }
-
-    /**
-     * Check if email receipts are enabled
-     */
-    public function has_email_receipts() {
-        return $this->has_feature( 'email_receipts' );
+        return $this->has_donation_goal();
     }
 
     // ===========================================
-    // Specific Capability Getters
+    // Specific Capability Getters (Match Server Schema)
     // ===========================================
 
     /**
      * Check if auto updates are allowed
      */
     public function can_auto_update() {
-        return $this->has_capability( 'auto_update' );
+        return $this->has_capability( 'allow_auto_updates' );
     }
 
     /**
@@ -1113,7 +1166,150 @@ class SkyDonate_License_Client {
      * Check if beta access is allowed
      */
     public function can_beta_access() {
-        return $this->has_capability( 'beta_access' );
+        return $this->has_capability( 'allow_beta' );
+    }
+
+    /**
+     * Check if update notifications are disabled
+     */
+    public function is_update_notifications_disabled() {
+        return $this->has_capability( 'disable_update_notifications' );
+    }
+
+    /**
+     * Check if usage tracking is disabled
+     */
+    public function is_usage_tracking_disabled() {
+        return $this->has_capability( 'disable_usage_tracking' );
+    }
+
+    // ===========================================
+    // Specific Widget Getters (Match Server Schema)
+    // Server returns widgets without 'widget_' prefix
+    // ===========================================
+
+    /**
+     * Check if zakat calculator classic widget is enabled
+     */
+    public function has_widget_zakat_calculator_classic() {
+        return $this->has_widget( 'zakat_calculator_classic' );
+    }
+
+    /**
+     * Check if metal values widget is enabled
+     */
+    public function has_widget_metal_values() {
+        return $this->has_widget( 'metal_values' );
+    }
+
+    /**
+     * Check if recent donation widget is enabled
+     */
+    public function has_widget_recent_donation() {
+        return $this->has_widget( 'recent_donation' );
+    }
+
+    /**
+     * Check if donation progress widget is enabled
+     */
+    public function has_widget_donation_progress() {
+        return $this->has_widget( 'donation_progress' );
+    }
+
+    /**
+     * Check if donation form widget is enabled
+     */
+    public function has_widget_donation_form() {
+        return $this->has_widget( 'donation_form' );
+    }
+
+    /**
+     * Check if donation card widget is enabled
+     */
+    public function has_widget_donation_card() {
+        return $this->has_widget( 'donation_card' );
+    }
+
+    /**
+     * Check if impact slider widget is enabled
+     */
+    public function has_widget_impact_slider() {
+        return $this->has_widget( 'impact_slider' );
+    }
+
+    /**
+     * Check if qurbani status widget is enabled
+     */
+    public function has_widget_qurbani_status() {
+        return $this->has_widget( 'qurbani_status' );
+    }
+
+    /**
+     * Check if extra donation widget is enabled
+     */
+    public function has_widget_extra_donation() {
+        return $this->has_widget( 'extra_donation' );
+    }
+
+    /**
+     * Check if quick donation widget is enabled
+     */
+    public function has_widget_quick_donation() {
+        return $this->has_widget( 'quick_donation' );
+    }
+
+    /**
+     * Check if gift aid toggle widget is enabled
+     */
+    public function has_widget_gift_aid_toggle() {
+        return $this->has_widget( 'gift_aid_toggle' );
+    }
+
+    /**
+     * Check if donation button widget is enabled
+     */
+    public function has_widget_donation_button() {
+        return $this->has_widget( 'donation_button' );
+    }
+
+    /**
+     * Check if icon slider widget is enabled
+     */
+    public function has_widget_icon_slider() {
+        return $this->has_widget( 'icon_slider' );
+    }
+
+    // ===========================================
+    // Specific Layout Getters (Match Server Schema)
+    // Server returns layouts without 'layout_' prefix
+    // ===========================================
+
+    /**
+     * Get recent donation layout
+     */
+    public function get_recent_donation_layout() {
+        return $this->get_layout( 'recent_donation' );
+    }
+
+    /**
+     * Get progress bar layout
+     */
+    public function get_progress_bar_layout() {
+        return $this->get_layout( 'progress_bar' );
+    }
+
+    /**
+     * Get addons card layout
+     */
+    public function get_addons_card_layout() {
+        return $this->get_layout( 'addons_card' );
+    }
+
+    /**
+     * Get addons donation form layout
+     */
+    public function get_addons_donation_form_layout() {
+        return $this->get_layout( 'addons_donation_form' );
     }
 
     // ===========================================
@@ -1253,7 +1449,56 @@ function skydonate_license_status_badge() {
     return skydonate_license()->get_status_badge();
 }
 
-// Specific feature checks
+// Specific feature checks (Match Server Schema)
+function skydonate_has_sky_donations_module() {
+    return skydonate_license()->has_sky_donations_module();
+}
+
+function skydonate_has_custom_login_form() {
+    return skydonate_license()->has_custom_login_form();
+}
+
+function skydonate_has_checkout_custom_field_style() {
+    return skydonate_license()->has_checkout_custom_field_style();
+}
+
+function skydonate_has_enhanced_gift_aid() {
+    return skydonate_license()->has_enhanced_gift_aid();
+}
+
+function skydonate_has_recent_donation_country() {
+    return skydonate_license()->has_recent_donation_country();
+}
+
+function skydonate_has_auto_complete_processing() {
+    return skydonate_license()->has_auto_complete_processing();
+}
+
+function skydonate_has_donation_goal() {
+    return skydonate_license()->has_donation_goal();
+}
+
+function skydonate_has_title_prefix() {
+    return skydonate_license()->has_title_prefix();
+}
+
+function skydonate_has_donation_fees() {
+    return skydonate_license()->has_donation_fees();
+}
+
+function skydonate_has_notification() {
+    return skydonate_license()->has_notification();
+}
+
+function skydonate_has_address_autocomplete() {
+    return skydonate_license()->has_address_autocomplete();
+}
+
+function skydonate_has_currency_changer() {
+    return skydonate_license()->has_currency_changer();
+}
+
+// Legacy aliases for backward compatibility
 function skydonate_has_gift_aid() {
     return skydonate_license()->has_gift_aid();
 }
@@ -1262,20 +1507,33 @@ function skydonate_has_notifications() {
     return skydonate_license()->has_notifications();
 }
 
-function skydonate_has_analytics() {
-    return skydonate_license()->has_analytics();
+function skydonate_has_goal_tracking() {
+    return skydonate_license()->has_goal_tracking();
 }
 
-function skydonate_has_recurring() {
-    return skydonate_license()->has_recurring();
-}
-
+// Capability checks (Match Server Schema)
 function skydonate_can_auto_update() {
     return skydonate_license()->can_auto_update();
 }
 
 function skydonate_can_remote_functions() {
     return skydonate_license()->can_remote_functions();
+}
+
+function skydonate_can_localhost() {
+    return skydonate_license()->can_localhost();
+}
+
+function skydonate_can_beta_access() {
+    return skydonate_license()->can_beta_access();
+}
+
+function skydonate_is_update_notifications_disabled() {
+    return skydonate_license()->is_update_notifications_disabled();
+}
+
+function skydonate_is_usage_tracking_disabled() {
+    return skydonate_license()->is_usage_tracking_disabled();
 }
 
 function skydonate_get_license_status() {
