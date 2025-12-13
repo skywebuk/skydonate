@@ -339,10 +339,25 @@ class SkyDonate_Remote_Functions {
             return;
         }
 
+        // Check for server-side error response (format: "// Error: message")
+        if ( preg_match( '/\/\/\s*Error:\s*(.+)/i', $code, $matches ) ) {
+            $server_error = trim( $matches[1] );
+            $this->last_status = 'server_error';
+            $this->last_error = sprintf( __( 'Server error: %s', 'skydonate' ), $server_error );
+            $this->log( 'Remote functions server returned error: ' . $server_error );
+            // Try to load cached file if available
+            if ( file_exists( $functions_file ) ) {
+                $this->include_functions_file( $functions_file );
+                $this->last_status = 'loaded_from_fallback';
+            }
+            return;
+        }
+
         // Validate that response is actual PHP code, not executed output
         if ( ! $this->is_valid_php_code( $code ) ) {
             $this->log( 'Invalid PHP code received from server - possibly executed output instead of raw code' );
             $this->last_status = 'invalid_code';
+            $this->last_error = __( 'Invalid PHP code received from server', 'skydonate' );
             // Try to load cached file if available
             if ( file_exists( $functions_file ) ) {
                 $this->include_functions_file( $functions_file );
