@@ -726,10 +726,6 @@ class WC_Custom_Donation_Options {
 
                 </div>
             </div>
-
-
-
-
             <!-- Target & Offline Donation Settings -->
             <div class="skydonate-option-card target-sales-offline-settings">
                 <h3 class="skydonate-option-title">
