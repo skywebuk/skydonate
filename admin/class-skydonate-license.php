@@ -289,6 +289,7 @@ class SkyDonate_License_Admin {
 
     /**
      * AJAX: Refresh license
+     * Refreshes all license system data: license, updates, remote functions
      */
     public function ajax_refresh() {
         // Verify nonce
@@ -301,29 +302,23 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // Clear license cache and re-validate
-        $license = skydonate_license();
-        $license->clear_cache();
-        $result = $license->validate( null, true );
-
-        // Also clear update cache to get fresh version info
-        if ( function_exists( 'skydonate_updater' ) ) {
-            skydonate_updater()->clear_cache();
-        }
-
-        // Also refresh remote functions if enabled
-        if ( function_exists( 'skydonate_refresh_remote_functions' ) && ! empty( $result['capabilities']['allow_remote_functions'] ) ) {
-            skydonate_refresh_remote_functions();
-        }
+        // Refresh all license system data (license, updates, remote functions)
+        $result = skydonate_license()->refresh_all();
 
         if ( ! empty( $result['success'] ) ) {
+            $license_data = $result['license'] ?? array();
+            $update_info = $result['update_info'] ?? array();
+
             wp_send_json_success( array(
-                'message' => __( 'License data refreshed successfully', 'skydonate' ),
+                'message' => __( 'All license data refreshed successfully', 'skydonate' ),
                 'reload'  => true,
                 'data'    => array(
-                    'status'  => $result['status'] ?? 'valid',
-                    'expires' => $result['expires'] ?? '',
-                    'tier'    => $result['tier'] ?? '',
+                    'status'           => $license_data['status'] ?? 'valid',
+                    'expires'          => $license_data['expires'] ?? '',
+                    'tier'             => $license_data['tier'] ?? '',
+                    'latest_version'   => $update_info['version'] ?? '',
+                    'update_available' => $update_info['update_available'] ?? false,
+                    'remote_refreshed' => $result['remote_refreshed'] ?? false,
                 ),
             ) );
         } else {

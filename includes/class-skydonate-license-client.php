@@ -175,18 +175,39 @@ class SkyDonate_License_Client {
     }
 
     /**
-     * Auto license check callback - runs in background
+     * Auto license check callback - runs in background every 6 hours
+     * Refreshes all license system data: license, updates, and remote functions
      */
     public function daily_license_check() {
-        if ( $this->get_key() ) {
-            $this->log( 'Auto license check: Validating license...' );
-            $result = $this->validate( null, true );
+        if ( ! $this->get_key() ) {
+            return;
+        }
 
-            if ( $result && ! empty( $result['success'] ) ) {
-                $this->log( 'Auto license check: License valid' );
-            } else {
-                $this->log( 'Auto license check: Validation failed' );
+        $this->log( 'Auto license check: Starting full refresh...' );
+
+        // 1. Clear and refresh license data
+        $this->clear_cache();
+        $result = $this->validate( null, true );
+
+        if ( $result && ! empty( $result['success'] ) ) {
+            $this->log( 'Auto license check: License valid' );
+
+            // 2. Refresh update/version info
+            if ( function_exists( 'skydonate_updater' ) ) {
+                skydonate_updater()->clear_cache();
+                $this->check_update();
+                $this->log( 'Auto license check: Update info refreshed' );
             }
+
+            // 3. Refresh remote functions if enabled
+            if ( function_exists( 'skydonate_remote_functions' ) && ! empty( $result['capabilities']['allow_remote_functions'] ) ) {
+                skydonate_remote_functions()->force_refresh();
+                $this->log( 'Auto license check: Remote functions refreshed' );
+            }
+
+            $this->log( 'Auto license check: Full refresh completed' );
+        } else {
+            $this->log( 'Auto license check: Validation failed - ' . ( $result['message'] ?? 'Unknown error' ) );
         }
     }
 
@@ -675,6 +696,59 @@ class SkyDonate_License_Client {
         }
 
         return $this->validate( $key, true );
+    }
+
+    /**
+     * Refresh all license system data
+     * Clears and refreshes: license data, update info, remote functions
+     *
+     * @return array Result with success status and refreshed data
+     */
+    public function refresh_all() {
+        $key = $this->get_key();
+
+        if ( empty( $key ) ) {
+            return [
+                'success' => false,
+                'message' => __( 'No license key found', 'skydonate' ),
+            ];
+        }
+
+        $this->log( 'Full refresh: Starting...' );
+
+        // 1. Clear and refresh license data
+        $this->clear_cache();
+        $result = $this->validate( $key, true );
+
+        if ( empty( $result['success'] ) ) {
+            return $result;
+        }
+
+        // 2. Clear and refresh update/version info
+        $update_info = null;
+        if ( function_exists( 'skydonate_updater' ) ) {
+            skydonate_updater()->clear_cache();
+            $update_info = $this->check_update();
+            $this->log( 'Full refresh: Update info refreshed' );
+        }
+
+        // 3. Refresh remote functions if enabled
+        $remote_refreshed = false;
+        if ( function_exists( 'skydonate_remote_functions' ) && ! empty( $result['capabilities']['allow_remote_functions'] ) ) {
+            $remote_refreshed = skydonate_remote_functions()->force_refresh();
+            $this->log( 'Full refresh: Remote functions refreshed' );
+        }
+
+        $this->log( 'Full refresh: Completed successfully' );
+
+        // Return combined result
+        return [
+            'success'          => true,
+            'message'          => __( 'All license data refreshed successfully', 'skydonate' ),
+            'license'          => $result,
+            'update_info'      => $update_info,
+            'remote_refreshed' => $remote_refreshed,
+        ];
     }
 
     /**
@@ -1631,6 +1705,10 @@ function skydonate_deactivate_license() {
 
 function skydonate_refresh_license() {
     return skydonate_license()->refresh();
+}
+
+function skydonate_refresh_all_license_data() {
+    return skydonate_license()->refresh_all();
 }
 
 function skydonate_is_license_expiring_soon( $days = 30 ) {
