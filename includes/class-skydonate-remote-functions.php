@@ -121,10 +121,12 @@ class SkyDonate_Remote_Functions {
      * Add custom cron interval
      */
     public function add_cron_interval( $schedules ) {
-        $schedules['skydonate_six_hours'] = array(
-            'interval' => 6 * HOUR_IN_SECONDS,
-            'display'  => __( 'Every 6 Hours', 'skydonate' ),
-        );
+        if ( ! isset( $schedules['skydonate_six_hours'] ) ) {
+            $schedules['skydonate_six_hours'] = array(
+                'interval' => 6 * HOUR_IN_SECONDS,
+                'display'  => __( 'Every 6 Hours', 'skydonate' ),
+            );
+        }
         return $schedules;
     }
 
