@@ -2,11 +2,11 @@
 /**
  * SkyDonate Remote Functions Loader
  *
- * Handles loading and executing remote functions from the license server
+ * Handles loading and executing remote functions directly from the license server
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.6
+ * @version 2.0.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,9 +21,14 @@ class SkyDonate_Remote_Functions {
     private static $instance = null;
 
     /**
+     * Cache key for remote functions code
+     */
+    private $code_cache_key = 'skydonate_remote_functions_code';
+
+    /**
      * Cache key for remote functions hash
      */
-    private $cache_key = 'skydonate_remote_functions_hash';
+    private $hash_cache_key = 'skydonate_remote_functions_hash';
 
     /**
      * Cache key for version info
@@ -34,6 +39,11 @@ class SkyDonate_Remote_Functions {
      * Cache key for tier info
      */
     private $tier_key = 'skydonate_remote_functions_tier';
+
+    /**
+     * Cache key for last loaded timestamp
+     */
+    private $loaded_key = 'skydonate_remote_functions_loaded';
 
     /**
      * Cache duration (configurable via constant)
@@ -49,6 +59,11 @@ class SkyDonate_Remote_Functions {
      * Last error message
      */
     private $last_error = null;
+
+    /**
+     * Whether functions have been executed this request
+     */
+    private $executed = false;
 
     /**
      * Get singleton instance
@@ -201,7 +216,7 @@ class SkyDonate_Remote_Functions {
             $remote_hash = wp_remote_retrieve_header( $response, 'X-Functions-Hash' );
             $remote_version = wp_remote_retrieve_header( $response, 'X-Functions-Version' );
             $remote_tier = wp_remote_retrieve_header( $response, 'X-License-Tier' );
-            $current_hash = get_transient( $this->cache_key );
+            $current_hash = get_transient( $this->hash_cache_key );
 
             // Compare hashes
             if ( $remote_hash && $current_hash && hash_equals( $current_hash, $remote_hash ) ) {
@@ -211,9 +226,7 @@ class SkyDonate_Remote_Functions {
 
             // Clear cache and reload
             $this->log( 'Auto-update check: New version detected (v' . $remote_version . ', tier: ' . $remote_tier . '), updating...' );
-            delete_transient( $this->cache_key );
-            delete_transient( $this->version_key );
-            delete_transient( $this->tier_key );
+            $this->clear_cache();
             $this->load_remote_functions();
         }
     }
@@ -229,25 +242,20 @@ class SkyDonate_Remote_Functions {
             'X-LICENSE-KEY'    => $this->get_license_key(),
             'X-SITE-URL'       => home_url(),
             'X-Plugin-Version' => defined( 'SKYDONATE_VERSION' ) ? SKYDONATE_VERSION : '1.0.0',
-            'X-Current-Hash'   => get_transient( $this->cache_key ) ?: '',
+            'X-Current-Hash'   => get_transient( $this->hash_cache_key ) ?: '',
         );
     }
 
     /**
-     * Get the remote functions file path
-     *
-     * @return string
-     */
-    private function get_functions_file_path() {
-        $upload_dir = wp_upload_dir();
-        return $upload_dir['basedir'] . '/skydonate-remote-functions.php';
-    }
-
-    /**
-     * Load remote functions safely
-     * Compatible with Sky License Manager remote functions server
+     * Load and execute remote functions directly from server
+     * Code is cached in transient and executed via eval()
      */
     public function load_remote_functions() {
+        // Prevent multiple executions in same request
+        if ( $this->executed ) {
+            return;
+        }
+
         $license_data = $this->get_license_data();
 
         if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
@@ -269,20 +277,20 @@ class SkyDonate_Remote_Functions {
             return;
         }
 
-        $functions_file = $this->get_functions_file_path();
+        // Check if we have valid cached code
+        $cached_code = get_transient( $this->code_cache_key );
+        $cached_hash = get_transient( $this->hash_cache_key );
 
-        // Check cache and verify file integrity
-        $cached_hash = get_transient( $this->cache_key );
-        if ( $cached_hash !== false && file_exists( $functions_file ) ) {
-            // Verify file integrity before loading
-            if ( $this->verify_file_integrity( $functions_file, $cached_hash ) ) {
-                $this->include_functions_file( $functions_file );
+        if ( $cached_code !== false && $cached_hash !== false ) {
+            // Verify code integrity before executing
+            if ( $this->verify_code_integrity( $cached_code, $cached_hash ) ) {
+                $this->execute_code( $cached_code );
                 $this->last_status = 'loaded_from_cache';
                 return;
             }
-            // File integrity failed, clear cache and reload
-            $this->log( 'File integrity check failed, reloading...' );
-            delete_transient( $this->cache_key );
+            // Code integrity failed, clear cache and reload
+            $this->log( 'Code integrity check failed, reloading from server...' );
+            $this->clear_cache();
         }
 
         // Fetch remote functions from server
@@ -296,9 +304,10 @@ class SkyDonate_Remote_Functions {
             $this->last_error = $response->get_error_message();
             $this->log( 'Failed to fetch remote functions: ' . $this->last_error );
             $this->last_status = 'fetch_error';
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+            // Try to execute cached code as fallback (even if expired)
+            $fallback_code = get_option( 'skydonate_remote_functions_fallback' );
+            if ( $fallback_code ) {
+                $this->execute_code( $fallback_code );
                 $this->last_status = 'loaded_from_fallback';
             }
             return;
@@ -318,9 +327,10 @@ class SkyDonate_Remote_Functions {
             $this->log( 'Remote functions request failed with status: ' . $status_code );
             $this->last_status = 'http_error_' . $status_code;
             $this->last_error = sprintf( __( 'Server returned error code: %d', 'skydonate' ), $status_code );
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+            // Try fallback
+            $fallback_code = get_option( 'skydonate_remote_functions_fallback' );
+            if ( $fallback_code ) {
+                $this->execute_code( $fallback_code );
                 $this->last_status = 'loaded_from_fallback';
             }
             return;
@@ -345,9 +355,10 @@ class SkyDonate_Remote_Functions {
             $this->last_status = 'server_error';
             $this->last_error = sprintf( __( 'Server error: %s', 'skydonate' ), $server_error );
             $this->log( 'Remote functions server returned error: ' . $server_error );
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+            // Try fallback
+            $fallback_code = get_option( 'skydonate_remote_functions_fallback' );
+            if ( $fallback_code ) {
+                $this->execute_code( $fallback_code );
                 $this->last_status = 'loaded_from_fallback';
             }
             return;
@@ -358,109 +369,112 @@ class SkyDonate_Remote_Functions {
             $this->log( 'Invalid PHP code received from server - possibly executed output instead of raw code' );
             $this->last_status = 'invalid_code';
             $this->last_error = __( 'Invalid PHP code received from server', 'skydonate' );
-            // Try to load cached file if available
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
+            // Try fallback
+            $fallback_code = get_option( 'skydonate_remote_functions_fallback' );
+            if ( $fallback_code ) {
+                $this->execute_code( $fallback_code );
                 $this->last_status = 'loaded_from_fallback';
             }
             return;
         }
 
-        // Strip any existing PHP opening tags from the response
-        $code = preg_replace( '/^<\?php\s*/i', '', trim( $code ) );
+        // Prepare code for execution - strip PHP tags
+        $executable_code = $this->prepare_code_for_execution( $code );
+
+        if ( empty( $executable_code ) ) {
+            $this->last_status = 'preparation_error';
+            $this->last_error = __( 'Failed to prepare code for execution', 'skydonate' );
+            return;
+        }
+
+        // Calculate hash using SHA-256
+        $code_hash = hash( 'sha256', $executable_code );
+
+        // Store code in transient cache
+        set_transient( $this->code_cache_key, $executable_code, $this->cache_duration );
+        set_transient( $this->hash_cache_key, $code_hash, $this->cache_duration );
+        set_transient( $this->loaded_key, time(), $this->cache_duration );
+
+        // Store version info if available
+        if ( $remote_version ) {
+            set_transient( $this->version_key, $remote_version, $this->cache_duration );
+        }
+
+        // Store tier info if available
+        if ( $remote_tier ) {
+            set_transient( $this->tier_key, $remote_tier, $this->cache_duration );
+        }
+
+        // Store as fallback for network errors (persistent option)
+        update_option( 'skydonate_remote_functions_fallback', $executable_code, false );
+
+        // Execute the code
+        $this->execute_code( $executable_code );
+        $this->last_status = 'loaded_fresh';
+        $this->last_error = null;
+        $this->log( 'Remote functions loaded and executed successfully (hash: ' . substr( $code_hash, 0, 16 ) . '..., tier: ' . $remote_tier . ')' );
+    }
+
+    /**
+     * Prepare code for execution by stripping PHP tags
+     *
+     * @param string $code Raw PHP code from server
+     * @return string Prepared code ready for eval()
+     */
+    private function prepare_code_for_execution( $code ) {
+        $code = trim( $code );
+
+        // Strip PHP opening tags
+        $code = preg_replace( '/^<\?php\s*/i', '', $code );
         $code = preg_replace( '/^<\?\s*/i', '', $code );
 
-        // Also strip closing PHP tag if present
+        // Strip closing PHP tag if present
         $code = preg_replace( '/\s*\?>\s*$/i', '', $code );
 
-        // Calculate hash using SHA-256 (more secure than MD5)
-        $code_hash = hash( 'sha256', $code );
+        return trim( $code );
+    }
 
-        // Build file header with metadata
-        $header = '<?php' . "\n";
-        $header .= '// SkyDonate Remote Functions' . "\n";
-        $header .= '// Loaded: ' . gmdate( 'Y-m-d H:i:s' ) . ' UTC' . "\n";
-        $header .= '// Hash: ' . $code_hash . "\n";
-        if ( $remote_version ) {
-            $header .= '// Version: ' . sanitize_text_field( $remote_version ) . "\n";
-        }
-        if ( $remote_tier ) {
-            $header .= '// Tier: ' . sanitize_text_field( $remote_tier ) . "\n";
-        }
-        $header .= '// DO NOT EDIT - This file is automatically generated' . "\n\n";
-
-        $file_content = $header . $code;
-
-        // Validate the final file content is valid PHP
-        if ( ! $this->validate_php_syntax( $file_content ) ) {
-            $this->log( 'PHP syntax validation failed for remote functions' );
-            $this->last_status = 'syntax_error';
-            $this->last_error = __( 'PHP syntax validation failed', 'skydonate' );
-            if ( file_exists( $functions_file ) ) {
-                $this->include_functions_file( $functions_file );
-                $this->last_status = 'loaded_from_fallback';
-            }
-            return;
+    /**
+     * Execute code safely using eval()
+     *
+     * @param string $code PHP code to execute (without PHP tags)
+     * @return bool Success status
+     */
+    private function execute_code( $code ) {
+        if ( empty( $code ) ) {
+            return false;
         }
 
-        // Ensure directory exists
-        $upload_dir = wp_upload_dir();
-        if ( ! file_exists( $upload_dir['basedir'] ) ) {
-            wp_mkdir_p( $upload_dir['basedir'] );
+        // Prevent multiple executions
+        if ( $this->executed ) {
+            return true;
         }
 
-        // Write the file
-        $result = file_put_contents( $functions_file, $file_content );
-
-        if ( $result !== false ) {
-            // Store hash using SHA-256
-            set_transient( $this->cache_key, $code_hash, $this->cache_duration );
-
-            // Store version info if available
-            if ( $remote_version ) {
-                set_transient( $this->version_key, $remote_version, $this->cache_duration );
-            }
-
-            // Store tier info if available
-            if ( $remote_tier ) {
-                set_transient( $this->tier_key, $remote_tier, $this->cache_duration );
-            }
-
-            $this->include_functions_file( $functions_file );
-            $this->last_status = 'loaded_fresh';
-            $this->last_error = null;
-            $this->log( 'Remote functions loaded successfully (hash: ' . substr( $code_hash, 0, 16 ) . '..., tier: ' . $remote_tier . ')' );
-        } else {
-            $this->last_status = 'write_error';
-            $this->last_error = __( 'Failed to write remote functions file', 'skydonate' );
-            $this->log( 'Failed to write remote functions file' );
+        try {
+            // Execute the code
+            eval( $code );
+            $this->executed = true;
+            return true;
+        } catch ( Throwable $e ) {
+            $this->log( 'Error executing remote functions: ' . $e->getMessage() );
+            $this->last_error = sprintf( __( 'Execution error: %s', 'skydonate' ), $e->getMessage() );
+            return false;
         }
     }
 
     /**
-     * Verify file integrity using stored hash
+     * Verify code integrity using stored hash
      *
-     * @param string $file_path Path to file
+     * @param string $code The code to verify
      * @param string $expected_hash Expected SHA-256 hash
-     * @return bool True if file matches hash
+     * @return bool True if code matches hash
      */
-    private function verify_file_integrity( $file_path, $expected_hash ) {
-        if ( ! file_exists( $file_path ) || ! is_readable( $file_path ) ) {
+    private function verify_code_integrity( $code, $expected_hash ) {
+        if ( empty( $code ) || empty( $expected_hash ) ) {
             return false;
         }
 
-        $content = file_get_contents( $file_path );
-        if ( $content === false ) {
-            return false;
-        }
-
-        // Extract code portion (skip header comments)
-        $code = preg_replace( '/^<\?php\s*(?:\/\/[^\n]*\n)*\s*/i', '', $content );
-        $code = trim( $code );
-
-        // Calculate hash of code portion
         $actual_hash = hash( 'sha256', $code );
-
         return hash_equals( $expected_hash, $actual_hash );
     }
 
@@ -526,54 +540,6 @@ class SkyDonate_Remote_Functions {
     }
 
     /**
-     * Validate PHP syntax using token_get_all
-     *
-     * @param string $code The PHP code to validate
-     * @return bool True if syntax is valid
-     */
-    private function validate_php_syntax( $code ) {
-        // Use token_get_all to check for parse errors
-        try {
-            $tokens = @token_get_all( $code );
-            if ( empty( $tokens ) ) {
-                return false;
-            }
-
-            // Check if tokenization produced valid results
-            // Look for T_OPEN_TAG as first meaningful token
-            foreach ( $tokens as $token ) {
-                if ( is_array( $token ) ) {
-                    if ( $token[0] === T_OPEN_TAG ) {
-                        return true;
-                    }
-                    // Skip whitespace
-                    if ( $token[0] === T_WHITESPACE ) {
-                        continue;
-                    }
-                    // If first non-whitespace token is not open tag, invalid
-                    return false;
-                }
-            }
-
-            return false;
-        } catch ( Exception $e ) {
-            $this->log( 'PHP syntax validation exception: ' . $e->getMessage() );
-            return false;
-        }
-    }
-
-    /**
-     * Include the functions file safely
-     *
-     * @param string $file Path to the functions file
-     */
-    private function include_functions_file( $file ) {
-        if ( file_exists( $file ) && is_readable( $file ) ) {
-            include_once $file;
-        }
-    }
-
-    /**
      * Get license data from options or license client
      *
      * @return array|null
@@ -608,41 +574,44 @@ class SkyDonate_Remote_Functions {
     }
 
     /**
-     * Force refresh remote functions
+     * Clear all cached data
+     */
+    private function clear_cache() {
+        delete_transient( $this->code_cache_key );
+        delete_transient( $this->hash_cache_key );
+        delete_transient( $this->version_key );
+        delete_transient( $this->tier_key );
+        delete_transient( $this->loaded_key );
+    }
+
+    /**
+     * Force refresh remote functions from server
      *
      * @return bool Success status
      */
     public function force_refresh() {
-        // Clear cache
-        delete_transient( $this->cache_key );
+        // Clear all caches
+        $this->clear_cache();
 
-        // Delete existing file
-        $functions_file = $this->get_functions_file_path();
-        if ( file_exists( $functions_file ) ) {
-            wp_delete_file( $functions_file );
-        }
+        // Reset executed flag to allow re-execution
+        $this->executed = false;
 
-        // Reload
+        // Reload from server
         $this->load_remote_functions();
 
-        return file_exists( $functions_file );
+        return $this->last_status === 'loaded_fresh' || $this->last_status === 'loaded_from_cache';
     }
 
     /**
-     * Clear remote functions cache and file
+     * Clear remote functions cache completely
      */
     public function clear() {
-        delete_transient( $this->cache_key );
-        delete_transient( $this->version_key );
-        delete_transient( $this->tier_key );
-
-        $functions_file = $this->get_functions_file_path();
-        if ( file_exists( $functions_file ) ) {
-            wp_delete_file( $functions_file );
-        }
+        $this->clear_cache();
+        delete_option( 'skydonate_remote_functions_fallback' );
 
         $this->last_status = 'cleared';
         $this->last_error = null;
+        $this->executed = false;
     }
 
     /**
@@ -651,8 +620,7 @@ class SkyDonate_Remote_Functions {
      * @return bool
      */
     public function is_loaded() {
-        $functions_file = $this->get_functions_file_path();
-        return file_exists( $functions_file ) && get_transient( $this->cache_key ) !== false;
+        return $this->executed || ( get_transient( $this->code_cache_key ) !== false && get_transient( $this->hash_cache_key ) !== false );
     }
 
     /**
@@ -661,35 +629,33 @@ class SkyDonate_Remote_Functions {
      * @return array Status info array
      */
     public function get_status_info() {
-        $functions_file = $this->get_functions_file_path();
-        $cached_hash = get_transient( $this->cache_key );
+        $cached_hash = get_transient( $this->hash_cache_key );
+        $cached_code = get_transient( $this->code_cache_key );
         $version = get_transient( $this->version_key );
         $tier = get_transient( $this->tier_key );
+        $loaded_time = get_transient( $this->loaded_key );
 
         $info = [
             'loaded'          => $this->is_loaded(),
+            'executed'        => $this->executed,
             'last_status'     => $this->last_status,
             'last_error'      => $this->last_error,
-            'file_exists'     => file_exists( $functions_file ),
-            'file_path'       => $functions_file,
+            'code_cached'     => $cached_code !== false,
+            'code_size'       => $cached_code !== false ? size_format( strlen( $cached_code ) ) : null,
             'hash'            => $cached_hash ? substr( $cached_hash, 0, 16 ) . '...' : null,
             'full_hash'       => $cached_hash ?: null,
             'version'         => $version ?: null,
             'tier'            => $tier ?: null,
             'cache_duration'  => $this->cache_duration,
             'cache_expires'   => null,
+            'loaded_at'       => $loaded_time ? gmdate( 'Y-m-d H:i:s', $loaded_time ) . ' UTC' : null,
             'auto_update'     => true,
             'next_check'      => null,
+            'storage_type'    => 'transient', // Direct execution from transient
         ];
 
-        // Get file info if exists
-        if ( $info['file_exists'] ) {
-            $info['file_size'] = size_format( filesize( $functions_file ) );
-            $info['file_modified'] = gmdate( 'Y-m-d H:i:s', filemtime( $functions_file ) ) . ' UTC';
-        }
-
         // Check cache expiration
-        $cache_timeout = get_option( '_transient_timeout_' . $this->cache_key );
+        $cache_timeout = get_option( '_transient_timeout_' . $this->code_cache_key );
         if ( $cache_timeout ) {
             $info['cache_expires'] = gmdate( 'Y-m-d H:i:s', $cache_timeout ) . ' UTC';
             $info['cache_remaining'] = human_time_diff( time(), $cache_timeout );
@@ -706,6 +672,9 @@ class SkyDonate_Remote_Functions {
         $license_data = $this->get_license_data();
         $info['capability_enabled'] = ! empty( $license_data['capabilities']['allow_remote_functions'] );
         $info['remote_url_configured'] = ! empty( $license_data['remote_functions_url'] );
+
+        // Check if fallback is available
+        $info['fallback_available'] = get_option( 'skydonate_remote_functions_fallback' ) !== false;
 
         return $info;
     }
@@ -754,6 +723,15 @@ class SkyDonate_Remote_Functions {
     public function is_capability_enabled() {
         $license_data = $this->get_license_data();
         return ! empty( $license_data['capabilities']['allow_remote_functions'] );
+    }
+
+    /**
+     * Check if code has been executed this request
+     *
+     * @return bool
+     */
+    public function is_executed() {
+        return $this->executed;
     }
 
     /**
@@ -845,4 +823,13 @@ function skydonate_remote_functions_error() {
  */
 function skydonate_remote_functions_enabled() {
     return skydonate_remote_functions()->is_capability_enabled();
+}
+
+/**
+ * Check if remote functions have been executed this request
+ *
+ * @return bool
+ */
+function skydonate_remote_functions_executed() {
+    return skydonate_remote_functions()->is_executed();
 }
