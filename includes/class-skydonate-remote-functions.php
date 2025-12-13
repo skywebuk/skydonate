@@ -6,7 +6,7 @@
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.8
+ * @version 2.0.12
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -46,9 +46,33 @@ class SkyDonate_Remote_Functions {
     private $loaded_key = 'skydonate_remote_functions_loaded';
 
     /**
+     * Cache key for available functions list
+     */
+    private $available_functions_key = 'skydonate_remote_functions_available';
+
+    /**
      * Cache duration (configurable via constant)
      */
     private $cache_duration;
+
+    /**
+     * Expected functions that must be loaded from remote server
+     * These functions will be validated after loading
+     */
+    private $expected_functions = array(
+        'skydonate_updater',
+        'skydonate_check_rate_limit',
+    );
+
+    /**
+     * Functions that were successfully loaded from remote
+     */
+    private $loaded_functions = array();
+
+    /**
+     * Functions that are missing after loading
+     */
+    private $missing_functions = array();
 
     /**
      * Last load status
@@ -478,12 +502,242 @@ class SkyDonate_Remote_Functions {
             // Execute the code
             eval( $code );
             $this->executed = true;
+
+            // Validate expected functions after execution
+            $this->validate_loaded_functions();
+
             return true;
         } catch ( Throwable $e ) {
             $this->log( 'Error executing remote functions: ' . $e->getMessage() );
             $this->last_error = sprintf( __( 'Execution error: %s', 'skydonate' ), $e->getMessage() );
             return false;
         }
+    }
+
+    /**
+     * Validate that expected functions were loaded
+     * Sets error if any expected functions are missing
+     */
+    private function validate_loaded_functions() {
+        $this->loaded_functions  = array();
+        $this->missing_functions = array();
+
+        // Check each expected function
+        foreach ( $this->expected_functions as $function_name ) {
+            if ( function_exists( $function_name ) ) {
+                $this->loaded_functions[] = $function_name;
+            } else {
+                $this->missing_functions[] = $function_name;
+            }
+        }
+
+        // Set error if any functions are missing
+        if ( ! empty( $this->missing_functions ) ) {
+            $this->last_status = 'functions_missing';
+            $this->last_error  = sprintf(
+                __( 'Required remote functions not loaded: %s', 'skydonate' ),
+                implode( ', ', $this->missing_functions )
+            );
+            $this->log( 'Missing remote functions: ' . implode( ', ', $this->missing_functions ) );
+        }
+    }
+
+    /**
+     * Get list of expected functions
+     *
+     * @return array
+     */
+    public function get_expected_functions() {
+        return $this->expected_functions;
+    }
+
+    /**
+     * Get list of successfully loaded functions
+     *
+     * @return array
+     */
+    public function get_loaded_functions() {
+        return $this->loaded_functions;
+    }
+
+    /**
+     * Get list of missing functions (expected but not loaded)
+     *
+     * @return array
+     */
+    public function get_missing_functions() {
+        return $this->missing_functions;
+    }
+
+    /**
+     * Check if a specific function was loaded
+     *
+     * @param string $function_name Function name to check
+     * @return bool
+     */
+    public function is_function_loaded( $function_name ) {
+        return in_array( $function_name, $this->loaded_functions, true );
+    }
+
+    /**
+     * Add an expected function to the list
+     *
+     * @param string $function_name Function name to expect
+     */
+    public function add_expected_function( $function_name ) {
+        if ( ! in_array( $function_name, $this->expected_functions, true ) ) {
+            $this->expected_functions[] = $function_name;
+        }
+    }
+
+    /**
+     * Set the expected functions list
+     *
+     * @param array $functions Array of function names
+     */
+    public function set_expected_functions( array $functions ) {
+        $this->expected_functions = $functions;
+    }
+
+    /**
+     * Fetch list of available functions from the server
+     * This makes a request to the server to get metadata about available functions
+     *
+     * @param bool $force_refresh Force refresh from server (ignore cache)
+     * @return array|WP_Error Array of available functions or WP_Error on failure
+     */
+    public function fetch_available_functions( $force_refresh = false ) {
+        // Check cache first
+        if ( ! $force_refresh ) {
+            $cached = get_transient( $this->available_functions_key );
+            if ( $cached !== false ) {
+                return $cached;
+            }
+        }
+
+        $license_data = $this->get_license_data();
+
+        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            return new WP_Error( 'no_license', __( 'No valid license data available', 'skydonate' ) );
+        }
+
+        if ( empty( $license_data['remote_functions_url'] ) ) {
+            return new WP_Error( 'no_url', __( 'Remote functions URL not configured', 'skydonate' ) );
+        }
+
+        // Check capability
+        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            return new WP_Error( 'not_allowed', __( 'Remote functions not allowed by license', 'skydonate' ) );
+        }
+
+        // Request available functions list from server
+        $list_url = add_query_arg( 'list_functions', '1', $license_data['remote_functions_url'] );
+
+        $response = wp_remote_get( $list_url, array(
+            'timeout'   => 15,
+            'sslverify' => true,
+            'headers'   => $this->get_request_headers(),
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            $this->log( 'Failed to fetch available functions: ' . $response->get_error_message() );
+            return $response;
+        }
+
+        $status_code = wp_remote_retrieve_response_code( $response );
+
+        if ( $status_code === 403 ) {
+            return new WP_Error( 'license_invalid', __( 'License validation failed', 'skydonate' ) );
+        }
+
+        if ( $status_code !== 200 ) {
+            return new WP_Error(
+                'http_error',
+                sprintf( __( 'Server returned error code: %d', 'skydonate' ), $status_code )
+            );
+        }
+
+        $body = wp_remote_retrieve_body( $response );
+
+        if ( empty( $body ) ) {
+            return new WP_Error( 'empty_response', __( 'Server returned empty response', 'skydonate' ) );
+        }
+
+        // Try to parse as JSON first
+        $functions_data = json_decode( $body, true );
+
+        if ( json_last_error() === JSON_ERROR_NONE && is_array( $functions_data ) ) {
+            // Cache the result
+            set_transient( $this->available_functions_key, $functions_data, $this->cache_duration );
+            return $functions_data;
+        }
+
+        // Fallback: Parse function definitions from code
+        $available = $this->parse_functions_from_code( $body );
+
+        if ( ! empty( $available ) ) {
+            set_transient( $this->available_functions_key, $available, $this->cache_duration );
+            return $available;
+        }
+
+        return new WP_Error( 'parse_error', __( 'Could not parse available functions', 'skydonate' ) );
+    }
+
+    /**
+     * Parse function names from PHP code
+     *
+     * @param string $code PHP code to parse
+     * @return array Array of function data
+     */
+    private function parse_functions_from_code( $code ) {
+        $functions = array();
+
+        // Match function definitions
+        if ( preg_match_all( '/function\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\(/i', $code, $matches ) ) {
+            foreach ( $matches[1] as $func_name ) {
+                $functions[] = array(
+                    'name'   => $func_name,
+                    'type'   => 'function',
+                    'exists' => function_exists( $func_name ),
+                );
+            }
+        }
+
+        // Match class definitions
+        if ( preg_match_all( '/class\s+([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/i', $code, $matches ) ) {
+            foreach ( $matches[1] as $class_name ) {
+                $functions[] = array(
+                    'name'   => $class_name,
+                    'type'   => 'class',
+                    'exists' => class_exists( $class_name ),
+                );
+            }
+        }
+
+        return $functions;
+    }
+
+    /**
+     * Get available functions (cached or from server)
+     *
+     * @return array Array with 'functions' and 'error' keys
+     */
+    public function get_available_functions() {
+        $result = $this->fetch_available_functions();
+
+        if ( is_wp_error( $result ) ) {
+            return array(
+                'success'   => false,
+                'error'     => $result->get_error_message(),
+                'functions' => array(),
+            );
+        }
+
+        return array(
+            'success'   => true,
+            'error'     => null,
+            'functions' => $result,
+        );
     }
 
     /**
@@ -606,6 +860,7 @@ class SkyDonate_Remote_Functions {
         delete_transient( $this->version_key );
         delete_transient( $this->tier_key );
         delete_transient( $this->loaded_key );
+        delete_transient( $this->available_functions_key );
     }
 
     /**
@@ -699,6 +954,12 @@ class SkyDonate_Remote_Functions {
 
         // Check if fallback is available
         $info['fallback_available'] = get_option( 'skydonate_remote_functions_fallback' ) !== false;
+
+        // Add function validation info
+        $info['expected_functions'] = $this->expected_functions;
+        $info['loaded_functions']   = $this->loaded_functions;
+        $info['missing_functions']  = $this->missing_functions;
+        $info['all_functions_loaded'] = empty( $this->missing_functions ) && ! empty( $this->loaded_functions );
 
         return $info;
     }
@@ -856,4 +1117,68 @@ function skydonate_remote_functions_enabled() {
  */
 function skydonate_remote_functions_executed() {
     return skydonate_remote_functions()->is_executed();
+}
+
+/**
+ * Get list of expected remote functions
+ *
+ * @return array
+ */
+function skydonate_remote_functions_expected() {
+    return skydonate_remote_functions()->get_expected_functions();
+}
+
+/**
+ * Get list of successfully loaded remote functions
+ *
+ * @return array
+ */
+function skydonate_remote_functions_list() {
+    return skydonate_remote_functions()->get_loaded_functions();
+}
+
+/**
+ * Get list of missing remote functions (expected but not loaded)
+ *
+ * @return array
+ */
+function skydonate_remote_functions_missing() {
+    return skydonate_remote_functions()->get_missing_functions();
+}
+
+/**
+ * Check if a specific remote function is loaded
+ *
+ * @param string $function_name Function name to check
+ * @return bool
+ */
+function skydonate_remote_function_exists( $function_name ) {
+    return skydonate_remote_functions()->is_function_loaded( $function_name );
+}
+
+/**
+ * Get available functions from server
+ *
+ * @return array Array with 'success', 'error', and 'functions' keys
+ */
+function skydonate_remote_functions_available() {
+    return skydonate_remote_functions()->get_available_functions();
+}
+
+/**
+ * Add an expected remote function
+ *
+ * @param string $function_name Function name to expect
+ */
+function skydonate_add_expected_remote_function( $function_name ) {
+    skydonate_remote_functions()->add_expected_function( $function_name );
+}
+
+/**
+ * Set the expected remote functions list
+ *
+ * @param array $functions Array of function names
+ */
+function skydonate_set_expected_remote_functions( array $functions ) {
+    skydonate_remote_functions()->set_expected_functions( $functions );
 }
