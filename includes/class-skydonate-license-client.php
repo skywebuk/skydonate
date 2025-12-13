@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.8
+ * @version 2.0.10
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -192,10 +192,9 @@ class SkyDonate_License_Client {
         if ( $result && ! empty( $result['success'] ) ) {
             $this->log( 'Auto license check: License valid' );
 
-            // 2. Refresh update/version info
+            // 2. Refresh update/version info (use force_check to properly cache)
             if ( function_exists( 'skydonate_updater' ) ) {
-                skydonate_updater()->clear_cache();
-                $this->check_update();
+                skydonate_updater()->force_check();
                 $this->log( 'Auto license check: Update info refreshed' );
             }
 
@@ -761,11 +760,10 @@ class SkyDonate_License_Client {
             return $result;
         }
 
-        // 2. Clear and refresh update/version info
+        // 2. Clear and refresh update/version info (use force_check to properly cache)
         $update_info = null;
         if ( function_exists( 'skydonate_updater' ) ) {
-            skydonate_updater()->clear_cache();
-            $update_info = $this->check_update();
+            $update_info = skydonate_updater()->force_check();
             $this->log( 'Full refresh: Update info refreshed' );
         }
 
