@@ -81,7 +81,7 @@ function skydonate_load_woocommerce_includes() {
  */
 function skydonate_load_conditional_includes() {
     // Currency changer
-    if ( get_option( 'skydonate_currency_changer_enabled', 0 ) == 1 ) {
+    if ( skydonate_is_feature_enabled( 'currency_changer' ) && get_option( 'skydonate_currency_changer_enabled', 0 ) == 1 ) {
         skydonate_load_file( 'includes/class-skydonate-currency.php' );
     }
 
@@ -97,17 +97,17 @@ function skydonate_load_conditional_includes() {
     }
 
     // Address autoload
-    if ( sky_status_check( 'address_autoload_status' ) ) {
+    if ( skydonate_is_feature_enabled( 'address_autocomplete' ) && sky_status_check( 'address_autoload_status' ) ) {
         skydonate_load_file( 'includes/class-skydonate-address-autoload.php' );
     }
 
     // Recent donations
-    if ( sky_status_check( 'recent_donation_list_with_country' ) ) {
+    if ( skydonate_is_feature_enabled( 'recent_donation_country' ) && sky_status_check( 'recent_donation_list_with_country' ) ) {
         skydonate_load_file( 'includes/class-skydonate-wc-recent-donations.php' );
     }
 
     // Auto complete processing
-    if ( sky_status_check( 'auto_complete_processing' ) ) {
+    if ( skydonate_is_feature_enabled( 'auto_complete_processing' ) && sky_status_check( 'auto_complete_processing' ) ) {
         skydonate_load_file( 'includes/class-skydonate-wc-auto-complete.php' );
     }
 

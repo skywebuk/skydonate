@@ -107,7 +107,7 @@ class Skydonate_System {
         }
 
         // Currency changer
-        if ( sky_status_check( 'skydonate_currency_changer_enabled' )) {
+        if ( skydonate_is_feature_enabled( 'currency_changer' ) && sky_status_check( 'skydonate_currency_changer_enabled' ) ) {
             $this->include_file( 'includes/class-skydonate-currency.php' );
             new Skydonate_Currency_Changer();
         }
@@ -131,7 +131,7 @@ class Skydonate_System {
         }
 
         // Address autoload
-        if ( sky_status_check( 'address_autoload_status' ) ) {
+        if ( skydonate_is_feature_enabled( 'address_autocomplete' ) && sky_status_check( 'address_autoload_status' ) ) {
             $this->include_file( 'includes/class-skydonate-address-autoload.php' );
         }
 

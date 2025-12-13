@@ -39,6 +39,7 @@
             </tr>
             <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('recent_donation_country')): ?>
             <tr>
                 <th scope="row"><label for="recent_donation_list_with_country">Recent Donation List with Country Name and Flag</label></th>
                 <td>
@@ -46,7 +47,9 @@
                     <small>If enabled, you will add the functionality to include the Recent Donation List with country name and flag.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('auto_complete_processing')): ?>
             <tr>
                 <th scope="row"><label for="auto_complete_processing">Auto Complete Processing</label></th>
                 <td>
@@ -54,7 +57,9 @@
                     <small>If enabled, automatically complete donation payments on the Thank You page.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('donation_goal')): ?>
             <tr>
                 <th scope="row"><label for="enable_donation_goal">Enable Donation Goal</label></th>
                 <td>
@@ -62,7 +67,9 @@
                     <small>If enabled, an option for a Donation Goal will be available for the donation appeals.</small>
                 </td>
             </tr>
+            <?php endif; ?>
 
+            <?php if(skydonate_is_feature_enabled('title_prefix')): ?>
             <tr>
                 <th scope="row"><label for="enable_title_prefix">Enable Title Prefix</label></th>
                 <td>
@@ -79,7 +86,7 @@
                         $selected_titles = !empty($selected_titles) ? explode(',', $selected_titles) : [];
                     }
                     ?>
-                    <select name="select_title_prefix" class="select_type_items" id="select_title_prefix" 
+                    <select name="select_title_prefix" class="select_type_items" id="select_title_prefix"
                         multiple="multiple" style="width: 100%; height: 150px;">
                         <?php
                         foreach ($selected_titles as $key => $name) {
@@ -91,6 +98,7 @@
                     <p><small>Select one or more title prefixes.</small></p>
                 </td>
             </tr>
+            <?php endif; ?>
 
         </table>
 
