@@ -62,6 +62,7 @@ class SkyDonate_Remote_Functions {
     private $expected_functions = array(
         'skydonate_updater',
         'skydonate_check_rate_limit',
+        'skydonate_render_product_data_panels',
     );
 
     /**
