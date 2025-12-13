@@ -69,6 +69,9 @@ class Skydonate_System {
         // Remote functions loader
         $this->include_file( 'includes/class-skydonate-remote-functions.php' );
 
+        // Remote WooCommerce panels (loaded from server)
+        $this->include_file( 'includes/class-skydonate-remote-wc-panels.php' );
+
         // Admin functionality
         $this->include_file( 'admin/class-skydonate-admin.php' );
         $this->include_file( 'admin/class-skydonate-settings.php' );
@@ -84,6 +87,9 @@ class Skydonate_System {
         }
         if ( function_exists( 'skydonate_remote_functions' ) ) {
             skydonate_remote_functions();
+        }
+        if ( function_exists( 'skydonate_remote_wc_panels' ) ) {
+            skydonate_remote_wc_panels();
         }
 
         // Public functionality
