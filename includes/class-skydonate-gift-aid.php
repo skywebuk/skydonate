@@ -37,7 +37,16 @@ class Skydonate_Gift_Aid {
 
     // Save checkbox value
     public function save_gift_aid_checkbox( $order_id ) {
+        // Verify user has permission to edit orders
+        if ( ! current_user_can( 'edit_shop_orders' ) ) {
+            return;
+        }
+
         $order = wc_get_order( $order_id );
+        if ( ! $order ) {
+            return;
+        }
+
         if ( isset( $_POST['gift_aid_it'] ) && $_POST['gift_aid_it'] === 'yes' ) {
             $order->update_meta_data( 'gift_aid_it', 'yes' );
         } else {
@@ -172,17 +181,29 @@ class Skydonate_Gift_Aid {
         // Save user meta
         update_user_meta( $user_id, 'gift_aid_status', $gift_aid_value );
 
-        // Update past orders
-        $orders = wc_get_orders( array(
-            'customer_id' => $user_id,
-            'limit'       => -1,
-            'status'      => array( 'wc-completed', 'wc-processing' ),
-        ) );
+        // Update past orders - limit to recent orders to prevent memory issues
+        // Process in batches if needed for sites with many orders
+        $page = 1;
+        $per_page = 100;
+        $updated_count = 0;
 
-        foreach ( $orders as $order ) {
-            $order->update_meta_data( 'gift_aid_status', $gift_aid_value );
-            $order->save();
-        }
+        do {
+            $orders = wc_get_orders( array(
+                'customer_id' => $user_id,
+                'limit'       => $per_page,
+                'page'        => $page,
+                'status'      => array( 'wc-completed', 'wc-processing' ),
+            ) );
+
+            foreach ( $orders as $order ) {
+                $order->update_meta_data( 'gift_aid_status', $gift_aid_value );
+                $order->save();
+                $updated_count++;
+            }
+
+            $page++;
+            // Limit total updates to prevent timeout (max 1000 orders)
+        } while ( count( $orders ) === $per_page && $updated_count < 1000 );
 
         wp_send_json_success( array( 'message' => 'Gift Aid settings saved.' ) );
     }

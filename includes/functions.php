@@ -47,7 +47,7 @@ function skydonate_find_key_recursive( array $array, string $key_to_find ) {
         if ( is_array( $value ) ) {
             $found = skydonate_find_key_recursive( $value, $key_to_find );
             if ( null !== $found ) {
-                return true;
+                return $found;
             }
         }
     }
@@ -77,7 +77,8 @@ function skydonate_activate_target_widget($enabled_widget,$zip_url){
 }
 function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
     $zip = new ZipArchive;
-    if ($zip->open($zipPath) === TRUE) {
+    $result = $zip->open($zipPath);
+    if ($result === TRUE) {
 		// Make sure the folder exists
 		if (!file_exists($extractTo)) {
 			mkdir($extractTo, 0755, true);
@@ -108,9 +109,17 @@ function skydonate_extract_target_file($zipPath,$extractTo,$targetFile){
 			}
 
 			file_put_contents($extractTo . $fileNameOnly, $content);
+			$zip->close();
+			return true;
 		}
 		$zip->close();
+		return false;
 	}
+	// Log ZIP opening failure
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		error_log( '[SkyDonate] Failed to open ZIP file: ' . $zipPath . ' (Error code: ' . $result . ')' );
+	}
+	return false;
 }
 function skydonate_download_file($url, $path) {
     $ch = curl_init($url);
@@ -136,6 +145,7 @@ function license_authenticate(){
 	if($activate){
 		return true;
 	}
+	return false;
 }
 
 function skydonate_widget_list(){

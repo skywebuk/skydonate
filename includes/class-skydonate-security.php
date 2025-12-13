@@ -204,7 +204,11 @@ class SkyDonate_Security {
      */
     public function encrypt( $data ) {
         if ( ! function_exists( 'openssl_encrypt' ) ) {
-            return base64_encode( serialize( $data ) ); // Fallback
+            // Fallback: Only allow scalar data types for serialization
+            if ( is_object( $data ) ) {
+                return false;
+            }
+            return base64_encode( serialize( $data ) );
         }
 
         $key = $this->get_encryption_key();
@@ -238,7 +242,12 @@ class SkyDonate_Security {
      */
     public function decrypt( $encrypted ) {
         if ( ! function_exists( 'openssl_decrypt' ) ) {
-            return unserialize( base64_decode( $encrypted ) ); // Fallback
+            // Fallback: use allowed_classes to prevent object injection
+            $decoded = base64_decode( $encrypted );
+            if ( $decoded === false ) {
+                return false;
+            }
+            return unserialize( $decoded, array( 'allowed_classes' => false ) );
         }
 
         $key = $this->get_encryption_key();
@@ -664,7 +673,12 @@ class SkyDonate_Security {
         }
 
         $data['count']++;
-        set_transient( $key, $data, $window - ( time() - $data['start'] ) );
+        $remaining_time = $window - ( time() - $data['start'] );
+        // Ensure minimum transient expiration of 1 second
+        if ( $remaining_time < 1 ) {
+            $remaining_time = 1;
+        }
+        set_transient( $key, $data, $remaining_time );
 
         return true;
     }

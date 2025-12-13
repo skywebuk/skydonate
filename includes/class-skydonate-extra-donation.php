@@ -106,7 +106,9 @@ class Skydonate_Extra_Donation {
         check_ajax_referer('skydonate_nonce', 'nonce');
         $product_id = intval($_POST['product_id'] ?? 0);
         $amount     = floatval($_POST['amount'] ?? 0);
-        $extra      = $_POST['extra'] ?? false;
+        // Convert string 'true'/'false' to proper boolean
+        $extra_raw  = isset($_POST['extra']) ? $_POST['extra'] : false;
+        $extra      = filter_var($extra_raw, FILTER_VALIDATE_BOOLEAN);
         $title      = sanitize_text_field($_POST['title'] ?? '');
         $frequency  = sanitize_text_field($_POST['donation_frequency'] ?? '');
         $name_on_plaque = sanitize_text_field($_POST['name_on_plaque'] ?? '');

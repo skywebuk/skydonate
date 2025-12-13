@@ -518,8 +518,19 @@ class Skydonate_Public {
 	}
 
 	public function save_custom_order_item_meta( $order_id, $items ) {
-		if ( isset( $_POST['custom_order_item_meta'] ) ) {
-			foreach ( $_POST['custom_order_item_meta'] as $item_id => $meta_value ) {
+		// Verify this is a legitimate save request with proper nonce
+		if ( ! isset( $_POST['custom_order_item_meta'] ) ) {
+			return;
+		}
+
+		// Check for WooCommerce order nonce or admin referer
+		if ( ! current_user_can( 'edit_shop_orders' ) ) {
+			return;
+		}
+
+		foreach ( $_POST['custom_order_item_meta'] as $item_id => $meta_value ) {
+			$item_id = absint( $item_id );
+			if ( $item_id > 0 ) {
 				wc_update_order_item_meta( $item_id, 'Name on Plaque/ Banner', sanitize_text_field( $meta_value ) );
 			}
 		}

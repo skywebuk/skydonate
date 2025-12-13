@@ -516,60 +516,57 @@ class Skydonate_Settings_Functions {
                     break;
                 case 'html':
                     ?>
-                    <h4 class="<?php echo $class; ?>" ><?php echo esc_html($component['label']); ?></h4>
+                    <h4 class="<?php echo esc_attr($class); ?>" ><?php echo esc_html($component['label']); ?></h4>
                     <?php
-                    echo $value;
+                    echo wp_kses_post($value);
                     break;
                     
                 case 'hidden':
                     ?>
-                    <input type="hidden" id="<?php echo esc_attr($component['id']); ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo $value; ?>"/>
+                    <input type="hidden" id="<?php echo esc_attr($component['id']); ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value); ?>"/>
                     <?php
                     break;
                 case 'link':
-                    
+
                     ?>
-                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo $wrapper_class; ?>">
+                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo esc_attr($wrapper_class); ?>">
                         <th class="form-group-label">
-                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); // WPCS: XSS ok.       ?></label>
+                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); ?></label>
                         </th>
                         <td class="form-group-control">
                             <div class="text-field text-field-outlined">
-                                <?php
-                                $url = sprintf('<a href="%s">%s</a>',$component['url'],$component['label']);
-                                echo $url;
-                                ?>
+                                <a href="<?php echo esc_url($component['url']); ?>"><?php echo esc_html($component['label']); ?></a>
                             </div>
                             <div class="text-field-helper-line">
-                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo $description; ?></div>
+                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo wp_kses_post($description); ?></div>
                             </div>
                         </td>
                     </tr>
                     <?php
                     break;
                     case 'price':
-                    $price_prefix = get_apca_currency_symbol();
+                    $price_prefix = function_exists('get_apca_currency_symbol') ? get_apca_currency_symbol() : get_woocommerce_currency_symbol();
                     ?>
-                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo $wrapper_class; ?>">
+                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo esc_attr($wrapper_class); ?>">
                         <th class="form-group-label">
-                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); // WPCS: XSS ok.       ?></label>
+                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); ?></label>
                         </th>
                         <td class="form-group-control">
                             <div class="text-field text-field-outlined">
-                                <span><?php echo $price_prefix; ?></span>
-                                <input 
-                                    class="text-field__input <?php echo $class; ?>" 
+                                <span><?php echo esc_html($price_prefix); ?></span>
+                                <input
+                                    class="text-field__input <?php echo esc_attr($class); ?>"
                                     name="<?php echo esc_attr($name); ?>"
                                     id="<?php echo esc_attr($component['id']); ?>"
                                     type="number"
-                                    value="<?php echo $value; ?>"
-                                    placeholder="<?php echo $placeholder; ?>"
+                                    value="<?php echo esc_attr($value); ?>"
+                                    placeholder="<?php echo esc_attr($placeholder); ?>"
                                     size="20"
-                                    <?php echo $required;?>
+                                    <?php echo esc_attr($required); ?>
                                     >
                             </div>
                             <div class="text-field-helper-line">
-                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo $description; ?></div>
+                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo wp_kses_post($description); ?></div>
                             </div>
                         </td>
                     </tr>
@@ -577,26 +574,26 @@ class Skydonate_Settings_Functions {
                     break;
                 case 'number':
                     ?>
-                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo $wrapper_class; ?>">
+                    <tr class="form-group <?php echo esc_attr($component['type']); ?>  <?php echo esc_attr($wrapper_class); ?>">
                         <th class="form-group-label">
-                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); // WPCS: XSS ok.       ?></label>
+                            <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); ?></label>
                         </th>
                         <td class="form-group-control">
                             <div class="text-field text-field-outlined">
-                                <span class="input-before"><?php echo $input_before; ?></span>
-                                <input 
-                                    class="text-field__input <?php echo $class; ?>" 
+                                <span class="input-before"><?php echo esc_html($input_before); ?></span>
+                                <input
+                                    class="text-field__input <?php echo esc_attr($class); ?>"
                                     name="<?php echo esc_attr($name); ?>"
                                     id="<?php echo esc_attr($component['id']); ?>"
                                     type="<?php echo esc_attr($component['type']); ?>"
-                                    value="<?php echo $value; ?>"
-                                    placeholder="<?php echo $placeholder; ?>"
-                                    <?php echo $required;?>
+                                    value="<?php echo esc_attr($value); ?>"
+                                    placeholder="<?php echo esc_attr($placeholder); ?>"
+                                    <?php echo esc_attr($required); ?>
                                     >
-                                    <?php echo esc_attr($input_after); ?>
+                                    <?php echo esc_html($input_after); ?>
                             </div>
                             <div class="text-field-helper-line">
-                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo $description; ?></div>
+                                <div class="text-field-helper-text" id="" aria-hidden="true"><?php echo wp_kses_post($description); ?></div>
                             </div>
                         </td>
                     </tr>
@@ -870,23 +867,24 @@ class Skydonate_Settings_Functions {
                     break;
                     
                 case 'checkbox':
-                
+
                 ?>
-                    <tr class="form-group  <?php echo $wrapper_class; ?>">
+                    <tr class="form-group  <?php echo esc_attr($wrapper_class); ?>">
                         <th class="form-group-label">
                             <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); ?></label>
                         </th>
                         <td class="form-group-control">
                             <div class="form-field">
-                                <?php if ($multicheck) { 
-                                    $multicheck_value = get_post_meta($post_id, trim($component['id']), true);
+                                <?php if ($multicheck) {
+                                    // Get multicheck value from component or option (not post meta without valid post_id)
+                                    $multicheck_value = isset($component['value']) && is_array($component['value']) ? $component['value'] : get_option(trim($component['id']), array());
                                     foreach ($component['options'] as $key => $checkbox_value) {
                                         $checked_value = isset($multicheck_value[$key]) ? $multicheck_value[$key] : "";
                                         ?>
                                         <label class="checkbox-switch">
-                                            <input 
+                                            <input
                                                 type="checkbox"
-                                                name="<?php echo trim(esc_attr($name)); ?>[<?php echo $key; ?>]"
+                                                name="<?php echo esc_attr(trim($name)); ?>[<?php echo esc_attr($key); ?>]"
                                                 id="<?php echo esc_attr($component['id'] . '_' . $key); ?>"
                                                 value="<?php echo esc_attr($checkbox_value); ?>"
                                                 <?php checked(trim($checked_value), trim($checkbox_value)); ?>
@@ -894,17 +892,17 @@ class Skydonate_Settings_Functions {
                                             <span class="switch"></span>
                                             <small><?php echo esc_html($checkbox_value); ?></small>
                                         </label>
-                                    <?php } 
+                                    <?php }
                                 } else { ?>
                                     <label class="checkbox-switch">
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             name="<?php echo esc_attr($name); ?>"
                                             id="<?php echo esc_attr($component['id']); ?>"
                                             value="<?php echo esc_attr($value); ?>"
                                             <?php if (!$disabled) { checked($checked, $value); } ?>
-                                            <?php echo $required; ?>
-                                            <?php echo $disabled; ?>
+                                            <?php echo esc_attr($required); ?>
+                                            <?php echo esc_attr($disabled); ?>
                                         >
                                         <span class="switch"></span>
                                         <small><?php echo esc_html($description); ?></small>
@@ -914,63 +912,53 @@ class Skydonate_Settings_Functions {
                         </td>
                     </tr>
                     <?php
-                    
+
                     break;
                 case 'radio':
                     ?>
-                    <tr class="form-group  <?php echo $wrapper_class; ?>">
+                    <tr class="form-group  <?php echo esc_attr($wrapper_class); ?>">
                         <th class="form-group-label">
                             <label for="<?php echo esc_attr($component['id']); ?>" class="form-label"><?php echo esc_html($component['label']); ?></label>
                         </th>
                         <td class="form-group-control">
                             <div class="form-field">
                                 <?php if ($multicheck) { ?>
-
                                     <?php
-
-                                    
-                                    foreach ($component['options'] as $checkbox_value) {
-                                    
+                                    foreach ($component['options'] as $radio_value) {
                                         ?>
                                         <div class="checkbox">
                                             <label>
-                                            <input 
+                                            <input
                                                 name="<?php echo esc_attr($name); ?>"
                                                 id="<?php echo esc_attr($component['id']); ?>"
                                                 type="radio"
-                                                class="checkbox-native-control <?php echo $class; ?>"
-                                                value="<?php echo $checkbox_value; ?>"
-                                                <?php checked(trim($value), trim($checkbox_value)); ?> 
+                                                class="checkbox-native-control <?php echo esc_attr($class); ?>"
+                                                value="<?php echo esc_attr($radio_value); ?>"
+                                                <?php checked(trim($value), trim($radio_value)); ?>
                                                 />
-                                                <?php
-                                                echo $checkbox_value;
-                                                ?>
+                                                <?php echo esc_html($radio_value); ?>
                                                 </label>
                                             </div>
                                             <?php }  ?>
-                                
-                                    <?php echo esc_html($description); // WPCS: XSS ok.  ?>
-
+                                    <?php echo esc_html($description); ?>
                                     <?php
                                 } else {
-                                    $checked;
-                                    //echo esc_attr(get_post_meta(743, '_quote_rides_shortcode_enforce_autocomplete_restriction', true));
+                                    // Use $checked variable that was set earlier in the loop
                                     ?>
                                     <div class="checkbox">
-                                        <span class="input-before"><?php echo $input_before; ?></span>
-                                        <input 
+                                        <span class="input-before"><?php echo esc_html($input_before); ?></span>
+                                        <input
                                             name="<?php echo esc_attr($name); ?>"
                                             id="<?php echo esc_attr($component['id']); ?>"
                                             type="radio"
-                                            class="checkbox-native-control <?php echo $class; ?>"
-                                            value="<?php echo $value; ?>"
+                                            class="checkbox-native-control <?php echo esc_attr($class); ?>"
+                                            value="<?php echo esc_attr($value); ?>"
                                             <?php
                                             if ('1' === $checked) {
                                                 checked($checked, $value);
                                             }
-                                            ?> <?php echo $required;?>/>
-
-                                        <?php echo esc_html($description); // WPCS: XSS ok.   ?>
+                                            ?> <?php echo esc_attr($required); ?>/>
+                                        <?php echo esc_html($description); ?>
                                     </div>
                                 <?php } ?>
                             </div>

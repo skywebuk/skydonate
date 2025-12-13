@@ -486,48 +486,87 @@ class Skydonate_Functions {
 
     public function get_total_donation_sales($product_id) {
         global $wpdb;
-        $total_sales_amount = $wpdb->get_var($wpdb->prepare("
-            SELECT SUM(CAST(om2.meta_value AS DECIMAL(10,2)))
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1 
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2 
-                ON oi.order_item_id = om2.order_item_id
-            INNER JOIN {$wpdb->prefix}posts AS p 
-                ON oi.order_id = p.ID
-            WHERE om1.meta_key = '_product_id' 
-                AND om1.meta_value = %d
-                AND om2.meta_key = '_line_total'
-                AND p.post_status IN ('wc-completed')
-        ", $product_id));
-    
+
+        // Check if HPOS is enabled
+        if ( $this->is_HPOS_active() ) {
+            // HPOS-compatible query using wc_orders table
+            $total_sales_amount = $wpdb->get_var($wpdb->prepare("
+                SELECT SUM(CAST(om2.meta_value AS DECIMAL(10,2)))
+                FROM {$wpdb->prefix}woocommerce_order_items AS oi
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
+                    ON oi.order_item_id = om1.order_item_id
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
+                    ON oi.order_item_id = om2.order_item_id
+                INNER JOIN {$wpdb->prefix}wc_orders AS o
+                    ON oi.order_id = o.id
+                WHERE om1.meta_key = '_product_id'
+                    AND om1.meta_value = %d
+                    AND om2.meta_key = '_line_total'
+                    AND o.status IN ('wc-completed')
+            ", $product_id));
+        } else {
+            // Legacy query using posts table
+            $total_sales_amount = $wpdb->get_var($wpdb->prepare("
+                SELECT SUM(CAST(om2.meta_value AS DECIMAL(10,2)))
+                FROM {$wpdb->prefix}woocommerce_order_items AS oi
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
+                    ON oi.order_item_id = om1.order_item_id
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
+                    ON oi.order_item_id = om2.order_item_id
+                INNER JOIN {$wpdb->prefix}posts AS p
+                    ON oi.order_id = p.ID
+                WHERE om1.meta_key = '_product_id'
+                    AND om1.meta_value = %d
+                    AND om2.meta_key = '_line_total'
+                    AND p.post_status IN ('wc-completed')
+            ", $product_id));
+        }
+
         // Ensure the value is not null
         $total_sales_amount = $total_sales_amount ? floatval($total_sales_amount) : 0;
-    
+
         // Cache the total sales amount
         update_post_meta($product_id, '_total_sales_amount', $total_sales_amount);
-    
+
         return $total_sales_amount;
     }
     
 
     public function get_donation_order_count($product_id) {
         global $wpdb;
-        $order_count = $wpdb->get_var($wpdb->prepare("
-            SELECT COUNT(DISTINCT oi.order_id)
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om 
-                ON oi.order_item_id = om.order_item_id
-            INNER JOIN {$wpdb->prefix}posts AS p 
-                ON oi.order_id = p.ID
-            WHERE om.meta_key = '_product_id' 
-                AND om.meta_value = %d
-                AND p.post_status IN ('wc-completed')
-        ", $product_id));
-    
+
+        // Check if HPOS is enabled
+        if ( $this->is_HPOS_active() ) {
+            // HPOS-compatible query using wc_orders table
+            $order_count = $wpdb->get_var($wpdb->prepare("
+                SELECT COUNT(DISTINCT oi.order_id)
+                FROM {$wpdb->prefix}woocommerce_order_items AS oi
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om
+                    ON oi.order_item_id = om.order_item_id
+                INNER JOIN {$wpdb->prefix}wc_orders AS o
+                    ON oi.order_id = o.id
+                WHERE om.meta_key = '_product_id'
+                    AND om.meta_value = %d
+                    AND o.status IN ('wc-completed')
+            ", $product_id));
+        } else {
+            // Legacy query using posts table
+            $order_count = $wpdb->get_var($wpdb->prepare("
+                SELECT COUNT(DISTINCT oi.order_id)
+                FROM {$wpdb->prefix}woocommerce_order_items AS oi
+                INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om
+                    ON oi.order_item_id = om.order_item_id
+                INNER JOIN {$wpdb->prefix}posts AS p
+                    ON oi.order_id = p.ID
+                WHERE om.meta_key = '_product_id'
+                    AND om.meta_value = %d
+                    AND p.post_status IN ('wc-completed')
+            ", $product_id));
+        }
+
         // Ensure the value is not null
         $order_count = $order_count ? (int) $order_count : 0;
-    
+
         // Cache the order count
         update_post_meta($product_id, '_order_count', $order_count);
 

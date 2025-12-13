@@ -97,6 +97,11 @@ class Skydonate_Currency_Changer {
             return null;
         }
 
+        // Prevent division by zero
+        if ( floatval( $rates[ $from ] ) === 0.0 ) {
+            return null;
+        }
+
         // Convert via USD base
         $value = $rates[ $to ] / $rates[ $from ];
         return round( $value, 4 );
@@ -110,6 +115,11 @@ class Skydonate_Currency_Changer {
         // Check if rates exist
         if ( empty( $rates[ $baseCurrency ] ) || empty( $rates[ $targetCurrency ] ) ) {
             // Return original amount if rate missing
+            return $amount;
+        }
+
+        // Prevent division by zero
+        if ( floatval( $rates[ $baseCurrency ] ) === 0.0 ) {
             return $amount;
         }
 
@@ -189,17 +199,17 @@ class Skydonate_Currency_Changer {
             }
         }
 
-        // Set cookie
+        // Set cookie with SameSite attribute for CSRF protection
         if (!headers_sent()) {
-            setcookie(
-                'skydonate_selected_currency',
-                $currency_to_set,
-                time() + MONTH_IN_SECONDS,
-                COOKIEPATH ?: '/',
-                COOKIE_DOMAIN,
-                is_ssl(),
-                true
+            $cookie_options = array(
+                'expires'  => time() + MONTH_IN_SECONDS,
+                'path'     => COOKIEPATH ?: '/',
+                'domain'   => COOKIE_DOMAIN,
+                'secure'   => is_ssl(),
+                'httponly' => true,
+                'samesite' => 'Lax',
             );
+            setcookie( 'skydonate_selected_currency', $currency_to_set, $cookie_options );
         }
         $_COOKIE['skydonate_selected_currency'] = $currency_to_set;
     }
@@ -289,17 +299,17 @@ class Skydonate_Currency_Changer {
 
         $currency = sanitize_text_field($_POST['currency']);
 
-        // Save in cookie (1 month - consistent with initial cookie)
+        // Save in cookie (1 month - consistent with initial cookie) with SameSite attribute
         if (!headers_sent()) {
-            setcookie(
-                'skydonate_selected_currency',
-                $currency,
-                time() + MONTH_IN_SECONDS,
-                COOKIEPATH ?: '/',
-                COOKIE_DOMAIN,
-                is_ssl(),
-                true
+            $cookie_options = array(
+                'expires'  => time() + MONTH_IN_SECONDS,
+                'path'     => COOKIEPATH ?: '/',
+                'domain'   => COOKIE_DOMAIN,
+                'secure'   => is_ssl(),
+                'httponly' => true,
+                'samesite' => 'Lax',
             );
+            setcookie( 'skydonate_selected_currency', $currency, $cookie_options );
         }
         $_COOKIE['skydonate_selected_currency'] = $currency;
 
@@ -320,8 +330,9 @@ class Skydonate_Currency_Changer {
         $currency = sanitize_text_field($_POST['currency']);
         $amount   = floatval($_POST['amount']); // ensure it's numeric
 
-        // Get rate
-        $rate = Skydonate_Currency_Changer::get_rate('GBP', $currency);
+        // Get rate using WooCommerce base currency instead of hardcoded GBP
+        $base_currency = get_option('woocommerce_currency', 'GBP');
+        $rate = Skydonate_Currency_Changer::get_rate($base_currency, $currency);
 
         if (!$rate || !is_numeric($rate)) {
             wp_send_json_error(['message' => 'Invalid or missing exchange rate']);
