@@ -301,10 +301,20 @@ class SkyDonate_License_Admin {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
         }
 
-        // Clear cache and re-validate
+        // Clear license cache and re-validate
         $license = skydonate_license();
         $license->clear_cache();
         $result = $license->validate( null, true );
+
+        // Also clear update cache to get fresh version info
+        if ( function_exists( 'skydonate_updater' ) ) {
+            skydonate_updater()->clear_cache();
+        }
+
+        // Also refresh remote functions if enabled
+        if ( function_exists( 'skydonate_refresh_remote_functions' ) && ! empty( $result['capabilities']['allow_remote_functions'] ) ) {
+            skydonate_refresh_remote_functions();
+        }
 
         if ( ! empty( $result['success'] ) ) {
             wp_send_json_success( array(
@@ -313,6 +323,7 @@ class SkyDonate_License_Admin {
                 'data'    => array(
                     'status'  => $result['status'] ?? 'valid',
                     'expires' => $result['expires'] ?? '',
+                    'tier'    => $result['tier'] ?? '',
                 ),
             ) );
         } else {
@@ -334,6 +345,11 @@ class SkyDonate_License_Admin {
         // Check capability
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
+        }
+
+        // Clear updater cache to force fresh check
+        if ( function_exists( 'skydonate_updater' ) ) {
+            skydonate_updater()->clear_cache();
         }
 
         $result = skydonate_license()->check_update();
