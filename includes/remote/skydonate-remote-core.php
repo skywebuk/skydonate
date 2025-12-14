@@ -193,6 +193,7 @@ function skydonate_remote_get_orders_ids_by_product_id( $product_ids = [], $orde
 
     return $results;
 }
+endif;
 
 /**
  * Get top amount orders by product IDs
