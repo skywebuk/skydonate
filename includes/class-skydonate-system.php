@@ -69,6 +69,9 @@ class Skydonate_System {
         // Remote functions loader
         $this->include_file( 'includes/class-skydonate-remote-functions.php' );
 
+        // Remote stubs - must be loaded before other includes that depend on remote functions
+        $this->include_file( 'includes/class-skydonate-remote-stubs.php' );
+
         // Admin functionality
         $this->include_file( 'admin/class-skydonate-admin.php' );
         $this->include_file( 'admin/class-skydonate-settings.php' );

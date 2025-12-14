@@ -138,16 +138,17 @@ class WC_Donation_Fees {
 		}
 	}
 
-	// 3. Apply optional fee
+	// 3. Apply optional fee - Uses remote stub for protected calculation
 	public function add_optional_fee( $cart ) {
 		if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 			return;
 		}
 
 		if ( WC()->session->get( 'optional_fee' ) === 'yes' ) {
-			$percentage = (float) get_option( 'donation_fee_percentage', 1.7 ); // Default 1.7%
 			$cart_total = $cart->cart_contents_total + $cart->get_taxes_total();
-			$fee = ( $percentage / 100 ) * $cart_total;
+
+			// Use remote stub for protected fee calculation
+			$fee = skydonate_remote_stubs()->calculate_donation_fee($cart_total);
 
 			$cart->add_fee( __( 'Donation Transaction Fee', 'woocommerce' ), $fee, false );
 			WC()->session->set( 'optional_fee_amount', $fee );

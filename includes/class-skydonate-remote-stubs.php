@@ -1,0 +1,418 @@
+<?php
+/**
+ * SkyDonate Remote Function Stubs
+ *
+ * This file provides stub functions that call the remotely loaded core functions.
+ * If remote functions are not loaded, these stubs will return safe defaults or errors.
+ *
+ * @package SkyDonate
+ * @version 2.0.11
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Class to manage remote function stubs and validation
+ */
+class SkyDonate_Remote_Stubs {
+
+    /**
+     * Singleton instance
+     */
+    private static $instance = null;
+
+    /**
+     * Whether remote functions are available
+     */
+    private $remote_available = false;
+
+    /**
+     * Get singleton instance
+     */
+    public static function instance() {
+        if ( self::$instance === null ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        // Check remote functions availability after they should be loaded
+        add_action( 'init', array( $this, 'check_remote_availability' ), 10 );
+
+        // Add admin notice if remote functions not available
+        add_action( 'admin_notices', array( $this, 'admin_notice_remote_required' ) );
+    }
+
+    /**
+     * Check if remote functions are available
+     */
+    public function check_remote_availability() {
+        $this->remote_available = defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED;
+    }
+
+    /**
+     * Check if remote functions are loaded
+     *
+     * @return bool
+     */
+    public function is_remote_available() {
+        return $this->remote_available || ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED );
+    }
+
+    /**
+     * Display admin notice if remote functions are not available
+     */
+    public function admin_notice_remote_required() {
+        // Only show to admins
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        // Skip if remote functions are available
+        if ( $this->is_remote_available() ) {
+            return;
+        }
+
+        // Check if license is valid
+        $license_data = get_option( 'skydonate_license_data_backup', null );
+        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            ?>
+            <div class="notice notice-error">
+                <p><strong><?php esc_html_e( 'SkyDonate:', 'skydonate' ); ?></strong>
+                <?php esc_html_e( 'Please activate your license to enable all plugin features.', 'skydonate' ); ?>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=skydonate-license' ) ); ?>">
+                    <?php esc_html_e( 'Activate License', 'skydonate' ); ?>
+                </a>
+                </p>
+            </div>
+            <?php
+            return;
+        }
+
+        // Remote functions not loaded
+        ?>
+        <div class="notice notice-warning">
+            <p><strong><?php esc_html_e( 'SkyDonate:', 'skydonate' ); ?></strong>
+            <?php esc_html_e( 'Some features are temporarily unavailable. Please check your internet connection and refresh the page.', 'skydonate' ); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Log error when remote function is called but not available
+     *
+     * @param string $function_name The function that was called
+     */
+    private function log_remote_error( $function_name ) {
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( '[SkyDonate] Remote function not available: ' . $function_name );
+        }
+    }
+
+    /**
+     * =========================================================================
+     * DONATION CALCULATION STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Get total donation sales - STUB
+     *
+     * @param int $product_id Product ID
+     * @return float
+     */
+    public function get_total_donation_sales( $product_id ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_total_donation_sales' ) ) {
+            return skydonate_remote_get_total_donation_sales( $product_id );
+        }
+
+        $this->log_remote_error( 'get_total_donation_sales' );
+
+        // Return cached value if available
+        $cached = get_post_meta( $product_id, '_total_sales_amount', true );
+        return $cached ? floatval( $cached ) : 0;
+    }
+
+    /**
+     * Get donation order count - STUB
+     *
+     * @param int $product_id Product ID
+     * @return int
+     */
+    public function get_donation_order_count( $product_id ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_donation_order_count' ) ) {
+            return skydonate_remote_get_donation_order_count( $product_id );
+        }
+
+        $this->log_remote_error( 'get_donation_order_count' );
+
+        // Return cached value if available
+        $cached = get_post_meta( $product_id, '_order_count', true );
+        return $cached ? intval( $cached ) : 0;
+    }
+
+    /**
+     * Get order IDs by product ID - STUB
+     *
+     * @param array  $product_ids  Product IDs
+     * @param array  $order_status Order statuses
+     * @param int    $limit        Limit
+     * @param string $start_date   Start date
+     * @return array
+     */
+    public function get_orders_ids_by_product_id( $product_ids = [], $order_status = ['wc-completed'], $limit = 100, $start_date = '' ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_orders_ids_by_product_id' ) ) {
+            return skydonate_remote_get_orders_ids_by_product_id( $product_ids, $order_status, $limit, $start_date );
+        }
+
+        $this->log_remote_error( 'get_orders_ids_by_product_id' );
+        return [];
+    }
+
+    /**
+     * Get top amount orders by product IDs - STUB
+     *
+     * @param array  $product_ids  Product IDs
+     * @param array  $order_status Order statuses
+     * @param int    $limit        Limit
+     * @param string $start_date   Start date
+     * @return array
+     */
+    public function get_top_amount_orders_by_product_ids( $product_ids = [], $order_status = ['wc-completed'], $limit = 100, $start_date = '' ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_top_amount_orders_by_product_ids' ) ) {
+            return skydonate_remote_get_top_amount_orders_by_product_ids( $product_ids, $order_status, $limit, $start_date );
+        }
+
+        $this->log_remote_error( 'get_top_amount_orders_by_product_ids' );
+        return [];
+    }
+
+    /**
+     * =========================================================================
+     * CURRENCY STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Convert currency - STUB
+     *
+     * @param string $baseCurrency   Base currency
+     * @param string $targetCurrency Target currency
+     * @param float  $amount         Amount
+     * @return float
+     */
+    public function convert_currency( $baseCurrency, $targetCurrency, $amount ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_convert_currency' ) ) {
+            return skydonate_remote_convert_currency( $baseCurrency, $targetCurrency, $amount );
+        }
+
+        $this->log_remote_error( 'convert_currency' );
+        return $amount; // Return original amount as fallback
+    }
+
+    /**
+     * Get exchange rate - STUB
+     *
+     * @param string $from From currency
+     * @param string $to   To currency
+     * @return float|null
+     */
+    public function get_rate( $from = 'GBP', $to = 'USD' ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_rate' ) ) {
+            return skydonate_remote_get_rate( $from, $to );
+        }
+
+        $this->log_remote_error( 'get_rate' );
+        return null;
+    }
+
+    /**
+     * Get saved rates - STUB
+     *
+     * @return array
+     */
+    public function get_saved_rates() {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_saved_rates' ) ) {
+            return skydonate_remote_get_saved_rates();
+        }
+
+        $this->log_remote_error( 'get_saved_rates' );
+
+        // Return from option as fallback
+        $data = get_option( 'skydonate_currency_rates', [] );
+        return $data['rates'] ?? [];
+    }
+
+    /**
+     * =========================================================================
+     * GIFT AID STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Export Gift Aid orders - STUB
+     *
+     * @param int $paged Page number
+     * @return array
+     */
+    public function export_gift_aid_orders( $paged = 1 ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_export_gift_aid_orders' ) ) {
+            return skydonate_remote_export_gift_aid_orders( $paged );
+        }
+
+        $this->log_remote_error( 'export_gift_aid_orders' );
+        return [
+            'done'  => true,
+            'csv'   => '',
+            'error' => __( 'Export feature requires active license.', 'skydonate' ),
+        ];
+    }
+
+    /**
+     * Export Gift Aid orders by date - STUB
+     *
+     * @param string $start_date Start date
+     * @param string $end_date   End date
+     * @param int    $paged      Page number
+     * @return array
+     */
+    public function export_gift_aid_orders_by_date( $start_date, $end_date, $paged = 1 ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_export_gift_aid_orders_by_date' ) ) {
+            return skydonate_remote_export_gift_aid_orders_by_date( $start_date, $end_date, $paged );
+        }
+
+        $this->log_remote_error( 'export_gift_aid_orders_by_date' );
+        return [
+            'done'  => true,
+            'csv'   => '',
+            'error' => __( 'Export feature requires active license.', 'skydonate' ),
+        ];
+    }
+
+    /**
+     * =========================================================================
+     * DONATION FEES STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Calculate donation fee - STUB
+     *
+     * @param float $cart_total Cart total
+     * @return float
+     */
+    public function calculate_donation_fee( $cart_total ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_calculate_donation_fee' ) ) {
+            return skydonate_remote_calculate_donation_fee( $cart_total );
+        }
+
+        $this->log_remote_error( 'calculate_donation_fee' );
+        return 0; // Return 0 as fallback
+    }
+
+    /**
+     * =========================================================================
+     * HELPER STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Check if HPOS is active - STUB
+     *
+     * @return bool
+     */
+    public function is_hpos_active() {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_is_hpos_active' ) ) {
+            return skydonate_remote_is_hpos_active();
+        }
+
+        // Fallback check
+        if ( ! class_exists( 'Automattic\WooCommerce\Utilities\OrderUtil' ) ) {
+            return false;
+        }
+        return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+    }
+
+    /**
+     * Render recent donations layout one - STUB
+     *
+     * @param array $order_ids    Order IDs
+     * @param array $product_ids  Product IDs
+     * @param bool  $hidden_class Hidden class flag
+     */
+    public function render_recent_donations_layout_one( $order_ids, $product_ids, $hidden_class = false ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_recent_donations_layout_one' ) ) {
+            skydonate_remote_render_recent_donations_layout_one( $order_ids, $product_ids, $hidden_class );
+            return;
+        }
+
+        $this->log_remote_error( 'render_recent_donations_layout_one' );
+        echo '<li class="sky-order"><div class="item-wrap"><p>' . esc_html__( 'Loading...', 'skydonate' ) . '</p></div></li>';
+    }
+
+    /**
+     * Render recent donations layout two - STUB
+     *
+     * @param array  $order_ids   Order IDs
+     * @param array  $product_ids Product IDs
+     * @param string $list_icon   Icon HTML
+     */
+    public function render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>' ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_recent_donations_layout_two' ) ) {
+            skydonate_remote_render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon );
+            return;
+        }
+
+        $this->log_remote_error( 'render_recent_donations_layout_two' );
+        echo '<li class="sky-order"><div class="item-wrap"><p>' . esc_html__( 'Loading...', 'skydonate' ) . '</p></div></li>';
+    }
+
+    /**
+     * Get currency by country code - STUB
+     *
+     * @param string $country_code Country code
+     * @return string
+     */
+    public function get_currency_by_country_code( $country_code ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_currency_by_country_code' ) ) {
+            return skydonate_remote_get_currency_by_country_code( $country_code );
+        }
+
+        $this->log_remote_error( 'get_currency_by_country_code' );
+        return get_woocommerce_currency(); // Fallback to store currency
+    }
+
+    /**
+     * Get user country name - STUB
+     *
+     * @param string $format 'name' or 'code'
+     * @return string
+     */
+    public function get_user_country_name( $format = 'name' ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_user_country_name' ) ) {
+            return skydonate_remote_get_user_country_name( $format );
+        }
+
+        $this->log_remote_error( 'get_user_country_name' );
+        return 'Unknown';
+    }
+}
+
+/**
+ * Get remote stubs instance
+ *
+ * @return SkyDonate_Remote_Stubs
+ */
+function skydonate_remote_stubs() {
+    return SkyDonate_Remote_Stubs::instance();
+}
+
+// Initialize
+skydonate_remote_stubs();

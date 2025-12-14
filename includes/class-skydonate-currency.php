@@ -79,56 +79,26 @@ class Skydonate_Currency_Changer {
 
     /**
      * Retrieve the full saved rates array
+     * Uses remote stub for protected function
      */
     public static function get_saved_rates() {
-        $data = get_option( 'skydonate_currency_rates', [] );
-        return $data['rates'] ?? [];
+        return skydonate_remote_stubs()->get_saved_rates();
     }
 
     /**
      * Get single currency rate by code (e.g. 'BDT')
+     * Uses remote stub for protected function
      */
     public static function get_rate( $from = 'GBP', $to = 'USD' ) {
-        $rates = self::get_saved_rates();
-        $from  = strtoupper( $from );
-        $to    = strtoupper( $to );
-
-        if ( empty( $rates[ $from ] ) || empty( $rates[ $to ] ) ) {
-            return null;
-        }
-
-        // Prevent division by zero
-        if ( floatval( $rates[ $from ] ) === 0.0 ) {
-            return null;
-        }
-
-        // Convert via USD base
-        $value = $rates[ $to ] / $rates[ $from ];
-        return round( $value, 4 );
+        return skydonate_remote_stubs()->get_rate($from, $to);
     }
 
+    /**
+     * Convert currency amount
+     * Uses remote stub for protected function
+     */
     public static function convert_currency( $baseCurrency, $targetCurrency, $amount ) {
-        $rates = self::get_saved_rates(); // Retrieve saved currency rates
-        $baseCurrency   = strtoupper( $baseCurrency );
-        $targetCurrency = strtoupper( $targetCurrency );
-
-        // Check if rates exist
-        if ( empty( $rates[ $baseCurrency ] ) || empty( $rates[ $targetCurrency ] ) ) {
-            // Return original amount if rate missing
-            return $amount;
-        }
-
-        // Prevent division by zero
-        if ( floatval( $rates[ $baseCurrency ] ) === 0.0 ) {
-            return $amount;
-        }
-
-        // Conversion via USD base (or your saved rates logic)
-        $rate = $rates[ $targetCurrency ] / $rates[ $baseCurrency ];
-        $convertedAmount = $amount * $rate;
-
-        // Round to nearest integer (like JS Math.round)
-        return round( $convertedAmount, 2 );
+        return skydonate_remote_stubs()->convert_currency($baseCurrency, $targetCurrency, $amount);
     }
 
 

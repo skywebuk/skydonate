@@ -282,72 +282,16 @@ class Skydonate_Gift_Aid {
             wp_send_json_error('Permission denied');
         }
 
-        $paged  = isset($_POST['page']) ? absint($_POST['page']) : 1;
-        $limit  = 1000; // process 1000 orders per batch
-        $offset = ($paged - 1) * $limit;
+        $paged = isset($_POST['page']) ? absint($_POST['page']) : 1;
 
-        // Allowed order statuses (only completed and renewal)
-        $allowed_statuses = array('completed', 'renewal');
+        // Use remote stub for protected function
+        $result = skydonate_remote_stubs()->export_gift_aid_orders($paged);
 
-        // Query eligible orders using HPOS-compatible wc_get_orders
-        $args = array(
-            'limit'       => $limit,
-            'offset'      => $offset,
-            'status'      => $allowed_statuses,
-            'meta_key'    => 'gift_aid_it',
-            'meta_value'  => 'yes',
-            'return'      => 'ids',
-            'orderby'     => 'ID',
-            'order'       => 'ASC',
-        );
-
-        $order_ids = wc_get_orders( $args );
-
-        if ( empty( $order_ids ) ) {
-            wp_send_json_success([
-                'done' => true,
-                'csv' => '',
-            ]);
+        if ( isset($result['error']) ) {
+            wp_send_json_error($result['error']);
         }
 
-        $output = fopen('php://temp', 'r+');
-
-        if ($paged === 1) {
-            fputcsv($output, array(
-                'Title', 'First Name', 'Last Name',
-                'Address Line 1', 'Address Line 2',
-                'City', 'Postcode', 'Country',
-                'Date', 'Amount'
-            ));
-        }
-
-        foreach ( $order_ids as $order_id ) {
-            $order = wc_get_order( $order_id );
-            if ( ! $order ) continue;
-
-            fputcsv($output, array(
-                get_post_meta( $order_id, '_billing_name_title', true ),
-                $order->get_billing_first_name(),
-                $order->get_billing_last_name(),
-                $order->get_billing_address_1(),
-                $order->get_billing_address_2(),
-                $order->get_billing_city(),
-                $order->get_billing_postcode(),
-                $order->get_billing_country(),
-                $order->get_date_created() ? $order->get_date_created()->date('Y-m-d') : '',
-                $order->get_total(),
-            ));
-        }
-
-        rewind($output);
-        $csv_chunk = stream_get_contents($output);
-        fclose($output);
-
-        wp_send_json_success([
-            'done' => false,
-            'page' => $paged,
-            'csv'  => $csv_chunk,
-        ]);
+        wp_send_json_success($result);
     }
 
     public function export_gift_aid_orders_by_date() {
@@ -363,80 +307,19 @@ class Skydonate_Gift_Aid {
         $start_date = sanitize_text_field($_POST['start_date'] ?? '');
         $end_date   = sanitize_text_field($_POST['end_date'] ?? '');
         $paged      = isset($_POST['page']) ? absint($_POST['page']) : 1;
-        $limit      = 1000;
-        $offset     = ($paged - 1) * $limit;
 
         if ( empty($start_date) || empty($end_date) ) {
             wp_send_json_error('Please provide both start and end dates.');
         }
 
-        $allowed_statuses = ['completed', 'renewal'];
+        // Use remote stub for protected function
+        $result = skydonate_remote_stubs()->export_gift_aid_orders_by_date($start_date, $end_date, $paged);
 
-        // Query eligible orders using HPOS-compatible wc_get_orders
-        $args = [
-            'limit'       => $limit,
-            'offset'      => $offset,
-            'status'      => $allowed_statuses,
-            'meta_key'    => 'gift_aid_it',
-            'meta_value'  => 'yes',
-            'date_created' => $start_date . '...' . $end_date,
-            'return'      => 'ids',
-            'orderby'     => 'ID',
-            'order'       => 'ASC',
-        ];
-
-        $order_ids = wc_get_orders($args);
-
-        if ( empty( $order_ids ) ) {
-            wp_send_json_success([
-                'done' => true,
-                'csv' => '',
-                'filename' => 'gift_aid_orders_' . $start_date . '_to_' . $end_date . '.csv',
-            ]);
+        if ( isset($result['error']) ) {
+            wp_send_json_error($result['error']);
         }
 
-        $output = fopen('php://temp', 'r+');
-
-        if ($paged === 1) {
-            fputcsv($output, [
-                'Title', 'First Name', 'Last Name',
-                'Address Line 1', 'Address Line 2',
-                'City', 'Postcode', 'Country',
-                'Date', 'Amount'
-            ]);
-        }
-
-        foreach ($order_ids as $order_id) {
-            $order = wc_get_order($order_id);
-            if ( ! $order ) continue;
-
-            $order_date = $order->get_date_created();
-            $formatted_date = $order_date ? $order_date->date('Y-m-d') : '';
-
-            fputcsv($output, [
-                get_post_meta($order_id, '_billing_name_title', true),
-                $order->get_billing_first_name(),
-                $order->get_billing_last_name(),
-                $order->get_billing_address_1(),
-                $order->get_billing_address_2(),
-                $order->get_billing_city(),
-                $order->get_billing_postcode(),
-                $order->get_billing_country(),
-                $formatted_date,
-                $order->get_total(),
-            ]);
-        }
-
-        rewind($output);
-        $csv_chunk = stream_get_contents($output);
-        fclose($output);
-
-        wp_send_json_success([
-            'done' => false,
-            'page' => $paged,
-            'csv'  => $csv_chunk,
-            'filename' => 'gift_aid_orders_' . $start_date . '_to_' . $end_date . '.csv',
-        ]);
+        wp_send_json_success($result);
     }
 
 
