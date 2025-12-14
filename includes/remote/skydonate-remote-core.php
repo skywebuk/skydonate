@@ -1494,7 +1494,7 @@ function skydonate_remote_render_layout_three( $id, $atts ) {
 
     // ----- Daily Date Picker -----
     if (in_array('show_daily', $button_visibility) && ($enable_start_date == 1 || $enable_end_date == 1)) {
-        echo '<div class="donation-daily-dates-group" style="' . ($donation_frequency === 'daily' ? 'display:block;' : 'display:none;') . '">';
+        echo '<div class="donation-daily-dates-group">';
         echo '<div class="date-title">' . __('Please set the start and end dates before donating.', 'skydonate') . '</div>';
         echo '<div class="donation-dates">';
         if ($enable_start_date == 1) {
