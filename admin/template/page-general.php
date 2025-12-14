@@ -7,18 +7,16 @@ global $SKDS, $SKDS_notice;
 
 $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
 $tabs       = apply_filters( 'skydonate_general_settings_tabs', [] );
-?>
 
-<?php
-	if ( $SKDS_notice ) {
-        echo '<header>';
-		$SKDS->plugin_admin_notice(
-			esc_html__( 'Settings has been updated!', 'skydonate' ),
-			'success'
-		);
-        echo '</header>';
-        $SKDS_notice = false;
-	}
+if ( $SKDS_notice ) {
+	echo '<header>';
+	$SKDS->plugin_admin_notice(
+		esc_html__( 'Settings has been updated!', 'skydonate' ),
+		'success'
+	);
+	echo '</header>';
+	$SKDS_notice = false;
+}
 ?>
 
 <div class="wrap">
