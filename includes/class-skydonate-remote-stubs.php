@@ -520,6 +520,75 @@ class SkyDonate_Remote_Stubs {
         $this->log_remote_error( 'subscription_price_string' );
         return $subscription_string; // Return original as fallback
     }
+
+    /**
+     * =========================================================================
+     * SHORTCODE RENDER STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Render donation form layout one - STUB
+     *
+     * @param int   $id   Product ID
+     * @param array $atts Shortcode attributes
+     */
+    public function render_layout_one( $id, $atts ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_layout_one' ) ) {
+            skydonate_remote_render_layout_one( $id, $atts );
+            return;
+        }
+
+        $this->log_remote_error( 'render_layout_one' );
+        echo '<div class="donation-form-error"><p>' . esc_html__( 'Donation form requires active license.', 'skydonate' ) . '</p></div>';
+    }
+
+    /**
+     * Render donation form layout two - STUB
+     *
+     * @param int   $id   Product ID
+     * @param array $atts Shortcode attributes
+     */
+    public function render_layout_two( $id, $atts ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_layout_two' ) ) {
+            skydonate_remote_render_layout_two( $id, $atts );
+            return;
+        }
+
+        $this->log_remote_error( 'render_layout_two' );
+        echo '<div class="donation-form-error"><p>' . esc_html__( 'Donation form requires active license.', 'skydonate' ) . '</p></div>';
+    }
+
+    /**
+     * Render donation form layout three - STUB
+     *
+     * @param int   $id   Product ID
+     * @param array $atts Shortcode attributes
+     */
+    public function render_layout_three( $id, $atts ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_layout_three' ) ) {
+            skydonate_remote_render_layout_three( $id, $atts );
+            return;
+        }
+
+        $this->log_remote_error( 'render_layout_three' );
+        echo '<div class="donation-form-error"><p>' . esc_html__( 'Donation form requires active license.', 'skydonate' ) . '</p></div>';
+    }
+
+    /**
+     * Render name on plaque field - STUB
+     *
+     * @param int $id Product ID
+     */
+    public function render_name_on_plaque( $id ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_name_on_plaque' ) ) {
+            skydonate_remote_render_name_on_plaque( $id );
+            return;
+        }
+
+        $this->log_remote_error( 'render_name_on_plaque' );
+        // Silent fail - don't show anything if not available
+    }
 }
 
 /**
