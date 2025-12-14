@@ -5,12 +5,20 @@
  * THIS FILE IS LOADED REMOTELY FROM THE LICENSE SERVER
  * It contains the protected core business logic functions
  *
+ * IMPORTANT: This file should be hosted on your license server,
+ * NOT included in the plugin distribution.
+ *
  * @package SkyDonate
  * @version 2.0.11
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
+}
+
+// Prevent double declaration
+if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED ) {
+    return;
 }
 
 /**
