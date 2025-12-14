@@ -9,17 +9,20 @@
  * NOT included in the plugin distribution.
  *
  * @package SkyDonate
- * @version 2.0.11
+ * @version 2.0.12
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Prevent double declaration
-if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED ) {
+// Prevent double declaration - check constant first
+if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED === true ) {
     return;
 }
+
+// Define constant immediately to prevent re-entry
+define( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED', true );
 
 /**
  * ============================================================================
@@ -34,6 +37,7 @@ if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTION
  * @param int $product_id The product ID
  * @return float Total sales amount
  */
+if ( ! function_exists( 'skydonate_remote_get_total_donation_sales' ) ) :
 function skydonate_remote_get_total_donation_sales( $product_id ) {
     global $wpdb;
 
@@ -80,6 +84,7 @@ function skydonate_remote_get_total_donation_sales( $product_id ) {
 
     return $total_sales_amount;
 }
+endif;
 
 /**
  * Get donation order count for a product
@@ -87,6 +92,7 @@ function skydonate_remote_get_total_donation_sales( $product_id ) {
  * @param int $product_id The product ID
  * @return int Order count
  */
+if ( ! function_exists( 'skydonate_remote_get_donation_order_count' ) ) :
 function skydonate_remote_get_donation_order_count( $product_id ) {
     global $wpdb;
 
@@ -127,6 +133,7 @@ function skydonate_remote_get_donation_order_count( $product_id ) {
 
     return $order_count;
 }
+endif;
 
 /**
  * Get order IDs by product ID
@@ -137,6 +144,7 @@ function skydonate_remote_get_donation_order_count( $product_id ) {
  * @param string $start_date    Start date filter
  * @return array Order IDs
  */
+if ( ! function_exists( 'skydonate_remote_get_orders_ids_by_product_id' ) ) :
 function skydonate_remote_get_orders_ids_by_product_id( $product_ids = [], $order_status = ['wc-completed'], $limit = 100, $start_date = '' ) {
     global $wpdb;
 
@@ -1524,17 +1532,6 @@ function skydonate_remote_render_name_on_plaque( $id ) {
         echo '<input type="text" name="cart_custom_text" class="short" placeholder="' . esc_attr($field_placeholder) . '">';
         echo '</div>';
     }
-}
-
-/**
- * ============================================================================
- * REMOTE FUNCTIONS LOADED MARKER
- * ============================================================================
- */
-
-// Set flag that remote functions are loaded
-if ( ! defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) ) {
-    define( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED', true );
 }
 
 // Add action to confirm remote functions are active
