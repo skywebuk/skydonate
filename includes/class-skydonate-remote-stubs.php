@@ -403,6 +403,123 @@ class SkyDonate_Remote_Stubs {
         $this->log_remote_error( 'get_user_country_name' );
         return 'Unknown';
     }
+
+    /**
+     * =========================================================================
+     * DONATION OPTIONS STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Capture cart item custom data - STUB
+     *
+     * @param array $cart_item    Cart item data
+     * @param int   $product_id   Product ID
+     * @param int   $variation_id Variation ID
+     * @return array
+     */
+    public function capture_cart_item_data( $cart_item, $product_id, $variation_id = 0 ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_capture_cart_item_data' ) ) {
+            return skydonate_remote_capture_cart_item_data( $cart_item, $product_id, $variation_id );
+        }
+
+        $this->log_remote_error( 'capture_cart_item_data' );
+        return $cart_item; // Return unmodified as fallback
+    }
+
+    /**
+     * Apply subscription to cart item - STUB
+     *
+     * @param array $cart_item Cart item data
+     * @return array
+     */
+    public function apply_subscription( $cart_item ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_apply_subscription' ) ) {
+            return skydonate_remote_apply_subscription( $cart_item );
+        }
+
+        $this->log_remote_error( 'apply_subscription' );
+        return $cart_item; // Return unmodified as fallback
+    }
+
+    /**
+     * Get subscription scheme - STUB
+     *
+     * @param array $cart_item Cart item data
+     * @return array
+     */
+    public function get_subscription_scheme( $cart_item ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_get_subscription_scheme' ) ) {
+            return skydonate_remote_get_subscription_scheme( $cart_item );
+        }
+
+        $this->log_remote_error( 'get_subscription_scheme' );
+        return isset($cart_item['bos4w_data']) ? $cart_item['bos4w_data'] : [];
+    }
+
+    /**
+     * Set subscription scheme - STUB
+     *
+     * @param array $cart_item Cart item data
+     * @param array $scheme    Subscription scheme
+     * @return bool
+     */
+    public function set_subscription_scheme( $cart_item, $scheme ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_set_subscription_scheme' ) ) {
+            return skydonate_remote_set_subscription_scheme( $cart_item, $scheme );
+        }
+
+        $this->log_remote_error( 'set_subscription_scheme' );
+        return false;
+    }
+
+    /**
+     * Apply subscriptions to cart - STUB
+     *
+     * @param WC_Cart $cart Cart object
+     */
+    public function apply_subscriptions( $cart ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_apply_subscriptions' ) ) {
+            skydonate_remote_apply_subscriptions( $cart );
+            return;
+        }
+
+        $this->log_remote_error( 'apply_subscriptions' );
+    }
+
+    /**
+     * Save order item data - STUB
+     *
+     * @param WC_Order_Item $item          Order item
+     * @param string        $cart_item_key Cart item key
+     * @param array         $values        Cart item values
+     * @param WC_Order      $order         Order object
+     */
+    public function save_order_item_data( $item, $cart_item_key, $values, $order ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_save_order_item_data' ) ) {
+            skydonate_remote_save_order_item_data( $item, $cart_item_key, $values, $order );
+            return;
+        }
+
+        $this->log_remote_error( 'save_order_item_data' );
+    }
+
+    /**
+     * Custom subscription price string - STUB
+     *
+     * @param string     $subscription_string Subscription string
+     * @param WC_Product $product            Product object
+     * @param array      $include            Include options
+     * @return string
+     */
+    public function subscription_price_string( $subscription_string, $product, $include ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_subscription_price_string' ) ) {
+            return skydonate_remote_subscription_price_string( $subscription_string, $product, $include );
+        }
+
+        $this->log_remote_error( 'subscription_price_string' );
+        return $subscription_string; // Return original as fallback
+    }
 }
 
 /**

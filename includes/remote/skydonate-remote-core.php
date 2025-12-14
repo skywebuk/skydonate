@@ -696,6 +696,328 @@ function skydonate_remote_get_user_country_name( $format = 'name' ) {
 
 /**
  * ============================================================================
+ * DONATION OPTIONS FUNCTIONS (PROTECTED)
+ * ============================================================================
+ */
+
+/**
+ * Capture cart item custom data for donations and subscriptions
+ *
+ * @param array $cart_item    Cart item data
+ * @param int   $product_id   Product ID
+ * @param int   $variation_id Variation ID
+ * @return array Modified cart item
+ */
+function skydonate_remote_capture_cart_item_data( $cart_item, $product_id, $variation_id = 0 ) {
+    // Handle variable products
+    $product_id = $variation_id ? $variation_id : $product_id;
+    $today   = date('Y-m-d');
+    $tomorrow = date('Y-m-d', strtotime('+1 day'));
+
+    // Donation option with fallbacks
+    if (!empty($_POST['donation_option'])) {
+        $donation_option = sanitize_text_field($_POST['donation_option']);
+    } elseif (!empty($cart_item['donation_option'])) {
+        $donation_option = sanitize_text_field($cart_item['donation_option']);
+    } else {
+        $donation_option = 'Once';
+    }
+
+    // Other fields with defaults
+    $start_date          = !empty($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : $today;
+    $end_date            = !empty($_POST['end_date']) ? sanitize_text_field($_POST['end_date']) : '';
+    $selected_amount     = !empty($_POST['selected_amount']) ? floatval($_POST['selected_amount']) : 0;
+    $custom_option       = !empty($_POST['custom_option']) ? floatval($_POST['custom_option']) : $selected_amount;
+    $donation_type       = !empty($_POST['donation_type']) ? sanitize_text_field($_POST['donation_type']) : '';
+    $custom_amount_label = !empty($_POST['custom_amount_label']) ? sanitize_text_field($_POST['custom_amount_label']) : '';
+
+    // Prevent past end date
+    if (!empty($end_date) && strtotime($end_date) < strtotime($today)) {
+        $end_date = $today;
+    }
+
+    // For non-daily donations, force start date to today
+    if (strtolower($donation_option) !== 'daily') {
+        $start_date = $today;
+    }
+
+    // Merge cart data safely
+    if (empty($cart_item['start_date'])) {
+        $cart_item['start_date'] = $start_date;
+    }
+    if (empty($cart_item['end_date'])) {
+        $cart_item['end_date'] = $end_date;
+    }
+    if (empty($cart_item['donation_option'])) {
+        $cart_item['donation_option'] = $donation_option;
+    }
+    if (empty($cart_item['donation_amount'])) {
+        $cart_item['donation_amount'] = $selected_amount;
+    }
+    if (empty($cart_item['custom_option_price'])) {
+        $cart_item['custom_option_price'] = $custom_option;
+    }
+    if ($donation_type) {
+        $cart_item['donation_type'] = $donation_type;
+    }
+    if ($custom_amount_label) {
+        $cart_item['custom_amount_label'] = $custom_amount_label;
+    }
+
+    // Period mapping
+    $period_map = [
+        'daily'   => 'day',
+        'day'     => 'day',
+        'weekly'  => 'week',
+        'week'    => 'week',
+        'monthly' => 'month',
+        'month'   => 'month',
+        'yearly'  => 'year',
+        'year'    => 'year',
+    ];
+
+    $donation_option_lower = strtolower($donation_option);
+    $selected_period = $period_map[$donation_option_lower] ?? 'week';
+    $period_interval = 1;
+
+    // Subscription setup for recurring donations
+    if ($donation_option_lower !== 'once') {
+        if ($donation_option_lower === 'daily') {
+            // Trial: days until start
+            $trial_length = (strtotime($start_date) - strtotime($today)) / DAY_IN_SECONDS;
+            $trial_length = max(0, (int)$trial_length);
+
+            // Subscription length: days between start and end
+            $subs_length = !empty($end_date) ? (strtotime($end_date) - strtotime($start_date)) / DAY_IN_SECONDS : 0;
+            $subs_length = max(0, (int)$subs_length);
+        } else {
+            $trial_length = 0;
+            $subs_length  = 0;
+        }
+
+        $cart_item['bos4w_data'] = [
+            'selected_subscription' => "1_{$selected_period}_{$trial_length}",
+            'discounted_price'      => 0,
+            'subscription_length'   => $subs_length,
+        ];
+
+        $cart_item['_subscription_period']          = $selected_period;
+        $cart_item['_subscription_period_interval'] = $period_interval;
+        $cart_item['_subscription_length']          = $subs_length;
+        $cart_item['_subscription_trial_length']    = $trial_length;
+        $cart_item['_subscription_trial_period']    = $selected_period;
+    }
+
+    return $cart_item;
+}
+
+/**
+ * Apply subscription scheme to cart item
+ *
+ * @param array $cart_item Cart item data
+ * @return array Modified cart item
+ */
+function skydonate_remote_apply_subscription( $cart_item ) {
+    $scheme = skydonate_remote_get_subscription_scheme($cart_item);
+    $use_regular_price = apply_filters('bos_use_regular_price', false);
+
+    if ($scheme) {
+        skydonate_remote_set_subscription_scheme($cart_item, $scheme);
+
+        $product = $cart_item['data'];
+
+        // Safely get selected_subscription
+        $selected_subscription = $scheme['selected_subscription'] ?? '';
+        if (!empty($selected_subscription)) {
+            $plan_data = explode('_', $selected_subscription);
+            $discount = end($plan_data);
+
+            // Calculate price
+            $price = !$use_regular_price ? $product->get_price() : $product->get_regular_price();
+            $discounted_price = $discount > 0 ? $price - ($price * ($discount / 100)) : $price;
+
+            $product->set_price(round($discounted_price, wc_get_price_decimals()));
+        }
+    }
+
+    return apply_filters('bos4w_cart_item_data', $cart_item);
+}
+
+/**
+ * Get subscription scheme from cart item
+ *
+ * @param array $cart_item Cart item data
+ * @return array Subscription scheme
+ */
+function skydonate_remote_get_subscription_scheme( $cart_item ) {
+    return isset($cart_item['bos4w_data']) ? $cart_item['bos4w_data'] : [];
+}
+
+/**
+ * Set subscription meta for product/cart item
+ *
+ * @param array $cart_item Cart item data
+ * @param array $scheme    Subscription scheme
+ * @return bool Success status
+ */
+function skydonate_remote_set_subscription_scheme( $cart_item, $scheme ) {
+    // Make sure selected_subscription exists
+    if (empty($scheme['selected_subscription'])) {
+        return false;
+    }
+
+    $plan_data = explode('_', $scheme['selected_subscription']);
+
+    // Safely assign values
+    $interval     = isset($plan_data[0]) ? $plan_data[0] : 1;
+    $period       = isset($plan_data[1]) ? $plan_data[1] : 'day';
+    $trial_length = isset($plan_data[2]) ? (int)$plan_data[2] : 0;
+
+    // Save subscription meta
+    $cart_item['data']->update_meta_data('_subscription_period', $period);
+    $cart_item['data']->update_meta_data('_subscription_period_interval', $interval);
+    $cart_item['data']->update_meta_data('_subscription_plan_data', $plan_data);
+
+    if (!empty($scheme['subscription_length'])) {
+        $cart_item['data']->update_meta_data('_subscription_length', $scheme['subscription_length']);
+    }
+
+    // Add trial meta
+    if (!empty($trial_length)) {
+        $cart_item['data']->update_meta_data('_subscription_trial_length', $trial_length);
+        $cart_item['data']->update_meta_data('_subscription_trial_period', 'day');
+    }
+
+    // Optional: discounted price
+    if (isset($scheme['discounted_price'])) {
+        $cart_item['data']->update_meta_data('_subscription_price', $scheme['discounted_price']);
+    }
+
+    return true;
+}
+
+/**
+ * Apply subscriptions to all applicable cart items
+ *
+ * @param WC_Cart $cart Cart object
+ */
+function skydonate_remote_apply_subscriptions( $cart ) {
+    foreach ($cart->cart_contents as $key => $item) {
+        if (isset($item['bos4w_data']) && !empty($item['bos4w_data'])) {
+            $cart->cart_contents[$key] = skydonate_remote_apply_subscription($item);
+        }
+    }
+}
+
+/**
+ * Save order item custom data for donations
+ *
+ * @param WC_Order_Item $item          Order item
+ * @param string        $cart_item_key Cart item key
+ * @param array         $values        Cart item values
+ * @param WC_Order      $order         Order object
+ */
+function skydonate_remote_save_order_item_data( $item, $cart_item_key, $values, $order ) {
+    if (!empty($values['donation_option']) && $values['donation_option'] === 'Daily') {
+        // Save daily donation meta
+        $item->add_meta_data('_start_date', $values['start_date'], true);
+        $item->add_meta_data('_end_date', $values['end_date'], true);
+        $item->add_meta_data('_billing_period', 'day', true);
+        $item->add_meta_data('_billing_interval', 1, true);
+        $item->add_meta_data('_daily_price', $values['daily_price'] ?? $values['custom_option_price'] ?? 0, true);
+
+        // Calculate and save total days
+        $start = new DateTime($values['start_date']);
+        $end = new DateTime($values['end_date']);
+        $days = $start->diff($end)->days;
+        $item->add_meta_data('Total Days', $days, true);
+        $item->add_meta_data('Donation Schedule', sprintf('%s to %s', $start->format('M j, Y'), $end->format('M j, Y')), true);
+    }
+
+    if (isset($values['custom_option_price'])) {
+        $item->add_meta_data('Amount', $values['custom_option_price'], true);
+    }
+
+    if (!empty($values['donation_type'])) {
+        $item->add_meta_data('Donation Type', $values['donation_type'], true);
+    }
+
+    if (!empty($values['custom_amount_label'])) {
+        $item->add_meta_data('Amount Label', $values['custom_amount_label'], true);
+    }
+}
+
+/**
+ * Custom subscription price string for daily donations
+ *
+ * @param string     $subscription_string Subscription string
+ * @param WC_Product $product            Product object
+ * @param array      $include            Include options
+ * @return string Modified subscription string
+ */
+function skydonate_remote_subscription_price_string( $subscription_string, $product, $include ) {
+    if ( ! function_exists( 'wcs_get_price_including_tax' ) || ! is_object( $product ) ) {
+        return $subscription_string;
+    }
+
+    // Get subscription details
+    $base_price          = floatval( $product->get_price() );
+    $price_html          = wc_price( $base_price );
+    $billing_interval    = WC_Subscriptions_Product::get_interval( $product );
+    $billing_period      = WC_Subscriptions_Product::get_period( $product );
+    $subscription_length = WC_Subscriptions_Product::get_length( $product );
+
+    // Trial = future donation period
+    $trial_length = WC_Subscriptions_Product::get_trial_length( $product );
+    $trial_period = WC_Subscriptions_Product::get_trial_period( $product );
+
+    // Only change daily subscriptions
+    if ( $billing_period !== 'day' ) {
+        return $subscription_string;
+    }
+
+    // Calculate total
+    $total_amount      = $subscription_length > 0 ? $base_price * $subscription_length : 0;
+    $total_amount_html = wc_price( $total_amount );
+
+    // Format billing period label
+    $period_label = $billing_interval > 1 ? sprintf( _n( '%d day', '%d days', $billing_interval, 'skydonate' ), $billing_interval ) : __( 'Day', 'skydonate' );
+
+    $tip_text = '';
+
+    // Build tooltip text
+    if ( $subscription_length <= 0 ) {
+        if ( $trial_length > 0 ) {
+            $day_label = _n( 'day', 'days', $trial_length, 'skydonate' );
+            $tip_text .= sprintf( __( '%d %s future donation period.', 'skydonate' ), $trial_length, $day_label );
+        }
+    } else {
+        $length_label = _n( 'day', 'days', $subscription_length, 'skydonate' );
+        $tip_text .= sprintf( __( "You'll donate %s daily, totaling %s over %d %s.", 'skydonate' ), $price_html, $total_amount_html, $subscription_length, $length_label );
+
+        if ( $trial_length > 0 ) {
+            $trial_label = _n( 'day', 'days', $trial_length, 'skydonate' );
+            $tip_text .= sprintf( __( " With a %d-%s future donation period.", 'skydonate' ), $trial_length, $trial_label );
+        }
+    }
+
+    // Build new price string
+    $new_string  = $price_html . " / {$period_label}";
+    if (empty($tip_text)) {
+        return $new_string;
+    }
+    $new_string .= '<span class="tiptip">';
+    $new_string .= '<i class="far fa-circle-info"></i>';
+    $new_string .= '<span class="tip-text">';
+    $new_string .= wp_kses_post( $tip_text );
+    $new_string .= '</span>';
+    $new_string .= '</span>';
+
+    return $new_string;
+}
+
+/**
+ * ============================================================================
  * REMOTE FUNCTIONS LOADED MARKER
  * ============================================================================
  */
