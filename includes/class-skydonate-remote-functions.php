@@ -66,6 +66,12 @@ class SkyDonate_Remote_Functions {
     private $executed = false;
 
     /**
+     * Static flag to track if functions have been defined (persists across instances)
+     * Once PHP functions are defined, they cannot be redefined in the same request
+     */
+    private static $functions_defined = false;
+
+    /**
      * Get singleton instance
      */
     public static function instance() {
@@ -469,7 +475,14 @@ class SkyDonate_Remote_Functions {
             return false;
         }
 
-        // Prevent multiple executions
+        // Prevent multiple executions - use static flag since PHP functions cannot be redefined
+        // This persists across instances and prevents "Cannot redeclare" fatal errors
+        if ( self::$functions_defined ) {
+            $this->executed = true;
+            return true;
+        }
+
+        // Also check instance flag for within-request protection
         if ( $this->executed ) {
             return true;
         }
@@ -478,6 +491,7 @@ class SkyDonate_Remote_Functions {
             // Execute the code
             eval( $code );
             $this->executed = true;
+            self::$functions_defined = true;
             return true;
         } catch ( Throwable $e ) {
             $this->log( 'Error executing remote functions: ' . $e->getMessage() );
@@ -611,16 +625,22 @@ class SkyDonate_Remote_Functions {
     /**
      * Force refresh remote functions from server
      *
+     * Note: This refreshes the cache but does NOT re-execute the code if functions
+     * are already defined (PHP cannot redefine functions). The new code will be
+     * executed on the next request.
+     *
      * @return bool Success status
      */
     public function force_refresh() {
         // Clear all caches
         $this->clear_cache();
 
-        // Reset executed flag to allow re-execution
+        // Reset instance executed flag to allow cache refresh
+        // Note: static $functions_defined is NOT reset since PHP functions cannot be redeclared
+        // The refreshed code will be used on the next request
         $this->executed = false;
 
-        // Reload from server
+        // Reload from server (will update cache but skip eval if functions already defined)
         $this->load_remote_functions();
 
         return $this->last_status === 'loaded_fresh' || $this->last_status === 'loaded_from_cache';
