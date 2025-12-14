@@ -6,7 +6,7 @@
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.8
+ * @version 2.0.9
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -226,9 +226,18 @@ class SkyDonate_Remote_Functions {
                 return;
             }
 
-            // Clear cache and reload
+            // Clear cache
             $this->log( 'Auto-update check: New version detected (v' . $remote_version . ', tier: ' . $remote_tier . '), updating...' );
             $this->clear_cache();
+
+            // If functions already loaded in this request, just refresh cache for next request
+            if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED === true ) {
+                $this->log( 'Auto-update: Functions already loaded, caching new code for next request' );
+                $this->fetch_and_cache_code();
+                return;
+            }
+
+            // Otherwise, load the new code
             $this->load_remote_functions();
         }
     }
@@ -469,8 +478,16 @@ class SkyDonate_Remote_Functions {
             return false;
         }
 
-        // Prevent multiple executions
+        // Prevent multiple executions using instance flag
         if ( $this->executed ) {
+            return true;
+        }
+
+        // Additional safety: check if remote functions constant is already defined
+        // This prevents double-declaration errors even if force_refresh() resets $executed
+        if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED === true ) {
+            $this->log( 'Remote functions already loaded (constant check), skipping eval' );
+            $this->executed = true;
             return true;
         }
 
@@ -617,6 +634,16 @@ class SkyDonate_Remote_Functions {
         // Clear all caches
         $this->clear_cache();
 
+        // Check if functions are already loaded in this request (constant-based)
+        // If so, we can refresh the cache but cannot re-execute in this request
+        if ( defined( 'SKYDONATE_REMOTE_FUNCTIONS_LOADED' ) && SKYDONATE_REMOTE_FUNCTIONS_LOADED === true ) {
+            $this->log( 'Force refresh: Cache cleared. Functions already loaded in this request, new code will load on next request.' );
+            $this->last_status = 'cache_refreshed_pending';
+            // Re-fetch and cache the code for next request, but don't try to execute
+            $this->fetch_and_cache_code();
+            return true;
+        }
+
         // Reset executed flag to allow re-execution
         $this->executed = false;
 
@@ -624,6 +651,74 @@ class SkyDonate_Remote_Functions {
         $this->load_remote_functions();
 
         return $this->last_status === 'loaded_fresh' || $this->last_status === 'loaded_from_cache';
+    }
+
+    /**
+     * Fetch and cache remote code without executing
+     * Used for refreshing cache when functions are already loaded
+     *
+     * @return bool Success status
+     */
+    private function fetch_and_cache_code() {
+        $license_data = $this->get_license_data();
+
+        if ( empty( $license_data ) || empty( $license_data['success'] ) ) {
+            return false;
+        }
+
+        if ( empty( $license_data['remote_functions_url'] ) ) {
+            return false;
+        }
+
+        if ( empty( $license_data['capabilities']['allow_remote_functions'] ) ) {
+            return false;
+        }
+
+        $response = wp_remote_get( $license_data['remote_functions_url'], array(
+            'timeout'   => 15,
+            'sslverify' => true,
+            'headers'   => $this->get_request_headers(),
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            return false;
+        }
+
+        $status_code = wp_remote_retrieve_response_code( $response );
+        if ( $status_code !== 200 ) {
+            return false;
+        }
+
+        $code = wp_remote_retrieve_body( $response );
+        if ( empty( $code ) || ! $this->is_valid_php_code( $code ) ) {
+            return false;
+        }
+
+        $executable_code = $this->prepare_code_for_execution( $code );
+        if ( empty( $executable_code ) ) {
+            return false;
+        }
+
+        $code_hash = hash( 'sha256', $executable_code );
+        $remote_version = wp_remote_retrieve_header( $response, 'X-Functions-Version' );
+        $remote_tier = wp_remote_retrieve_header( $response, 'X-License-Tier' );
+
+        // Store in cache for next request
+        set_transient( $this->code_cache_key, $executable_code, $this->cache_duration );
+        set_transient( $this->hash_cache_key, $code_hash, $this->cache_duration );
+        set_transient( $this->loaded_key, time(), $this->cache_duration );
+
+        if ( $remote_version ) {
+            set_transient( $this->version_key, $remote_version, $this->cache_duration );
+        }
+        if ( $remote_tier ) {
+            set_transient( $this->tier_key, $remote_tier, $this->cache_duration );
+        }
+
+        update_option( 'skydonate_remote_functions_fallback', $executable_code, false );
+
+        $this->log( 'Cache refreshed with new code (hash: ' . substr( $code_hash, 0, 16 ) . '...), will execute on next request' );
+        return true;
     }
 
     /**
