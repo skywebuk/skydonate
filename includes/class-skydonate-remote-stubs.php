@@ -589,6 +589,139 @@ class SkyDonate_Remote_Stubs {
         $this->log_remote_error( 'render_name_on_plaque' );
         // Silent fail - don't show anything if not available
     }
+
+    /**
+     * =========================================================================
+     * WOOCOMMERCE PRODUCT DATA TABS STUBS
+     * =========================================================================
+     */
+
+    /**
+     * Register product data tabs - STUB
+     *
+     * @param array $tabs Existing tabs
+     * @return array Modified tabs
+     */
+    public function register_product_data_tabs( $tabs ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_register_product_data_tabs' ) ) {
+            return skydonate_remote_register_product_data_tabs( $tabs );
+        }
+
+        $this->log_remote_error( 'register_product_data_tabs' );
+        // Fallback - add tab directly
+        $tabs['skydonate_donation_fields'] = [
+            'label' => __('Donation Fields', 'skydonate'),
+            'target' => 'skydonate_options_data',
+            'class' => ['show_if_simple', 'show_if_variable'],
+            'priority' => 21,
+        ];
+        return $tabs;
+    }
+
+    /**
+     * Render product data panels - STUB
+     */
+    public function render_product_data_panels() {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_product_data_panels' ) ) {
+            skydonate_remote_render_product_data_panels();
+            return;
+        }
+
+        $this->log_remote_error( 'render_product_data_panels' );
+        echo '<div id="skydonate_options_data" class="panel woocommerce_options_panel">';
+        echo '<div class="options_group"><p>' . esc_html__( 'Donation fields require active license.', 'skydonate' ) . '</p></div>';
+        echo '</div>';
+    }
+
+    /**
+     * Save product fields - STUB
+     *
+     * @param int $post_id Post ID
+     */
+    public function save_product_fields( $post_id ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_save_product_fields' ) ) {
+            skydonate_remote_save_product_fields( $post_id );
+            return;
+        }
+
+        $this->log_remote_error( 'save_product_fields' );
+        // Silent fail - can't save without remote functions
+    }
+
+    /**
+     * Display cart item custom data - STUB
+     *
+     * @param array $item_data  Item data
+     * @param array $cart_item  Cart item
+     * @return array Modified item data
+     */
+    public function display_cart_item_custom_data( $item_data, $cart_item ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_display_cart_item_custom_data' ) ) {
+            return skydonate_remote_display_cart_item_custom_data( $item_data, $cart_item );
+        }
+
+        $this->log_remote_error( 'display_cart_item_custom_data' );
+        // Fallback - add basic display
+        if (!empty($cart_item['donation_type'])) {
+            $item_data[] = [
+                'name'  => __('Donation Type', 'skydonate'),
+                'value' => esc_html($cart_item['donation_type']),
+            ];
+        }
+        if (!empty($cart_item['custom_amount_label'])) {
+            $item_data[] = [
+                'name'  => __('Amount Label', 'skydonate'),
+                'value' => esc_html($cart_item['custom_amount_label']),
+            ];
+        }
+        return $item_data;
+    }
+
+    /**
+     * Maybe mark donation as subscription - STUB
+     *
+     * @param bool       $is_subscription Whether the product is already considered a subscription
+     * @param int        $product_id      The product ID being checked
+     * @param WC_Product $product         The product object
+     * @return bool
+     */
+    public function maybe_mark_donation_as_subscription( $is_subscription, $product_id, $product ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_maybe_mark_donation_as_subscription' ) ) {
+            return skydonate_remote_maybe_mark_donation_as_subscription( $is_subscription, $product_id, $product );
+        }
+
+        $this->log_remote_error( 'maybe_mark_donation_as_subscription' );
+        // Fallback - check meta directly
+        if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return $is_subscription;
+        }
+        $plans = $product->get_meta( '_subscription_plan_data' );
+        if ( $plans ) {
+            return true;
+        }
+        return $is_subscription;
+    }
+
+    /**
+     * Subscription schemes on add to cart - STUB
+     *
+     * @param string $item_key     Cart item key
+     * @param int    $product_id   Product ID
+     * @param int    $quantity     Quantity
+     * @param int    $variation_id Variation ID
+     * @param array  $variation    Variation data
+     * @param array  $cart_item    Cart item data
+     */
+    public function subscription_schemes_on_add_to_cart( $item_key, $product_id, $quantity, $variation_id, $variation, $cart_item ) {
+        if ( $this->is_remote_available() && function_exists( 'skydonate_remote_subscription_schemes_on_add_to_cart' ) ) {
+            skydonate_remote_subscription_schemes_on_add_to_cart( $item_key, $product_id, $quantity, $variation_id, $variation, $cart_item );
+            return;
+        }
+
+        $this->log_remote_error( 'subscription_schemes_on_add_to_cart' );
+        // Fallback - call apply_subscriptions directly
+        $this->apply_subscriptions( WC()->cart );
+    }
 }
 
 /**
