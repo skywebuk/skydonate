@@ -1126,9 +1126,9 @@ function skydonate_remote_render_layout_one( $id, $atts ) {
     // ----- Donation Frequency Buttons -----
     $frequencies = [
         'once'    => __('Once', 'skydonate'),
-        'daily'   => __('Daily', 'skydonate'),
-        'weekly'  => __('Weekly', 'skydonate'),
         'monthly' => __('Monthly', 'skydonate'),
+        'weekly'  => __('Weekly', 'skydonate'),
+        'daily'   => __('Daily', 'skydonate'),
         'yearly'  => __('Yearly', 'skydonate'),
     ];
 
@@ -1286,9 +1286,9 @@ function skydonate_remote_render_layout_two( $id, $atts ) {
     // ----- Donation Frequency Buttons -----
     $frequencies = [
         'once'    => __('Once', 'skydonate'),
-        'daily'   => __('Daily', 'skydonate'),
-        'weekly'  => __('Weekly', 'skydonate'),
         'monthly' => __('Monthly', 'skydonate'),
+        'weekly'  => __('Weekly', 'skydonate'),
+        'daily'   => __('Daily', 'skydonate'),
         'yearly'  => __('Yearly', 'skydonate'),
     ];
 
@@ -1440,9 +1440,9 @@ function skydonate_remote_render_layout_three( $id, $atts ) {
 
     $frequencies = [
         'once'    => __('One-off', 'skydonate'),
-        'daily'   => __('Daily', 'skydonate'),
-        'weekly'  => __('Weekly', 'skydonate'),
         'monthly' => __('Monthly', 'skydonate'),
+        'weekly'  => __('Weekly', 'skydonate'),
+        'daily'   => __('Daily', 'skydonate'),
         'yearly'  => __('Yearly', 'skydonate'),
     ];
 
@@ -1839,13 +1839,13 @@ function skydonate_remote_render_product_data_panels() {
                     <?php _e('One-Time Donation', 'skydonate'); ?>
                 </label>
 
-                <!-- Daily Donation -->
-                <label class="skydonate-radio daily">
+                <!-- Monthly Donation -->
+                <label class="skydonate-radio monthly">
                     <input type="radio"
                         name="donation_frequency"
-                        value="daily"
-                        <?php checked($donation_frequency, 'daily'); ?>>
-                    <?php _e('Daily Donation', 'skydonate'); ?>
+                        value="monthly"
+                        <?php checked($donation_frequency, 'monthly'); ?>>
+                    <?php _e('Monthly Donation', 'skydonate'); ?>
                 </label>
 
                 <!-- Weekly Donation -->
@@ -1857,13 +1857,13 @@ function skydonate_remote_render_product_data_panels() {
                     <?php _e('Weekly Donation', 'skydonate'); ?>
                 </label>
 
-                <!-- Monthly Donation -->
-                <label class="skydonate-radio monthly">
+                <!-- Daily Donation -->
+                <label class="skydonate-radio daily">
                     <input type="radio"
                         name="donation_frequency"
-                        value="monthly"
-                        <?php checked($donation_frequency, 'monthly'); ?>>
-                    <?php _e('Monthly Donation', 'skydonate'); ?>
+                        value="daily"
+                        <?php checked($donation_frequency, 'daily'); ?>>
+                    <?php _e('Daily Donation', 'skydonate'); ?>
                 </label>
 
                 <!-- Yearly Donation -->
