@@ -204,6 +204,7 @@ endif;
  * @param string $start_date    Start date filter
  * @return array Order IDs sorted by amount
  */
+if ( ! function_exists( 'skydonate_remote_get_top_amount_orders_by_product_ids' ) ) :
 function skydonate_remote_get_top_amount_orders_by_product_ids(
     $product_ids = [],
     $order_status = ['wc-completed'],
@@ -254,6 +255,7 @@ function skydonate_remote_get_top_amount_orders_by_product_ids(
     $prepared_sql = $wpdb->prepare($sql, $query_params);
     return $wpdb->get_col($prepared_sql);
 }
+endif;
 
 /**
  * ============================================================================
@@ -269,6 +271,7 @@ function skydonate_remote_get_top_amount_orders_by_product_ids(
  * @param float  $amount         Amount to convert
  * @return float Converted amount
  */
+if ( ! function_exists( 'skydonate_remote_convert_currency' ) ) :
 function skydonate_remote_convert_currency( $baseCurrency, $targetCurrency, $amount ) {
     $rates = skydonate_remote_get_saved_rates();
     $baseCurrency   = strtoupper( $baseCurrency );
@@ -290,6 +293,7 @@ function skydonate_remote_convert_currency( $baseCurrency, $targetCurrency, $amo
 
     return round( $convertedAmount, 2 );
 }
+endif;
 
 /**
  * Get exchange rate between currencies
@@ -298,6 +302,7 @@ function skydonate_remote_convert_currency( $baseCurrency, $targetCurrency, $amo
  * @param string $to   To currency code
  * @return float|null Exchange rate or null
  */
+if ( ! function_exists( 'skydonate_remote_get_rate' ) ) :
 function skydonate_remote_get_rate( $from = 'GBP', $to = 'USD' ) {
     $rates = skydonate_remote_get_saved_rates();
     $from  = strtoupper( $from );
@@ -316,16 +321,19 @@ function skydonate_remote_get_rate( $from = 'GBP', $to = 'USD' ) {
     $value = $rates[ $to ] / $rates[ $from ];
     return round( $value, 4 );
 }
+endif;
 
 /**
  * Get saved currency rates
  *
  * @return array Currency rates
  */
+if ( ! function_exists( 'skydonate_remote_get_saved_rates' ) ) :
 function skydonate_remote_get_saved_rates() {
     $data = get_option( 'skydonate_currency_rates', [] );
     return $data['rates'] ?? [];
 }
+endif;
 
 /**
  * ============================================================================
@@ -339,6 +347,7 @@ function skydonate_remote_get_saved_rates() {
  * @param int $paged Page number
  * @return array Export data
  */
+if ( ! function_exists( 'skydonate_remote_export_gift_aid_orders' ) ) :
 function skydonate_remote_export_gift_aid_orders( $paged = 1 ) {
     $limit  = 1000;
     $offset = ($paged - 1) * $limit;
@@ -406,6 +415,7 @@ function skydonate_remote_export_gift_aid_orders( $paged = 1 ) {
         'csv'  => $csv_chunk,
     ];
 }
+endif;
 
 /**
  * Export Gift Aid orders by date range
@@ -415,6 +425,7 @@ function skydonate_remote_export_gift_aid_orders( $paged = 1 ) {
  * @param int    $paged      Page number
  * @return array Export data
  */
+if ( ! function_exists( 'skydonate_remote_export_gift_aid_orders_by_date' ) ) :
 function skydonate_remote_export_gift_aid_orders_by_date( $start_date, $end_date, $paged = 1 ) {
     $limit  = 1000;
     $offset = ($paged - 1) * $limit;
@@ -487,6 +498,7 @@ function skydonate_remote_export_gift_aid_orders_by_date( $start_date, $end_date
         'filename' => 'gift_aid_orders_' . $start_date . '_to_' . $end_date . '.csv',
     ];
 }
+endif;
 
 /**
  * ============================================================================
@@ -500,11 +512,13 @@ function skydonate_remote_export_gift_aid_orders_by_date( $start_date, $end_date
  * @param float $cart_total Cart total
  * @return float Fee amount
  */
+if ( ! function_exists( 'skydonate_remote_calculate_donation_fee' ) ) :
 function skydonate_remote_calculate_donation_fee( $cart_total ) {
     $percentage = (float) get_option( 'donation_fee_percentage', 1.7 );
     $fee = ( $percentage / 100 ) * $cart_total;
     return round( $fee, 2 );
 }
+endif;
 
 /**
  * ============================================================================
@@ -517,6 +531,7 @@ function skydonate_remote_calculate_donation_fee( $cart_total ) {
  *
  * @return bool
  */
+if ( ! function_exists( 'skydonate_remote_is_hpos_active' ) ) :
 function skydonate_remote_is_hpos_active() {
     if ( ! class_exists( 'Automattic\WooCommerce\Utilities\OrderUtil' ) ) {
         return false;
@@ -524,6 +539,7 @@ function skydonate_remote_is_hpos_active() {
 
     return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 }
+endif;
 
 /**
  * Render recent donations - Layout One
@@ -532,6 +548,7 @@ function skydonate_remote_is_hpos_active() {
  * @param array $product_ids  Product IDs
  * @param bool  $hidden_class Whether to add hidden class
  */
+if ( ! function_exists( 'skydonate_remote_render_recent_donations_layout_one' ) ) :
 function skydonate_remote_render_recent_donations_layout_one( $order_ids, $product_ids, $hidden_class = false ) {
     $counter = 0;
     $order_count = count($order_ids);
@@ -582,6 +599,7 @@ function skydonate_remote_render_recent_donations_layout_one( $order_ids, $produ
         }
     }
 }
+endif;
 
 /**
  * Render recent donations - Layout Two
@@ -590,6 +608,7 @@ function skydonate_remote_render_recent_donations_layout_one( $order_ids, $produ
  * @param array  $product_ids Product IDs
  * @param string $list_icon   Icon HTML
  */
+if ( ! function_exists( 'skydonate_remote_render_recent_donations_layout_two' ) ) :
 function skydonate_remote_render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>' ) {
     $counter = 0;
     $order_count = count($order_ids);
@@ -637,6 +656,7 @@ function skydonate_remote_render_recent_donations_layout_two( $order_ids, $produ
         echo '</li>';
     }
 }
+endif;
 
 /**
  * Get currency by country code
@@ -644,6 +664,7 @@ function skydonate_remote_render_recent_donations_layout_two( $order_ids, $produ
  * @param string $country_code Country code
  * @return string Currency code
  */
+if ( ! function_exists( 'skydonate_remote_get_currency_by_country_code' ) ) :
 function skydonate_remote_get_currency_by_country_code( $country_code ) {
     if ( empty( $country_code ) ) {
         return get_woocommerce_currency();
@@ -677,6 +698,7 @@ function skydonate_remote_get_currency_by_country_code( $country_code ) {
 
     return isset( $map[ $country_code ] ) ? $map[ $country_code ] : get_woocommerce_currency();
 }
+endif;
 
 /**
  * Get user country name from geolocation
@@ -684,6 +706,7 @@ function skydonate_remote_get_currency_by_country_code( $country_code ) {
  * @param string $format 'name' or 'code'
  * @return string Country name or code
  */
+if ( ! function_exists( 'skydonate_remote_get_user_country_name' ) ) :
 function skydonate_remote_get_user_country_name( $format = 'name' ) {
     if ( ! class_exists( 'WC_Geolocation' ) ) {
         return 'Unknown';
@@ -710,6 +733,7 @@ function skydonate_remote_get_user_country_name( $format = 'name' ) {
 
     return isset( $countries[ $country_code ] ) ? $countries[ $country_code ] : 'Unknown';
 }
+endif;
 
 /**
  * ============================================================================
@@ -725,6 +749,7 @@ function skydonate_remote_get_user_country_name( $format = 'name' ) {
  * @param int   $variation_id Variation ID
  * @return array Modified cart item
  */
+if ( ! function_exists( 'skydonate_remote_capture_cart_item_data' ) ) :
 function skydonate_remote_capture_cart_item_data( $cart_item, $product_id, $variation_id = 0 ) {
     // Handle variable products
     $product_id = $variation_id ? $variation_id : $product_id;
@@ -827,6 +852,7 @@ function skydonate_remote_capture_cart_item_data( $cart_item, $product_id, $vari
 
     return $cart_item;
 }
+endif;
 
 /**
  * Apply subscription scheme to cart item
@@ -834,6 +860,7 @@ function skydonate_remote_capture_cart_item_data( $cart_item, $product_id, $vari
  * @param array $cart_item Cart item data
  * @return array Modified cart item
  */
+if ( ! function_exists( 'skydonate_remote_apply_subscription' ) ) :
 function skydonate_remote_apply_subscription( $cart_item ) {
     $scheme = skydonate_remote_get_subscription_scheme($cart_item);
     $use_regular_price = apply_filters('bos_use_regular_price', false);
@@ -859,6 +886,7 @@ function skydonate_remote_apply_subscription( $cart_item ) {
 
     return apply_filters('bos4w_cart_item_data', $cart_item);
 }
+endif;
 
 /**
  * Get subscription scheme from cart item
@@ -866,9 +894,11 @@ function skydonate_remote_apply_subscription( $cart_item ) {
  * @param array $cart_item Cart item data
  * @return array Subscription scheme
  */
+if ( ! function_exists( 'skydonate_remote_get_subscription_scheme' ) ) :
 function skydonate_remote_get_subscription_scheme( $cart_item ) {
     return isset($cart_item['bos4w_data']) ? $cart_item['bos4w_data'] : [];
 }
+endif;
 
 /**
  * Set subscription meta for product/cart item
@@ -877,6 +907,7 @@ function skydonate_remote_get_subscription_scheme( $cart_item ) {
  * @param array $scheme    Subscription scheme
  * @return bool Success status
  */
+if ( ! function_exists( 'skydonate_remote_set_subscription_scheme' ) ) :
 function skydonate_remote_set_subscription_scheme( $cart_item, $scheme ) {
     // Make sure selected_subscription exists
     if (empty($scheme['selected_subscription'])) {
@@ -912,12 +943,14 @@ function skydonate_remote_set_subscription_scheme( $cart_item, $scheme ) {
 
     return true;
 }
+endif;
 
 /**
  * Apply subscriptions to all applicable cart items
  *
  * @param WC_Cart $cart Cart object
  */
+if ( ! function_exists( 'skydonate_remote_apply_subscriptions' ) ) :
 function skydonate_remote_apply_subscriptions( $cart ) {
     foreach ($cart->cart_contents as $key => $item) {
         if (isset($item['bos4w_data']) && !empty($item['bos4w_data'])) {
@@ -925,6 +958,7 @@ function skydonate_remote_apply_subscriptions( $cart ) {
         }
     }
 }
+endif;
 
 /**
  * Save order item custom data for donations
@@ -934,6 +968,7 @@ function skydonate_remote_apply_subscriptions( $cart ) {
  * @param array         $values        Cart item values
  * @param WC_Order      $order         Order object
  */
+if ( ! function_exists( 'skydonate_remote_save_order_item_data' ) ) :
 function skydonate_remote_save_order_item_data( $item, $cart_item_key, $values, $order ) {
     if (!empty($values['donation_option']) && $values['donation_option'] === 'Daily') {
         // Save daily donation meta
@@ -963,6 +998,7 @@ function skydonate_remote_save_order_item_data( $item, $cart_item_key, $values, 
         $item->add_meta_data('Amount Label', $values['custom_amount_label'], true);
     }
 }
+endif;
 
 /**
  * Custom subscription price string for daily donations
@@ -972,6 +1008,7 @@ function skydonate_remote_save_order_item_data( $item, $cart_item_key, $values, 
  * @param array      $include            Include options
  * @return string Modified subscription string
  */
+if ( ! function_exists( 'skydonate_remote_subscription_price_string' ) ) :
 function skydonate_remote_subscription_price_string( $subscription_string, $product, $include ) {
     if ( ! function_exists( 'wcs_get_price_including_tax' ) || ! is_object( $product ) ) {
         return $subscription_string;
@@ -1032,6 +1069,7 @@ function skydonate_remote_subscription_price_string( $subscription_string, $prod
 
     return $new_string;
 }
+endif;
 
 /**
  * ============================================================================
@@ -1045,6 +1083,7 @@ function skydonate_remote_subscription_price_string( $subscription_string, $prod
  * @param int   $id   Product ID
  * @param array $atts Shortcode attributes
  */
+if ( ! function_exists( 'skydonate_remote_render_layout_one' ) ) :
 function skydonate_remote_render_layout_one( $id, $atts ) {
     $btn_label = false;
     $today     = date('Y-m-d');
@@ -1196,6 +1235,7 @@ function skydonate_remote_render_layout_one( $id, $atts ) {
 
     echo '</form>';
 }
+endif;
 
 /**
  * Render donation form - Layout Two
@@ -1203,6 +1243,7 @@ function skydonate_remote_render_layout_one( $id, $atts ) {
  * @param int   $id   Product ID
  * @param array $atts Shortcode attributes
  */
+if ( ! function_exists( 'skydonate_remote_render_layout_two' ) ) :
 function skydonate_remote_render_layout_two( $id, $atts ) {
     $btn_label = false;
     $today     = date('Y-m-d');
@@ -1352,6 +1393,7 @@ function skydonate_remote_render_layout_two( $id, $atts ) {
 
     echo '</form>';
 }
+endif;
 
 /**
  * Render donation form - Layout Three
@@ -1359,6 +1401,7 @@ function skydonate_remote_render_layout_two( $id, $atts ) {
  * @param int   $id   Product ID
  * @param array $atts Shortcode attributes
  */
+if ( ! function_exists( 'skydonate_remote_render_layout_three' ) ) :
 function skydonate_remote_render_layout_three( $id, $atts ) {
     $btn_label = false;
     $today     = date('Y-m-d');
@@ -1512,12 +1555,14 @@ function skydonate_remote_render_layout_three( $id, $atts ) {
 
     echo '</form>';
 }
+endif;
 
 /**
  * Render name on plaque field
  *
  * @param int $id Product ID
  */
+if ( ! function_exists( 'skydonate_remote_render_name_on_plaque' ) ) :
 function skydonate_remote_render_name_on_plaque( $id ) {
     $field_visibility_enabled  = get_post_meta($id, '_field_visibility_enabled', true);
     $field_visibility_value    = (float) get_post_meta($id, '_field_visibility_value', true);
@@ -1534,6 +1579,7 @@ function skydonate_remote_render_name_on_plaque( $id ) {
         echo '</div>';
     }
 }
+endif;
 
 // Add action to confirm remote functions are active
 add_action( 'init', function() {
