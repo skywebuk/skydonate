@@ -29,10 +29,6 @@
     min-height: inherit;
 }
 
-.primary-button > * {
-    margin-left: 5px;
-}
-
 .button-medium .primary-button {
     padding: 12px 20px;
     min-height: inherit;

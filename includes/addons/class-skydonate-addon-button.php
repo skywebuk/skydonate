@@ -1418,8 +1418,6 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 echo esc_html($secure_donation_text);
                 echo '</div>';
             }
-    
-
                 // Before icon
                 $before_icon = '';
                 if (isset($settings['icon_before_media_type'])) {
