@@ -452,11 +452,51 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         $top_button_icon = Skydonate_Icon_Manager::render_icon($settings['top_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
         $modal_button_icon = Skydonate_Icon_Manager::render_icon($settings['modal_button_icon'], ['aria-hidden' => 'true']) ?? null;
         $modal_button_link = $this->get_settings_for_display('modal_button_link');
+
+        // Check if on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+            if ( function_exists( 'skydonate_get_fundraising_order_ids' ) ) {
+                $base_product_id = get_post_meta( $page_id, 'skydonate_base_product', true );
+                $order_ids = skydonate_get_fundraising_order_ids( $page_id, $post_limit );
+                $product_ids = $base_product_id ? array( $base_product_id ) : array();
+
+                $this->add_render_attribute( 'wrapper_attributes', 'class', ['recent-donation-wrapper'] );
+                if(isset($settings['button_style_mode'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_style_mode'] );
+                }
+                if(isset($settings['predefined_color'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['predefined_color'] );
+                }
+                if(isset($settings['button_size'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_size'] );
+                }
+                if(isset($settings['button_shape'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_shape'] );
+                }
+
+                echo '<div '.$this->get_render_attribute_string( "wrapper_attributes" ).'>';
+                if ( ! empty( $order_ids ) ) {
+                    echo '<div class="sky-slide-donations">';
+                    echo '<div class="sky-recent-donations-list">';
+                    echo '<ul class="sky-donations-orders">';
+                    Skydonate_Functions::render_recent_donations_item_layout_one( $order_ids, $product_ids, true );
+                    echo '</ul>';
+                    echo '</div>';
+                    echo '</div>';
+                } else {
+                    echo "<div class='woocommerce-info'>$no_donations_message</div>";
+                }
+                echo '</div>';
+                return;
+            }
+        }
+
         if ((!$filter_product_title && !$filter_category && !$filter_tag)) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
             return;
         }
-        
+
         // Collect product IDs based on filters
         $product_ids = array_merge(
             !empty( $filter_product_title ) ? $filter_product_title : [],
