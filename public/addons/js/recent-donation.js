@@ -39,7 +39,8 @@
                     type: type,
                     offset: offset,
                     product_ids: settings.product_ids,
-                    limit: limit
+                    limit: limit,
+                    nonce: skydonate_ajax.nonce
                 },
                 success: function (res) {
 
