@@ -435,6 +435,12 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         $data = array();
         $settings = $this->get_settings_for_display();
         $enable_filters = $settings['enable_filters'] === 'yes';
+        $filter_product_title = (array) $settings['filter_product_title'];
+        if (is_product() && !$enable_filters) {
+            $filter_product_title = array(get_queried_object_id());
+        }
+        $filter_category = $settings['filter_category'];
+        $filter_tag = $settings['filter_tag'];
         $post_limit = $settings['post_limit'] ?: 8;
         $see_top_limit = $settings['see_top_limit'] ?: 8;
         $see_all_limit = $settings['see_all_limit'] ?: 8;
@@ -446,21 +452,6 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         $top_button_icon = Skydonate_Icon_Manager::render_icon($settings['top_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
         $modal_button_icon = Skydonate_Icon_Manager::render_icon($settings['modal_button_icon'], ['aria-hidden' => 'true']) ?? null;
         $modal_button_link = $this->get_settings_for_display('modal_button_link');
-
-        // Check if on a fundraising page
-        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
-            $page_id = get_queried_object_id();
-            $this->render_fundraising_donations( $page_id, $settings, $post_limit, $no_donations_message );
-            return;
-        }
-
-        $filter_product_title = (array) $settings['filter_product_title'];
-        if (is_product() && !$enable_filters) {
-            $filter_product_title = array(get_queried_object_id());
-        }
-        $filter_category = $settings['filter_category'];
-        $filter_tag = $settings['filter_tag'];
-
         if ((!$filter_product_title && !$filter_category && !$filter_tag)) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
             return;
@@ -572,87 +563,6 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
 
     public function recent_donation_all_list($product_ids, $limit, $hidden_class = false, $loader = false){
         return false;
-    }
-
-    /**
-     * Render donations for a fundraising page
-     *
-     * @param int    $page_id             Fundraising page ID.
-     * @param array  $settings            Widget settings.
-     * @param int    $limit               Number of donations to show.
-     * @param string $no_donations_message Message when no donations found.
-     */
-    protected function render_fundraising_donations( $page_id, $settings, $limit, $no_donations_message ) {
-        // Check if fundraising plugin function exists
-        if ( ! function_exists( 'skydonate_get_recent_donations' ) ) {
-            echo "<div class='woocommerce-info'>" . esc_html__( 'Fundraising plugin not active.', 'skydonate' ) . "</div>";
-            return;
-        }
-
-        $donations = skydonate_get_recent_donations( $page_id, $limit );
-
-        $this->add_render_attribute( 'wrapper_attributes', 'class', ['recent-donation-wrapper'] );
-        if ( isset( $settings['button_style_mode'] ) ) {
-            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_style_mode'] );
-        }
-        if ( isset( $settings['predefined_color'] ) ) {
-            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['predefined_color'] );
-        }
-        if ( isset( $settings['button_size'] ) ) {
-            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_size'] );
-        }
-        if ( isset( $settings['button_shape'] ) ) {
-            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_shape'] );
-        }
-
-        echo '<div ' . $this->get_render_attribute_string( 'wrapper_attributes' ) . '>';
-
-        if ( ! empty( $donations ) ) {
-            echo '<div class="sky-slide-donations">';
-            echo '<div class="sky-recent-donations-list">';
-            echo '<ul class="sky-donations-orders">';
-
-            foreach ( $donations as $donation ) {
-                $donor_name = esc_html( $donation['donor_name'] );
-                $amount = isset( $donation['amount'] ) ? floatval( $donation['amount'] ) : 0;
-                $date = isset( $donation['date'] ) ? $donation['date'] : '';
-                $show_amount = isset( $donation['show_amount'] ) ? $donation['show_amount'] : true;
-                $currency_symbol = function_exists( 'skydonate_get_page_currency' )
-                    ? get_woocommerce_currency_symbol( skydonate_get_page_currency( $page_id ) )
-                    : get_woocommerce_currency_symbol();
-
-                // Format date
-                $time_ago = ! empty( $date ) ? human_time_diff( strtotime( $date ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'skydonate' ) : '';
-
-                echo '<li class="sky-order">';
-                echo '<div class="item-wrap">';
-                echo '<span class="avatar">' . esc_html( strtoupper( substr( $donor_name, 0, 1 ) ) ) . '</span>';
-                echo '<div class="content">';
-                echo '<p class="name">' . $donor_name . '</p>';
-                echo '<ul class="meta">';
-                if ( $show_amount && $amount > 0 ) {
-                    echo '<li class="price">' . esc_html( $currency_symbol . number_format( $amount, 0 ) ) . '</li>';
-                    if ( ! empty( $time_ago ) ) {
-                        echo '<li class="dot">•</li>';
-                    }
-                }
-                if ( ! empty( $time_ago ) ) {
-                    echo '<li class="time">' . esc_html( $time_ago ) . '</li>';
-                }
-                echo '</ul>';
-                echo '</div>';
-                echo '</div>';
-                echo '</li>';
-            }
-
-            echo '</ul>';
-            echo '</div>';
-            echo '</div>';
-        } else {
-            echo "<div class='woocommerce-info'>$no_donations_message</div>";
-        }
-
-        echo '</div>';
     }
 }
 ?>
