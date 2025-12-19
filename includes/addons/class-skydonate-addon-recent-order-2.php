@@ -663,28 +663,36 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
             $amount = isset( $donation['amount'] ) ? floatval( $donation['amount'] ) : 0;
             $show_amount = isset( $donation['show_amount'] ) ? $donation['show_amount'] : true;
             $date = isset( $donation['date'] ) ? $donation['date'] : '';
+            $currency_symbol = function_exists( 'skydonate_get_page_currency' )
+                ? get_woocommerce_currency_symbol( skydonate_get_page_currency( $page_id ) )
+                : get_woocommerce_currency_symbol();
 
-            // Get first letter for avatar
-            $first_letter = strtoupper( substr( $donor_name, 0, 1 ) );
+            // Format date
+            $time_ago = ! empty( $date ) ? human_time_diff( strtotime( $date ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'skydonate' ) : '';
 
-            echo '<li class="sky-donation-item">';
-            echo '<div class="sky-donation-avatar">';
+            echo '<li class="sky-order">';
+            echo '<div class="item-wrap">';
+            echo '<span class="avatar">';
             if ( ! empty( $list_icon ) ) {
                 echo $list_icon;
             } else {
-                echo '<span class="avatar-letter">' . esc_html( $first_letter ) . '</span>';
+                echo esc_html( strtoupper( substr( $donor_name, 0, 1 ) ) );
             }
-            echo '</div>';
-            echo '<div class="sky-donation-details">';
-            echo '<span class="sky-donor-name">' . $donor_name . '</span>';
+            echo '</span>';
+            echo '<div class="content">';
+            echo '<p class="name">' . $donor_name . '</p>';
+            echo '<ul class="meta">';
             if ( $show_amount && $amount > 0 ) {
-                $currency_symbol = function_exists( 'skydonate_get_page_currency' ) ? skydonate_get_page_currency( $page_id ) : get_woocommerce_currency_symbol();
-                echo '<span class="sky-donation-amount">' . esc_html( $currency_symbol . number_format( $amount, 2 ) ) . '</span>';
+                echo '<li class="price">' . esc_html( $currency_symbol . number_format( $amount, 0 ) ) . '</li>';
+                if ( ! empty( $time_ago ) ) {
+                    echo '<li class="dot">•</li>';
+                }
             }
-            if ( ! empty( $date ) ) {
-                $time_ago = human_time_diff( strtotime( $date ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'skydonate' );
-                echo '<span class="sky-donation-time">' . esc_html( $time_ago ) . '</span>';
+            if ( ! empty( $time_ago ) ) {
+                echo '<li class="time">' . esc_html( $time_ago ) . '</li>';
             }
+            echo '</ul>';
+            echo '</div>';
             echo '</div>';
             echo '</li>';
         }
