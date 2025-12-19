@@ -539,12 +539,40 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $enable_filters = $settings['enable_filters'] === 'yes';
+        $no_donations_message = esc_html($settings['no_donations_message']);
+
+        // Check if we're on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+
+            // Get fundraising data using fundraising plugin functions
+            if ( function_exists( 'skydonate_get_total_raised' ) && function_exists( 'skydonate_get_target_amount' ) ) {
+                $total_raised = skydonate_get_total_raised( $page_id );
+                $target_sales_sum = skydonate_get_target_amount( $page_id );
+                $donation_count = function_exists( 'skydonate_get_donation_count' ) ? skydonate_get_donation_count( $page_id ) : 0;
+                $currency = function_exists( 'skydonate_get_page_currency' ) ? skydonate_get_page_currency( $page_id ) : get_woocommerce_currency();
+                $currency_symbol = get_woocommerce_currency_symbol( $currency );
+            } else {
+                // Fallback if fundraising plugin functions not available
+                $total_raised = 0;
+                $target_sales_sum = 0;
+                $donation_count = 0;
+                $currency_symbol = Skydonate_Functions::Get_Currency_Symbol();
+            }
+
+            if ( $target_sales_sum <= 0 ) {
+                echo '<div class="woocommerce-info">' . esc_html__( 'Donation goal target not found.', 'skydonate' ) . '</div>';
+                return;
+            }
+
+            $this->render_progress_bar( $total_raised, $target_sales_sum, $donation_count, $settings, $currency_symbol );
+            return;
+        }
+
         $filter_product_title = (array) $settings['filter_product_title'];
         $filter_category = $settings['filter_category'];
         $filter_tag = $settings['filter_tag'];
         $override_target_goal = !empty($settings['override_target_goal']) ? floatval($settings['override_target_goal']) : 0;
-        $no_donations_message = esc_html($settings['no_donations_message']);
-
 
         $start_date = !empty($settings['donation_start_date']) ? $settings['donation_start_date'] : null;
         $end_date   = !empty($settings['donation_end_date']) ? $settings['donation_end_date'] : null;
@@ -553,7 +581,7 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
         if (is_product() && !$enable_filters) {
             $filter_product_title = [get_queried_object_id()];
         }
-        
+
         // If no products, categories, or tags selected, show fallback message
         if (!$filter_product_title && !$filter_category && !$filter_tag) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
@@ -606,18 +634,31 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
             return;
         }
 
+        $this->render_progress_bar( $total_raised, $target_sales_sum, $donation_count, $settings, Skydonate_Functions::Get_Currency_Symbol() );
+    }
+
+    /**
+     * Render the progress bar HTML
+     *
+     * @param float  $total_raised    Total amount raised.
+     * @param float  $target          Target goal amount.
+     * @param int    $donation_count  Number of donations.
+     * @param array  $settings        Widget settings.
+     * @param string $currency_symbol Currency symbol.
+     */
+    protected function render_progress_bar( $total_raised, $target, $donation_count, $settings, $currency_symbol ) {
         // Add elementor wrapper classes
         $this->add_render_attribute('wrapper_attributes', 'class', 'donation-progress layout2');
 
         // Build data settings for front-end
         $bar_settings = [
             'raised'  => $total_raised,
-            'target'  => $target_sales_sum,
+            'target'  => $target,
             'duration'=> $settings['progress_duration'],
-            'symbol'  => Skydonate_Functions::Get_Currency_Symbol(),
+            'symbol'  => $currency_symbol,
         ];
         $this->add_render_attribute('wrapper_attributes', 'data-settings', wp_json_encode($bar_settings));
-        
+
         // If style == 'line'
         if ($settings['progress_style'] === 'line') {
             $this->add_render_attribute('wrapper_attributes', 'class', 'line');
@@ -626,8 +667,8 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                 echo '<h3 class="raised-title">';
                 echo sprintf(
                     __('<span class="raised">%s</span> %s', 'skydonate'),
-                    wc_price(0),
-                    $settings['raised_label']
+                    esc_html( $currency_symbol . '0' ),
+                    esc_html( $settings['raised_label'] )
                 );
                 echo '</h3>';
 
@@ -635,17 +676,17 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                 echo '<div class="target-title">';
                 echo sprintf(
                     __('<span class="goal">%s</span> %s <small class="fa-solid fa-circle"></small> <span class="count">%d</span> %s <span class="percent">%d%%</span>', 'skydonate'),
-                    Skydonate_Functions::Get_Currency_Symbol() . Skydonate_Functions::format_large_number($target_sales_sum),
-                    $settings['target_label'],
+                    esc_html( $currency_symbol . Skydonate_Functions::format_large_number( $target ) ),
+                    esc_html( $settings['target_label'] ),
                     $donation_count,
-                    $settings['donations_label'],
+                    esc_html( $settings['donations_label'] ),
                     0 // initial %
                 );
                 echo '</div>';
 
                 echo '<div class="progress-bar-background"><div class="progress-bar"></div></div>';
             echo '</div>';
-        
+
         // If style == 'circle'
         } else {
             $this->add_render_attribute('wrapper_attributes', 'class', ['circle']);
@@ -658,18 +699,18 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                         echo '<h3 class="raised-title">';
                         echo sprintf(
                             __('<span class="raised">%s</span> %s', 'skydonate'),
-                            wc_price(0),
-                            $settings['raised_label']
+                            esc_html( $currency_symbol . '0' ),
+                            esc_html( $settings['raised_label'] )
                         );
                         echo '</h3>';
 
                         echo '<div class="target-title">';
                         echo sprintf(
                             __('<span class="goal">%s</span> %s <small class="fa-solid fa-circle"></small> <span class="count">%d</span> %s', 'skydonate'),
-                            Skydonate_Functions::Get_Currency_Symbol() . Skydonate_Functions::format_large_number($target_sales_sum),
-                            $settings['target_label'],
+                            esc_html( $currency_symbol . Skydonate_Functions::format_large_number( $target ) ),
+                            esc_html( $settings['target_label'] ),
                             $donation_count,
-                            $settings['donations_label']
+                            esc_html( $settings['donations_label'] )
                         );
                         echo '</div>';
                     echo '</div>';
