@@ -197,7 +197,7 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
                 $currency_symbol = Skydonate_Functions::Get_Currency_Symbol();
             }
 
-            if ( $target_sales_sum <= 0 ) {
+            if ( empty($target_sales_sum) ) {
                 echo '<div class="woocommerce-info">' . esc_html__( 'Donation goal target not found.', 'skydonate' ) . '</div>';
                 return;
             }
@@ -238,7 +238,7 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
             $target_sales_sum = $override_target_goal;
             foreach ( $product_ids as $product_id ) {
                 $offline_donation = floatval( get_post_meta( $product_id, '_offline_donation', true ) );
-                $total_sales      = $this->get_total_donation_sales_amount_by_product_id( $product_id, $start_date, $end_date );
+                $total_sales      = floatval( get_post_meta( $product_id, '_total_sales_amount', true ) );
                 $total_raised += $total_sales;
                 if ( $settings['offline_donation'] === 'yes' ) {
                     $total_raised += $offline_donation;
@@ -251,7 +251,7 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
                 if ( $target_sales > 0 ) {
                     $target_sales_sum += $target_sales;
                 }
-                $total_sales = $this->get_total_donation_sales_amount_by_product_id( $product_id, $start_date, $end_date );
+                $total_sales = floatval( get_post_meta( $product_id, '_total_sales_amount', true ) );
                 $total_raised += $total_sales;
                 if ( $settings['offline_donation'] === 'yes' ) {
                     $total_raised += $offline_donation;
@@ -259,7 +259,7 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
             }
         }
 
-        if ($target_sales_sum <= 0) {
+        if (empty($target_sales_sum)) {
             echo '<div class="woocommerce-info">' . esc_html__('Donation goal target not found.', 'skydonate') . '</div>';
             return;
         }
@@ -299,73 +299,6 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
                 echo '</div>';
             echo '</div>';
         echo '</div>';
-    }
-
-    public function get_total_donation_sales_amount_by_product_id($product_id, $start_date = null, $end_date = null) {
-        global $wpdb;
-
-        // Base SQL to also fetch currency
-        $sql = "
-            SELECT 
-                p.ID AS order_id,
-                CAST(om2.meta_value AS DECIMAL(10,2)) AS line_total,
-                (SELECT meta_value 
-                FROM {$wpdb->prefix}postmeta 
-                WHERE post_id = p.ID 
-                AND meta_key = '_order_currency' 
-                LIMIT 1) AS order_currency
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
-                ON oi.order_item_id = om2.order_item_id
-            INNER JOIN {$wpdb->posts} AS p
-                ON oi.order_id = p.ID
-            WHERE p.post_status = 'wc-completed'
-                AND oi.order_item_type = 'line_item'
-                AND om1.meta_key = '_product_id'
-                AND om1.meta_value = %d
-                AND om2.meta_key = '_line_total'
-        ";
-
-        $params = [ $product_id ];
-
-        // Optional date filters
-        if ( !empty($start_date) ) {
-            $sql .= " AND p.post_date >= %s";
-            $params[] = $start_date;
-        }
-
-        if ( !empty($end_date) ) {
-            $sql .= " AND p.post_date <= %s";
-            $params[] = $end_date;
-        }
-
-        // Get results (multiple rows)
-        $results = $wpdb->get_results($wpdb->prepare($sql, $params));
-
-
-        $total_gbp = 0;
-
-        if ( !empty($results) ) {
-            foreach ( $results as $row ) {
-                $currency = !empty($row->order_currency) ? $row->order_currency : get_option('woocommerce_currency');
-                $amount = floatval($row->line_total);
-
-                // If not base currency, convert to base currency
-                if ( strtoupper($currency) !== get_option('woocommerce_currency') ) {
-                    if ( class_exists('Skydonate_Currency_Changer') ) {
-                        $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
-                        if ( $rate && $rate > 0 ) {
-                            $amount = $amount / $rate; // convert to base currency
-                        }
-                    }
-                }
-                $total_gbp += round($amount);
-            }
-        }
-
-        return round($total_gbp, 2);
     }
 
 }

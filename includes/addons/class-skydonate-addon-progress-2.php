@@ -560,7 +560,7 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                 $currency_symbol = Skydonate_Functions::Get_Currency_Symbol();
             }
 
-            if ( $target_sales_sum <= 0 ) {
+            if ( empty($target_sales_sum) ) {
                 echo '<div class="woocommerce-info">' . esc_html__( 'Donation goal target not found.', 'skydonate' ) . '</div>';
                 return;
             }
@@ -605,12 +605,11 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
             $target_sales_sum = $override_target_goal;
             foreach ($product_ids as $product_id) {
                 $offline_donation = floatval(get_post_meta($product_id, '_offline_donation', true));
-                $product_sales      = $this->get_total_donation_sales_amount_by_product_id( $product_id, $start_date, $end_date );
-                $total_raised += $product_sales['amount'];
+                $total_raised += floatval(get_post_meta($product_id, '_total_sales_amount', true));
                 if ( $settings['offline_donation'] === 'yes' ){
                     $total_raised += $offline_donation;
                 }
-                $donation_count += $product_sales['count'];
+                $donation_count += intval(get_post_meta($product_id, '_order_count', true));
             }
         } else {
             // Use each product's _target_sales_goal
@@ -620,16 +619,15 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                 if ($target_sales > 0) {
                     $target_sales_sum += $target_sales;
                 }
-                $product_sales = $this->get_total_donation_sales_amount_by_product_id( $product_id, $start_date, $end_date );
-                $total_raised += $product_sales['amount'];
+                $total_raised += floatval(get_post_meta($product_id, '_total_sales_amount', true));
                 if ( $settings['offline_donation'] === 'yes' ){
                     $total_raised += $offline_donation;
                 }
-                $donation_count += $product_sales['count'];
+                $donation_count += intval(get_post_meta($product_id, '_order_count', true));
             }
         }
 
-        if ($target_sales_sum <= 0) {
+        if ( empty($target_sales_sum) ) {
             echo '<div class="woocommerce-info">' . esc_html__('Donation goal target not found.', 'skydonate') . '</div>';
             return;
         }
@@ -729,102 +727,5 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
             echo '</div>';
         }
     }
-
-    
-    public function get_total_donation_sales_amount_by_product_id($product_id, $start_date = null, $end_date = null) {
-        if (!is_numeric($product_id) || $product_id <= 0) {
-            return ['amount' => 0, 'count' => 0]; // Invalid product ID
-        }
-
-        global $wpdb;
-
-        // ---- Build date conditions ----
-        $date_conditions = '';
-        $date_params = [];
-
-        if (!empty($start_date)) {
-            $date_conditions .= " AND p.post_date_gmt >= %s";
-            $date_params[] = $start_date;
-        }
-        if (!empty($end_date)) {
-            $date_conditions .= " AND p.post_date_gmt <= %s";
-            $date_params[] = $end_date;
-        }
-
-        // ---- 1) Count distinct orders ----
-        $count_sql = "
-            SELECT COUNT(DISTINCT oi.order_id)
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->posts} AS p
-                ON oi.order_id = p.ID
-            WHERE p.post_status = 'wc-completed'
-                AND oi.order_item_type = 'line_item'
-                AND om1.meta_key = '_product_id'
-                AND om1.meta_value = %d
-                {$date_conditions}
-        ";
-        $count_params = array_merge([$product_id], $date_params);
-        $count_result = $wpdb->get_var($wpdb->prepare($count_sql, $count_params));
-        $count_result = $count_result ? (int) $count_result : 0;
-
-        // ---- 2) Sum of line totals with currency conversion ----
-        $sum_sql = "
-            SELECT oi.order_id, om2.meta_value AS line_total, 
-                (SELECT meta_value 
-                    FROM {$wpdb->prefix}postmeta 
-                    WHERE post_id = oi.order_id 
-                    AND meta_key = '_order_currency' 
-                    LIMIT 1) AS order_currency
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
-                ON oi.order_item_id = om2.order_item_id
-            INNER JOIN {$wpdb->posts} AS p
-                ON oi.order_id = p.ID
-            WHERE p.post_status = 'wc-completed'
-                AND oi.order_item_type = 'line_item'
-                AND om1.meta_key = '_product_id'
-                AND om1.meta_value = %d
-                AND om2.meta_key = '_line_total'
-                {$date_conditions}
-        ";
-        $sum_params = array_merge([$product_id], $date_params);
-        $sum_results = $wpdb->get_results($wpdb->prepare($sum_sql, $sum_params));
-
-        $total_gbp = 0;
-
-        // Process each result and apply currency conversion
-        if (!empty($sum_results)) {
-            foreach ($sum_results as $row) {
-                $currency = !empty($row->order_currency) ? $row->order_currency : get_option('woocommerce_currency');
-                $amount = floatval($row->line_total); // Convert line total to float
-
-                // If the currency is not GBP, convert it to GBP using the currency rate
-                if (strtoupper($currency) !== get_option('woocommerce_currency')) {
-                    $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
-                    if ($rate && $rate > 0) {
-                        $amount = $amount / $rate; // Convert the amount to GBP
-                    } else {
-                        // Optional: Handle the case where the conversion rate is not available
-                        $amount = 0; // Default to 0 if conversion rate is not found
-                    }
-                }
-
-                // Add the converted amount to the total GBP
-                $total_gbp += $amount;
-            }
-        }
-
-        // Return the results as an associative array
-        return [
-            'amount' => round($total_gbp, 2), // Total sales amount in GBP
-            'count'  => $count_result,        // Number of orders
-        ];
-    }
-
-
 
 }

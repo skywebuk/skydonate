@@ -708,8 +708,6 @@ class Skydonate_Functions {
             wp_send_json_error("Missing parameters");
         }
 
-
-
         // Fetch enough orders to apply offset + limit
         $fetch_limit = $offset + $limit;
 
