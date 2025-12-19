@@ -101,6 +101,13 @@ class WC_Custom_Donation_Options {
         if ( function_exists( 'skydonate_remote_save_order_item_data' ) ) {
             skydonate_remote_save_order_item_data($item, $cart_item_key, $values, $order);
         }
+        if (!empty($values['fundraising_title'])) {
+            $item->add_meta_data('Fundraiser', sanitize_text_field($values['fundraising_title']), true);
+        }
+
+        if (!empty($values['fundraise_id'])) {
+            $item->add_meta_data('_fundraise_id', sanitize_text_field($values['fundraise_id']), true);
+        }
     }
 
     // Add custom tabs
@@ -125,7 +132,14 @@ class WC_Custom_Donation_Options {
 
     public function skydonate_display_cart_item_custom_data($item_data, $cart_item) {
         if ( function_exists( 'skydonate_remote_display_cart_item_custom_data' ) ) {
-            return skydonate_remote_display_cart_item_custom_data($item_data, $cart_item);
+            $item_data = skydonate_remote_display_cart_item_custom_data($item_data, $cart_item);
+        }
+
+        if (!empty($cart_item['fundraising_title'])) {
+            $item_data[] = array(
+                'name'  => __('Fundraiser', 'skydonate'),
+                'value' => sanitize_text_field($cart_item['fundraising_title']),
+            );
         }
         return $item_data;
     }

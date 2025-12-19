@@ -16,6 +16,7 @@ if (!class_exists('Skydonate_Shortcode')) {
 
             $atts = shortcode_atts([
                 'id'          => '',
+                'fundraising_id' => '',
                 'placeholder' => __('Custom Amount', 'skydonate'),
                 'button_text' => __('Donate and Support', 'skydonate'),
                 'before_icon' => (skydonate_get_layout('recent_donation') == 'layout-2' ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-credit-card"></i>' ),
@@ -47,7 +48,7 @@ if (!class_exists('Skydonate_Shortcode')) {
             $zakat_applicable = get_post_meta($id, '_zakat_applicable', true);
             $closed_message = get_post_meta($id, '_project_closed_message', true);
             $closed_title   = get_post_meta($id, '_project_closed_title', true);
-            echo '<div class="donation-form-wrapper">';
+            echo '<div class="donation-form-wrapper" data-fundraising-id="' . esc_attr($atts['fundraising_id']) . '">';
             if ($close_project !== 'yes') {
                 if(skydonate_get_layout('recent_donation') == 'layout-2'){
                     $this->layout_two($id,$atts);

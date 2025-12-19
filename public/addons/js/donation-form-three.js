@@ -170,6 +170,8 @@
         // Disable submit & show loading-running
         $submitBtn.addClass('loading-running').prop('disabled', true);
 
+        var fundraisingId = $scope.data('fundraising-id') || '';
+
         var data = {
           action: 'add_extra_donation_to_cart',
           product_id: productId,
@@ -178,6 +180,7 @@
           start_date: start_date,
           end_date: end_date,
           name_on_plaque: name_on_plaque,
+          fundraising_id: fundraisingId,
           nonce: skydonate_extra_donation_ajax.nonce,
         };
 

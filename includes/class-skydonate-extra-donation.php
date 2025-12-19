@@ -114,6 +114,7 @@ class Skydonate_Extra_Donation {
         $name_on_plaque = sanitize_text_field($_POST['name_on_plaque'] ?? '');
         $start_date = sanitize_text_field($_POST['start_date'] ?? '');
         $end_date   = sanitize_text_field($_POST['end_date'] ?? '');
+        $fundraising_id = intval($_POST['fundraising_id'] ?? 0);
 
         if (!$product_id || !$amount) {
             wp_send_json_error(['message' => 'Invalid donation data']);
@@ -137,6 +138,10 @@ class Skydonate_Extra_Donation {
         }
         if (!empty($name_on_plaque)) {
             $cart_item_data['title_field'] = $name_on_plaque;
+        }
+        if (!empty($fundraising_id)) {
+            $cart_item_data['fundraising_title'] = get_the_title($fundraising_id);
+            $cart_item_data['fundraise_id'] = $fundraising_id;
         }
 
         // Subscription logic (if not a one-time donation)
