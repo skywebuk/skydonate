@@ -178,12 +178,38 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $enable_filters = $settings['enable_filters'] === 'yes';
+        $no_donations_message = esc_html($settings['no_donations_message']);
+
+        // Check if we're on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+
+            // Get fundraising data using fundraising plugin functions
+            if ( function_exists( 'skydonate_get_total_raised' ) && function_exists( 'skydonate_get_target_amount' ) ) {
+                $total_raised = skydonate_get_total_raised( $page_id );
+                $target_sales_sum = skydonate_get_target_amount( $page_id );
+                $currency = function_exists( 'skydonate_get_page_currency' ) ? skydonate_get_page_currency( $page_id ) : get_woocommerce_currency();
+                $currency_symbol = get_woocommerce_currency_symbol( $currency );
+            } else {
+                // Fallback if fundraising plugin functions not available
+                $total_raised = 0;
+                $target_sales_sum = 0;
+                $currency_symbol = Skydonate_Functions::Get_Currency_Symbol();
+            }
+
+            if ( $target_sales_sum <= 0 ) {
+                echo '<div class="woocommerce-info">' . esc_html__( 'Donation goal target not found.', 'skydonate' ) . '</div>';
+                return;
+            }
+
+            $this->render_progress_bar( $total_raised, $target_sales_sum, $settings, $currency_symbol );
+            return;
+        }
 
         $filter_product_title = (array) $settings['filter_product_title'];
         $filter_category = $settings['filter_category'];
         $filter_tag = $settings['filter_tag'];
         $override_target_goal = !empty($settings['override_target_goal']) ? floatval($settings['override_target_goal']) : 0;
-        $no_donations_message = esc_html($settings['no_donations_message']);
 
         $start_date = !empty($settings['donation_start_date']) ? $settings['donation_start_date'] : null;
         $end_date   = !empty($settings['donation_end_date']) ? $settings['donation_end_date'] : null;
@@ -238,13 +264,25 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
             return;
         }
 
+        $this->render_progress_bar( $total_raised, $target_sales_sum, $settings, Skydonate_Functions::Get_Currency_Symbol() );
+    }
+
+    /**
+     * Render the progress bar HTML
+     *
+     * @param float  $total_raised    Total amount raised.
+     * @param float  $target          Target goal amount.
+     * @param array  $settings        Widget settings.
+     * @param string $currency_symbol Currency symbol.
+     */
+    protected function render_progress_bar( $total_raised, $target, $settings, $currency_symbol ) {
         $this->add_render_attribute('wrapper_attributes', 'class', 'donation-progress');
 
         $bar_settings = [
             'raised' => $total_raised,
-            'target' => $target_sales_sum,
+            'target' => $target,
             'duration' => $settings['progress_duration'],
-            'symbol' => Skydonate_Functions::Get_Currency_Symbol(),
+            'symbol' => $currency_symbol,
         ];
 
         $this->add_render_attribute('wrapper_attributes', 'data-settings', wp_json_encode($bar_settings));
@@ -252,8 +290,8 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
         echo '<div ' . $this->get_render_attribute_string('wrapper_attributes') . '>';
             echo '<div class="progress-info">' . sprintf(
                 __('<span class="raised">%s</span> of <span class="goal">%s</span> goal', 'skydonate'),
-                wc_price(0),
-                Skydonate_Functions::Get_Currency_Symbol() . number_format($target_sales_sum)
+                esc_html( $currency_symbol . '0' ),
+                esc_html( $currency_symbol . number_format( $target ) )
             ) . '</div>';
             echo '<div class="progress-bar-background">';
                 echo '<div class="progress-bar">';
