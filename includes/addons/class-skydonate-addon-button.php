@@ -1352,13 +1352,29 @@ class Skydonate_Button extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
 
-
         $enable_filters = $settings['enable_filters'] === 'yes';
         $target_donation = (array) $settings['target_donation'];
-        if (is_product() && !$enable_filters) {
-            $target_donation = array(get_queried_object_id());
+        $fundraise_id = 0;
+
+        // Check if on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+            $fundraise_id = $page_id;
+
+            // Get base product ID from fundraising page
+            if ( class_exists( 'SkyDonate_Fundraising_CPT' ) ) {
+                $base_product_id = get_post_meta( $page_id, SkyDonate_Fundraising_CPT::META_BASE_PRODUCT_ID, true );
+            } else {
+                $base_product_id = get_post_meta( $page_id, 'skydonate_base_product', true );
+            }
+
+            if ( $base_product_id ) {
+                $target_donation = array( $base_product_id );
+            }
+        } elseif ( is_product() && ! $enable_filters ) {
+            $target_donation = array( get_queried_object_id() );
         }
-        
+
         $secure_donation_text = $settings['secure_donation_text'] ?? __('Secure Donation', 'skydonate');
         $secure_donation_icon = $settings['secure_donation_icon'] ?? null;
         $show_secure_donation = !empty($settings['show_secure_donation']) && $settings['show_secure_donation'] === 'yes';
@@ -1445,6 +1461,11 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                     'before_icon'    => !empty($before_icon) ? esc_attr($before_icon) : '',
                     'after_icon'     => !empty($after_icon) ? esc_attr($after_icon) : '',
                 ];
+
+                // Add fundraise_id if on fundraising page
+                if ( $fundraise_id > 0 ) {
+                    $atts['fundraising_id'] = esc_attr( $fundraise_id );
+                }
 
                 // Build shortcode string
                 $shortcode = '[skydonate_form';
