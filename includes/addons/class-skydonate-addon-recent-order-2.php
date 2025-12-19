@@ -443,6 +443,19 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
         $data = array();
         $settings = $this->get_settings_for_display();
         $enable_filters = $settings['enable_filters'] === 'yes';
+        $post_limit = $settings['post_limit'] ?: 8;
+        $see_all_limit = $settings['see_all_limit'] ?: 20;
+        $no_donations_message = esc_html($settings['no_donations_message']);
+        $all_button_text = $settings['all_donate_button_text'] ?? __('See All', 'skydonate');
+        $all_button_icon = Skydonate_Icon_Manager::render_icon($settings['all_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
+
+        // Check if on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+            $this->render_fundraising_donations( $page_id, $settings, $post_limit, $no_donations_message );
+            return;
+        }
+
         $filter_product_title = (array) $settings['filter_product_title'];
         if (is_product() && !$enable_filters) {
             $filter_product_title = array(get_queried_object_id());
@@ -450,11 +463,7 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
         $order_count = '';
         $filter_category = $settings['filter_category'];
         $filter_tag = $settings['filter_tag'];
-        $post_limit = $settings['post_limit'] ?: 8;
-        $see_all_limit = $settings['see_all_limit'] ?: 20;
-        $no_donations_message = esc_html($settings['no_donations_message']);
-        $all_button_text = $settings['all_donate_button_text'] ?? __('See All', 'skydonate');
-        $all_button_icon = Skydonate_Icon_Manager::render_icon($settings['all_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
+
         if ((!$filter_product_title && !$filter_category && !$filter_tag)) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
             return;
@@ -571,6 +580,118 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
             }else {
                 echo "<div class='woocommerce-info'>$no_donations_message</div>";
             }
+        echo '</div>';
+    }
+
+    /**
+     * Render donations for fundraising post type
+     * Uses fundraising plugin functions to get donations specific to the fundraising page
+     */
+    protected function render_fundraising_donations( $page_id, $settings, $post_limit, $no_donations_message ) {
+        // Check if fundraising plugin function exists
+        if ( ! function_exists( 'skydonate_get_recent_donations' ) ) {
+            echo "<div class='woocommerce-info'>" . esc_html( $no_donations_message ) . "</div>";
+            return;
+        }
+
+        $donations = skydonate_get_recent_donations( $page_id, $post_limit );
+
+        if ( empty( $donations ) ) {
+            echo "<div class='woocommerce-info'>" . esc_html( $no_donations_message ) . "</div>";
+            return;
+        }
+
+        // Get list icon
+        $list_icon = '';
+        if ( ! empty( $settings['recent_icon_media_type'] ) ) {
+            if (
+                $settings['recent_icon_media_type'] === 'icon' &&
+                ! empty( $settings['recent_icon_icon']['value'] )
+            ) {
+                $list_icon = Skydonate_Icon_Manager::render_icon(
+                    $settings['recent_icon_icon'],
+                    ['aria-hidden' => 'true']
+                );
+            } elseif (
+                $settings['recent_icon_media_type'] === 'image' &&
+                ! empty( $settings['recent_icon_image']['url'] )
+            ) {
+                $list_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html(
+                    $settings,
+                    'recent_icon_image_size',
+                    'recent_icon_image'
+                );
+            }
+        }
+
+        // Build wrapper attributes
+        $this->add_render_attribute( 'wrapper_attributes', 'class', ['recent-donation-wrapper'] );
+        if ( isset( $settings['button_style_mode'] ) ) {
+            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_style_mode'] );
+        }
+        if ( isset( $settings['predefined_color'] ) ) {
+            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['predefined_color'] );
+        }
+        if ( isset( $settings['button_size'] ) ) {
+            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_size'] );
+        }
+        if ( isset( $settings['button_shape'] ) ) {
+            $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-' . $settings['button_shape'] );
+        }
+
+        $col_desktop = ! empty( $settings['column_count'] ) ? $settings['column_count'] : 'one';
+        $col_tablet  = ! empty( $settings['column_count_tablet'] ) ? $settings['column_count_tablet'] : $col_desktop;
+        $col_mobile  = ! empty( $settings['column_count_mobile'] ) ? $settings['column_count_mobile'] : $col_tablet;
+
+        $this->add_render_attribute(
+            'wrapper_attributes',
+            'class',
+            [
+                'columns-desktop-' . $col_desktop,
+                'columns-tablet-'  . $col_tablet,
+                'columns-mobile-'  . $col_mobile,
+            ]
+        );
+
+        echo '<div ' . $this->get_render_attribute_string( 'wrapper_attributes' ) . '>';
+        echo '<div class="sky-default-donations">';
+        echo '<div class="sky-recent-donations-list">';
+        echo '<ul class="sky-donations-orders">';
+
+        foreach ( $donations as $donation ) {
+            $donor_name = isset( $donation['donor_name'] ) ? esc_html( $donation['donor_name'] ) : __( 'Anonymous', 'skydonate' );
+            $amount = isset( $donation['amount'] ) ? floatval( $donation['amount'] ) : 0;
+            $show_amount = isset( $donation['show_amount'] ) ? $donation['show_amount'] : true;
+            $date = isset( $donation['date'] ) ? $donation['date'] : '';
+
+            // Get first letter for avatar
+            $first_letter = strtoupper( substr( $donor_name, 0, 1 ) );
+
+            echo '<li class="sky-donation-item">';
+            echo '<div class="sky-donation-avatar">';
+            if ( ! empty( $list_icon ) ) {
+                echo $list_icon;
+            } else {
+                echo '<span class="avatar-letter">' . esc_html( $first_letter ) . '</span>';
+            }
+            echo '</div>';
+            echo '<div class="sky-donation-details">';
+            echo '<span class="sky-donor-name">' . $donor_name . '</span>';
+            if ( $show_amount && $amount > 0 ) {
+                $currency_symbol = function_exists( 'skydonate_get_page_currency' ) ? skydonate_get_page_currency( $page_id ) : get_woocommerce_currency_symbol();
+                echo '<span class="sky-donation-amount">' . esc_html( $currency_symbol . number_format( $amount, 2 ) ) . '</span>';
+            }
+            if ( ! empty( $date ) ) {
+                $time_ago = human_time_diff( strtotime( $date ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'skydonate' );
+                echo '<span class="sky-donation-time">' . esc_html( $time_ago ) . '</span>';
+            }
+            echo '</div>';
+            echo '</li>';
+        }
+
+        echo '</ul>';
+        echo '</div>';
+        echo '</div>';
         echo '</div>';
     }
 }
