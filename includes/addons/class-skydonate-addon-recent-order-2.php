@@ -544,7 +544,6 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
             Skydonate_Functions::get_product_ids_by_multiple_taxonomies($filter_tag, 'product_tag')
         );
 
-
         $list_icon = '';
         if (!empty($settings['recent_icon_media_type'])) {
             if (

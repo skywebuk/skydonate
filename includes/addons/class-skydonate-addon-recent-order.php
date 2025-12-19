@@ -457,10 +457,9 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
             $page_id = get_queried_object_id();
             if ( function_exists( 'skydonate_get_fundraising_order_ids' ) ) {
-                $base_product_id = get_post_meta( $page_id, 'skydonate_base_product', true );
+                $base_product_id = get_post_meta( $page_id, SkyDonate_Fundraising_CPT::META_BASE_PRODUCT_ID, true );
                 $order_ids = skydonate_get_fundraising_order_ids( $page_id, $post_limit );
                 $product_ids = $base_product_id ? array( $base_product_id ) : array();
-
                 $this->add_render_attribute( 'wrapper_attributes', 'class', ['recent-donation-wrapper'] );
                 if(isset($settings['button_style_mode'])){
                     $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_style_mode'] );
