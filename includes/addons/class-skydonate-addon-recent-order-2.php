@@ -455,10 +455,88 @@ class Skydonate_Recent_Order_2 extends \Elementor\Widget_Base {
         $no_donations_message = esc_html($settings['no_donations_message']);
         $all_button_text = $settings['all_donate_button_text'] ?? __('See All', 'skydonate');
         $all_button_icon = Skydonate_Icon_Manager::render_icon($settings['all_donate_button_icon'], ['aria-hidden' => 'true']) ?? null;
+
+        // Check if on a fundraising page
+        if ( is_singular( 'fundraising' ) && ! $enable_filters ) {
+            $page_id = get_queried_object_id();
+            if ( function_exists( 'skydonate_get_fundraising_order_ids' ) ) {
+                $base_product_id = get_post_meta( $page_id, SkyDonate_Fundraising_CPT::META_BASE_PRODUCT_ID, true );
+                $order_ids = skydonate_get_fundraising_order_ids( $page_id, $post_limit );
+                $product_ids = $base_product_id ? array( $base_product_id ) : array();
+
+                // Get list icon
+                $list_icon = '';
+                if (!empty($settings['recent_icon_media_type'])) {
+                    if (
+                        $settings['recent_icon_media_type'] === 'icon' &&
+                        !empty($settings['recent_icon_icon']['value'])
+                    ) {
+                        $list_icon = Skydonate_Icon_Manager::render_icon(
+                            $settings['recent_icon_icon'],
+                            ['aria-hidden' => 'true']
+                        );
+                    } elseif (
+                        $settings['recent_icon_media_type'] === 'image' &&
+                        !empty($settings['recent_icon_image']['url'])
+                    ) {
+                        $list_icon = \Elementor\Group_Control_Image_Size::get_attachment_image_html(
+                            $settings,
+                            'recent_icon_image_size',
+                            'recent_icon_image'
+                        );
+                    }
+                }
+
+                $this->add_render_attribute( 'wrapper_attributes', 'class', ['recent-donation-wrapper'] );
+                if(isset($settings['button_style_mode'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_style_mode'] );
+                }
+                if(isset($settings['predefined_color'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['predefined_color'] );
+                }
+                if(isset($settings['button_size'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_size'] );
+                }
+                if(isset($settings['button_shape'])){
+                    $this->add_render_attribute( 'wrapper_attributes', 'class', 'button-'.$settings['button_shape'] );
+                }
+
+                $col_desktop = !empty($settings['column_count']) ? $settings['column_count'] : 'one';
+                $col_tablet  = !empty($settings['column_count_tablet']) ? $settings['column_count_tablet'] : $col_desktop;
+                $col_mobile  = !empty($settings['column_count_mobile']) ? $settings['column_count_mobile'] : $col_tablet;
+
+                $this->add_render_attribute(
+                    'wrapper_attributes',
+                    'class',
+                    [
+                        'columns-desktop-' . $col_desktop,
+                        'columns-tablet-'  . $col_tablet,
+                        'columns-mobile-'  . $col_mobile,
+                    ]
+                );
+
+                echo '<div '.$this->get_render_attribute_string( "wrapper_attributes" ).'>';
+                if ( ! empty( $order_ids ) ) {
+                    echo '<div class="sky-default-donations">';
+                    echo '<div class="sky-recent-donations-list">';
+                    echo '<ul class="sky-donations-orders">';
+                    Skydonate_Functions::render_recent_donations_item_layout_two( $order_ids, $product_ids, $list_icon );
+                    echo '</ul>';
+                    echo '</div>';
+                    echo '</div>';
+                } else {
+                    echo "<div class='woocommerce-info'>$no_donations_message</div>";
+                }
+                echo '</div>';
+                return;
+            }
+        }
+
         if ((!$filter_product_title && !$filter_category && !$filter_tag)) {
             echo "<div class='woocommerce-info'>$no_donations_message</div>";
             return;
         }
+
         // Collect product IDs based on filters
         $product_ids = array_merge(
             $filter_product_title, 
