@@ -331,16 +331,18 @@ class Skydonate_Dashboard {
         }
 
         if ( $is_hpos ) {
+            $address_table = $wpdb->prefix . 'wc_order_addresses';
             $results = $wpdb->get_results( $wpdb->prepare( "
                 SELECT
-                    o.billing_country as country_code,
+                    addr.country as country_code,
                     COUNT(*) as donation_count,
                     SUM(o.total_amount) as total_amount
                 FROM {$tables['orders']} AS o
+                INNER JOIN {$address_table} AS addr ON o.id = addr.order_id AND addr.address_type = 'billing'
                 WHERE o.status = 'wc-completed'
-                AND o.billing_country != ''
+                AND addr.country != ''
                 {$date_filter}
-                GROUP BY o.billing_country
+                GROUP BY addr.country
                 ORDER BY total_amount DESC
                 LIMIT %d
             ", $limit ), ARRAY_A );
