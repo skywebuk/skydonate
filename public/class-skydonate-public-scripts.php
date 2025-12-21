@@ -118,6 +118,7 @@ class SkyDonate_Public_Scripts {
      * Register core plugin scripts
      */
     private function register_core_scripts() {
+
         wp_register_script(
             'lity-lightbox',
             SKYDONATE_PUBLIC_ASSETS . '/js/lity-min.js',
@@ -133,6 +134,7 @@ class SkyDonate_Public_Scripts {
             '5.4.5',
             true
         );
+        
     }
 
     /**

@@ -298,21 +298,25 @@ class Skydonate_Functions {
 
 	/**
 	 * Filter HPOS orders query to show only orders containing a specific product.
-	 * Uses _skydonate_product_id order meta for efficient filtering.
+	 * Queries the order_items table directly to find all orders with this product.
 	 */
 	public function filter_hpos_query( $pieces, $args ) {
 		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] ) ) {
 			global $wpdb;
 			$product_id = intval( $_GET['product_id'] );
-			$meta_table = $wpdb->prefix . 'wc_orders_meta';
 			$orders_table = $wpdb->prefix . 'wc_orders';
+			$order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+			$order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
 
-			// Filter using _skydonate_product_id order meta
+			// Filter using order_items table to find orders containing this product
 			$pieces['where'] .= $wpdb->prepare(
 				" AND {$orders_table}.id IN (
-					SELECT order_id FROM {$meta_table}
-					WHERE meta_key = '_skydonate_product_id'
-					AND meta_value = %s
+					SELECT DISTINCT oi.order_id
+					FROM {$order_items_table} AS oi
+					INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+					WHERE oi.order_item_type = 'line_item'
+					AND oim.meta_key = '_product_id'
+					AND oim.meta_value = %d
 				)",
 				$product_id
 			);
@@ -323,19 +327,24 @@ class Skydonate_Functions {
 
 	/**
 	 * Filter legacy orders query to show only orders containing a specific product.
-	 * Uses _skydonate_product_id order meta for efficient filtering.
+	 * Queries the order_items table directly to find all orders with this product.
 	 */
 	public function filter_where( $where, $query ) {
 		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] ) ) {
 			global $wpdb;
 			$product_id = intval( $_GET['product_id'] );
+			$order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+			$order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
 
-			// Filter using _skydonate_product_id order meta
+			// Filter using order_items table to find orders containing this product
 			$where .= $wpdb->prepare(
 				" AND {$wpdb->posts}.ID IN (
-					SELECT post_id FROM {$wpdb->postmeta}
-					WHERE meta_key = '_skydonate_product_id'
-					AND meta_value = %s
+					SELECT DISTINCT oi.order_id
+					FROM {$order_items_table} AS oi
+					INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+					WHERE oi.order_item_type = 'line_item'
+					AND oim.meta_key = '_product_id'
+					AND oim.meta_value = %d
 				)",
 				$product_id
 			);
@@ -435,16 +444,64 @@ class Skydonate_Functions {
     }
 
     /**
-     * Recalculate and update product donation meta via remote function.
+     * Recalculate and update product donation meta.
+     * Queries the order items table directly for accurate counts.
      *
      * @param int $product_id Product ID
      */
     private function recalculate_product_donation_meta($product_id) {
-        // Use remote stubs to recalculate and update the meta
-        if (skydonate_remote_stubs()->is_remote_available()) {
-            skydonate_remote_stubs()->get_total_donation_sales($product_id);
-            skydonate_remote_stubs()->get_donation_order_count($product_id);
+        global $wpdb;
+
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
+        // Check if HPOS is enabled
+        if ( $this->is_HPOS_active() ) {
+            $orders_table = $wpdb->prefix . 'wc_orders';
+
+            $results = $wpdb->get_row( $wpdb->prepare( "
+                SELECT
+                    COUNT(DISTINCT oi.order_id) as order_count,
+                    COALESCE(SUM(
+                        CASE WHEN oim_total.meta_value IS NOT NULL
+                        THEN CAST(oim_total.meta_value AS DECIMAL(10,2))
+                        ELSE 0 END
+                    ), 0) as total_amount
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+                LEFT JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                INNER JOIN {$orders_table} AS o ON oi.order_id = o.id
+                WHERE oi.order_item_type = 'line_item'
+                AND oim.meta_key = '_product_id'
+                AND oim.meta_value = %d
+                AND o.status = 'wc-completed'
+            ", $product_id ) );
+        } else {
+            $results = $wpdb->get_row( $wpdb->prepare( "
+                SELECT
+                    COUNT(DISTINCT oi.order_id) as order_count,
+                    COALESCE(SUM(
+                        CASE WHEN oim_total.meta_value IS NOT NULL
+                        THEN CAST(oim_total.meta_value AS DECIMAL(10,2))
+                        ELSE 0 END
+                    ), 0) as total_amount
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+                LEFT JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
+                WHERE oi.order_item_type = 'line_item'
+                AND oim.meta_key = '_product_id'
+                AND oim.meta_value = %d
+                AND p.post_status = 'wc-completed'
+            ", $product_id ) );
         }
+
+        $order_count = $results ? intval( $results->order_count ) : 0;
+        $total_amount = $results ? floatval( $results->total_amount ) : 0;
+
+        // Update product meta
+        update_post_meta( $product_id, '_order_count', $order_count );
+        update_post_meta( $product_id, '_total_sales_amount', $total_amount );
     }
 
     /**

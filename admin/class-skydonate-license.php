@@ -309,8 +309,13 @@ class SkyDonate_License_Admin {
             $license_data = $result['license'] ?? array();
             $update_info = $result['update_info'] ?? array();
 
+            // Recalculate all donation product meta (order count, raised amount)
+            if ( function_exists( 'skydonate_do_recalculate_all_donations' ) ) {
+                skydonate_do_recalculate_all_donations();
+            }
+
             wp_send_json_success( array(
-                'message' => __( 'All license data refreshed successfully', 'skydonate' ),
+                'message' => __( 'All license data refreshed and donation stats recalculated', 'skydonate' ),
                 'reload'  => true,
                 'data'    => array(
                     'status'           => $license_data['status'] ?? 'valid',

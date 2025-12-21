@@ -17,6 +17,30 @@ class Skydonate_Dashboard {
      */
     public static function init() {
         add_action( 'wp_ajax_skydonate_get_analytics', array( __CLASS__, 'ajax_get_analytics' ) );
+        add_action( 'wp_ajax_skydonate_recalculate_meta', array( __CLASS__, 'ajax_recalculate_meta' ) );
+    }
+
+    /**
+     * AJAX handler for recalculating product donation meta
+     */
+    public static function ajax_recalculate_meta() {
+        // Verify nonce
+        if ( ! check_ajax_referer( 'skydonate_recalculate_nonce', 'nonce', false ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed', 'skydonate' ) ) );
+        }
+
+        // Check capability
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Unauthorized access', 'skydonate' ) ) );
+        }
+
+        // Run recalculation
+        if ( function_exists( 'skydonate_do_recalculate_all_donations' ) ) {
+            skydonate_do_recalculate_all_donations();
+            wp_send_json_success( array( 'message' => __( 'Donation stats recalculated successfully!', 'skydonate' ) ) );
+        } else {
+            wp_send_json_error( array( 'message' => __( 'Recalculation function not available', 'skydonate' ) ) );
+        }
     }
 
     /**

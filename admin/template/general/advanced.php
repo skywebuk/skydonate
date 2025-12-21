@@ -156,7 +156,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
                     <label class="checkbox-switch">
                         <input type="checkbox" name="init_guest_checkout_data_saver" id="init_guest_checkout_data_saver" value="1" <?php checked(get_option('init_guest_checkout_data_saver'), 1); ?>>
                         <span class="switch"></span>
-                        <small>Preserve guest checkout form data for smoother user experience.</small>          
+                        <small>Preserve guest checkout form data for smoother user experience.</small>
                     </label>
                 </td>
             </tr>

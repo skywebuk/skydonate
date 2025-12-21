@@ -3,7 +3,7 @@
  * Plugin Name:       SkyDonate
  * Plugin URI:        https://skywebdesign.co.uk/
  * Description:       A secure, user-friendly donation system built to simplify and manage charitable contributions.
- * Version:           2.0.14
+ * Version:           2.0.16
  * Author:            Sky Web Design
  * Author URI:        https://skywebdesign.co.uk/
  * Text Domain:       skydonate
@@ -62,7 +62,7 @@ if ( ! skydonate_is_wc_active() ) {
  */
 final class SkyDonate {
 
-    const VERSION = '2.0.14';
+    const VERSION = '2.0.16';
     private static $instance = null;
 
     public static function instance() {
@@ -130,6 +130,100 @@ add_action( 'plugins_loaded', function () {
 }, 20 );
 
 /**
+ * Plugin activation - recalculate donation meta
+ */
+register_activation_hook( __FILE__, 'skydonate_activation_recalculate_meta' );
+
+function skydonate_activation_recalculate_meta() {
+    // Schedule recalculation to run after plugin is fully loaded
+    if ( ! wp_next_scheduled( 'skydonate_recalculate_all_donations' ) ) {
+        wp_schedule_single_event( time() + 5, 'skydonate_recalculate_all_donations' );
+    }
+}
+
+add_action( 'skydonate_recalculate_all_donations', 'skydonate_do_recalculate_all_donations' );
+
+/**
+ * Recalculate donation meta for all products
+ */
+function skydonate_do_recalculate_all_donations() {
+    global $wpdb;
+
+    // Get all products
+    $products = get_posts( array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'post_status'    => 'publish',
+    ) );
+
+    if ( empty( $products ) ) {
+        return;
+    }
+
+    $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+    $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
+    // Check if HPOS is enabled
+    $hpos_enabled = false;
+    if ( class_exists( 'Automattic\WooCommerce\Utilities\OrderUtil' ) ) {
+        $hpos_enabled = \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+    }
+
+    foreach ( $products as $product_id ) {
+        // Get order count and total for this product from completed orders
+        if ( $hpos_enabled ) {
+            $orders_table = $wpdb->prefix . 'wc_orders';
+
+            // Get completed order IDs containing this product
+            $results = $wpdb->get_row( $wpdb->prepare( "
+                SELECT
+                    COUNT(DISTINCT oi.order_id) as order_count,
+                    COALESCE(SUM(
+                        CASE WHEN oim_total.meta_value IS NOT NULL
+                        THEN CAST(oim_total.meta_value AS DECIMAL(10,2))
+                        ELSE 0 END
+                    ), 0) as total_amount
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+                LEFT JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                INNER JOIN {$orders_table} AS o ON oi.order_id = o.id
+                WHERE oi.order_item_type = 'line_item'
+                AND oim.meta_key = '_product_id'
+                AND oim.meta_value = %d
+                AND o.status = 'wc-completed'
+            ", $product_id ) );
+        } else {
+            // Legacy - use posts table
+            $results = $wpdb->get_row( $wpdb->prepare( "
+                SELECT
+                    COUNT(DISTINCT oi.order_id) as order_count,
+                    COALESCE(SUM(
+                        CASE WHEN oim_total.meta_value IS NOT NULL
+                        THEN CAST(oim_total.meta_value AS DECIMAL(10,2))
+                        ELSE 0 END
+                    ), 0) as total_amount
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+                LEFT JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
+                WHERE oi.order_item_type = 'line_item'
+                AND oim.meta_key = '_product_id'
+                AND oim.meta_value = %d
+                AND p.post_status = 'wc-completed'
+            ", $product_id ) );
+        }
+
+        $order_count = $results ? intval( $results->order_count ) : 0;
+        $total_amount = $results ? floatval( $results->total_amount ) : 0;
+
+        // Update product meta
+        update_post_meta( $product_id, '_order_count', $order_count );
+        update_post_meta( $product_id, '_total_sales_amount', $total_amount );
+    }
+}
+
+/**
  * Plugin deactivation cleanup
  */
 register_deactivation_hook( __FILE__, function () {
@@ -137,4 +231,7 @@ register_deactivation_hook( __FILE__, function () {
     if ( class_exists( 'Skydonate_Currency_Changer' ) ) {
         Skydonate_Currency_Changer::deactivate();
     }
+
+    // Clear any pending recalculation
+    wp_clear_scheduled_hook( 'skydonate_recalculate_all_donations' );
 } );
