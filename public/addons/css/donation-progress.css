@@ -50,11 +50,11 @@
     font-size: 14px;
     margin-left: 8px;
     position: absolute;
-    right: -36px;
+    right: -30px;
     transition: 0.2s;
 }
 
-.donation-progress .progress-bar-background .percent.full {
+.donation-progress .progress-bar-background .progress-bar[data-small="false"] .percent {
     right: 10px;
     color: white;
 }
