@@ -690,97 +690,25 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
     }
 
     
+    /**
+     * Get total donation sales amount and count for a product using cached meta values.
+     *
+     * @param int    $product_id Product ID
+     * @param string $start_date Unused, kept for backward compatibility
+     * @param string $end_date   Unused, kept for backward compatibility
+     * @return array ['amount' => float, 'count' => int]
+     */
     public function get_total_donation_sales_amount_by_product_id($product_id, $start_date = null, $end_date = null) {
         if (!is_numeric($product_id) || $product_id <= 0) {
-            return ['amount' => 0, 'count' => 0]; // Invalid product ID
+            return ['amount' => 0, 'count' => 0];
         }
 
-        global $wpdb;
+        $amount = get_post_meta($product_id, '_total_sales_amount', true);
+        $count = get_post_meta($product_id, '_order_count', true);
 
-        // ---- Build date conditions ----
-        $date_conditions = '';
-        $date_params = [];
-
-        if (!empty($start_date)) {
-            $date_conditions .= " AND p.post_date_gmt >= %s";
-            $date_params[] = $start_date;
-        }
-        if (!empty($end_date)) {
-            $date_conditions .= " AND p.post_date_gmt <= %s";
-            $date_params[] = $end_date;
-        }
-
-        // ---- 1) Count distinct orders ----
-        $count_sql = "
-            SELECT COUNT(DISTINCT oi.order_id)
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->posts} AS p
-                ON oi.order_id = p.ID
-            WHERE p.post_status = 'wc-completed'
-                AND oi.order_item_type = 'line_item'
-                AND om1.meta_key = '_product_id'
-                AND om1.meta_value = %d
-                {$date_conditions}
-        ";
-        $count_params = array_merge([$product_id], $date_params);
-        $count_result = $wpdb->get_var($wpdb->prepare($count_sql, $count_params));
-        $count_result = $count_result ? (int) $count_result : 0;
-
-        // ---- 2) Sum of line totals with currency conversion ----
-        $sum_sql = "
-            SELECT oi.order_id, om2.meta_value AS line_total, 
-                (SELECT meta_value 
-                    FROM {$wpdb->prefix}postmeta 
-                    WHERE post_id = oi.order_id 
-                    AND meta_key = '_order_currency' 
-                    LIMIT 1) AS order_currency
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON oi.order_item_id = om1.order_item_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
-                ON oi.order_item_id = om2.order_item_id
-            INNER JOIN {$wpdb->posts} AS p
-                ON oi.order_id = p.ID
-            WHERE p.post_status = 'wc-completed'
-                AND oi.order_item_type = 'line_item'
-                AND om1.meta_key = '_product_id'
-                AND om1.meta_value = %d
-                AND om2.meta_key = '_line_total'
-                {$date_conditions}
-        ";
-        $sum_params = array_merge([$product_id], $date_params);
-        $sum_results = $wpdb->get_results($wpdb->prepare($sum_sql, $sum_params));
-
-        $total_gbp = 0;
-
-        // Process each result and apply currency conversion
-        if (!empty($sum_results)) {
-            foreach ($sum_results as $row) {
-                $currency = !empty($row->order_currency) ? $row->order_currency : get_option('woocommerce_currency');
-                $amount = floatval($row->line_total); // Convert line total to float
-
-                // If the currency is not GBP, convert it to GBP using the currency rate
-                if (strtoupper($currency) !== get_option('woocommerce_currency')) {
-                    $rate = Skydonate_Currency_Changer::get_rate(get_option('woocommerce_currency'), $currency);
-                    if ($rate && $rate > 0) {
-                        $amount = $amount / $rate; // Convert the amount to GBP
-                    } else {
-                        // Optional: Handle the case where the conversion rate is not available
-                        $amount = 0; // Default to 0 if conversion rate is not found
-                    }
-                }
-
-                // Add the converted amount to the total GBP
-                $total_gbp += $amount;
-            }
-        }
-
-        // Return the results as an associative array
         return [
-            'amount' => round($total_gbp, 2), // Total sales amount in GBP
-            'count'  => $count_result,        // Number of orders
+            'amount' => $amount ? floatval($amount) : 0,
+            'count'  => $count ? intval($count) : 0,
         ];
     }
 

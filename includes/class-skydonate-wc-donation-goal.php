@@ -55,22 +55,15 @@ class WC_Donation_Goal {
         }
     }
 
+    /**
+     * Get total sales revenue for a product using cached meta value.
+     *
+     * @param int $product_id Product ID
+     * @return float Total sales amount
+     */
     public function get_product_total_sales_revenue($product_id) {
-        global $wpdb;
-
-        $total_sales = $wpdb->get_var($wpdb->prepare("
-            SELECT SUM(oim2.meta_value)
-            FROM {$wpdb->prefix}woocommerce_order_items oi
-            JOIN {$wpdb->prefix}woocommerce_order_itemmeta oim ON oi.order_item_id = oim.order_item_id
-            JOIN {$wpdb->prefix}woocommerce_order_itemmeta oim2 ON oi.order_item_id = oim2.order_item_id
-            JOIN {$wpdb->prefix}posts p ON oi.order_id = p.ID
-            WHERE oim.meta_key = '_product_id'
-            AND oim.meta_value = %d
-            AND oim2.meta_key = '_line_total'
-            AND p.post_status = 'wc-completed'
-        ", $product_id));
-
-        return $total_sales ? $total_sales : 0;
+        $cached = get_post_meta($product_id, '_total_sales_amount', true);
+        return $cached ? floatval($cached) : 0;
     }
 
     public function product_sales_progress_bar_shortcode($atts) {
