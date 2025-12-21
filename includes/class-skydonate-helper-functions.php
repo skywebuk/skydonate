@@ -296,57 +296,49 @@ class Skydonate_Functions {
         }
     }
 
+	/**
+	 * Filter HPOS orders query to show only orders containing a specific product.
+	 * Uses _skydonate_product_id order meta for efficient filtering.
+	 */
 	public function filter_hpos_query( $pieces, $args ) {
-		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] )  ) {
-			$product = intval($_GET['product_id']);
+		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] ) ) {
+			global $wpdb;
+			$product_id = intval( $_GET['product_id'] );
+			$meta_table = $wpdb->prefix . 'wc_orders_meta';
+			$orders_table = $wpdb->prefix . 'wc_orders';
 
-			// Check if selected product is inside order query
-			$pieces['where'] .= " AND $product IN (";
-			$pieces['where'] .= $this->query_by_product_hpos();
-			$pieces['where'] .= ")";
+			// Filter using _skydonate_product_id order meta
+			$pieces['where'] .= $wpdb->prepare(
+				" AND {$orders_table}.id IN (
+					SELECT order_id FROM {$meta_table}
+					WHERE meta_key = '_skydonate_product_id'
+					AND meta_value = %s
+				)",
+				$product_id
+			);
 		}
 
 		return $pieces;
 	}
-	
-	public static function query_by_product_hpos(){
-		global $wpdb;
-        $t_orders = $wpdb->prefix . "wc_orders";
-		$t_order_items = $wpdb->prefix . "woocommerce_order_items";  
-		$t_order_itemmeta = $wpdb->prefix . "woocommerce_order_itemmeta";
 
-		// Build join query, select meta_value
-		$query  = "SELECT $t_order_itemmeta.meta_value FROM";
-		$query .= " $t_order_items LEFT JOIN $t_order_itemmeta";
-		$query .= " on $t_order_itemmeta.order_item_id=$t_order_items.order_item_id";
-
-		// Resultant table after join query
-		/*------------------------------------------------------------------
-		order_id | order_item_id* | order_item_type | meta_key | meta_value
-		-------------------------------------------------------------------*/
-
-		// Build where clause, where order_id = $t_posts.ID
-		$query .= " WHERE $t_order_items.order_item_type='line_item'";
-		$query .= " AND $t_order_itemmeta.meta_key='_product_id'";
-		$query .= " AND $t_orders.Id=$t_order_items.order_id";
-
-		// Visulize result
-		/*-------------------------------------------------------------------
-		order_id    | order_item_type | meta_key    | meta_value
-		$t_posts.ID | line_item       | _product_id | <result>
-		---------------------------------------------------------------------*/
-
-		return $query;
-	}
-    
+	/**
+	 * Filter legacy orders query to show only orders containing a specific product.
+	 * Uses _skydonate_product_id order meta for efficient filtering.
+	 */
 	public function filter_where( $where, $query ) {
-		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] )  ) {
-			$product = intval($_GET['product_id']);
+		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' && ! empty( $_GET['product_id'] ) ) {
+			global $wpdb;
+			$product_id = intval( $_GET['product_id'] );
 
-			// Check if selected product is inside order query
-			$where .= " AND $product IN (";
-			$where .= $this->query_by_product();
-			$where .= ")";
+			// Filter using _skydonate_product_id order meta
+			$where .= $wpdb->prepare(
+				" AND {$wpdb->posts}.ID IN (
+					SELECT post_id FROM {$wpdb->postmeta}
+					WHERE meta_key = '_skydonate_product_id'
+					AND meta_value = %s
+				)",
+				$product_id
+			);
 		}
 		return $where;
 	}
@@ -363,39 +355,6 @@ class Skydonate_Functions {
         }
     }
 
-
-	// Returns list of product id
-	protected function query_by_product(){
-		global $wpdb;
-		$t_posts = $wpdb->posts;
-		$t_order_items = $wpdb->prefix . "woocommerce_order_items";
-		$t_order_itemmeta = $wpdb->prefix . "woocommerce_order_itemmeta";
-
-		// Build join query, select meta_value
-		$query  = "SELECT $t_order_itemmeta.meta_value FROM";
-		$query .= " $t_order_items LEFT JOIN $t_order_itemmeta";
-		$query .= " on $t_order_itemmeta.order_item_id=$t_order_items.order_item_id";
-
-		// Resultant table after join query
-		/*------------------------------------------------------------------
-		order_id | order_item_id* | order_item_type | meta_key | meta_value
-		-------------------------------------------------------------------*/
-
-		// Build where clause, where order_id = $t_posts.ID
-		$query .= " WHERE $t_order_items.order_item_type='line_item'";
-		$query .= " AND $t_order_itemmeta.meta_key='_product_id'";
-		$query .= " AND $t_posts.ID=$t_order_items.order_id";
-
-		// Visulize result
-		/*-------------------------------------------------------------------
-		order_id    | order_item_type | meta_key    | meta_value
-		$t_posts.ID | line_item       | _product_id | <result>
-		---------------------------------------------------------------------*/
-
-		return $query;
-	}
-    
-        
     /**
      * Add custom columns to the WooCommerce product list.
      */
@@ -466,6 +425,7 @@ class Skydonate_Functions {
 
     /**
      * Update raised amount for all products in an order when order is completed.
+     * Also stores product IDs as order meta for efficient filtering.
      *
      * @param int $order_id The order ID.
      */
@@ -483,6 +443,14 @@ class Skydonate_Functions {
                 $this->get_donation_order_count($product_id);
                 $updated_products[] = $product_id;
             }
+        }
+
+        // Store product IDs as order meta for efficient filtering
+        if (!empty($updated_products)) {
+            foreach ($updated_products as $product_id) {
+                $order->add_meta_data('_skydonate_product_id', $product_id, false);
+            }
+            $order->save();
         }
     }
 
