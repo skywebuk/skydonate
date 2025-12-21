@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.12
+ * @version 2.0.13
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

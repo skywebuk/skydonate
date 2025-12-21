@@ -1946,3 +1946,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
         font-size: var(--sky-font-size-xs);
     }
 }
+
+.customize-control .customize-inside-control-row {
+    margin-left: 0;
+}
