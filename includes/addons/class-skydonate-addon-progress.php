@@ -287,6 +287,10 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
 
         $this->add_render_attribute('wrapper_attributes', 'data-settings', wp_json_encode($bar_settings));
 
+        // Calculate percentage for data-small attribute
+        $progress_percentage = ($target > 0) ? ($total_raised / $target) * 100 : 0;
+        $is_small = $progress_percentage < 10 ? 'true' : 'false';
+
         echo '<div ' . $this->get_render_attribute_string('wrapper_attributes') . '>';
             echo '<div class="progress-info">' . sprintf(
                 __('<span class="raised">%s</span> of <span class="goal">%s</span> goal', 'skydonate'),
@@ -294,7 +298,7 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
                 esc_html( $currency_symbol . number_format( $target ) )
             ) . '</div>';
             echo '<div class="progress-bar-background">';
-                echo '<div class="progress-bar">';
+                echo '<div class="progress-bar" data-small="'.$is_small.'">';
                 echo '<span class="percent">0%</span>';
                 echo '</div>';
             echo '</div>';

@@ -657,6 +657,10 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
         ];
         $this->add_render_attribute('wrapper_attributes', 'data-settings', wp_json_encode($bar_settings));
 
+        // Calculate percentage for data-small attribute
+        $progress_percentage = ($target > 0) ? ($total_raised / $target) * 100 : 0;
+        $is_small = $progress_percentage < 10 ? 'true' : 'false';
+
         // If style == 'line'
         if ($settings['progress_style'] === 'line') {
             $this->add_render_attribute('wrapper_attributes', 'class', 'line');
@@ -682,7 +686,7 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
                 );
                 echo '</div>';
 
-                echo '<div class="progress-bar-background"><div class="progress-bar"></div></div>';
+                echo '<div class="progress-bar-background"><div class="progress-bar" data-small="'.$is_small.'"></div></div>';
             echo '</div>';
 
         // If style == 'circle'

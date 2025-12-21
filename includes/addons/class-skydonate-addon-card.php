@@ -1825,8 +1825,9 @@ class Skydonate_Card extends \Elementor\Widget_Base {
 
                             // Progress Bar
                             if ($show_progress_bar) {
+                                $is_small = $progress_percentage < 10 ? 'true' : 'false';
                                 echo '<div class="donation-progress">';
-                                    echo '<div class="progress-bar" data-percent="'.esc_attr($progress_percentage).'"></div>';
+                                    echo '<div class="progress-bar" data-percent="'.esc_attr($progress_percentage).'" data-small="'.$is_small.'"></div>';
                                 echo '</div>';
                             }
 
