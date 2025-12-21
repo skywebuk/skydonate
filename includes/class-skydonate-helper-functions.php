@@ -444,10 +444,7 @@ class Skydonate_Functions {
 
         $orderby = $query->get('orderby');
 
-        if ('total_sales_amount' === $orderby) {
-            $query->set('meta_key', '_total_sales_amount');
-            $query->set('orderby', 'meta_value_num');
-        } elseif ('order_count' === $orderby) {
+        if ('order_count' === $orderby) {
             $query->set('meta_key', '_order_count');
             $query->set('orderby', 'meta_value_num');
         }
