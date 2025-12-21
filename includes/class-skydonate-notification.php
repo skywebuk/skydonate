@@ -417,11 +417,23 @@ class Skydonate_Notification {
 
     /**
      * Get a customizer value with default from config
+     * Handles empty string values by returning the default instead
      */
     private function get_setting($key) {
         $config = $this->get_customizer_config();
-        $default = isset($config[$key]['default']) ? $config[$key]['default'] : '';
-        return get_theme_mod('skydonate_notification_' . $key, $default);
+        if (!isset($config[$key])) {
+            return '';
+        }
+        $default = $config[$key]['default'];
+        $value = get_theme_mod('skydonate_notification_' . $key, $default);
+
+        // If value is empty string (but not false for checkboxes), use default
+        // This handles the case where WordPress saves empty values to the database
+        if ($value === '' || $value === null) {
+            return $default;
+        }
+
+        return $value;
     }
 
     public function customizer_style() {
