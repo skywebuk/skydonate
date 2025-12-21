@@ -728,4 +728,29 @@ class Skydonate_Progress_2 extends \Elementor\Widget_Base {
         }
     }
 
+    
+    /**
+     * Get total donation sales amount and count for a product using cached meta values.
+     *
+     * @param int    $product_id Product ID
+     * @param string $start_date Unused, kept for backward compatibility
+     * @param string $end_date   Unused, kept for backward compatibility
+     * @return array ['amount' => float, 'count' => int]
+     */
+    public function get_total_donation_sales_amount_by_product_id($product_id, $start_date = null, $end_date = null) {
+        if (!is_numeric($product_id) || $product_id <= 0) {
+            return ['amount' => 0, 'count' => 0];
+        }
+
+        $amount = get_post_meta($product_id, '_total_sales_amount', true);
+        $count = get_post_meta($product_id, '_order_count', true);
+
+        return [
+            'amount' => $amount ? floatval($amount) : 0,
+            'count'  => $count ? intval($count) : 0,
+        ];
+    }
+
+
+
 }

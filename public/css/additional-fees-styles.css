@@ -135,7 +135,7 @@ label.wootooltip {
 }
 
 body .select2-container--default .select2-selection--single .select2-selection__rendered {
-    padding: 3px 15px 3px 1px !important;
+    padding: 13px 15px 12px 13px !important;
     line-height: 1em !important;
     display: flex;
     align-items: center;

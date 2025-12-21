@@ -301,4 +301,17 @@ class Skydonate_Progress extends \Elementor\Widget_Base {
         echo '</div>';
     }
 
+    /**
+     * Get total donation sales amount for a product using cached meta value.
+     *
+     * @param int    $product_id Product ID
+     * @param string $start_date Unused, kept for backward compatibility
+     * @param string $end_date   Unused, kept for backward compatibility
+     * @return float Total sales amount
+     */
+    public function get_total_donation_sales_amount_by_product_id($product_id, $start_date = null, $end_date = null) {
+        $cached = get_post_meta($product_id, '_total_sales_amount', true);
+        return $cached ? floatval($cached) : 0;
+    }
+
 }
