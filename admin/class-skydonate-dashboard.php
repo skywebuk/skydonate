@@ -256,7 +256,7 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get donations by campaign/product using _skydonate_product_id order meta.
+     * Get donations by campaign/product using order items (HPOS-compatible).
      */
     public static function get_donations_by_campaign( $limit = 10, $days = 0 ) {
         global $wpdb;
@@ -269,34 +269,39 @@ class Skydonate_Dashboard {
             $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
 
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
         if ( $is_hpos ) {
-            $meta_table = $wpdb->prefix . 'wc_orders_meta';
             $results = $wpdb->get_results( $wpdb->prepare( "
                 SELECT
-                    pm.meta_value as product_id,
-                    SUM(o.total_amount) as total_amount,
+                    oim_product.meta_value as product_id,
+                    SUM(CAST(oim_total.meta_value AS DECIMAL(10,2))) as total_amount,
                     COUNT(DISTINCT o.id) as order_count
                 FROM {$tables['orders']} AS o
-                INNER JOIN {$meta_table} AS pm ON o.id = pm.order_id AND pm.meta_key = '_skydonate_product_id'
+                INNER JOIN {$order_items_table} AS oi ON o.id = oi.order_id AND oi.order_item_type = 'line_item'
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                INNER JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
                 WHERE o.status = 'wc-completed'
                 {$date_filter}
-                GROUP BY pm.meta_value
+                GROUP BY oim_product.meta_value
                 ORDER BY total_amount DESC
                 LIMIT %d
             ", $limit ), ARRAY_A );
         } else {
             $results = $wpdb->get_results( $wpdb->prepare( "
                 SELECT
-                    pm.meta_value as product_id,
-                    SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount,
+                    oim_product.meta_value as product_id,
+                    SUM(CAST(oim_total.meta_value AS DECIMAL(10,2))) as total_amount,
                     COUNT(DISTINCT o.ID) as order_count
                 FROM {$wpdb->posts} AS o
-                INNER JOIN {$wpdb->postmeta} AS pm ON o.ID = pm.post_id AND pm.meta_key = '_skydonate_product_id'
-                INNER JOIN {$wpdb->postmeta} AS pm_total ON o.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
+                INNER JOIN {$order_items_table} AS oi ON o.ID = oi.order_id AND oi.order_item_type = 'line_item'
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                INNER JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
                 WHERE o.post_type = 'shop_order'
                 AND o.post_status = 'wc-completed'
                 {$date_filter}
-                GROUP BY pm.meta_value
+                GROUP BY oim_product.meta_value
                 ORDER BY total_amount DESC
                 LIMIT %d
             ", $limit ), ARRAY_A );
