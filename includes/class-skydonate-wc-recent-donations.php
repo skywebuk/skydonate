@@ -38,7 +38,7 @@ class WC_Recent_Donations {
     }
 
     public function get_recent_orders_for_product($atts) {
-        global $post;
+        global $post, $wpdb;
         $product_id = '';
         if (is_product()) {
             $product_id = $post->ID;
@@ -53,17 +53,28 @@ class WC_Recent_Donations {
             return 'No product ID provided.';
         }
 
-        // Use _skydonate_product_id meta for efficient filtering
-        $args = [
-            'limit'    => 20,
-            'orderby'  => 'date',
-            'order'    => 'DESC',
-            'status'   => 'completed',
-            'meta_key' => '_skydonate_product_id',
-            'meta_value' => $product_id,
-        ];
+        // Query orders by product ID using order items table (works for all orders)
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
 
-        $filtered_orders = wc_get_orders($args);
+        $order_ids = $wpdb->get_col( $wpdb->prepare( "
+            SELECT DISTINCT oi.order_id
+            FROM {$order_items_table} AS oi
+            INNER JOIN {$order_itemmeta_table} AS oim ON oi.order_item_id = oim.order_item_id
+            WHERE oi.order_item_type = 'line_item'
+            AND oim.meta_key = '_product_id'
+            AND oim.meta_value = %s
+            ORDER BY oi.order_id DESC
+            LIMIT 20
+        ", $product_id ) );
+
+        $filtered_orders = [];
+        foreach ( $order_ids as $order_id ) {
+            $order = wc_get_order( $order_id );
+            if ( $order && $order->get_status() === 'completed' ) {
+                $filtered_orders[] = $order;
+            }
+        }
 
 
         $output = '<div class="order-box">';
@@ -72,7 +83,7 @@ class WC_Recent_Donations {
         foreach ($filtered_orders as $order) {
             $order_date = $order->get_date_created();
             $time_ago = human_time_diff($order_date->getTimestamp(), current_time('timestamp')) . ' ago';
-            $is_anonymous = get_post_meta($order->get_id(), '_anonymous_donation', true);
+            $is_anonymous = $order->get_meta('_anonymous_donation', true);
 
             if ($is_anonymous === '1') {
                 $customer_name = 'Anonymous';
@@ -113,19 +124,23 @@ class WC_Recent_Donations {
 // Add the anonymous checkbox to the order meta page
 add_action('woocommerce_admin_order_data_after_billing_address', 'display_admin_order_meta_anonymous_checkbox', 10, 1);
 function display_admin_order_meta_anonymous_checkbox($order) {
-    $is_anonymous = get_post_meta($order->get_id(), '_anonymous_donation', true);
+    $is_anonymous = $order->get_meta('_anonymous_donation', true);
     $checked = $is_anonymous ? 'checked="checked"' : '';
-    echo '<p><strong>' . __('Anonymous Donation', 'your-text-domain') . ':</strong> <br/><label><input type="checkbox" name="anonymous_donation" ' . $checked . ' /> Make this donation anonymous</label></p>';
+    echo '<p><strong>' . __('Anonymous Donation', 'skydonate') . ':</strong> <br/><label><input type="checkbox" name="anonymous_donation" ' . $checked . ' /> Make this donation anonymous</label></p>';
 }
 
 
 add_action('woocommerce_process_shop_order_meta', 'save_admin_order_meta_anonymous_checkbox', 45, 2);
 function save_admin_order_meta_anonymous_checkbox($post_id, $post) {
+    $order = wc_get_order($post_id);
+    if (!$order) return;
+
     if (isset($_POST['anonymous_donation'])) {
-        update_post_meta($post_id, '_anonymous_donation', '1');
+        $order->update_meta_data('_anonymous_donation', '1');
     } else {
-        update_post_meta($post_id, '_anonymous_donation', '');
+        $order->update_meta_data('_anonymous_donation', '');
     }
+    $order->save();
 }
 
 
@@ -135,7 +150,10 @@ function add_anonymous_donation_option($order_id) {
         return;
     }
 
-    $is_anonymous = get_post_meta($order_id, '_anonymous_donation', true);
+    $order = wc_get_order($order_id);
+    if (!$order) return;
+
+    $is_anonymous = $order->get_meta('_anonymous_donation', true);
     $checked = checked($is_anonymous, '1', false);
 
     // Ensuring the form submits back to the same page
@@ -237,10 +255,11 @@ function handle_anonymous_donation_submission() {
         }
 
         if (isset($_POST['anonymous_donation']) && $_POST['anonymous_donation'] === '1') {
-            update_post_meta($order_id, '_anonymous_donation', '1');
+            $order->update_meta_data('_anonymous_donation', '1');
         } else {
-            delete_post_meta($order_id, '_anonymous_donation');
+            $order->delete_meta_data('_anonymous_donation');
         }
+        $order->save();
 
         // Add a success notice
         wc_add_notice(__('Your donation anonymity preference has been updated.', 'skydonate'), 'success');
