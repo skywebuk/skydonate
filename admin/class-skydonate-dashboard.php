@@ -113,35 +113,27 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get total donations amount
+     * Get total donations amount using order total meta.
      */
     public static function get_total_donations( $days = 0 ) {
-        global $wpdb;
+        $args = [
+            'status' => 'completed',
+            'type'   => 'shop_order',
+            'limit'  => -1,
+        ];
 
-        $tables = self::get_order_tables();
-        $is_hpos = self::is_hpos_enabled();
-
-        $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $args['date_created'] = '>=' . date( 'Y-m-d', strtotime( "-{$days} days" ) );
         }
 
-        $type_filter = $is_hpos ? '' : "AND o.post_type = 'shop_order'";
-        $status_value = $is_hpos ? 'wc-completed' : 'wc-completed';
+        $orders = wc_get_orders( $args );
+        $total = 0;
 
-        $total = $wpdb->get_var( "
-            SELECT SUM(CAST(om.meta_value AS DECIMAL(10,2)))
-            FROM {$wpdb->prefix}woocommerce_order_itemmeta AS om
-            INNER JOIN {$wpdb->prefix}woocommerce_order_items AS oi ON om.order_item_id = oi.order_item_id
-            INNER JOIN {$tables['orders']} AS o ON oi.order_id = o.{$tables['id_column']}
-            WHERE om.meta_key = '_line_total'
-            AND oi.order_item_type = 'line_item'
-            {$type_filter}
-            AND o.{$tables['status_column']} = '{$status_value}'
-            {$date_filter}
-        " );
+        foreach ( $orders as $order ) {
+            $total += floatval( $order->get_total() );
+        }
 
-        return $total ? floatval( $total ) : 0;
+        return $total;
     }
 
     /**
@@ -264,35 +256,51 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get donations by campaign/product
+     * Get donations by campaign/product using _skydonate_product_id order meta.
      */
     public static function get_donations_by_campaign( $limit = 10, $days = 0 ) {
         global $wpdb;
 
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
+
         $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
 
-        $results = $wpdb->get_results( $wpdb->prepare( "
-            SELECT
-                om_product.meta_value as product_id,
-                SUM(CAST(om_total.meta_value AS DECIMAL(10,2))) as total_amount,
-                COUNT(DISTINCT oi.order_id) as order_count
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om_product
-                ON oi.order_item_id = om_product.order_item_id AND om_product.meta_key = '_product_id'
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om_total
-                ON oi.order_item_id = om_total.order_item_id AND om_total.meta_key = '_line_total'
-            INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
-            WHERE oi.order_item_type = 'line_item'
-            AND p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            {$date_filter}
-            GROUP BY om_product.meta_value
-            ORDER BY total_amount DESC
-            LIMIT %d
-        ", $limit ), ARRAY_A );
+        if ( $is_hpos ) {
+            $meta_table = $wpdb->prefix . 'wc_orders_meta';
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    pm.meta_value as product_id,
+                    SUM(o.total_amount) as total_amount,
+                    COUNT(DISTINCT o.id) as order_count
+                FROM {$tables['orders']} AS o
+                INNER JOIN {$meta_table} AS pm ON o.id = pm.order_id AND pm.meta_key = '_skydonate_product_id'
+                WHERE o.status = 'wc-completed'
+                {$date_filter}
+                GROUP BY pm.meta_value
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    pm.meta_value as product_id,
+                    SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount,
+                    COUNT(DISTINCT o.ID) as order_count
+                FROM {$wpdb->posts} AS o
+                INNER JOIN {$wpdb->postmeta} AS pm ON o.ID = pm.post_id AND pm.meta_key = '_skydonate_product_id'
+                INNER JOIN {$wpdb->postmeta} AS pm_total ON o.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
+                WHERE o.post_type = 'shop_order'
+                AND o.post_status = 'wc-completed'
+                {$date_filter}
+                GROUP BY pm.meta_value
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        }
 
         $data = [];
         foreach ( $results as $row ) {
