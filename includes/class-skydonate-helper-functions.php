@@ -412,15 +412,39 @@ class Skydonate_Functions {
         }
     }
 
+    /**
+     * Get total donation sales for a product using cached meta value.
+     *
+     * @param int $product_id Product ID
+     * @return float Total sales amount
+     */
     public function get_total_donation_sales($product_id) {
-        // Use remote stub for protected function
-        return skydonate_remote_stubs()->get_total_donation_sales($product_id);
+        $cached = get_post_meta($product_id, '_total_sales_amount', true);
+        return $cached ? floatval($cached) : 0;
     }
-    
 
+    /**
+     * Get donation order count for a product using cached meta value.
+     *
+     * @param int $product_id Product ID
+     * @return int Order count
+     */
     public function get_donation_order_count($product_id) {
-        // Use remote stub for protected function
-        return skydonate_remote_stubs()->get_donation_order_count($product_id);
+        $cached = get_post_meta($product_id, '_order_count', true);
+        return $cached ? intval($cached) : 0;
+    }
+
+    /**
+     * Recalculate and update product donation meta via remote function.
+     *
+     * @param int $product_id Product ID
+     */
+    private function recalculate_product_donation_meta($product_id) {
+        // Use remote stubs to recalculate and update the meta
+        if (skydonate_remote_stubs()->is_remote_available()) {
+            skydonate_remote_stubs()->get_total_donation_sales($product_id);
+            skydonate_remote_stubs()->get_donation_order_count($product_id);
+        }
     }
 
     /**
@@ -439,8 +463,7 @@ class Skydonate_Functions {
         foreach ($order->get_items() as $item) {
             $product_id = $item->get_product_id();
             if ($product_id && !in_array($product_id, $updated_products)) {
-                $this->get_total_donation_sales($product_id);
-                $this->get_donation_order_count($product_id);
+                $this->recalculate_product_donation_meta($product_id);
                 $updated_products[] = $product_id;
             }
         }
@@ -478,8 +501,7 @@ class Skydonate_Functions {
         foreach ($order->get_items() as $item) {
             $product_id = $item->get_product_id();
             if ($product_id && !in_array($product_id, $updated_products)) {
-                $this->get_total_donation_sales($product_id);
-                $this->get_donation_order_count($product_id);
+                $this->recalculate_product_donation_meta($product_id);
                 $updated_products[] = $product_id;
             }
         }
