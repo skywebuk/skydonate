@@ -317,32 +317,51 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get donations by country
+     * Get donations by country (HPOS-compatible)
      */
     public static function get_donations_by_country( $limit = 10, $days = 0 ) {
         global $wpdb;
 
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
+
         $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
 
-        $results = $wpdb->get_results( $wpdb->prepare( "
-            SELECT
-                pm_country.meta_value as country_code,
-                COUNT(*) as donation_count,
-                SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount
-            FROM {$wpdb->posts} AS p
-            INNER JOIN {$wpdb->postmeta} AS pm_country ON p.ID = pm_country.post_id AND pm_country.meta_key = '_billing_country'
-            INNER JOIN {$wpdb->postmeta} AS pm_total ON p.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
-            WHERE p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm_country.meta_value != ''
-            {$date_filter}
-            GROUP BY pm_country.meta_value
-            ORDER BY total_amount DESC
-            LIMIT %d
-        ", $limit ), ARRAY_A );
+        if ( $is_hpos ) {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    o.billing_country as country_code,
+                    COUNT(*) as donation_count,
+                    SUM(o.total_amount) as total_amount
+                FROM {$tables['orders']} AS o
+                WHERE o.status = 'wc-completed'
+                AND o.billing_country != ''
+                {$date_filter}
+                GROUP BY o.billing_country
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    pm_country.meta_value as country_code,
+                    COUNT(*) as donation_count,
+                    SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount
+                FROM {$wpdb->posts} AS o
+                INNER JOIN {$wpdb->postmeta} AS pm_country ON o.ID = pm_country.post_id AND pm_country.meta_key = '_billing_country'
+                INNER JOIN {$wpdb->postmeta} AS pm_total ON o.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
+                WHERE o.post_type = 'shop_order'
+                AND o.post_status = 'wc-completed'
+                AND pm_country.meta_value != ''
+                {$date_filter}
+                GROUP BY pm_country.meta_value
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        }
 
         $countries = WC()->countries->get_countries();
         $data = [];
@@ -361,17 +380,20 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get donation amount distribution
+     * Get donation amount distribution (HPOS-compatible)
      */
     public static function get_donation_distribution( $days = 0 ) {
         global $wpdb;
+
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
 
         $currency_code = get_option('woocommerce_currency');
         $currency = html_entity_decode( get_woocommerce_currency_symbol( $currency_code ) );
 
         $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
 
         $ranges = [
@@ -386,17 +408,28 @@ class Skydonate_Dashboard {
 
         $data = [];
         foreach ( $ranges as $range ) {
-            $count = $wpdb->get_var( $wpdb->prepare( "
-                SELECT COUNT(*)
-                FROM {$wpdb->posts} AS p
-                INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id
-                WHERE p.post_type = 'shop_order'
-                AND p.post_status = 'wc-completed'
-                AND pm.meta_key = '_order_total'
-                AND CAST(pm.meta_value AS DECIMAL(10,2)) >= %f
-                AND CAST(pm.meta_value AS DECIMAL(10,2)) < %f
-                {$date_filter}
-            ", $range['min'], $range['max'] ) );
+            if ( $is_hpos ) {
+                $count = $wpdb->get_var( $wpdb->prepare( "
+                    SELECT COUNT(*)
+                    FROM {$tables['orders']} AS o
+                    WHERE o.status = 'wc-completed'
+                    AND o.total_amount >= %f
+                    AND o.total_amount < %f
+                    {$date_filter}
+                ", $range['min'], $range['max'] ) );
+            } else {
+                $count = $wpdb->get_var( $wpdb->prepare( "
+                    SELECT COUNT(*)
+                    FROM {$wpdb->posts} AS o
+                    INNER JOIN {$wpdb->postmeta} AS pm ON o.ID = pm.post_id
+                    WHERE o.post_type = 'shop_order'
+                    AND o.post_status = 'wc-completed'
+                    AND pm.meta_key = '_order_total'
+                    AND CAST(pm.meta_value AS DECIMAL(10,2)) >= %f
+                    AND CAST(pm.meta_value AS DECIMAL(10,2)) < %f
+                    {$date_filter}
+                ", $range['min'], $range['max'] ) );
+            }
 
             $data[] = [
                 'label' => $range['label'],
@@ -408,36 +441,59 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get top donors
+     * Get top donors (HPOS-compatible)
      */
     public static function get_top_donors( $limit = 10, $days = 0 ) {
         global $wpdb;
 
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
+
         $date_filter = '';
         if ( $days > 0 ) {
-            $date_filter = $wpdb->prepare( " AND p.post_date >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
+            $date_filter = $wpdb->prepare( " AND o.{$tables['date_column']} >= %s", date( 'Y-m-d', strtotime( "-{$days} days" ) ) );
         }
 
-        $results = $wpdb->get_results( $wpdb->prepare( "
-            SELECT
-                pm_email.meta_value as email,
-                pm_first.meta_value as first_name,
-                pm_last.meta_value as last_name,
-                COUNT(*) as donation_count,
-                SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount
-            FROM {$wpdb->posts} AS p
-            INNER JOIN {$wpdb->postmeta} AS pm_email ON p.ID = pm_email.post_id AND pm_email.meta_key = '_billing_email'
-            INNER JOIN {$wpdb->postmeta} AS pm_total ON p.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
-            LEFT JOIN {$wpdb->postmeta} AS pm_first ON p.ID = pm_first.post_id AND pm_first.meta_key = '_billing_first_name'
-            LEFT JOIN {$wpdb->postmeta} AS pm_last ON p.ID = pm_last.post_id AND pm_last.meta_key = '_billing_last_name'
-            WHERE p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm_email.meta_value != ''
-            {$date_filter}
-            GROUP BY pm_email.meta_value
-            ORDER BY total_amount DESC
-            LIMIT %d
-        ", $limit ), ARRAY_A );
+        if ( $is_hpos ) {
+            $address_table = $wpdb->prefix . 'wc_order_addresses';
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    addr.email as email,
+                    addr.first_name as first_name,
+                    addr.last_name as last_name,
+                    COUNT(*) as donation_count,
+                    SUM(o.total_amount) as total_amount
+                FROM {$tables['orders']} AS o
+                INNER JOIN {$address_table} AS addr ON o.id = addr.order_id AND addr.address_type = 'billing'
+                WHERE o.status = 'wc-completed'
+                AND addr.email != ''
+                {$date_filter}
+                GROUP BY addr.email
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    pm_email.meta_value as email,
+                    pm_first.meta_value as first_name,
+                    pm_last.meta_value as last_name,
+                    COUNT(*) as donation_count,
+                    SUM(CAST(pm_total.meta_value AS DECIMAL(10,2))) as total_amount
+                FROM {$wpdb->posts} AS o
+                INNER JOIN {$wpdb->postmeta} AS pm_email ON o.ID = pm_email.post_id AND pm_email.meta_key = '_billing_email'
+                INNER JOIN {$wpdb->postmeta} AS pm_total ON o.ID = pm_total.post_id AND pm_total.meta_key = '_order_total'
+                LEFT JOIN {$wpdb->postmeta} AS pm_first ON o.ID = pm_first.post_id AND pm_first.meta_key = '_billing_first_name'
+                LEFT JOIN {$wpdb->postmeta} AS pm_last ON o.ID = pm_last.post_id AND pm_last.meta_key = '_billing_last_name'
+                WHERE o.post_type = 'shop_order'
+                AND o.post_status = 'wc-completed'
+                AND pm_email.meta_value != ''
+                {$date_filter}
+                GROUP BY pm_email.meta_value
+                ORDER BY total_amount DESC
+                LIMIT %d
+            ", $limit ), ARRAY_A );
+        }
 
         $data = [];
         foreach ( $results as $row ) {
@@ -490,29 +546,46 @@ class Skydonate_Dashboard {
     }
 
     /**
-     * Get donations by month for the year
+     * Get donations by month for the year (HPOS-compatible)
      */
     public static function get_monthly_donations( $year = null ) {
         global $wpdb;
+
+        $tables = self::get_order_tables();
+        $is_hpos = self::is_hpos_enabled();
 
         if ( ! $year ) {
             $year = date( 'Y' );
         }
 
-        $results = $wpdb->get_results( $wpdb->prepare( "
-            SELECT
-                MONTH(p.post_date) as month,
-                COUNT(*) as donation_count,
-                SUM(CAST(pm.meta_value AS DECIMAL(10,2))) as donation_total
-            FROM {$wpdb->posts} AS p
-            INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'shop_order'
-            AND p.post_status = 'wc-completed'
-            AND pm.meta_key = '_order_total'
-            AND YEAR(p.post_date) = %d
-            GROUP BY MONTH(p.post_date)
-            ORDER BY month ASC
-        ", $year ), ARRAY_A );
+        if ( $is_hpos ) {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    MONTH(o.date_created_gmt) as month,
+                    COUNT(*) as donation_count,
+                    SUM(o.total_amount) as donation_total
+                FROM {$tables['orders']} AS o
+                WHERE o.status = 'wc-completed'
+                AND YEAR(o.date_created_gmt) = %d
+                GROUP BY MONTH(o.date_created_gmt)
+                ORDER BY month ASC
+            ", $year ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    MONTH(o.post_date) as month,
+                    COUNT(*) as donation_count,
+                    SUM(CAST(pm.meta_value AS DECIMAL(10,2))) as donation_total
+                FROM {$wpdb->posts} AS o
+                INNER JOIN {$wpdb->postmeta} AS pm ON o.ID = pm.post_id
+                WHERE o.post_type = 'shop_order'
+                AND o.post_status = 'wc-completed'
+                AND pm.meta_key = '_order_total'
+                AND YEAR(o.post_date) = %d
+                GROUP BY MONTH(o.post_date)
+                ORDER BY month ASC
+            ", $year ), ARRAY_A );
+        }
 
         $months = [
             1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
