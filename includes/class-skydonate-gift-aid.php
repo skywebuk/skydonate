@@ -21,14 +21,24 @@ class Skydonate_Gift_Aid {
         add_action( 'woocommerce_before_my_account', array( $this, 'my_account_gift_aid_field' ) );
         add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
 
+        // Add Anonymous Donation section to My Account page (below Gift Aid)
+        add_action( 'woocommerce_before_my_account', array( $this, 'my_account_anonymous_donation_field' ), 15 );
+        add_action( 'wp_ajax_save_anonymous_donation', [ $this, 'skydonate_ajax_save_anonymous_donation' ] );
+
         // Save the Gift Aid checkbox value when order is processed
         add_action( 'woocommerce_process_shop_order_meta', array( $this, 'save_gift_aid_checkbox' ), 45, 2 );
 
         // Save Gift Aid meta during WooCommerce checkout
         add_action( 'woocommerce_checkout_create_order', array( $this, 'save_gift_aid_meta' ), 10, 2 );
 
+        // Apply user preferences to new orders
+        add_action( 'woocommerce_checkout_create_order', array( $this, 'apply_user_anonymous_preference' ), 10, 2 );
+
         // Apply Gift Aid to subscription renewals
         add_action( 'woocommerce_subscriptions_renewal_order_created', array( $this, 'apply_user_gift_aid_to_subscription' ), 10, 2 );
+
+        // Apply Anonymous preference to subscription renewals
+        add_action( 'woocommerce_subscriptions_renewal_order_created', array( $this, 'apply_user_anonymous_to_subscription' ), 10, 2 );
 
         // Include Gift Aid meta in WooCommerce emails
         add_filter( 'woocommerce_email_order_meta_fields', array( $this, 'email_gift_aid_meta' ), 10, 3 );
@@ -207,7 +217,185 @@ class Skydonate_Gift_Aid {
 
         wp_send_json_success( array( 'message' => 'Gift Aid settings saved.' ) );
     }
-    
+
+    /**
+     * Display Anonymous Donation field in My Account page
+     */
+    public function my_account_anonymous_donation_field() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $anonymous_status = get_user_meta( $user_id, 'anonymous_donation_status', true ) ?: 'no';
+        ?>
+        <div class="my-account-anonymous-donation skydonate-anonymous-wrapper">
+            <div class="anonymous-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+                    <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9V7zm4 10.723V19h-2v-1.277a1.993 1.993 0 0 1 .567-3.677A2.001 2.001 0 0 1 14 16a1.99 1.99 0 0 1-1 1.723z"/>
+                </svg>
+            </div>
+
+            <h3 class="skydonate-anonymous-title"><?php esc_html_e( 'Anonymous Donations', 'skydonate' ); ?></h3>
+
+            <p class="skydonate-anonymous-description">
+                <?php esc_html_e( 'When enabled, your name will be hidden from public donation lists and notifications. Your donations will appear as "Anonymous" to others.', 'skydonate' ); ?>
+            </p>
+
+            <form id="anonymous-donation-form" class="skydonate-anonymous-form" method="post">
+                <?php wp_nonce_field( 'save_anonymous_donation', 'anonymous_donation_nonce' ); ?>
+                <p class="form-row skydonate-anonymous-checkbox-row">
+                    <label class="sky-smart-switch checkbox">
+                        <input type="checkbox"
+                            class="input-checkbox"
+                            name="anonymous_donation_status"
+                            value="yes"
+                            <?php checked( $anonymous_status, 'yes' ); ?>
+                        >
+                        <span class="switch"></span>
+                        <?php esc_html_e( 'Make all my donations anonymous', 'skydonate' ); ?>
+                    </label>
+                </p>
+
+                <p class="anonymous-note skydonate-anonymous-note-text">
+                    <?php esc_html_e( 'This setting will apply to all your past and future donations. Your billing details will still be visible to the organization for record-keeping purposes.', 'skydonate' ); ?>
+                </p>
+
+                <p class="mb-0 skydonate-anonymous-button-row">
+                    <button type="submit" class="button primary-button skydonate-anonymous-submit">
+                        <?php esc_html_e( 'Save changes', 'skydonate' ); ?>
+                    </button>
+                </p>
+
+                <div id="anonymous-donation-message" class="skydonate-anonymous-message"></div>
+            </form>
+        </div>
+
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('#anonymous-donation-form').on('submit', function(e) {
+                e.preventDefault();
+                var $form = $(this);
+                var $button = $form.find('button[type="submit"]');
+                var $message = $('#anonymous-donation-message');
+
+                $button.prop('disabled', true).text('<?php esc_html_e( 'Saving...', 'skydonate' ); ?>');
+
+                $.ajax({
+                    url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+                    type: 'POST',
+                    data: {
+                        action: 'save_anonymous_donation',
+                        anonymous_donation_nonce: $form.find('[name="anonymous_donation_nonce"]').val(),
+                        anonymous_donation_status: $form.find('[name="anonymous_donation_status"]').is(':checked') ? 'yes' : 'no'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $message.html('<p class="success">' + response.data.message + '</p>').show();
+                        } else {
+                            $message.html('<p class="error">' + response.data.message + '</p>').show();
+                        }
+                        $button.prop('disabled', false).text('<?php esc_html_e( 'Save changes', 'skydonate' ); ?>');
+                        setTimeout(function() { $message.fadeOut(); }, 3000);
+                    },
+                    error: function() {
+                        $message.html('<p class="error"><?php esc_html_e( 'An error occurred. Please try again.', 'skydonate' ); ?></p>').show();
+                        $button.prop('disabled', false).text('<?php esc_html_e( 'Save changes', 'skydonate' ); ?>');
+                    }
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * AJAX handler for saving anonymous donation preference
+     */
+    public function skydonate_ajax_save_anonymous_donation() {
+        // Check nonce
+        if ( ! isset( $_POST['anonymous_donation_nonce'] ) || ! wp_verify_nonce( $_POST['anonymous_donation_nonce'], 'save_anonymous_donation' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed.', 'skydonate' ) ) );
+        }
+
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( array( 'message' => __( 'You must be logged in.', 'skydonate' ) ) );
+        }
+
+        $user_id = get_current_user_id();
+        $anonymous_value = ( isset( $_POST['anonymous_donation_status'] ) && $_POST['anonymous_donation_status'] === 'yes' ) ? 'yes' : 'no';
+
+        // Save user meta
+        update_user_meta( $user_id, 'anonymous_donation_status', $anonymous_value );
+
+        // Update past orders - process in batches
+        $page = 1;
+        $per_page = 100;
+        $updated_count = 0;
+
+        do {
+            $orders = wc_get_orders( array(
+                'customer_id' => $user_id,
+                'limit'       => $per_page,
+                'page'        => $page,
+                'status'      => array( 'wc-completed', 'wc-processing', 'wc-on-hold' ),
+            ) );
+
+            foreach ( $orders as $order ) {
+                if ( $anonymous_value === 'yes' ) {
+                    $order->update_meta_data( '_anonymous_donation', '1' );
+                } else {
+                    $order->delete_meta_data( '_anonymous_donation' );
+                }
+                $order->save();
+                $updated_count++;
+            }
+
+            $page++;
+            // Limit total updates to prevent timeout (max 1000 orders)
+        } while ( count( $orders ) === $per_page && $updated_count < 1000 );
+
+        wp_send_json_success( array(
+            'message' => sprintf(
+                __( 'Anonymous donation settings saved. %d orders updated.', 'skydonate' ),
+                $updated_count
+            )
+        ) );
+    }
+
+    /**
+     * Apply user's anonymous preference to new orders during checkout
+     */
+    public function apply_user_anonymous_preference( $order, $data ) {
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            return;
+        }
+
+        $anonymous_status = get_user_meta( $user_id, 'anonymous_donation_status', true );
+
+        if ( $anonymous_status === 'yes' ) {
+            $order->update_meta_data( '_anonymous_donation', '1' );
+        }
+    }
+
+    /**
+     * Apply anonymous preference to subscription renewal orders
+     */
+    public function apply_user_anonymous_to_subscription( $renewal_order, $subscription ) {
+        $user_id = $subscription->get_user_id();
+        if ( ! $user_id ) {
+            return;
+        }
+
+        $anonymous_status = get_user_meta( $user_id, 'anonymous_donation_status', true );
+
+        if ( $anonymous_status === 'yes' ) {
+            $renewal_order->update_meta_data( '_anonymous_donation', '1' );
+            $renewal_order->save();
+        }
+    }
+
     public function admin_init() {
         // Legacy (pre-WC 7)
         add_filter( 'manage_edit-shop_order_columns', array( $this, 'shop_order_columns' ) );
