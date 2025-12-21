@@ -2141,32 +2141,17 @@ class Skydonate_Card_2 extends \Elementor\Widget_Base {
     }
     
     /**
-     * SQL-based approach to summing donation totals for a product,
-     * instead of loading thousands of WC_Order objects.
+     * Get total donation sales for a product using cached meta value.
+     *
+     * Uses _total_sales_amount meta which is updated when orders complete.
+     * This is more performant than querying order items directly.
+     *
+     * @param int $product_id Product ID
+     * @return float Total sales amount
      */
     public function total_donation_sales($product_id) {
-        global $wpdb;
-
-        $sql = "
-            SELECT SUM( om2.meta_value )
-            FROM {$wpdb->prefix}woocommerce_order_items AS oi
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om1
-                ON (oi.order_item_id = om1.order_item_id)
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS om2
-                ON (oi.order_item_id = om2.order_item_id)
-            INNER JOIN {$wpdb->posts} AS p
-                ON (oi.order_id = p.ID)
-            WHERE p.post_status = 'wc-completed'
-              AND oi.order_item_type = 'line_item'
-              AND om1.meta_key = '_product_id'
-              AND om1.meta_value = %d
-              AND om2.meta_key = '_line_total'
-        ";
-        // Include other statuses if desired:
-        // p.post_status IN ('wc-completed','wc-processing')
-
-        $sum_result = $wpdb->get_var($wpdb->prepare($sql, $product_id));
-        return $sum_result ? floatval($sum_result) : 0;
+        $cached = get_post_meta($product_id, '_total_sales_amount', true);
+        return $cached ? floatval($cached) : 0;
     }
 
     protected function Donation_Form_Button_Control(){
