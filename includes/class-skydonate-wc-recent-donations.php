@@ -53,27 +53,17 @@ class WC_Recent_Donations {
             return 'No product ID provided.';
         }
 
+        // Use _skydonate_product_id meta for efficient filtering
         $args = [
-            'limit' => 20,
-            'orderby' => 'date',
-            'order' => 'DESC',
+            'limit'    => 20,
+            'orderby'  => 'date',
+            'order'    => 'DESC',
+            'status'   => 'completed',
+            'meta_key' => '_skydonate_product_id',
+            'meta_value' => $product_id,
         ];
 
-        $orders = wc_get_orders($args);
-        $filtered_orders = [];
-
-        foreach ($orders as $order) {
-            if ($order->get_status() !== 'completed') {
-                continue;
-            }
-
-            foreach ($order->get_items() as $item) {
-                if ($item->get_product_id() == $product_id) {
-                    $filtered_orders[] = $order;
-                    break;
-                }
-            }
-        }
+        $filtered_orders = wc_get_orders($args);
 
 
         $output = '<div class="order-box">';
