@@ -141,6 +141,10 @@ body .select2-container--default .select2-selection--single .select2-selection__
     align-items: center;
 }
 
+body.checkout-custom-style .select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding: 3px 0px !important;
+}
+
 div.create-account {
     border: none !important;
 }
