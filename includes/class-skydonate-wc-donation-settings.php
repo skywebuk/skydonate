@@ -7,8 +7,6 @@ if (!class_exists('WC_Custom_Donation_Settings')) {
 
     class WC_Custom_Donation_Settings {
 
-        const PLUGIN_VERSION = '2.0.4';
-
         public function __construct() {
             add_action('admin_notices', array($this, 'remove_wc_notices'));
             add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
