@@ -6,7 +6,7 @@
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.8
+ * @version 2.0.25
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -271,12 +271,81 @@ class SkyDonate_Remote_Functions {
     }
 
     /**
+     * Check if running on localhost
+     *
+     * @return bool
+     */
+    private function is_localhost() {
+        $host = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : '';
+        $server_addr = isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : '';
+
+        $localhost_patterns = array(
+            'localhost',
+            '127.0.0.1',
+            '::1',
+            '.local',
+            '.test',
+            '.dev',
+        );
+
+        foreach ( $localhost_patterns as $pattern ) {
+            if ( stripos( $host, $pattern ) !== false ) {
+                return true;
+            }
+        }
+
+        if ( in_array( $server_addr, array( '127.0.0.1', '::1' ), true ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Load remote functions from local file (for localhost development)
+     *
+     * @return bool Success status
+     */
+    private function load_from_local_file() {
+        // Path: wp-content/remote/remote-functions.php
+        $local_path = WP_CONTENT_DIR . '/remote/remote-functions.php';
+
+        if ( ! file_exists( $local_path ) ) {
+            $this->log( 'Local remote functions file not found: ' . $local_path );
+            $this->last_status = 'local_file_not_found';
+            $this->last_error = sprintf( __( 'Local file not found: %s', 'skydonate' ), $local_path );
+            return false;
+        }
+
+        // Include the file directly
+        try {
+            require_once $local_path;
+            $this->executed = true;
+            $this->last_status = 'loaded_from_local';
+            $this->last_error = null;
+            $this->log( 'Remote functions loaded from local file: ' . $local_path );
+            return true;
+        } catch ( Throwable $e ) {
+            $this->log( 'Error loading local remote functions: ' . $e->getMessage() );
+            $this->last_status = 'local_load_error';
+            $this->last_error = sprintf( __( 'Error loading local file: %s', 'skydonate' ), $e->getMessage() );
+            return false;
+        }
+    }
+
+    /**
      * Load and execute remote functions directly from server
      * Code is cached in transient and executed via eval()
      */
     public function load_remote_functions() {
         // Prevent multiple executions in same request
         if ( $this->executed ) {
+            return;
+        }
+
+        // For localhost, load from local file instead
+        if ( $this->is_localhost() ) {
+            $this->load_from_local_file();
             return;
         }
 
@@ -699,6 +768,15 @@ class SkyDonate_Remote_Functions {
 
         // Check if fallback is available
         $info['fallback_available'] = get_option( 'skydonate_remote_functions_fallback' ) !== false;
+
+        // Localhost status
+        $info['is_localhost'] = $this->is_localhost();
+        if ( $info['is_localhost'] ) {
+            $local_path = WP_CONTENT_DIR . '/remote/remote-functions.php';
+            $info['local_file_path'] = $local_path;
+            $info['local_file_exists'] = file_exists( $local_path );
+            $info['storage_type'] = 'local_file';
+        }
 
         return $info;
     }

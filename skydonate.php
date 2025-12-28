@@ -62,7 +62,7 @@ if ( ! skydonate_is_wc_active() ) {
  */
 final class SkyDonate {
 
-    const VERSION = '2.0.23';
+    const VERSION = '2.0.25';
     private static $instance = null;
 
     public static function instance() {

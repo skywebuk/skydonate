@@ -147,7 +147,7 @@
 }
 
 .donation-card .donation-content .donation-button:hover {
-    background-color: currentColor;
+    background-color: white;
     color: #e10130;
 }
 

@@ -26,7 +26,7 @@
         // Toggle when the checkbox changes
         $('input[name="enable_end_date"]').on('change', toggleEndDateField);
 
-        
+
 
         // Start Date Field Toggle
         // ==============================
@@ -49,7 +49,10 @@
                 delay: 200             // Delay before showing the tooltip
             });
         });
-        
+
+        // ==============================
+        // Donation Frequency Visibility Toggle
+        // ==============================
         function toggleActionButtons() {
             var $showDaily = $('input[name="button_visibility[]"][value="show_daily"]');
             var $showMonthly = $('input[name="button_visibility[]"][value="show_monthly"]');
@@ -74,49 +77,42 @@
             if (showDailyChecked) {
                 $('.daily-date-card').show();
                 $('.active-donation-frequency .skydonate-radio.daily').show();
-                $('#skydonate-fields-container .skydonate-input-group.daily-field').show();
             } else {
                 $('.daily-date-card').hide();
                 $('.active-donation-frequency .skydonate-radio.daily').hide();
-                $('#skydonate-fields-container .skydonate-input-group.daily-field').hide();
             }
 
             if (showMonthlyChecked) {
                 $('.active-donation-frequency .skydonate-radio.monthly').show();
-                $('#skydonate-fields-container .skydonate-input-group.monthly-field').show();
             } else {
                 $('.active-donation-frequency .skydonate-radio.monthly').hide();
-                $('#skydonate-fields-container .skydonate-input-group.monthly-field').hide();
             }
 
             if (showOnceChecked) {
                 $('.active-donation-frequency .skydonate-radio.once').show();
-                $('#skydonate-fields-container .skydonate-input-group.once-field').show();
             } else {
                 $('.active-donation-frequency .skydonate-radio.once').hide();
-                $('#skydonate-fields-container .skydonate-input-group.once-field').hide();
             }
 
             if (showWeeklyChecked) {
                 $('.active-donation-frequency .skydonate-radio.weekly').show();
-                $('#skydonate-fields-container .skydonate-input-group.weekly-field').show();
             } else {
                 $('.active-donation-frequency .skydonate-radio.weekly').hide();
-                $('#skydonate-fields-container .skydonate-input-group.weekly-field').hide();
             }
 
             if (showYearlyChecked) {
                 $('.active-donation-frequency .skydonate-radio.yearly').show();
-                $('#skydonate-fields-container .skydonate-input-group.yearly-field').show();
             } else {
                 $('.active-donation-frequency .skydonate-radio.yearly').hide();
-                $('#skydonate-fields-container .skydonate-input-group.yearly-field').hide();
             }
 
             // Ensure a visible radio button is selected
             if (!$('.active-donation-frequency input[type="radio"]:checked').is(':visible')) {
                 $('.active-donation-frequency input[type="radio"]:visible').first().prop('checked', true);
             }
+
+            // Update donation tabs visibility
+            updateDonationTabsVisibility();
         }
 
         // Initial load
@@ -127,148 +123,258 @@
             toggleActionButtons();
         });
 
-        
-        // Add custom donation option
-        $('.add_custom_option').on('click', function() {
-            var count = $('#skydonate-fields-container .skydonate-fields').length;
+        // ==============================
+        // Donation Amount Tabs
+        // ==============================
 
-            // ----- Default arrays -----
-            const onceDefaults    = [50, 100, 200, 1000, 500, 300];
-            const dailyDefaults   = [200, 100, 50, 30, 25, 15];
-            const weeklyDefaults  = [200, 100, 50, 30, 25, 15];
-            const monthlyDefaults = [200, 100, 50, 30, 25, 15];
-            const yearlyDefaults  = [200, 100, 50, 300, 500, 1000];
+        // Tab switching
+        $(document).on('click', '.skydonate-tab-btn', function() {
+            var $btn = $(this);
+            var tabKey = $btn.data('tab');
 
-            // Use existing index for defaults
-            const onceValue    = onceDefaults[count]    ?? 0;
-            const dailyValue   = dailyDefaults[count]   ?? 0;
-            const weeklyValue  = weeklyDefaults[count]  ?? 0;
-            const monthlyValue = monthlyDefaults[count] ?? 0;
-            const yearlyValue  = yearlyDefaults[count]  ?? 0;
+            // Update tab buttons
+            $('.skydonate-tab-btn').removeClass('active');
+            $btn.addClass('active');
 
-            var newOption = `
-                <div class="skydonate-fields">
-                    <div class="header">
-                        <h4 class="title">${wp.i18n.__('Donation Option', 'skydonate')} ${count + 1}</h4>
-                        <button type="button" class="action toggle-option"><span class="toggle-indicator"></span></button>
-                    </div>
-                    <div class="fields">
-
-                        <div class="skydonate-input-group">
-                            <label>${wp.i18n.__('Label', 'skydonate')}</label>
-                            <input type="text" class="short" name="custom_option_label[]" placeholder="${wp.i18n.__('Option label', 'skydonate')}">
-                        </div>
-
-                        <div class="skydonate-input-group once-field">
-                            <label>${wp.i18n.__('One-Time', 'skydonate')}</label>
-                            <input type="number" class="short" name="custom_option_price[]" value="${onceValue}" min="0">
-                        </div>
-
-                        <div class="skydonate-input-group daily-field">
-                            <label>${wp.i18n.__('Daily', 'skydonate')}</label>
-                            <input type="number" class="short" name="custom_option_daily[]" value="${dailyValue}" min="0">
-                        </div>
-
-                        <div class="skydonate-input-group weekly-field">
-                            <label>${wp.i18n.__('Weekly', 'skydonate')}</label>
-                            <input type="number" class="short" name="custom_option_weekly[]" value="${weeklyValue}" min="0">
-                        </div>
-
-                        <div class="skydonate-input-group monthly-field">
-                            <label>${wp.i18n.__('Monthly', 'skydonate')}</label>
-                            <input type="number" class="short" name="custom_option_monthly[]" value="${monthlyValue}" min="0">
-                        </div>
-
-                        <div class="skydonate-input-group yearly-field">
-                            <label>${wp.i18n.__('Yearly', 'skydonate')}</label>
-                            <input type="number" class="short" name="custom_option_yearly[]" value="${yearlyValue}" min="0">
-                        </div>
-
-                        <div class="skydonate-input-group">
-                            <label>${wp.i18n.__('Default', 'skydonate')}</label>
-                            <input type="radio" name="default_option" value="${count + 1}">
-                        </div>
-
-                        <div class="skydonate-input-group">
-                            <label>${wp.i18n.__('Hide', 'skydonate')}</label>
-                            <input type="checkbox" name="publish_project_item[]" value="${count + 1}">
-                        </div>
-
-                        <div class="skydonate-input-group">
-                            <button type="button" class="button remove_custom_option">${wp.i18n.__('Remove', 'skydonate')}</button>
-                        </div>
-
-                    </div>
-                </div>
-            `;
-
-            $('#skydonate-fields-container').append(newOption);
-            toggleActionButtons();
+            // Update tab panels - hide all, show selected
+            $('.skydonate-tab-panel').removeClass('active').css('display', 'none');
+            $('.skydonate-tab-panel[data-panel="' + tabKey + '"]').addClass('active').css('display', 'block');
         });
 
+        // Default amounts for each frequency
+        var defaultAmounts = {
+            once: [50, 100, 200, 1000, 500, 300],
+            daily: [200, 100, 50, 30, 25, 15],
+            weekly: [200, 100, 50, 30, 25, 15],
+            monthly: [200, 100, 50, 30, 25, 15],
+            yearly: [200, 100, 50, 300, 500, 1000]
+        };
 
+        // Add default amounts to a tab if empty
+        function addDefaultAmountsToTab(freq) {
+            var $container = $('.skydonate-amounts-container[data-frequency="' + freq + '"]');
+            if ($container.find('.skydonate-amount-row').length > 0) {
+                return; // Already has amounts
+            }
 
-        function initCustomOptionToggle() {
-            // Set default state
-            $('.skydonate-fields:first-child .header').addClass('active');
-            $('.skydonate-fields:not(:first-child) .fields').hide();
+            var amounts = defaultAmounts[freq] || [50, 100, 200, 500, 1000, 300];
+            var labelText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Label', 'skydonate') : 'Label';
+            var amountText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Amount', 'skydonate') : 'Amount';
+            var defaultText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Default', 'skydonate') : 'Default';
+            var hideText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Hide', 'skydonate') : 'Hide';
+            var removeText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Remove', 'skydonate') : 'Remove';
+            var placeholderText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('e.g., Basic Support', 'skydonate') : 'e.g., Basic Support';
 
-            $(document).on('click', '.skydonate-fields .header', function() {
-                var $fields = $(this).siblings('.fields');
+            amounts.forEach(function(amount, index) {
+                var isDefault = (index === 0) ? ' checked' : '';
+                var newRow = '<div class="skydonate-amount-row" data-index="' + index + '">' +
+                    '<div class="skydonate-amount-fields">' +
+                        '<div class="skydonate-field-group skydonate-field-label">' +
+                            '<label>' + labelText + '</label>' +
+                            '<input type="text" name="donation_options[' + freq + '][' + index + '][label]" value="" placeholder="' + placeholderText + '">' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-amount">' +
+                            '<label>' + amountText + '</label>' +
+                            '<input type="number" name="donation_options[' + freq + '][' + index + '][amount]" value="' + amount + '" min="0" step="0.01">' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-checkbox">' +
+                            '<label>' +
+                                '<input type="radio" name="donation_options[' + freq + '][default]" value="' + index + '"' + isDefault + '> ' +
+                                defaultText +
+                            '</label>' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-checkbox">' +
+                            '<label>' +
+                                '<input type="checkbox" name="donation_options[' + freq + '][' + index + '][publish]" value="1"> ' +
+                                hideText +
+                            '</label>' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-actions">' +
+                            '<button type="button" class="button skydonate-remove-amount">' + removeText + '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+                $container.append(newRow);
+            });
 
-                // Close all
-                $('.skydonate-fields .header').removeClass('active');
-                $('.skydonate-fields .fields').slideUp();
+            $container.closest('.skydonate-tab-panel').find('.skydonate-no-amounts-message').hide();
+            initAmountsSortable();
+        }
 
-                // If this one was closed, open it
-                if (!$fields.is(':visible')) {
-                    $(this).addClass('active');
-                    $fields.slideDown();
+        // Update tab visibility based on frequency checkboxes
+        function updateDonationTabsVisibility() {
+            var $tabs = $('.skydonate-tab-btn');
+            var $firstVisibleTab = null;
+
+            $tabs.each(function() {
+                var visibilityKey = $(this).data('visibility');
+                var tabKey = $(this).data('tab');
+                var $checkbox = $('input[name="button_visibility[]"][value="' + visibilityKey + '"]');
+                var isChecked = $checkbox.is(':checked');
+
+                // Show/hide tab button
+                if (isChecked) {
+                    $(this).show();
+                    // Add default amounts if tab is empty
+                    addDefaultAmountsToTab(tabKey);
+                } else {
+                    $(this).hide();
+                }
+
+                if (isChecked && !$firstVisibleTab) {
+                    $firstVisibleTab = $(this);
                 }
             });
 
+            // Ensure at least one tab is active and visible
+            if ($firstVisibleTab && !$('.skydonate-tab-btn.active:visible').length) {
+                $firstVisibleTab.trigger('click');
+            }
         }
-        initCustomOptionToggle();
 
+        // Initial visibility check
+        updateDonationTabsVisibility();
 
-        // Remove custom option
-        $(document).on('click', '.remove_custom_option', function() {
-            $(this).closest('.skydonate-fields').remove();
-            toggleActionButtons();
+        // ==============================
+        // Add Amount to ALL Tabs
+        // ==============================
+        $(document).on('click', '.skydonate-add-amount-all', function() {
+            var frequencies = ['once', 'daily', 'weekly', 'monthly', 'yearly'];
+
+            var labelText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Label', 'skydonate') : 'Label';
+            var amountText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Amount', 'skydonate') : 'Amount';
+            var defaultText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Default', 'skydonate') : 'Default';
+            var hideText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Hide', 'skydonate') : 'Hide';
+            var removeText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Remove', 'skydonate') : 'Remove';
+            var placeholderText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('e.g., Basic Support', 'skydonate') : 'e.g., Basic Support';
+
+            frequencies.forEach(function(freq) {
+                var $container = $('.skydonate-amounts-container[data-frequency="' + freq + '"]');
+                var currentCount = $container.find('.skydonate-amount-row').length;
+                var amountsArray = defaultAmounts[freq];
+                var defaultAmount = (currentCount < amountsArray.length) ? amountsArray[currentCount] : amountsArray[0];
+                var newIndex = currentCount;
+
+                var newRow = '<div class="skydonate-amount-row" data-index="' + newIndex + '">' +
+                    '<div class="skydonate-amount-fields">' +
+                        '<div class="skydonate-field-group skydonate-field-label">' +
+                            '<label>' + labelText + '</label>' +
+                            '<input type="text" name="donation_options[' + freq + '][' + newIndex + '][label]" value="" placeholder="' + placeholderText + '">' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-amount">' +
+                            '<label>' + amountText + '</label>' +
+                            '<input type="number" name="donation_options[' + freq + '][' + newIndex + '][amount]" value="' + defaultAmount + '" min="0" step="0.01">' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-checkbox">' +
+                            '<label>' +
+                                '<input type="radio" name="donation_options[' + freq + '][default]" value="' + newIndex + '"> ' +
+                                defaultText +
+                            '</label>' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-checkbox">' +
+                            '<label>' +
+                                '<input type="checkbox" name="donation_options[' + freq + '][' + newIndex + '][publish]" value="1"> ' +
+                                hideText +
+                            '</label>' +
+                        '</div>' +
+                        '<div class="skydonate-field-group skydonate-field-actions">' +
+                            '<button type="button" class="button skydonate-remove-amount">' + removeText + '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+
+                $container.append(newRow);
+                $container.closest('.skydonate-tab-panel').find('.skydonate-no-amounts-message').hide();
+            });
+
+            // Reinitialize sortable for new rows
+            initAmountsSortable();
         });
 
-        var $prefixCheckbox = $('#enable_title_prefix'); 
+        // ==============================
+        // Remove Amount from Single Tab
+        // ==============================
+        $(document).on('click', '.skydonate-remove-amount', function() {
+            var $row = $(this).closest('.skydonate-amount-row');
+            var $container = $row.closest('.skydonate-amounts-container');
+            var freq = $container.data('frequency');
+
+            $row.remove();
+
+            // Re-index remaining rows
+            reindexAmountRows($container, freq);
+
+            // Show empty message if no amounts left
+            if ($container.find('.skydonate-amount-row').length === 0) {
+                $container.closest('.skydonate-tab-panel').find('.skydonate-no-amounts-message').show();
+            }
+        });
+
+        // Re-index amount rows after removal or sorting
+        function reindexAmountRows($container, freq) {
+            $container.find('.skydonate-amount-row').each(function(index) {
+                $(this).attr('data-index', index);
+                $(this).find('input, select').each(function() {
+                    var name = $(this).attr('name');
+                    if (name) {
+                        // Update the index in the name attribute
+                        var newName = name.replace(
+                            /donation_options\[([^\]]+)\]\[\d+\]/,
+                            'donation_options[$1][' + index + ']'
+                        );
+                        $(this).attr('name', newName);
+
+                        // Update radio value for default selection
+                        if ($(this).attr('type') === 'radio' && name.includes('[default]')) {
+                            $(this).val(index);
+                        }
+                    }
+                });
+            });
+        }
+
+        // ==============================
+        // Make Amount Rows Sortable (per tab)
+        // ==============================
+        function initAmountsSortable() {
+            if (typeof $.fn.sortable !== 'undefined') {
+                $('.skydonate-amounts-container').each(function() {
+                    var $container = $(this);
+                    var freq = $container.data('frequency');
+
+                    // Destroy existing sortable if any
+                    if ($container.hasClass('ui-sortable')) {
+                        $container.sortable('destroy');
+                    }
+
+                    $container.sortable({
+                        items: '.skydonate-amount-row',
+                        handle: '.skydonate-amount-fields',
+                        placeholder: 'skydonate-sortable-placeholder',
+                        cursor: 'move',
+                        start: function(event, ui) {
+                            ui.placeholder.height(ui.item.outerHeight());
+                        },
+                        stop: function(event, ui) {
+                            reindexAmountRows($container, freq);
+                        }
+                    });
+                });
+            }
+        }
+
+        // Initialize sortable on page load
+        initAmountsSortable();
+
+
+        // ==============================
+        // Title Prefix Toggle
+        // ==============================
+        var $prefixCheckbox = $('#enable_title_prefix');
         var $titlePrefix = $('.title_prefix_row');
         $prefixCheckbox.on('change', function() {
             $titlePrefix.toggle();
         });
-
-        // ==============================
-        // Make Donation Fields Sortable
-        // ==============================
-        if (typeof $.fn.sortable !== 'undefined') {
-            $('#skydonate-fields-container').sortable({
-                items: '.skydonate-fields',
-                handle: '.header', // drag using header only
-                placeholder: 'skydonate-sortable-placeholder',
-                start: function (event, ui) {
-                    ui.placeholder.height(ui.item.outerHeight());
-                },
-                stop: function (event, ui) {
-                    // Reorder titles after sorting
-                    $('#skydonate-fields-container .skydonate-fields').each(function (index) {
-                        $(this).find('.header .title').text('Donation Option ' + (index + 1));
-                        // Update radio and checkbox values to match new order
-                        $(this).find('input[name="default_option"]').val(index + 1);
-                        $(this).find('input[name="publish_project_item[]"]').val(index + 1);
-                    });
-                }
-            }).disableSelection();
-        } else {
-            console.warn('jQuery UI Sortable is not loaded. Drag-and-drop reordering will not work.');
-        }
-
-
 
     });
 })(jQuery);
