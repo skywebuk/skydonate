@@ -188,7 +188,6 @@ class Skydonate_Button extends \Elementor\Widget_Base {
                 ],
             ]
         );
-
         
         $this->add_control(
             'button_style_mode',
