@@ -213,72 +213,73 @@
 
 
         /* ======================================================
-         * SLIDER EFFECT (works for both layouts)
+         * SLIDER EFFECT (only for layout 1)
          * ====================================================== */
-        
 
-        let revealCount = 0;
-        var orders = $scope.find('.sky-slide-donations .sky-donations-orders .sky-order');
-        if (orders.length >= 5) {
-            if ($scope.data('sky-interval-running')) return;
-            $scope.data('sky-interval-running', true);
-            var interval = setInterval(() => {
-                var hidden = orders.filter('.hidden-order');
-                var visibleItems = orders.not('.hidden-order');
-                // REVEAL next hidden item
-                var $nextHidden = hidden.eq(0);
-                if ($nextHidden.length) {
-                    var h = Math.round($nextHidden.find('.item-wrap').outerHeight()) + 1;
-                    $nextHidden.css({
-                        transform: 'translateY(-20px)'
-                    });
-                    $nextHidden.animate(
-                        { height: h, opacity: 1 },
-                        {
-                            duration: 300,
-                            step: (now, fx) => {
-                                if (fx.prop === "opacity") {
-                                    // interpolate translateY
-                                    var progress = fx.pos;
-                                    var y = -20 + (20 * progress); // -20 → 0
-                                    $nextHidden.css('transform', `translateY(${y}px)`);
+        if (settings.layout !== 'layout-2') {
+            let revealCount = 0;
+            var orders = $scope.find('.sky-slide-donations .sky-donations-orders .sky-order');
+            if (orders.length >= 5) {
+                if ($scope.data('sky-interval-running')) return;
+                $scope.data('sky-interval-running', true);
+                var interval = setInterval(() => {
+                    var hidden = orders.filter('.hidden-order');
+                    var visibleItems = orders.not('.hidden-order');
+                    // REVEAL next hidden item
+                    var $nextHidden = hidden.eq(0);
+                    if ($nextHidden.length) {
+                        var h = Math.round($nextHidden.find('.item-wrap').outerHeight()) + 1;
+                        $nextHidden.css({
+                            transform: 'translateY(-20px)'
+                        });
+                        $nextHidden.animate(
+                            { height: h, opacity: 1 },
+                            {
+                                duration: 300,
+                                step: (now, fx) => {
+                                    if (fx.prop === "opacity") {
+                                        // interpolate translateY
+                                        var progress = fx.pos;
+                                        var y = -20 + (20 * progress); // -20 → 0
+                                        $nextHidden.css('transform', `translateY(${y}px)`);
+                                    }
+                                },
+                                complete: () => {
+                                    $nextHidden.css('transform', 'translateY(0)');
+                                    $nextHidden.removeClass('hidden-order');
                                 }
-                            },
-                            complete: () => {
-                                $nextHidden.css('transform', 'translateY(0)');
-                                $nextHidden.removeClass('hidden-order');
                             }
-                        }
-                    );
-                }
-                // HIDE last visible item
-                var $lastVisible = visibleItems.last();
-                if ($lastVisible.length) {
-                    $lastVisible.css('transform', 'translateY(0)');
-                    $lastVisible.animate(
-                        { height: 0, opacity: 0 },
-                        {
-                            duration: 300,
-                            step: (now, fx) => {
-                                if (fx.prop === "opacity") {
-                                    var progress = fx.pos;    // 0 → 1
-                                    var y = 20 * progress;    // 0 → +20px
-                                    $lastVisible.css('transform', `translateY(${y}px)`);
+                        );
+                    }
+                    // HIDE last visible item
+                    var $lastVisible = visibleItems.last();
+                    if ($lastVisible.length) {
+                        $lastVisible.css('transform', 'translateY(0)');
+                        $lastVisible.animate(
+                            { height: 0, opacity: 0 },
+                            {
+                                duration: 300,
+                                step: (now, fx) => {
+                                    if (fx.prop === "opacity") {
+                                        var progress = fx.pos;    // 0 → 1
+                                        var y = 20 * progress;    // 0 → +20px
+                                        $lastVisible.css('transform', `translateY(${y}px)`);
+                                    }
+                                },
+                                complete: () => {
+                                    $lastVisible.css('transform', 'translateY(20px)');
+                                    $lastVisible.addClass('hidden-order');
                                 }
-                            },
-                            complete: () => {
-                                $lastVisible.css('transform', 'translateY(20px)');
-                                $lastVisible.addClass('hidden-order');
                             }
-                        }
-                    );
-                }
-                revealCount++;
-                if (revealCount >= 3) {
-                    clearInterval(interval);
-                    $scope.data('sky-interval-running', false);
-                }
-            }, 3000);
+                        );
+                    }
+                    revealCount++;
+                    if (revealCount >= 3) {
+                        clearInterval(interval);
+                        $scope.data('sky-interval-running', false);
+                    }
+                }, 3000);
+            }
         }
 
     };

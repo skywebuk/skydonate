@@ -638,11 +638,7 @@ function skydonate_remote_render_recent_donations_layout_two( $order_ids, $produ
             );
         $time_ago = esc_html(human_time_diff(strtotime($order->get_date_created()), time()));
 
-        $item_hidden_class = ($counter <= 3 && $order_count >= 5 && $hidden_class)
-            ? ' hidden-order'
-            : '';
-
-        echo '<li class="sky-order' . $item_hidden_class . '">';
+        echo '<li class="sky-order">';
             echo '<div class="item-wrap">';
                 echo '<div class="avatar">';
                     echo $list_icon;

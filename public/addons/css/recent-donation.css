@@ -9,12 +9,15 @@
 }
 
 .sky-donations-orders .sky-order {
-    border-bottom: 1px solid #ededed;
     color: black;
     margin: 0px;
     text-align: center;
     overflow: hidden;
     will-change: height, opacity, transform;
+}
+
+.layout-1 .sky-donations-orders .sky-order {
+    border-bottom: 1px solid #ededed;
 }
 
 .sky-donations-orders .sky-order .item-wrap {
@@ -34,7 +37,7 @@
     padding-top: 16px;
 }
 
-.sky-modal-actions .button {
+.sky-modal-actions .primary-button {
     width: 100%;
 }
 
@@ -242,6 +245,7 @@
     align-items: center;
     text-align: left;
     gap: 16px;
+    padding: 10px 0px;
 }
 
 .layout-2 .sky-donations-orders .sky-order .item-wrap .avatar {
@@ -289,4 +293,122 @@
         max-height: calc(100vh - 205px);
     }
 
+}
+
+/* ======================================================
+ * Layout 2 Column Styles (Main Widget)
+ * ====================================================== */
+
+/* Base flex layout for layout-2 */
+.layout-2 .sky-slide-donations .sky-donations-orders {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.layout-2 .sky-slide-donations .sky-donations-orders .sky-order {
+    width: 100%;
+    border-right: none;
+    padding-left: 0;
+}
+
+/* Desktop (min-width: 1025px) */
+@media only screen and (min-width: 1025px) {
+    .layout-2.columns-desktop-one .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 100%;
+        border-right: none;
+        padding-left: 0;
+    }
+
+    .layout-2.columns-desktop-two .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 50%;
+    }
+
+    .layout-2.columns-desktop-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(odd) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-desktop-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(even) {
+        padding-left: 20px;
+    }
+
+    .layout-2.columns-desktop-three .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 33.333%;
+    }
+
+    .layout-2.columns-desktop-three .sky-slide-donations .sky-donations-orders .sky-order:not(:nth-child(3n)) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-desktop-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n+2),
+    .layout-2.columns-desktop-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n) {
+        padding-left: 16px;
+    }
+}
+
+/* Tablet (768px - 1024px) */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .layout-2.columns-tablet-one .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 100%;
+        border-right: none;
+        padding-left: 0;
+    }
+
+    .layout-2.columns-tablet-two .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 50%;
+    }
+
+    .layout-2.columns-tablet-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(odd) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-tablet-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(even) {
+        padding-left: 16px;
+    }
+
+    .layout-2.columns-tablet-three .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 33.333%;
+    }
+
+    .layout-2.columns-tablet-three .sky-slide-donations .sky-donations-orders .sky-order:not(:nth-child(3n)) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-tablet-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n+2),
+    .layout-2.columns-tablet-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n) {
+        padding-left: 16px;
+    }
+}
+
+/* Mobile (max-width: 767px) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .layout-2.columns-mobile-one .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 100%;
+        border-right: none;
+        padding-left: 0;
+    }
+
+    .layout-2.columns-mobile-two .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 50%;
+    }
+
+    .layout-2.columns-mobile-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(odd) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-mobile-two .sky-slide-donations .sky-donations-orders .sky-order:nth-child(even) {
+        padding-left: 16px;
+    }
+
+    .layout-2.columns-mobile-three .sky-slide-donations .sky-donations-orders .sky-order {
+        width: 33.333%;
+    }
+
+    .layout-2.columns-mobile-three .sky-slide-donations .sky-donations-orders .sky-order:not(:nth-child(3n)) {
+        border-right: 1px solid #ededed;
+    }
+
+    .layout-2.columns-mobile-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n+2),
+    .layout-2.columns-mobile-three .sky-slide-donations .sky-donations-orders .sky-order:nth-child(3n) {
+        padding-left: 16px;
+    }
 }

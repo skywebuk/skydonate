@@ -48,7 +48,7 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
             [
                 'type' => \Elementor\Controls_Manager::RAW_HTML,
                 'raw' => sprintf(
-                    '<div style="padding: 10px; background: #f0f0f0; border-radius: 4px;">%s: <strong>%s</strong></div>',
+                    '<div>%s: <strong>%s</strong></div>',
                     __('Current Layout', 'skydonate'),
                     $is_layout_two ? __('Layout 2', 'skydonate') : __('Layout 1', 'skydonate')
                 ),
@@ -222,11 +222,26 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
+            'enable_see_all_button',
+            [
+                'label' => __('Enable See All Button', 'skydonate'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'skydonate'),
+                'label_off' => __('No', 'skydonate'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
+
+        $this->add_control(
             'all_donate_button_text',
             [
                 'label'       => __( 'Button Text', 'skydonate' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'See All', 'skydonate' ),
+                'condition' => [
+                    'enable_see_all_button' => 'yes',
+                ],
             ]
         );
 
@@ -239,6 +254,9 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                     'value'   => 'fas fa-list',
                     'library' => 'fa-solid',
                 ],
+                'condition' => [
+                    'enable_see_all_button' => 'yes',
+                ],
             ]
         );
 
@@ -248,6 +266,9 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                 'label'   => __( 'Limit', 'skydonate' ),
                 'type'    => \Elementor\Controls_Manager::NUMBER,
                 'default' => 20,
+                'condition' => [
+                    'enable_see_all_button' => 'yes',
+                ],
             ]
         );
 
@@ -263,11 +284,26 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
+            'enable_see_top_button',
+            [
+                'label' => __('Enable See Top Button', 'skydonate'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'skydonate'),
+                'label_off' => __('No', 'skydonate'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
+
+        $this->add_control(
             'top_donate_button_text',
             [
                 'label'       => __( 'Button Text', 'skydonate' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => __( 'See Top', 'skydonate' ),
+                'condition' => [
+                    'enable_see_top_button' => 'yes',
+                ],
             ]
         );
 
@@ -280,6 +316,9 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                     'value'   => 'fas fa-star',
                     'library' => 'fa-solid',
                 ],
+                'condition' => [
+                    'enable_see_top_button' => 'yes',
+                ],
             ]
         );
 
@@ -289,6 +328,91 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                 'label'   => __( 'Limit', 'skydonate' ),
                 'type'    => \Elementor\Controls_Manager::NUMBER,
                 'default' => 20,
+                'condition' => [
+                    'enable_see_top_button' => 'yes',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Button Style Options
+        $this->start_controls_section(
+            'button_style_section',
+            [
+                'label' => __( 'Button Style', 'skydonate' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'button_style',
+            [
+                'label' => __( 'Style', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'flat',
+                'options' => [
+                    'flat' => __( 'Flat', 'skydonate' ),
+                    'border' => __( 'Border', 'skydonate' ),
+                    'link' => __( 'Link', 'skydonate' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_color',
+            [
+                'label' => __( 'Color', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'primary',
+                'options' => [
+                    'gray' => __( 'Gray', 'skydonate' ),
+                    'primary' => __( 'Primary', 'skydonate' ),
+                    'alternative' => __( 'Alternative', 'skydonate' ),
+                    'black' => __( 'Black', 'skydonate' ),
+                    'white' => __( 'White', 'skydonate' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_size',
+            [
+                'label' => __( 'Size', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'medium',
+                'options' => [
+                    'small' => __( 'Small', 'skydonate' ),
+                    'medium' => __( 'Medium', 'skydonate' ),
+                    'large' => __( 'Large', 'skydonate' ),
+                    'extra_large' => __( 'Extra Large', 'skydonate' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_shape',
+            [
+                'label' => __( 'Shape', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'rounded',
+                'options' => [
+                    'square' => __( 'Square', 'skydonate' ),
+                    'rounded' => __( 'Rounded', 'skydonate' ),
+                    'round' => __( 'Round', 'skydonate' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_full_width',
+            [
+                'label' => __( 'Full Width', 'skydonate' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => __( 'Yes', 'skydonate' ),
+                'label_off' => __( 'No', 'skydonate' ),
+                'return_value' => 'yes',
+                'default' => 'yes',
             ]
         );
 
@@ -423,6 +547,29 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
         $see_top_limit = $settings['see_top_limit'] ?: 20;
         $see_all_limit = $settings['see_all_limit'] ?: 20;
 
+        $enable_see_all_button = $settings['enable_see_all_button'] === 'yes';
+        $enable_see_top_button = $settings['enable_see_top_button'] === 'yes';
+
+        // Button style settings
+        $button_style = $settings['button_style'] ?? 'flat';
+        $button_color = $settings['button_color'] ?? 'primary';
+        $button_size = $settings['button_size'] ?? 'medium';
+        $button_shape = $settings['button_shape'] ?? 'rounded';
+        $button_full_width = $settings['button_full_width'] === 'yes';
+
+        // Build wrapper classes (following donation-button pattern)
+        $button_wrapper_classes = ['sky-modal-actions'];
+        $button_wrapper_classes[] = 'button-' . $button_style;
+        $button_wrapper_classes[] = 'button-' . $button_color;
+        $button_wrapper_classes[] = 'button-' . $button_size;
+        if ($button_shape !== 'square') {
+            $button_wrapper_classes[] = 'button-' . $button_shape;
+        }
+        if ($button_full_width) {
+            $button_wrapper_classes[] = 'button-full';
+        }
+        $button_wrapper_class_string = implode(' ', $button_wrapper_classes);
+
         $all_button_text = $settings['all_donate_button_text'] ?? __('See All', 'skydonate');
         $top_button_text = $settings['top_donate_button_text'] ?? __('See Top', 'skydonate');
         $modal_button_text = $settings['modal_button_text'] ?? __('Donate & Support', 'skydonate');
@@ -472,50 +619,64 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
                 </div>
             </div>
 
-            <div class="sky-modal-actions">
-                <button type="button" class="button primary-button see-all-button"><?php echo esc_html($all_button_text) . $all_button_icon; ?></button>
-                <button type="button" class="button primary-button see-top-button"><?php echo esc_html($top_button_text) . $top_button_icon; ?></button>
-            </div>
+            <?php if ($enable_see_all_button || $enable_see_top_button) : ?>
+                <div class="<?php echo esc_attr($button_wrapper_class_string); ?>">
+                    <?php if ($enable_see_all_button) : ?>
+                        <button type="button" class="primary-button see-all-button"><?php echo esc_html($all_button_text) . $all_button_icon; ?></button>
+                    <?php endif; ?>
+                    <?php if ($enable_see_top_button) : ?>
+                        <button type="button" class="primary-button see-top-button"><?php echo esc_html($top_button_text) . $top_button_icon; ?></button>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-            <div class="sky-modal">
-                <div class="sky-modal_overlay"></div>
-                <div class="sky-modal_body">
-                    <div class="sky-modal_header">
-                        <div class="sky-modal_header-top">
-                            <h3 class="sky-modal_title"><?php esc_html_e('Donations', 'skydonate'); ?></h3>
-                            <button class="sky-modal_close"><i class="far fa-times"></i></button>
-                        </div>
-                        <div class="sky-modal_tabs">
-                            <button type="button" class="button all-button"><?php echo esc_html($all_button_text) . $all_button_icon; ?></button>
-                            <button type="button" class="button top-button"><?php echo esc_html($top_button_text) . $top_button_icon; ?></button>
-                        </div>
-                    </div>
-                    <div class="sky-modal_content">
-                        <div class="sky-modal_tab-contents">
-                            <div class="sky-modal_tab sky-modal_tab-all">
-                                <div class="sky-recent-donations-list">
-                                    <ul class="sky-donations-orders"></ul>
-                                    <div class="items-loader"><?php echo Skydonate_Functions::loader_icon(); ?></div>
-                                </div>
+            <?php if ($enable_see_all_button || $enable_see_top_button) : ?>
+                <div class="sky-modal">
+                    <div class="sky-modal_overlay"></div>
+                    <div class="sky-modal_body">
+                        <div class="sky-modal_header">
+                            <div class="sky-modal_header-top">
+                                <h3 class="sky-modal_title"><?php esc_html_e('Donations', 'skydonate'); ?></h3>
+                                <button class="sky-modal_close"><i class="far fa-times"></i></button>
                             </div>
-                            <div class="sky-modal_tab sky-modal_tab-top">
-                                <div class="sky-recent-donations-list">
-                                    <ul class="sky-donations-orders"></ul>
-                                    <div class="items-loader"><?php echo Skydonate_Functions::loader_icon(); ?></div>
+                            <?php if ($enable_see_all_button && $enable_see_top_button) : ?>
+                                <div class="sky-modal_tabs">
+                                    <button type="button" class="button all-button"><?php echo esc_html($all_button_text) . $all_button_icon; ?></button>
+                                    <button type="button" class="button top-button"><?php echo esc_html($top_button_text) . $top_button_icon; ?></button>
                                 </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="sky-modal_content">
+                            <div class="sky-modal_tab-contents">
+                                <?php if ($enable_see_all_button) : ?>
+                                    <div class="sky-modal_tab sky-modal_tab-all">
+                                        <div class="sky-recent-donations-list">
+                                            <ul class="sky-donations-orders"></ul>
+                                            <div class="items-loader"><?php echo Skydonate_Functions::loader_icon(); ?></div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($enable_see_top_button) : ?>
+                                    <div class="sky-modal_tab sky-modal_tab-top">
+                                        <div class="sky-recent-donations-list">
+                                            <ul class="sky-donations-orders"></ul>
+                                            <div class="items-loader"><?php echo Skydonate_Functions::loader_icon(); ?></div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="sky-modal_footer">
-                        <?php
-                        $button_url = !empty($modal_button_link['url']) ? $modal_button_link['url'] : '#';
-                        ?>
-                        <a href="<?php echo esc_url($button_url); ?>" class="button btn-full">
-                            <?php echo esc_html($modal_button_text) . $modal_button_icon; ?>
-                        </a>
+                        <div class="sky-modal_footer">
+                            <?php
+                            $button_url = !empty($modal_button_link['url']) ? $modal_button_link['url'] : '#';
+                            ?>
+                            <a href="<?php echo esc_url($button_url); ?>" class="button btn-full">
+                                <?php echo esc_html($modal_button_text) . $modal_button_icon; ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
         <?php
     }
