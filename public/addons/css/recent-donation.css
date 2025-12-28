@@ -271,6 +271,7 @@
         border-right: 1px solid #ededed;
         border-left: 1px solid #ededed;
     }
+    
     .sky-modal .sky-donations-orders .sky-order:nth-child(even) {
         border-right: 1px solid #ededed;
     }
