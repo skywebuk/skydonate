@@ -58,7 +58,14 @@
 
                     if (res.data.html) {
                         $list.find('.sky-donations-orders').append(res.data.html);
-                        $list.animate({ scrollTop: $list.scrollTop() + 100 }, 250);
+
+                        // Only animate scroll from 2nd load onwards
+                        var loadCount = ($list.data('load-count') || 0) + 1;
+                        $list.data('load-count', loadCount);
+
+                        if (loadCount > 1) {
+                            $list.animate({ scrollTop: $list.scrollTop() + 100 }, 250);
+                        }
                     }
 
                     // Mark done if no more items
@@ -184,12 +191,14 @@
                 // Reset both lists completely
                 all_list.data('loading', false)
                         .data('done', false)
+                        .data('load-count', 0)
                         .removeClass('loading-running')
                         .find('.sky-donations-orders')
                         .empty();
 
                 top_list.data('loading', false)
                         .data('done', false)
+                        .data('load-count', 0)
                         .removeClass('loading-running')
                         .find('.sky-donations-orders')
                         .empty();
