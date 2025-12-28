@@ -47,6 +47,28 @@ class Skydonate_Functions {
         add_action('woocommerce_order_status_completed', [$this, 'update_product_raised_amount_on_order'], 10, 1);
         add_action('woocommerce_order_status_changed', [$this, 'update_product_raised_amount_on_status_change'], 10, 4);
 
+        // Exclude donation meta from WooCommerce product duplication
+        add_filter('woocommerce_duplicate_product_exclude_meta', [$this, 'exclude_donation_meta_from_duplicate']);
+
+    }
+
+    /**
+     * Exclude donation-related meta keys when duplicating a WooCommerce product.
+     * This ensures duplicated products start fresh without inheriting donation statistics.
+     *
+     * @param array $exclude_meta Meta keys to exclude from duplication.
+     * @return array Modified array of meta keys to exclude.
+     */
+    public function exclude_donation_meta_from_duplicate($exclude_meta) {
+        $donation_meta_keys = [
+            '_total_sales_amount',
+            '_order_count',
+            '_offline_donation',
+            '_recent_donation_ids',
+            '_top_donation_ids',
+        ];
+
+        return array_merge($exclude_meta, $donation_meta_keys);
     }
 
     public static function get_user_country_name( $format = 'name' ) {
