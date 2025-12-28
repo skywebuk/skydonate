@@ -150,7 +150,6 @@ function skydonate_load_elementor_includes() {
         'class-skydonate-addon-progress-2.php',
         'class-skydonate-addon-qurbani-status.php',
         'class-skydonate-addon-recent-order.php',
-        'class-skydonate-addon-recent-order-2.php',
         'class-skydonate-addon-zakat-calculator-classic.php',
         'class-skydonate-addon-zakat-preview.php',
         'class-skydonate-addon-extra-donation.php',

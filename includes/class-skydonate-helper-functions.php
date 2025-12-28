@@ -1042,30 +1042,48 @@ class Skydonate_Functions {
         // Sanitize inputs
         $type        = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'all';
         $product_ids = isset($_POST['product_ids']) ? array_map('intval', $_POST['product_ids']) : [];
+        $page_id     = isset($_POST['page_id']) ? intval($_POST['page_id']) : 0;
         $offset      = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $limit       = isset($_POST['limit']) ? intval($_POST['limit']) : 0;
-
+        $layout      = isset($_POST['layout']) ? sanitize_text_field($_POST['layout']) : 'layout-1';
+        $list_icon   = isset($_POST['list_icon']) ? wp_kses_post(wp_unslash($_POST['list_icon'])) : '';
 
         // Validate required params
-        if (empty($product_ids) || $limit <= 0) {
+        if (empty($product_ids) && empty($page_id)) {
             wp_send_json_error("Missing parameters");
         }
 
-        // Fetch enough orders to apply offset + limit (use cached data)
+        if ($limit <= 0) {
+            wp_send_json_error("Missing parameters");
+        }
+
+        // Fetch enough orders to apply offset + limit
         $fetch_limit = $offset + $limit;
 
-        if ($type === 'top') {
-            // Use cached top donations data
-            $order_ids = self::get_cached_top_orders_ids_by_product_ids(
-                $product_ids,
-                $fetch_limit
-            );
+        // Check if this is a fundraising page request
+        if ($page_id && get_post_type($page_id) === 'fundraising' && class_exists('SkyDonate_Fundraising_Donation_Handler')) {
+            // Use fundraising donation handler
+            if ($type === 'top') {
+                $order_ids = SkyDonate_Fundraising_Donation_Handler::get_top_order_ids($page_id, $fetch_limit);
+            } else {
+                $order_ids = SkyDonate_Fundraising_Donation_Handler::get_order_ids($page_id, $fetch_limit);
+            }
+            // Get product_ids from fundraising page
+            $base_product_id = get_post_meta($page_id, '_skydonate_fundraising_base_product_id', true);
+            $product_ids = $base_product_id ? array(intval($base_product_id)) : [];
         } else {
-            // Use cached recent donations data
-            $order_ids = self::get_cached_orders_ids_by_product_ids(
-                $product_ids,
-                $fetch_limit
-            );
+            // Use cached data for regular donations
+            if ($type === 'top') {
+                $order_ids = self::get_cached_top_orders_ids_by_product_ids(
+                    $product_ids,
+                    $fetch_limit
+                );
+            } else {
+                $order_ids = self::get_cached_orders_ids_by_product_ids(
+                    $product_ids,
+                    $fetch_limit
+                );
+            }
         }
 
         // No orders at all
@@ -1083,8 +1101,8 @@ class Skydonate_Functions {
 
         ob_start();
 
-        if (skydonate_get_layout('recent_donation') == 'layout-2') {
-            $list_icon = isset($_POST['list_icon']) ? wp_kses_post(wp_unslash($_POST['list_icon'])) : '<i class="fas fa-hand-holding-heart"></i>';
+        // Render based on layout parameter
+        if ($layout === 'layout-2') {
             Skydonate_Functions::render_recent_donations_item_layout_two(
                 $paged_order_ids,
                 $product_ids,
@@ -1102,7 +1120,7 @@ class Skydonate_Functions {
 
         wp_send_json_success([
             'html'   => $html,
-            'done'   => ($html === ''),      // true if nothing rendered
+            'done'   => ($html === ''),
             'offset' => $offset,
             'limit'  => $limit,
             'count'  => count($paged_order_ids)
@@ -1115,9 +1133,9 @@ class Skydonate_Functions {
         skydonate_remote_stubs()->render_recent_donations_layout_one($order_ids, $product_ids, $hidden_class);
     }
 
-    public static function render_recent_donations_item_layout_two($order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>') {
+    public static function render_recent_donations_item_layout_two($order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>', $hidden_class = false) {
         // Use remote stub for protected function
-        skydonate_remote_stubs()->render_recent_donations_layout_two($order_ids, $product_ids, $list_icon);
+        skydonate_remote_stubs()->render_recent_donations_layout_two($order_ids, $product_ids, $list_icon, $hidden_class);
     }
 
 

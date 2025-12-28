@@ -48,7 +48,6 @@ class SkyDonate_Public_Scripts {
             'zakat-calculator-classic' => 'zakat-calculator-classic.js',
             'zakat-calculator-preview' => 'zakat-calculator-preview.js',
             'recent-donation'          => 'recent-donation.js',
-            'recent-donation-two'      => 'recent-donation-two.js',
             'quick-donation'           => 'quick-donation.js',
             'gift-aid-toggle'          => 'gift-aid-toggle.js',
             'donation-progress'        => 'donation-progress.js',
@@ -92,7 +91,6 @@ class SkyDonate_Public_Scripts {
             'donation-form',
             'quick-donation',
             'recent-donation',
-            'recent-donation-two',
         ];
 
         foreach ( $scripts_with_cart as $handle ) {

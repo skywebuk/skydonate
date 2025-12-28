@@ -52,7 +52,6 @@ class SkyDonate_Public_Styles {
             'donation-icon-list'       => 'donation-icon-list.css',
             'donation-impact-slider'   => 'donation-impact-slider.css',
             'recent-donation'          => 'recent-donation.css',
-            'recent-donation-two'      => 'recent-donation-two.css',
             'donation-progress'        => 'donation-progress.css',
             'donation-card'            => 'donation-card.css',
         ];

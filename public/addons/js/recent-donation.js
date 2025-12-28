@@ -9,8 +9,11 @@
 
         // Safety fallback
         settings.product_ids    = settings.product_ids || [];
+        settings.page_id        = parseInt(settings.page_id) || 0;
         settings.see_all_limit  = parseInt(settings.see_all_limit) || 10;
         settings.see_top_limit  = parseInt(settings.see_top_limit) || 10;
+        settings.layout         = settings.layout || 'layout-1';
+        settings.list_icon      = settings.list_icon || '';
 
         var all_list = $scope.find('.sky-modal_tab-all .sky-recent-donations-list');
         var top_list = $scope.find('.sky-modal_tab-top .sky-recent-donations-list');
@@ -39,7 +42,10 @@
                     type: type,
                     offset: offset,
                     product_ids: settings.product_ids,
+                    page_id: settings.page_id,
                     limit: limit,
+                    layout: settings.layout,
+                    list_icon: settings.list_icon,
                     nonce: skydonate_ajax.nonce
                 },
                 success: function (res) {
@@ -197,7 +203,10 @@
             });
 
 
-
+        /* ======================================================
+         * SLIDER EFFECT (works for both layouts)
+         * ====================================================== */
+        
 
         let revealCount = 0;
         var orders = $scope.find('.sky-slide-donations .sky-donations-orders .sky-order');
@@ -275,5 +284,8 @@
             skydonate_recent_orders
         );
     });
+
+    // Expose function for external use
+    window.skydonate_recent_orders = skydonate_recent_orders;
 
 })(jQuery);

@@ -71,12 +71,6 @@ class Skydonate_Public {
             SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
-            'recent-donation-two',
-            SKYDONATE_ASSETS . '/addons/css/recent-donation-two.css',
-            [],
-            SKYDONATE_VERSION  // Replace with the version number or leave as is
-        );
-        wp_register_style(
             'donation-progress',
             SKYDONATE_ASSETS . '/addons/css/donation-progress.css',
             [],
@@ -192,18 +186,6 @@ class Skydonate_Public {
             true
         );
         wp_localize_script('recent-donation', 'skydonate_ajax', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('skydonate_nonce')
-        ]);
-
-        wp_register_script(
-            'recent-donation-two',
-            SKYDONATE_ASSETS . '/addons/js/recent-donation-two.js',
-            ['jquery'],
-            SKYDONATE_VERSION,  // Replace with the version number or leave as is
-            true
-        );
-        wp_localize_script('recent-donation-two', 'skydonate_ajax', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('skydonate_nonce')
         ]);

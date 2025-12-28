@@ -360,13 +360,14 @@ class SkyDonate_Remote_Stubs {
     /**
      * Render recent donations layout two - STUB
      *
-     * @param array  $order_ids   Order IDs
-     * @param array  $product_ids Product IDs
-     * @param string $list_icon   Icon HTML
+     * @param array  $order_ids    Order IDs
+     * @param array  $product_ids  Product IDs
+     * @param string $list_icon    Icon HTML
+     * @param bool   $hidden_class Hidden class flag for slider effect
      */
-    public function render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>' ) {
+    public function render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon = '<i class="fas fa-hand-holding-heart"></i>', $hidden_class = false ) {
         if ( $this->is_remote_available() && function_exists( 'skydonate_remote_render_recent_donations_layout_two' ) ) {
-            skydonate_remote_render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon );
+            skydonate_remote_render_recent_donations_layout_two( $order_ids, $product_ids, $list_icon, $hidden_class );
             return;
         }
 

@@ -76,16 +76,9 @@ class Skydonate_Elementor_Addons {
             $widgets_manager->register(new \Skydonate_Metal_Values());
         }
         
-
         if (skydonate_is_widget_enabled('recent_donation')) {
-            if(skydonate_get_layout('recent_donation') == 'layout-2'){
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order-2.php');
-                $widgets_manager->register(new \Skydonate_Recent_Order_2());
-            } else {
-                require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order.php');
-                $widgets_manager->register(new \Skydonate_Recent_Order());
-
-            }
+            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-recent-order.php');
+            $widgets_manager->register(new \Skydonate_Recent_Order());
         }
 
         if (skydonate_is_widget_enabled('donation_progress')) {
