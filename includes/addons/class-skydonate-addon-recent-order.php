@@ -532,70 +532,67 @@ class Skydonate_Recent_Order extends \Elementor\Widget_Base {
 
         echo '<div '.$this->get_render_attribute_string( "wrapper_attributes" ).'>';
             if ($product_ids) {
-                echo '<div class="sky-slide-donations">';
-                    $order_ids = Skydonate_Functions::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $post_limit);
-                    if (!empty($order_ids)) {
+                // Use cached order IDs for better performance
+                $order_ids = Skydonate_Functions::get_cached_orders_ids_by_product_ids($product_ids, $post_limit);
+                if (!empty($order_ids)) {
+                    echo '<div class="sky-slide-donations">';
                         echo '<div class="sky-recent-donations-list">';
                             echo '<ul class="sky-donations-orders">';
                             Skydonate_Functions::render_recent_donations_item_layout_one($order_ids, $product_ids, true);
                             echo '</ul>';
                         echo '</div>';
-                    } else {
-                        echo "<div class='woocommerce-info'>$no_donations_message</div>";
-                    }
-                echo '</div>';
-                echo '<div class="sky-modal-actions">';
-                echo '<button type="button" class="button primary-button see-all-button">'.$all_button_text . $all_button_icon.'</button>';
-                echo '<button type="button" class="button primary-button see-top-button">'.$top_button_text . $top_button_icon.'</button>';
-                echo '</div>';
-                echo '<div class="sky-modal">';
-                    echo '<div class="sky-modal_overlay"></div>';
-                    echo '<div class="sky-modal_body">';
-                        echo '<div class="sky-modal_header">';
-                            echo '<div class="sky-modal_header-top">';
-                                echo '<h3 class="sky-modal_title">' . __('Donations', 'skydonate') . '</h3>';
-                                echo '<button class="sky-modal_close"><i class="far fa-times"></i></button>';
+                    echo '</div>';
+                    echo '<div class="sky-modal-actions">';
+                    echo '<button type="button" class="button primary-button see-all-button">'.$all_button_text . $all_button_icon.'</button>';
+                    echo '<button type="button" class="button primary-button see-top-button">'.$top_button_text . $top_button_icon.'</button>';
+                    echo '</div>';
+                    echo '<div class="sky-modal">';
+                        echo '<div class="sky-modal_overlay"></div>';
+                        echo '<div class="sky-modal_body">';
+                            echo '<div class="sky-modal_header">';
+                                echo '<div class="sky-modal_header-top">';
+                                    echo '<h3 class="sky-modal_title">' . __('Donations', 'skydonate') . '</h3>';
+                                    echo '<button class="sky-modal_close"><i class="far fa-times"></i></button>';
+                                echo '</div>';
+                                echo '<div class="sky-modal_tabs">';
+                                    echo '<button type="button" class="button all-button">'
+                                            . $all_button_text . $all_button_icon .
+                                        '</button>';
+                                    echo '<button type="button" class="button top-button">'
+                                            . $top_button_text . $top_button_icon .
+                                        '</button>';
+                                echo '</div>';
                             echo '</div>';
-                            echo '<div class="sky-modal_tabs">';
-                                echo '<button type="button" class="button all-button">'
-                                        . $all_button_text . $all_button_icon .
-                                    '</button>';
-                                echo '<button type="button" class="button top-button">'
-                                        . $top_button_text . $top_button_icon .
-                                    '</button>';
-                            echo '</div>';
-                        echo '</div>';
-                        echo '<div class="sky-modal_content">';
-                            echo '<div class="sky-modal_tab-contents">';
-                                echo '<div class="sky-modal_tab sky-modal_tab-all">';
-                                    echo '<div class="sky-recent-donations-list">';
-                                        echo '<ul class="sky-donations-orders"></ul>';
-                                        echo '<div class="items-loader">';
-                                            echo Skydonate_Functions::loader_icon();
+                            echo '<div class="sky-modal_content">';
+                                echo '<div class="sky-modal_tab-contents">';
+                                    echo '<div class="sky-modal_tab sky-modal_tab-all">';
+                                        echo '<div class="sky-recent-donations-list">';
+                                            echo '<ul class="sky-donations-orders"></ul>';
+                                            echo '<div class="items-loader">';
+                                                echo Skydonate_Functions::loader_icon();
+                                            echo '</div>';
+                                        echo '</div>';
+                                    echo '</div>';
+                                    echo '<div class="sky-modal_tab sky-modal_tab-top">';
+                                        echo '<div class="sky-recent-donations-list">';
+                                            echo '<ul class="sky-donations-orders"></ul>';
+                                            echo '<div class="items-loader">';
+                                                echo Skydonate_Functions::loader_icon();
+                                            echo '</div>';
                                         echo '</div>';
                                     echo '</div>';
                                 echo '</div>';
-                                echo '<div class="sky-modal_tab sky-modal_tab-top">';
-                                    echo '<div class="sky-recent-donations-list">';
-                                        echo '<ul class="sky-donations-orders"></ul>';
-                                        echo '<div class="items-loader">';
-                                            echo Skydonate_Functions::loader_icon();
-                                        echo '</div>';
-                                    echo '</div>';
-                                echo '</div>';
                             echo '</div>';
-                        echo '</div>';
-                        echo '<div class="sky-modal_footer">';
-                            $button_url = !empty($modal_button_link['url']) ? $modal_button_link['url'] : '#';
-                            echo '<a href="' . esc_url($button_url) . '" class="button btn-full">';
-                                echo esc_html($modal_button_text);
-                                echo $modal_button_icon;
-                            echo '</a>';
+                            echo '<div class="sky-modal_footer">';
+                                $button_url = !empty($modal_button_link['url']) ? $modal_button_link['url'] : '#';
+                                echo '<a href="' . esc_url($button_url) . '" class="button btn-full">';
+                                    echo esc_html($modal_button_text);
+                                    echo $modal_button_icon;
+                                echo '</a>';
+                            echo '</div>';
                         echo '</div>';
                     echo '</div>';
-                echo '</div>';
-            }else {
-                echo "<div class='woocommerce-info'>$no_donations_message</div>";
+                }
             }
         echo '</div>';
     }

@@ -145,8 +145,9 @@ class Skydonate_Functions {
         check_ajax_referer('skydonate_nonce', 'nonce');
 
         $product_ids = isset($_POST['product_ids']) ? json_decode(sanitize_text_field(wp_unslash($_POST['product_ids'])), true) : [];
-        $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
-        $tab_order_ids = self::get_orders_ids_by_product_id($product_ids, ['wc-completed'], $offset, '');
+        $limit = isset($_POST['offset']) ? intval($_POST['offset']) : 20;
+        // Use cached data instead of live query
+        $tab_order_ids = self::get_cached_orders_ids_by_product_ids($product_ids, $limit);
         $name_display_option = isset($_POST['namestate']) ? sanitize_text_field($_POST['namestate']) : 'first_last_initial';
 
         // Check if 'icon' exists in the POST data and is an array - sanitize icon data
@@ -502,6 +503,301 @@ class Skydonate_Functions {
         // Update product meta
         update_post_meta( $product_id, '_order_count', $order_count );
         update_post_meta( $product_id, '_total_sales_amount', $total_amount );
+
+        // Cache recent donation order IDs with product and fundraise info
+        $this->cache_recent_donation_ids( $product_id );
+    }
+
+    /**
+     * Cache recent donation order IDs with product_id and fundraise_id for validation.
+     *
+     * @param int $product_id Product ID.
+     * @param int $limit      Number of orders to cache (default 50).
+     */
+    private function cache_recent_donation_ids( $product_id, $limit = 50 ) {
+        global $wpdb;
+
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
+        if ( $this->is_HPOS_active() ) {
+            $orders_table = $wpdb->prefix . 'wc_orders';
+
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    oi.order_id,
+                    oim_product.meta_value as product_id,
+                    COALESCE(oim_fundraise.meta_value, '') as fundraise_id
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                LEFT JOIN {$order_itemmeta_table} AS oim_fundraise ON oi.order_item_id = oim_fundraise.order_item_id AND oim_fundraise.meta_key = '_fundraise_id'
+                INNER JOIN {$orders_table} AS o ON oi.order_id = o.id
+                WHERE oi.order_item_type = 'line_item'
+                AND oim_product.meta_value = %d
+                AND o.status = 'wc-completed'
+                ORDER BY o.date_created_gmt DESC
+                LIMIT %d
+            ", $product_id, $limit ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    oi.order_id,
+                    oim_product.meta_value as product_id,
+                    COALESCE(oim_fundraise.meta_value, '') as fundraise_id
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                LEFT JOIN {$order_itemmeta_table} AS oim_fundraise ON oi.order_item_id = oim_fundraise.order_item_id AND oim_fundraise.meta_key = '_fundraise_id'
+                INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
+                WHERE oi.order_item_type = 'line_item'
+                AND oim_product.meta_value = %d
+                AND p.post_status = 'wc-completed'
+                ORDER BY p.post_date DESC
+                LIMIT %d
+            ", $product_id, $limit ), ARRAY_A );
+        }
+
+        // Format the data: array of [order_id, product_id, fundraise_id]
+        $cached_data = [];
+        if ( $results ) {
+            foreach ( $results as $row ) {
+                $cached_data[] = [
+                    'order_id'     => absint( $row['order_id'] ),
+                    'product_id'   => absint( $row['product_id'] ),
+                    'fundraise_id' => $row['fundraise_id'] ? absint( $row['fundraise_id'] ) : 0,
+                ];
+            }
+        }
+
+        // Save to post meta as JSON
+        update_post_meta( $product_id, '_recent_donation_ids', wp_json_encode( $cached_data ) );
+
+        // Also cache top donations (sorted by amount)
+        $this->cache_top_donation_ids( $product_id, $limit );
+    }
+
+    /**
+     * Cache top donation order IDs sorted by amount for a product.
+     *
+     * @param int $product_id Product ID.
+     * @param int $limit      Number of orders to cache (default 50).
+     */
+    private function cache_top_donation_ids( $product_id, $limit = 50 ) {
+        global $wpdb;
+
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
+        if ( $this->is_HPOS_active() ) {
+            $orders_table = $wpdb->prefix . 'wc_orders';
+
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    oi.order_id,
+                    oim_product.meta_value as product_id,
+                    COALESCE(oim_fundraise.meta_value, '') as fundraise_id,
+                    CAST(oim_total.meta_value AS DECIMAL(10,2)) as line_total
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                INNER JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                LEFT JOIN {$order_itemmeta_table} AS oim_fundraise ON oi.order_item_id = oim_fundraise.order_item_id AND oim_fundraise.meta_key = '_fundraise_id'
+                INNER JOIN {$orders_table} AS o ON oi.order_id = o.id
+                WHERE oi.order_item_type = 'line_item'
+                AND oim_product.meta_value = %d
+                AND o.status = 'wc-completed'
+                ORDER BY line_total DESC
+                LIMIT %d
+            ", $product_id, $limit ), ARRAY_A );
+        } else {
+            $results = $wpdb->get_results( $wpdb->prepare( "
+                SELECT
+                    oi.order_id,
+                    oim_product.meta_value as product_id,
+                    COALESCE(oim_fundraise.meta_value, '') as fundraise_id,
+                    CAST(oim_total.meta_value AS DECIMAL(10,2)) as line_total
+                FROM {$order_items_table} AS oi
+                INNER JOIN {$order_itemmeta_table} AS oim_product ON oi.order_item_id = oim_product.order_item_id AND oim_product.meta_key = '_product_id'
+                INNER JOIN {$order_itemmeta_table} AS oim_total ON oi.order_item_id = oim_total.order_item_id AND oim_total.meta_key = '_line_total'
+                LEFT JOIN {$order_itemmeta_table} AS oim_fundraise ON oi.order_item_id = oim_fundraise.order_item_id AND oim_fundraise.meta_key = '_fundraise_id'
+                INNER JOIN {$wpdb->posts} AS p ON oi.order_id = p.ID
+                WHERE oi.order_item_type = 'line_item'
+                AND oim_product.meta_value = %d
+                AND p.post_status = 'wc-completed'
+                ORDER BY line_total DESC
+                LIMIT %d
+            ", $product_id, $limit ), ARRAY_A );
+        }
+
+        // Format the data
+        $cached_data = [];
+        if ( $results ) {
+            foreach ( $results as $row ) {
+                $cached_data[] = [
+                    'order_id'     => absint( $row['order_id'] ),
+                    'product_id'   => absint( $row['product_id'] ),
+                    'fundraise_id' => $row['fundraise_id'] ? absint( $row['fundraise_id'] ) : 0,
+                    'line_total'   => floatval( $row['line_total'] ),
+                ];
+            }
+        }
+
+        // Save to post meta as JSON
+        update_post_meta( $product_id, '_top_donation_ids', wp_json_encode( $cached_data ) );
+    }
+
+    /**
+     * Get cached recent donation IDs for a product.
+     *
+     * @param int $product_id Product ID.
+     * @param int $limit      Number of orders to return.
+     * @return array Array of cached donation data.
+     */
+    public function get_cached_recent_donation_ids( $product_id, $limit = 20 ) {
+        $cached = get_post_meta( $product_id, '_recent_donation_ids', true );
+
+        if ( ! empty( $cached ) ) {
+            $data = json_decode( $cached, true );
+            if ( is_array( $data ) ) {
+                return array_slice( $data, 0, $limit );
+            }
+        }
+
+        // Fallback: regenerate cache and return
+        $this->cache_recent_donation_ids( $product_id, 50 );
+        $cached = get_post_meta( $product_id, '_recent_donation_ids', true );
+
+        if ( ! empty( $cached ) ) {
+            $data = json_decode( $cached, true );
+            if ( is_array( $data ) ) {
+                return array_slice( $data, 0, $limit );
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Get just the order IDs from cached recent donations.
+     *
+     * @param int $product_id Product ID.
+     * @param int $limit      Number of order IDs to return.
+     * @return array Array of order IDs.
+     */
+    public function get_cached_order_ids( $product_id, $limit = 20 ) {
+        $cached_data = $this->get_cached_recent_donation_ids( $product_id, $limit );
+        return array_column( $cached_data, 'order_id' );
+    }
+
+    /**
+     * Static method to get cached order IDs for multiple products.
+     * Used by widgets to get recent donation order IDs from cache.
+     *
+     * @param array $product_ids Array of product IDs.
+     * @param int   $limit       Number of order IDs to return.
+     * @return array Array of order IDs.
+     */
+    public static function get_cached_orders_ids_by_product_ids( $product_ids = [], $limit = 20 ) {
+        if ( empty( $product_ids ) ) {
+            return [];
+        }
+
+        $all_order_ids = [];
+        $instance = new self();
+
+        foreach ( $product_ids as $product_id ) {
+            $cached = get_post_meta( $product_id, '_recent_donation_ids', true );
+
+            if ( ! empty( $cached ) ) {
+                $data = json_decode( $cached, true );
+                if ( is_array( $data ) ) {
+                    foreach ( $data as $item ) {
+                        $all_order_ids[] = $item['order_id'];
+                    }
+                }
+            } else {
+                // Regenerate cache for this product
+                $instance->cache_recent_donation_ids( $product_id, 50 );
+                $cached = get_post_meta( $product_id, '_recent_donation_ids', true );
+                if ( ! empty( $cached ) ) {
+                    $data = json_decode( $cached, true );
+                    if ( is_array( $data ) ) {
+                        foreach ( $data as $item ) {
+                            $all_order_ids[] = $item['order_id'];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove duplicates, sort by order ID descending (most recent first), and limit
+        $all_order_ids = array_unique( $all_order_ids );
+        rsort( $all_order_ids, SORT_NUMERIC );
+
+        return array_slice( $all_order_ids, 0, $limit );
+    }
+
+    /**
+     * Static method to get cached TOP order IDs for multiple products (sorted by amount).
+     * Used by widgets for "See Top" functionality.
+     *
+     * @param array $product_ids Array of product IDs.
+     * @param int   $limit       Number of order IDs to return.
+     * @return array Array of order IDs sorted by donation amount descending.
+     */
+    public static function get_cached_top_orders_ids_by_product_ids( $product_ids = [], $limit = 20 ) {
+        if ( empty( $product_ids ) ) {
+            return [];
+        }
+
+        $all_orders = [];
+        $instance = new self();
+
+        foreach ( $product_ids as $product_id ) {
+            $cached = get_post_meta( $product_id, '_top_donation_ids', true );
+
+            if ( ! empty( $cached ) ) {
+                $data = json_decode( $cached, true );
+                if ( is_array( $data ) ) {
+                    foreach ( $data as $item ) {
+                        $all_orders[] = [
+                            'order_id'   => $item['order_id'],
+                            'line_total' => $item['line_total'] ?? 0,
+                        ];
+                    }
+                }
+            } else {
+                // Regenerate cache for this product
+                $instance->cache_top_donation_ids( $product_id, 50 );
+                $cached = get_post_meta( $product_id, '_top_donation_ids', true );
+                if ( ! empty( $cached ) ) {
+                    $data = json_decode( $cached, true );
+                    if ( is_array( $data ) ) {
+                        foreach ( $data as $item ) {
+                            $all_orders[] = [
+                                'order_id'   => $item['order_id'],
+                                'line_total' => $item['line_total'] ?? 0,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sort by line_total descending
+        usort( $all_orders, function( $a, $b ) {
+            return $b['line_total'] <=> $a['line_total'];
+        });
+
+        // Remove duplicates by order_id (keep highest amount)
+        $seen = [];
+        $unique_orders = [];
+        foreach ( $all_orders as $order ) {
+            if ( ! isset( $seen[ $order['order_id'] ] ) ) {
+                $seen[ $order['order_id'] ] = true;
+                $unique_orders[] = $order['order_id'];
+            }
+        }
+
+        return array_slice( $unique_orders, 0, $limit );
     }
 
     /**
@@ -748,26 +1044,26 @@ class Skydonate_Functions {
         $product_ids = isset($_POST['product_ids']) ? array_map('intval', $_POST['product_ids']) : [];
         $offset      = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
         $limit       = isset($_POST['limit']) ? intval($_POST['limit']) : 0;
-        
+
 
         // Validate required params
         if (empty($product_ids) || $limit <= 0) {
             wp_send_json_error("Missing parameters");
         }
 
-        // Fetch enough orders to apply offset + limit
+        // Fetch enough orders to apply offset + limit (use cached data)
         $fetch_limit = $offset + $limit;
 
         if ($type === 'top') {
-            $order_ids = Skydonate_Functions::get_top_amount_orders_by_product_ids(
+            // Use cached top donations data
+            $order_ids = self::get_cached_top_orders_ids_by_product_ids(
                 $product_ids,
-                ['wc-completed'],
                 $fetch_limit
             );
         } else {
-            $order_ids = Skydonate_Functions::get_orders_ids_by_product_id(
+            // Use cached recent donations data
+            $order_ids = self::get_cached_orders_ids_by_product_ids(
                 $product_ids,
-                ['wc-completed'],
                 $fetch_limit
             );
         }
