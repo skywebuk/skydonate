@@ -124,21 +124,22 @@
         });
 
         // ==============================
-        // Donation Amount Tabs
+        // Donation Amount Tabs (Product Edit Page Only)
         // ==============================
 
-        // Tab switching
-        $(document).on('click', '.skydonate-tab-btn', function() {
+        // Tab switching - scoped to product edit page tabs only
+        $(document).on('click', '.skydonate-donation-tabs .skydonate-tab-btn', function() {
             var $btn = $(this);
             var tabKey = $btn.data('tab');
+            var $wrapper = $btn.closest('.skydonate-donation-tabs');
 
-            // Update tab buttons
-            $('.skydonate-tab-btn').removeClass('active');
+            // Update tab buttons within this wrapper only
+            $wrapper.find('.skydonate-tab-btn').removeClass('active');
             $btn.addClass('active');
 
-            // Update tab panels - hide all, show selected
-            $('.skydonate-tab-panel').removeClass('active').css('display', 'none');
-            $('.skydonate-tab-panel[data-panel="' + tabKey + '"]').addClass('active').css('display', 'block');
+            // Update tab panels within this wrapper only
+            $wrapper.find('.skydonate-tab-panel').removeClass('active').css('display', 'none');
+            $wrapper.find('.skydonate-tab-panel[data-panel="' + tabKey + '"]').addClass('active').css('display', 'block');
         });
 
         // Default amounts for each frequency
@@ -150,9 +151,9 @@
             yearly: [200, 100, 50, 300, 500, 1000]
         };
 
-        // Add default amounts to a tab if empty
+        // Add default amounts to a tab if empty (Product Edit Page Only)
         function addDefaultAmountsToTab(freq) {
-            var $container = $('.skydonate-amounts-container[data-frequency="' + freq + '"]');
+            var $container = $('.skydonate-donation-tabs .skydonate-amounts-container[data-frequency="' + freq + '"]');
             if ($container.find('.skydonate-amount-row').length > 0) {
                 return; // Already has amounts
             }
@@ -201,9 +202,10 @@
             initAmountsSortable();
         }
 
-        // Update tab visibility based on frequency checkboxes
+        // Update tab visibility based on frequency checkboxes (Product Edit Page Only)
         function updateDonationTabsVisibility() {
-            var $tabs = $('.skydonate-tab-btn');
+            var $wrapper = $('.skydonate-donation-tabs');
+            var $tabs = $wrapper.find('.skydonate-tab-btn');
             var $firstVisibleTab = null;
 
             $tabs.each(function() {
@@ -227,7 +229,7 @@
             });
 
             // Ensure at least one tab is active and visible
-            if ($firstVisibleTab && !$('.skydonate-tab-btn.active:visible').length) {
+            if ($firstVisibleTab && !$wrapper.find('.skydonate-tab-btn.active:visible').length) {
                 $firstVisibleTab.trigger('click');
             }
         }
@@ -236,9 +238,9 @@
         updateDonationTabsVisibility();
 
         // ==============================
-        // Add Amount to ALL Tabs
+        // Add Amount to ALL Tabs (Product Edit Page Only)
         // ==============================
-        $(document).on('click', '.skydonate-add-amount-all', function() {
+        $(document).on('click', '.skydonate-donation-tabs .skydonate-add-amount-all', function() {
             var frequencies = ['once', 'daily', 'weekly', 'monthly', 'yearly'];
 
             var labelText = typeof wp !== 'undefined' && wp.i18n ? wp.i18n.__('Label', 'skydonate') : 'Label';
@@ -292,9 +294,9 @@
         });
 
         // ==============================
-        // Remove Amount from Single Tab
+        // Remove Amount from Single Tab (Product Edit Page Only)
         // ==============================
-        $(document).on('click', '.skydonate-remove-amount', function() {
+        $(document).on('click', '.skydonate-donation-tabs .skydonate-remove-amount', function() {
             var $row = $(this).closest('.skydonate-amount-row');
             var $container = $row.closest('.skydonate-amounts-container');
             var freq = $container.data('frequency');
@@ -334,11 +336,11 @@
         }
 
         // ==============================
-        // Make Amount Rows Sortable (per tab)
+        // Make Amount Rows Sortable (per tab) - Product Edit Page Only
         // ==============================
         function initAmountsSortable() {
             if (typeof $.fn.sortable !== 'undefined') {
-                $('.skydonate-amounts-container').each(function() {
+                $('.skydonate-donation-tabs .skydonate-amounts-container').each(function() {
                     var $container = $(this);
                     var freq = $container.data('frequency');
 
