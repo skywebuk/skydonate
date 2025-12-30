@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.25
+ * @version 2.0.27
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -1616,7 +1616,8 @@ function skydonate_is_widget_enabled( $widget ) {
 }
 
 function skydonate_get_layout( $component ) {
-    return skydonate_license()->get_layout( $component );
+    $layout = skydonate_license()->get_layout( $component );
+    return apply_filters( 'skydonate_get_layout', $layout, $component );
 }
 
 function skydonate_has_capability( $capability ) {
