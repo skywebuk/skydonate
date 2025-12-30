@@ -433,3 +433,78 @@
 .donation-daily-dates-group {
     margin-top: 16px;
 }
+
+/* Responsive Styles for Amount Fields */
+@media screen and (max-width: 768px) {
+    /* 3-column becomes 2-column on tablets */
+    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
+        flex: 1 1 calc(50% - 4px);
+    }
+
+    /* 4-column becomes 2-column on tablets */
+    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+        flex: 1 1 calc(50% - 4px);
+    }
+
+    /* Custom amount input adjustments */
+    .donation-amount-groups .donation-custom .custom-amount-input {
+        font-size: 28px;
+        height: 50px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper {
+        height: 44px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper .currency-symbol {
+        font-size: 20px;
+        min-width: 44px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* All buttons become 2-column on mobile */
+    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn,
+    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+        flex: 1 1 calc(50% - 4px);
+    }
+
+    /* Type switch buttons stack on very small screens */
+    .donation-form .donation-type-switch.buttons-3 button {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    /* Custom amount input further adjustments */
+    .donation-amount-groups .donation-custom .custom-amount-input {
+        font-size: 24px;
+        height: 46px;
+        padding: 0 6px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper {
+        height: 40px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper .currency-symbol {
+        font-size: 18px;
+        min-width: 40px;
+    }
+
+    .donation-amount-groups .donation-custom .custom-placeholder {
+        font-size: 12px;
+        right: 10px;
+    }
+
+    /* Donation buttons font size */
+    .donation-form .donation-buttons .donation-btn {
+        min-height: 40px;
+        font-size: 14px;
+    }
+
+    /* Date fields stack on mobile */
+    .donation-daily-dates-group .donation-dates {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

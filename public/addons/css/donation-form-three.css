@@ -443,3 +443,84 @@
 .donation-form-wrapper button.form-submit-button {
     margin-top: 12px;
 }
+
+/* Responsive Styles for Amount Fields */
+@media screen and (max-width: 768px) {
+    /* 3-column becomes 2-column on tablets */
+    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    /* 4-column becomes 2-column on tablets */
+    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    /* Custom amount input adjustments */
+    .donation-amount-groups .donation-custom .custom-amount-input {
+        font-size: 20px;
+        height: 48px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper {
+        height: 46px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper .currency-symbol {
+        font-size: 16px;
+        min-width: 44px;
+    }
+
+    /* Type switch adjustments */
+    .donation-form .donation-type-switch button {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* All buttons become 2-column on mobile */
+    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn,
+    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    /* Custom amount input further adjustments */
+    .donation-amount-groups .donation-custom .custom-amount-input {
+        font-size: 18px;
+        height: 44px;
+        padding: 0 6px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper {
+        height: 42px;
+    }
+
+    .donation-amount-groups .donation-custom .skydonate-currency-wrapper .currency-symbol {
+        font-size: 14px;
+        min-width: 38px;
+    }
+
+    .donation-amount-groups .donation-custom .custom-placeholder {
+        font-size: 11px;
+        right: 8px;
+    }
+
+    /* Donation buttons adjustments */
+    .donation-form .donation-buttons .donation-btn {
+        min-height: 40px;
+        font-size: 14px;
+    }
+
+    /* Type switch on mobile */
+    .donation-form .donation-type-switch button {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    /* Date fields stack on mobile */
+    .donation-daily-dates-group .donation-dates {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
