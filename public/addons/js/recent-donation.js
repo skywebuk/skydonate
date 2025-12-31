@@ -218,7 +218,7 @@
 
         if (settings.layout !== 'layout-2') {
             let revealCount = 0;
-            var orders = $scope.find('.sky-slide-donations .sky-donations-orders .sky-order');
+            var orders = $scope.find('.layout-1 .sky-slide-donations .sky-donations-orders .sky-order');
             if (orders.length >= 5) {
                 if ($scope.data('sky-interval-running')) return;
                 $scope.data('sky-interval-running', true);

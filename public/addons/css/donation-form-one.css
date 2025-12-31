@@ -101,11 +101,11 @@
 }
 
 .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
-    flex: 1 1 calc(33.3333% - 6.666px);
+    flex: 1 1 calc(33.3333% - 7.5px);
 }
 
 .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
-    flex: 1 1 calc(25% - 7.5px);
+    flex: 1 1 calc(33.3333% - 7.5px);
 }
 
 .donation-form .donation-type-switch {
@@ -437,14 +437,14 @@
 /* Responsive Styles for Amount Fields */
 @media screen and (max-width: 768px) {
     /* 3-column becomes 2-column on tablets */
-    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
+    /* .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
         flex: 1 1 calc(50% - 4px);
-    }
+    } */
 
     /* 4-column becomes 2-column on tablets */
-    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+    /* .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
         flex: 1 1 calc(50% - 4px);
-    }
+    } */
 
     /* Custom amount input adjustments */
     .donation-amount-groups .donation-custom .custom-amount-input {
@@ -464,21 +464,21 @@
 
 @media screen and (max-width: 480px) {
     /* All buttons become 2-column on mobile */
-    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn,
-    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+    /* .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn, */
+    /* .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
         flex: 1 1 calc(50% - 4px);
-    }
+    } */
 
     /* Type switch buttons stack on very small screens */
-    .donation-form .donation-type-switch.buttons-3 button {
+    /* .donation-form .donation-type-switch.buttons-3 button {
         flex: 1 1 100%;
         max-width: 100%;
-    }
+    } */
 
     /* Custom amount input further adjustments */
     .donation-amount-groups .donation-custom .custom-amount-input {
         font-size: 24px;
-        height: 46px;
+        height: 48px;
         padding: 0 6px;
     }
 

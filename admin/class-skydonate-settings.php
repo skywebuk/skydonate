@@ -18,7 +18,7 @@ class Skydonate_Settings_Functions {
 
         add_action( 'wp_ajax_skydonate_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
     }
-    
+
     public function save_extra_donation_settings() {
         // Verify nonce for security
         check_ajax_referer('skydonate_settings_nonce', 'nonce');

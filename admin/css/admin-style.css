@@ -1427,7 +1427,7 @@ span.select2-container--default .select2-selection--multiple .select2-selection_
     margin-bottom: var(--sky-space-4);
 }
 
-#woocommerce-product-data ul.wc-tabs li.skydonate_fields_tab a::before {
+#woocommerce-product-data ul.wc-tabs li.skydonate_donation_fields_options a::before {
     content: "\f487";
 }
 

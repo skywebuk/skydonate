@@ -287,10 +287,8 @@
         height: 100%;
         border-radius: 0px;
     }
-
-    .sky-modal .sky-modal_content .sky-modal_tab .sky-recent-donations-list,
-    .sky-modal .sky-modal_content {
-        max-height: calc(100vh - 205px);
+    .sky-modal .sky-modal_content .sky-modal_tab .sky-recent-donations-list {
+        height: calc(100vh - 213px);
     }
 
 }

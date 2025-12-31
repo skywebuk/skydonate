@@ -151,11 +151,11 @@
 }
 
 .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
-    flex: 1 1 calc(33.3333% - 6.66px);
+    flex: 1 1 calc(33.3333% - 7.5px);
 }
 
 .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
-    flex: 1 1 calc(25% - 7.5px);
+    flex: 1 1 calc(33.3333% - 7.5px);
 }
 
 .donation-form .donation-box-title {
@@ -447,14 +447,14 @@
 /* Responsive Styles for Amount Fields */
 @media screen and (max-width: 768px) {
     /* 3-column becomes 2-column on tablets */
-    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
+    /* .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn {
         flex: 1 1 calc(50% - 5px);
-    }
+    } */
 
     /* 4-column becomes 2-column on tablets */
-    .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
+    /* .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
         flex: 1 1 calc(50% - 5px);
-    }
+    } */
 
     /* Custom amount input adjustments */
     .donation-amount-groups .donation-custom .custom-amount-input {
@@ -480,10 +480,10 @@
 
 @media screen and (max-width: 480px) {
     /* All buttons become 2-column on mobile */
-    .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn,
+    /* .donation-form.grid-layout .donation-buttons.buttons-3 .donation-btn,
     .donation-form.grid-layout .donation-buttons.buttons-4 .donation-btn {
         flex: 1 1 calc(50% - 5px);
-    }
+    } */
 
     /* Custom amount input further adjustments */
     .donation-amount-groups .donation-custom .custom-amount-input {
