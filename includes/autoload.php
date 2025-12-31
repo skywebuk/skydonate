@@ -144,7 +144,6 @@ function skydonate_load_elementor_includes() {
         'class-skydonate-addon-form.php',
         'class-skydonate-addon-gift-aid-toggle.php',
         'class-skydonate-addon-icon-list.php',
-        'class-skydonate-addon-impact-slider.php',
         'class-skydonate-addon-metal-values.php',
         'class-skydonate-addon-progress.php',
         'class-skydonate-addon-progress-2.php',

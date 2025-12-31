@@ -15,6 +15,7 @@
             let coverflow_shadow = settings['coverflow_shadow'] === 'yes';
             let sldisplay_columns = parseInt(settings['sldisplay_columns'] || 1);
             let slcenter = settings['slcenter'] || false;
+            let slfreemode = settings['slfreemode'] || false;
             let sldirection = settings['sldirection'] || 'horizontal';
             let slcenter_padding = parseInt(settings['slcenter_padding'] || 0);
 
@@ -47,6 +48,7 @@
                 spaceBetween: mobile_padding,
                 direction: sldirection,
                 effect: sleffect,
+                freeMode: slfreemode,
                 coverflowEffect: {
                     rotate: coverflow_rotate,
                     stretch: coverflow_stretch,

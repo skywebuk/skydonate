@@ -50,7 +50,6 @@ class SkyDonate_Public_Styles {
             'donation-button'          => 'donation-button.css',
             'quick-donation'           => 'quick-donation.css',
             'donation-icon-list'       => 'donation-icon-list.css',
-            'donation-impact-slider'   => 'donation-impact-slider.css',
             'recent-donation'          => 'recent-donation.css',
             'donation-progress'        => 'donation-progress.css',
             'donation-card'            => 'donation-card.css',

@@ -486,17 +486,26 @@ class Skydonate_Icon_List extends Widget_Base {
             ]                                                                                                                                                   
         );                                                                                                                                                      
                                                                                                                                                                 
-        $this->add_control(                                                                                                                                     
-            'slautolaydelay',                                                                                                                                   
-            [                                                                                                                                                   
-                'label' => __('Autoplay Delay', 'skydonate'),                                                                                                     
-                'type' => Controls_Manager::NUMBER,                                                                                                             
-                'default' => 6500,                                                                                                                              
-            ]                                                                                                                                                   
-        );                                                                                                                                                      
-                                                                                                                                                                
-                                                                                                                                                                
-        $this->add_control(                                                                                                                                     
+        $this->add_control(
+            'slautolaydelay',
+            [
+                'label' => __('Autoplay Delay', 'skydonate'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 6500,
+            ]
+        );
+
+        $this->add_control(
+            'slfreemode',
+            [
+                'label' => esc_html__( 'Free Mode', 'skydonate' ),
+                'type' => Controls_Manager::SWITCHER,
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+
+        $this->add_control(
             'slcenter',                                                                                                                                         
             [                                                                                                                                                   
                 'label' => esc_html__( 'Center', 'skydonate' ),                                                                                                   
@@ -897,8 +906,9 @@ class Skydonate_Icon_List extends Widget_Base {
                 'sldirection' => $settings['sldirection'] ?? 'horizontal',                                                                                                               
                 'slloop' => !empty($settings['slloop']) && $settings['slloop'] === 'yes',                                                                                            
                 'slpaginate' => !empty($settings['slpaginate']) && $settings['slpaginate'] === 'yes',                                                                                  
-                'slautolay' => !empty($settings['slautolay']) && $settings['slautolay'] === 'yes',                                                                                                  
-                'slautolaydelay' => absint($settings['slautolaydelay'] ?? 0), 
+                'slautolay' => !empty($settings['slautolay']) && $settings['slautolay'] === 'yes',
+                'slautolaydelay' => absint($settings['slautolaydelay'] ?? 0),
+                'slfreemode' => !empty($settings['slfreemode']) && $settings['slfreemode'] === 'yes',
                 'slanimation_speed' => absint($settings['slanimation_speed'] ?? 0),   
                 'coverflow_rotate' => absint($settings['coverflow_rotate'] ?? 0),    
                 'coverflow_stretch' => absint($settings['coverflow_stretch'] ?? 0),    

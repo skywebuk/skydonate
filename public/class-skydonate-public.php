@@ -59,12 +59,6 @@ class Skydonate_Public {
             SKYDONATE_VERSION  // Replace with the version number or leave as is
         );
         wp_register_style(
-            'donation-impact-slider',
-            SKYDONATE_ASSETS . '/addons/css/donation-impact-slider.css',
-            [],
-            SKYDONATE_VERSION  // Replace with the version number or leave as is
-        );
-        wp_register_style(
             'recent-donation',
             SKYDONATE_ASSETS . '/addons/css/recent-donation.css',
             [],
@@ -232,14 +226,6 @@ class Skydonate_Public {
             SKYDONATE_VERSION,  // Replace with the version number or leave as is
             true
         );
-        wp_register_script(
-            'donation-impact-slider',
-            SKYDONATE_ASSETS . '/addons/js/donation-impact-slider.js',
-            ['jquery'],
-            SKYDONATE_VERSION,  // Replace with the version number or leave as is
-            true
-        );
-
         wp_register_script(
             'donation-button',
             SKYDONATE_ASSETS . '/addons/js/donation-button.js',

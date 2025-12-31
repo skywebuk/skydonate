@@ -5,7 +5,7 @@
  * Handles license validation, activation, updates, and feature checks
  *
  * @package SkyDonate
- * @version 2.0.27
+ * @version 2.0.31
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -1382,13 +1382,6 @@ class SkyDonate_License_Client {
      */
     public function has_widget_donation_card() {
         return $this->has_widget( 'donation_card' );
-    }
-
-    /**
-     * Check if impact slider widget is enabled
-     */
-    public function has_widget_impact_slider() {
-        return $this->has_widget( 'impact_slider' );
     }
 
     /**

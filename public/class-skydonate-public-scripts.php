@@ -52,7 +52,6 @@ class SkyDonate_Public_Scripts {
             'gift-aid-toggle'          => 'gift-aid-toggle.js',
             'donation-progress'        => 'donation-progress.js',
             'donation-card'            => 'donation-card.js',
-            'donation-impact-slider'   => 'donation-impact-slider.js',
             'donation-button'          => 'donation-button.js',
             'donation-icon-list'       => 'donation-icon-list.js',
         ];

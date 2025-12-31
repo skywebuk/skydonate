@@ -8,7 +8,6 @@ $default_widgets = [
     'donation_progress' => 'on',
     'donation_form' => 'on',
     'donation_card' => 'on',
-    'impact_slider' => 'on',
     'qurbani_status' => 'on',
     'extra_donation' => 'on',
     'quick_donation' => 'on',
@@ -84,17 +83,6 @@ $widgets = wp_parse_args($widgets, $default_widgets);
                 <span class="switch-label"><?php _e( 'Donation Card', 'skydonate' ); ?></span>
                 <input id="donation_card" name="widgets[donation_card]" type="checkbox" 
                     <?php checked( isset( $widgets['donation_card'] ) && $widgets['donation_card'] === 'on' ); ?>>
-                <span class="switch-toggle">
-                    <span class="switch-text on"><?php _e( 'On', 'skydonate' ); ?></span>
-                    <span class="switch-text off"><?php _e( 'Off', 'skydonate' ); ?></span>
-                </span>
-            </label>
-            <?php endif; ?>
-            <?php if(skydonate_is_widget_enabled('impact_slider')): ?>
-            <label class="skydonate-switcher">
-                <span class="switch-label"><?php _e( 'Impact Slider', 'skydonate' ); ?></span>
-                <input id="impact_slider" name="widgets[impact_slider]" type="checkbox" 
-                    <?php checked( isset( $widgets['impact_slider'] ) && $widgets['impact_slider'] === 'on' ); ?>>
                 <span class="switch-toggle">
                     <span class="switch-text on"><?php _e( 'On', 'skydonate' ); ?></span>
                     <span class="switch-text off"><?php _e( 'Off', 'skydonate' ); ?></span>

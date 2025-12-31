@@ -157,7 +157,6 @@ function skydonate_widget_list(){
             'donation_progress'			=> array('progress-addon','progress-addon-2'),
             'donation_form'				=> array('form-addon','form-addon-2','form-addon-3'),
             'donation_card'				=> array('card-addon','card-addon-2'),
-            'impact_slider'				=> array('impact-slider'),
             'qurbani_status'			=> array('qurbani-status'),
             'donation_button'			=> array('button'),
             'icon_slider'				=> array('icon-list'),

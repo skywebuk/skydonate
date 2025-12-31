@@ -107,11 +107,6 @@ class Skydonate_Elementor_Addons {
         }
 
 
-        if (skydonate_is_widget_enabled('impact_slider')) {
-            require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-impact-slider.php');
-            $widgets_manager->register(new \Skydonate_Impact_Slider());
-        }
-
         if (skydonate_is_widget_enabled('qurbani_status')) {
             require_once(plugin_dir_path(__FILE__) . 'addons/class-skydonate-addon-qurbani-status.php');
             $widgets_manager->register(new \Skydonate_Qurbani_Status());
