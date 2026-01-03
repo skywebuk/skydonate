@@ -3,7 +3,7 @@
  * Plugin Name:       SkyDonate
  * Plugin URI:        https://skywebdesign.co.uk/
  * Description:       A secure, user-friendly donation system built to simplify and manage charitable contributions.
- * Version:           2.0.33
+ * Version:           2.0.34
  * Author:            Sky Web Design
  * Author URI:        https://skywebdesign.co.uk/
  * Text Domain:       skydonate
@@ -62,7 +62,7 @@ if ( ! skydonate_is_wc_active() ) {
  */
 final class SkyDonate {
 
-    const VERSION = '2.0.33';
+    const VERSION = '2.0.34';
     private static $instance = null;
 
     public static function instance() {
@@ -130,18 +130,35 @@ add_action( 'plugins_loaded', function () {
 }, 20 );
 
 /**
- * Plugin activation - recalculate donation meta
+ * Plugin activation - recalculate donation meta and schedule daily recalculation
  */
 register_activation_hook( __FILE__, 'skydonate_activation_recalculate_meta' );
 
 function skydonate_activation_recalculate_meta() {
-    // Schedule recalculation to run after plugin is fully loaded
+    // Run initial recalculation after plugin is fully loaded
     if ( ! wp_next_scheduled( 'skydonate_recalculate_all_donations' ) ) {
         wp_schedule_single_event( time() + 5, 'skydonate_recalculate_all_donations' );
+    }
+
+    // Schedule daily recalculation
+    if ( ! wp_next_scheduled( 'skydonate_daily_recalculate_donations' ) ) {
+        wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'skydonate_daily_recalculate_donations' );
+    }
+}
+
+/**
+ * Ensure daily recalculation is scheduled (runs on init in case schedule was cleared)
+ */
+add_action( 'init', 'skydonate_ensure_daily_recalculation_scheduled' );
+
+function skydonate_ensure_daily_recalculation_scheduled() {
+    if ( ! wp_next_scheduled( 'skydonate_daily_recalculate_donations' ) ) {
+        wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'skydonate_daily_recalculate_donations' );
     }
 }
 
 add_action( 'skydonate_recalculate_all_donations', 'skydonate_do_recalculate_all_donations' );
+add_action( 'skydonate_daily_recalculate_donations', 'skydonate_do_recalculate_all_donations' );
 
 /**
  * Recalculate donation meta for all products
@@ -234,4 +251,5 @@ register_deactivation_hook( __FILE__, function () {
 
     // Clear any pending recalculation
     wp_clear_scheduled_hook( 'skydonate_recalculate_all_donations' );
+    wp_clear_scheduled_hook( 'skydonate_daily_recalculate_donations' );
 } );
