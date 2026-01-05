@@ -50,6 +50,7 @@ if ( $SKDS_notice ) {
 			'advanced'       => '/template/general/advanced.php',
 			'currency'       => '/template/general/currency.php',
 			'colors'         => '/template/general/colors.php',
+			'tools'          => '/template/general/tools.php',
 		];
 
 		if ( isset( $templates[ $active_tab ] ) ) {

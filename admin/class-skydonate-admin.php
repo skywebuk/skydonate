@@ -181,6 +181,13 @@ class Skydonate_Admin {
                 'validation'  => skydonate_is_feature_enabled('enhanced_gift_aid'),
             ],
             [
+                'page_title' => esc_html__( 'Anonymous Donations', 'skydonate' ),
+                'menu_title' => esc_html__( 'Anonymous Donations', 'skydonate' ),
+                'capability' => 'manage_options',
+                'page_slug'  => 'skydonate-anonymous-donations',
+                'callback'   => 'anonymous_donations_page_content',
+            ],
+            [
                 'page_title' => esc_html__( 'Widgets', 'skydonate' ),
                 'menu_title' => esc_html__( 'Widgets', 'skydonate' ),
                 'capability' => 'manage_options',
@@ -272,6 +279,10 @@ class Skydonate_Admin {
                 'label' => __( 'Colors', 'skydonate' ),
                 'icon'  => 'info-circle',
             ],
+            'tools' => [
+                'label' => __( 'Tools', 'skydonate' ),
+                'icon'  => 'tools',
+            ],
         ];
     }
 
@@ -287,6 +298,7 @@ class Skydonate_Admin {
     public function general_page_content() { $this->display_page_content('general'); }
     public function donation_fees_page_content() { $this->display_page_content('donation-fees'); }
     public function gift_aid_page_content() { $this->display_page_content('gift-aid'); }
+    public function anonymous_donations_page_content() { $this->display_page_content('anonymous-donations'); }
     public function widgets_page_content() { $this->display_page_content('widgets'); }
     public function address_autoload_page_content() { $this->display_page_content('address-autoload'); }
     public function notification_page_content() {

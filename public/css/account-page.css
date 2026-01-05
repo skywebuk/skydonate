@@ -1,3 +1,28 @@
+/* My Account Navigation Icons */
+.wd-my-account-links .gift-aid-link a:before {    
+    content: ""; /* fa-gift */
+    width: 100%;
+    display: block;
+    height: 50px;
+    background-image: url("https://ghh.org.uk/wp-content/uploads/2025/07/Gift_Aid_UK_Logo.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: top center;
+}
+
+.wd-my-account-links .anonymous-donations-link a:before {
+    content: "\f007"; /* fa-user-secret */
+    font-family: var(--fa-family,var(--fa-style-family,"Font Awesome 7 Pro"));
+    font-weight: 300;
+}
+
+.wd-my-account-links .my-fundraising-link a:before {
+    content: "\f004"; /* fa-user-secret */
+    font-family: var(--fa-family,var(--fa-style-family,"Font Awesome 7 Pro"));
+    font-weight: 300;
+}
+
+/* Gift Aid Section */
 .my-account-gift-aid {
     border: 1px solid #ededed;
     border-radius: 8px;
@@ -24,10 +49,12 @@
 
 .my-account-anonymous-donation .anonymous-icon {
     float: right;
-    width: 48px;
-    height: 48px;
     color: #6c757d;
     margin-top: 5px;
+}
+
+.my-account-anonymous-donation .anonymous-icon i {
+    font-size: 48px;
 }
 
 .my-account-anonymous-donation .skydonate-anonymous-title {

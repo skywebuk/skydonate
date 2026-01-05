@@ -63,7 +63,6 @@
             </tr>
         </table>
         <br>
-        <br>
         <p>
             <button type="submit" class="skydonation-button"><?php _e( 'Save Settings', 'skydonate' ); ?></button>
         </p>

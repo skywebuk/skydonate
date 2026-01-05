@@ -17,6 +17,7 @@ class Skydonate_Settings_Functions {
         add_action( 'wp_ajax_skydonate_notification_settings', [ $this, 'save_notification_settings' ] );
 
         add_action( 'wp_ajax_skydonate_extra_donation_settings', [ $this, 'save_extra_donation_settings' ] );
+        add_action( 'wp_ajax_save_anonymous_donations_settings', [ $this, 'save_anonymous_donations_settings' ] );
     }
 
     public function save_extra_donation_settings() {
@@ -359,6 +360,53 @@ class Skydonate_Settings_Functions {
 
         // Send success response
         wp_send_json_success(__('Gift Aid settings saved successfully.', 'skydonate'));
+    }
+
+    public function save_anonymous_donations_settings() {
+        // Verify nonce for security
+        check_ajax_referer('skydonate_settings_nonce', 'nonce');
+
+        // Check user capability
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('You do not have permission to perform this action.', 'skydonate'));
+            return;
+        }
+
+        // Get and parse form data
+        $formData = $_POST['formData'] ?? array();
+        $received_data = array_column($formData, 'value', 'name');
+
+        // Define allowed option keys for Anonymous Donations settings
+        $allowed_keys = array(
+            'enable_anonymous_donations',
+            'anonymous_display_name',
+            'anonymous_donations_description',
+            'anonymous_checkbox_label',
+            'anonymous_checkbox_default',
+            'anonymous_hide_from_lists',
+            'anonymous_hide_amount',
+        );
+
+        // Checkbox fields that should be stored as 1 or 0
+        $checkbox_keys = array(
+            'enable_anonymous_donations',
+            'anonymous_checkbox_default',
+            'anonymous_hide_from_lists',
+            'anonymous_hide_amount',
+        );
+
+        // Loop through allowed keys and update WordPress options
+        foreach ($allowed_keys as $key) {
+            if (in_array($key, $checkbox_keys)) {
+                $value = isset($received_data[$key]) ? 1 : 0;
+            } else {
+                $value = isset($received_data[$key]) ? wp_kses_post($received_data[$key]) : '';
+            }
+            update_option($key, $value);
+        }
+
+        // Send success response
+        wp_send_json_success(__('Anonymous Donations settings saved successfully.', 'skydonate'));
     }
 
     public function skydonate_api_settings() {

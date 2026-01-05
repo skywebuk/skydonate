@@ -3,7 +3,7 @@
  * Plugin Name:       SkyDonate
  * Plugin URI:        https://skywebdesign.co.uk/
  * Description:       A secure, user-friendly donation system built to simplify and manage charitable contributions.
- * Version:           2.0.34
+ * Version:           2.0.39
  * Author:            Sky Web Design
  * Author URI:        https://skywebdesign.co.uk/
  * Text Domain:       skydonate
@@ -62,7 +62,7 @@ if ( ! skydonate_is_wc_active() ) {
  */
 final class SkyDonate {
 
-    const VERSION = '2.0.34';
+    const VERSION = '2.0.39';
     private static $instance = null;
 
     public static function instance() {
@@ -144,6 +144,11 @@ function skydonate_activation_recalculate_meta() {
     if ( ! wp_next_scheduled( 'skydonate_daily_recalculate_donations' ) ) {
         wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'skydonate_daily_recalculate_donations' );
     }
+
+    // Register endpoints and flush rewrite rules
+    add_rewrite_endpoint( 'gift-aid', EP_ROOT | EP_PAGES );
+    add_rewrite_endpoint( 'anonymous-donations', EP_ROOT | EP_PAGES );
+    flush_rewrite_rules();
 }
 
 /**
@@ -238,6 +243,28 @@ function skydonate_do_recalculate_all_donations() {
         update_post_meta( $product_id, '_order_count', $order_count );
         update_post_meta( $product_id, '_total_sales_amount', $total_amount );
     }
+}
+
+/**
+ * AJAX handler for manual recalculation of donation stats
+ */
+add_action( 'wp_ajax_skydonate_recalculate_donation_stats', 'skydonate_ajax_recalculate_donation_stats' );
+
+function skydonate_ajax_recalculate_donation_stats() {
+    // Verify nonce
+    if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'skydonate_settings_nonce' ) ) {
+        wp_send_json_error( __( 'Security check failed.', 'skydonate' ) );
+    }
+
+    // Check user capability
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( __( 'You do not have permission to perform this action.', 'skydonate' ) );
+    }
+
+    // Run the recalculation
+    skydonate_do_recalculate_all_donations();
+
+    wp_send_json_success( __( 'Donation statistics have been recalculated successfully.', 'skydonate' ) );
 }
 
 /**

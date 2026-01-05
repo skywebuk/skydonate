@@ -385,7 +385,7 @@
         
         $('.skydonate-gift-aid-form').on('submit', function (e) {
             e.preventDefault(); // Prevent default form submission
-            
+
             const $form = $(this);
             const $btn = $form.find('.skydonation-button');
             const formData = $form.serializeArray();
@@ -403,8 +403,44 @@
                     formData: formData
                 },
                 success: function (response) {
-                    const messageText = response.success 
-                        ? response.data 
+                    const messageText = response.success
+                        ? response.data
+                        : `Error: ${response.data}`;
+                    const messageColor = response.success ? 'green' : 'red';
+
+                    displayTemporaryMessage(messageText, messageColor);
+                },
+                error: function (xhr, status, error) {
+                    displayTemporaryMessage(`AJAX Error: ${error}`, 'red');
+                },
+                complete: function () {
+                    $btn.removeClass('loading').prop('disabled', false);
+                }
+            });
+        });
+
+        $('.skydonate-anonymous-donations-form').on('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const $form = $(this);
+            const $btn = $form.find('.skydonation-button');
+            const formData = $form.serializeArray();
+
+            // Add loading state to button
+            $btn.addClass('loading').prop('disabled', true);
+
+            // Perform AJAX request
+            $.ajax({
+                url: skydonate_setting.ajax_url,
+                method: 'POST',
+                data: {
+                    action: 'save_anonymous_donations_settings',
+                    nonce: skydonate_setting.nonce,
+                    formData: formData
+                },
+                success: function (response) {
+                    const messageText = response.success
+                        ? response.data
                         : `Error: ${response.data}`;
                     const messageColor = response.success ? 'green' : 'red';
 
@@ -602,6 +638,35 @@
         $('#toggleAll').on('change', function() {
             let isChecked = $(this).is(':checked');
             $('.skydonate-checkboxs input[type="checkbox"]').prop('checked', isChecked);
+        });
+
+        // Recalculate Donation Stats button
+        $('#skydonate-recalculate-stats').on('click', function() {
+            var $btn = $(this);
+
+            $btn.addClass('loading').prop('disabled', true);
+
+            $.ajax({
+                url: skydonate_setting.ajax_url,
+                method: 'POST',
+                data: {
+                    action: 'skydonate_recalculate_donation_stats',
+                    nonce: skydonate_setting.nonce
+                },
+                success: function(response) {
+                    let messageText = response.success
+                        ? response.data
+                        : 'Error: ' + response.data;
+                    let messageColor = response.success ? 'green' : 'red';
+                    displayTemporaryMessage(messageText, messageColor);
+                },
+                error: function(xhr, status, error) {
+                    displayTemporaryMessage('AJAX Error: ' + error, 'red');
+                },
+                complete: function() {
+                    $btn.removeClass('loading').prop('disabled', false);
+                }
+            });
         });
     });
 

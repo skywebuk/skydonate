@@ -6,7 +6,7 @@
  * If remote functions are not loaded, these stubs will return safe defaults or errors.
  *
  * @package SkyDonate
- * @version 2.0.31
+ * @version 2.0.39
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

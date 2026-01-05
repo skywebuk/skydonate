@@ -17,12 +17,17 @@ class Skydonate_Gift_Aid {
         // Initialize admin settings
         add_action( 'admin_init', array( $this, 'admin_init' ) );
 
-        // Add Gift Aid section to My Account page
-        add_action( 'woocommerce_before_my_account', array( $this, 'my_account_gift_aid_field' ) );
-        add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
+        // Register My Account endpoints
+        add_action( 'init', array( $this, 'add_my_account_endpoints' ) );
+        add_filter( 'woocommerce_account_menu_items', array( $this, 'add_my_account_menu_items' ) );
+        add_filter( 'woocommerce_get_query_vars', array( $this, 'add_query_vars' ) );
 
-        // Add Anonymous Donation section to My Account page (below Gift Aid)
-        add_action( 'woocommerce_before_my_account', array( $this, 'my_account_anonymous_donation_field' ), 15 );
+        // Add endpoint content
+        add_action( 'woocommerce_account_gift-aid_endpoint', array( $this, 'gift_aid_endpoint_content' ) );
+        add_action( 'woocommerce_account_anonymous-donations_endpoint', array( $this, 'anonymous_donations_endpoint_content' ) );
+
+        // AJAX handlers for saving preferences
+        add_action( 'wp_ajax_save_gift_aid', [$this, 'skydonate_ajax_save_gift_aid'] );
         add_action( 'wp_ajax_save_anonymous_donation', [ $this, 'skydonate_ajax_save_anonymous_donation' ] );
 
         // Save the Gift Aid checkbox value when order is processed
@@ -114,6 +119,62 @@ class Skydonate_Gift_Aid {
         }
 
         return $fields;
+    }
+
+    /**
+     * Register custom endpoints for My Account
+     */
+    public function add_my_account_endpoints() {
+        add_rewrite_endpoint( 'gift-aid', EP_ROOT | EP_PAGES );
+        add_rewrite_endpoint( 'anonymous-donations', EP_ROOT | EP_PAGES );
+    }
+
+    /**
+     * Add query vars for custom endpoints
+     */
+    public function add_query_vars( $vars ) {
+        $vars['gift-aid'] = 'gift-aid';
+        $vars['anonymous-donations'] = 'anonymous-donations';
+        return $vars;
+    }
+
+    /**
+     * Add menu items to My Account navigation (before logout)
+     */
+    public function add_my_account_menu_items( $items ) {
+        // Remove logout temporarily
+        $logout = false;
+        if ( isset( $items['customer-logout'] ) ) {
+            $logout = $items['customer-logout'];
+            unset( $items['customer-logout'] );
+        }
+
+        // Add Gift Aid link
+        $items['gift-aid'] = __( 'Gift Aid', 'skydonate' );
+
+        // Add Anonymous Donations link
+        $items['anonymous-donations'] = __( 'Anonymous Donations', 'skydonate' );
+
+        // Re-add logout at the end
+        if ( $logout ) {
+            $items['customer-logout'] = $logout;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Gift Aid endpoint content
+     */
+    public function gift_aid_endpoint_content() {
+        $this->my_account_gift_aid_field();
+    }
+
+    /**
+     * Anonymous Donations endpoint content
+     */
+    public function anonymous_donations_endpoint_content() {
+        $this->my_account_anonymous_donation_field();
     }
 
     public function my_account_gift_aid_field() {
@@ -230,12 +291,6 @@ class Skydonate_Gift_Aid {
         $anonymous_status = get_user_meta( $user_id, 'anonymous_donation_status', true ) ?: 'no';
         ?>
         <div class="my-account-anonymous-donation skydonate-anonymous-wrapper">
-            <div class="anonymous-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
-                    <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9V7zm4 10.723V19h-2v-1.277a1.993 1.993 0 0 1 .567-3.677A2.001 2.001 0 0 1 14 16a1.99 1.99 0 0 1-1 1.723z"/>
-                </svg>
-            </div>
-
             <h3 class="skydonate-anonymous-title"><?php esc_html_e( 'Anonymous Donations', 'skydonate' ); ?></h3>
 
             <p class="skydonate-anonymous-description">

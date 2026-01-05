@@ -6,7 +6,7 @@
  * Compatible with Sky License Manager remote functions server
  *
  * @package SkyDonate
- * @version 2.0.31
+ * @version 2.0.39
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -323,7 +323,7 @@ class SkyDonate_Remote_Functions {
             $this->executed = true;
             $this->last_status = 'loaded_from_local';
             $this->last_error = null;
-            $this->log( 'Remote functions loaded from local file: ' . $local_path );
+            // Removed excessive logging - this runs on every page load
             return true;
         } catch ( Throwable $e ) {
             $this->log( 'Error loading local remote functions: ' . $e->getMessage() );

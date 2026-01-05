@@ -10,7 +10,7 @@
  * - Replay attack prevention
  *
  * @package SkyDonate
- * @version 2.0.31
+ * @version 2.0.39
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
